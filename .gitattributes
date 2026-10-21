@@ -1,0 +1,14 @@
+# Fins de linha normalizados: LF no repositório e no WSL; o Windows converte só o que precisa.
+* text=auto eol=lf
+
+# Scripts do Windows precisam de CRLF
+*.bat text eol=crlf
+*.cmd text eol=crlf
+*.ps1 text eol=crlf
+
+# Binários
+*.jar binary
+*.zip binary
+*.gz binary
+*.pfx binary
+*.p12 binary

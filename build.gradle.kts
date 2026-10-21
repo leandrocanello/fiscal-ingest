@@ -1,7 +1,6 @@
 // Build raiz — configuração comum a todos os subprojetos
 plugins {
     java
-    id("io.freefair.lombok") version "8.10" apply false
 }
 
 allprojects {
@@ -15,7 +14,6 @@ allprojects {
 
 subprojects {
     apply(plugin = "java")
-    apply(plugin = "io.freefair.lombok")
 
     java {
         sourceCompatibility = JavaVersion.VERSION_21

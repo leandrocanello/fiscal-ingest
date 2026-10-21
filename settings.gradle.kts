@@ -4,10 +4,11 @@ include(
     "domain",
     "adapter-fake",
     "adapter-nfe-nacional",
-    "infra-ledger-postgres",
-    "infra-blob-minio",
-    "infra-ratelimit-redis",
-    "infra-stream-kafka",
-    "scheduler",
-    "delivery-api",
+    // Módulos previstos (CLAUDE.md §19) — habilitar quando o diretório for criado:
+    // "ingest-push",
+    // "cert-vault",
+    // "infra-postgres",
+    // "infra-blob-minio",
+    // "app-worker",
+    // "app-api",
 )

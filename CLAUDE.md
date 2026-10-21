@@ -803,6 +803,11 @@ pacote `br.com.doc` · ADR-007 escopo inicial NF-e 55 AN · ADR-008 self-host vi
 | 022 | **Licença**: avaliar *open core* (motor Apache-2.0, partes de produto fechadas) × **AGPL-3.0** (impede que alguém hospede o motor e concorra sem abrir) | Proposto — decidir antes do primeiro release público |
 | 023 | **Integrador como ator de primeira classe** (OAuth2 client credentials + autorização por tenant/empresa/escopo) | Aceito |
 | 024 | **Agente sem regra fiscal**: só descobre, vigia, classifica e envia; tudo o mais na plataforma | Aceito |
+| 025 | **JDBI + Flyway** para acesso a dados (sem JPA) | Aceito (2026-10-21) |
+| 026 | **jqwik** para testes de propriedade | Aceito (2026-10-21) |
+| 027 | **Spring Boot só nos `app-*`**; resto sem Spring (ArchUnit) | Aceito (2026-10-21) |
+| 028 | **SLF4J + Logback JSON**; Prometheus/Loki/Grafana na Fase 10 | Aceito (2026-10-21) |
+| 029 | Modo autônomo com **2 janelas/dia** (08:00 e 13:00) | Aceito (2026-10-21) |
 
 ---
 
@@ -924,8 +929,9 @@ Registrar cada item (fonte + data) em `docs/FONTES-OFICIAIS.md`. Se a norma muda
 ## 23. Convenções
 
 - **Java 21:** `record`, `sealed`, pattern matching; imutabilidade no domínio; `Clock` injetado.
-- Sem framework no `domain`. Nas bordas, opção **leve**. Se houver framework (Spring/Quarkus/Micronaut),
-  só nos `app-*`, e **proponha antes**.
+- Sem framework no `domain` nem nos módulos de biblioteca. **Spring Boot 3.x só nos `app-*`** (ADR-027);
+  persistência com **JDBI + Flyway** (ADR-025); testes de propriedade com **jqwik** (ADR-026);
+  logs com **SLF4J + Logback JSON** (ADR-028).
 - O domínio comunica falha por `Desfecho` e por tipos de resultado, não por exceção de transporte.
 - Nomes de domínio em português; termos técnicos genéricos podem ficar em inglês.
 - **Go:** `gofmt`/`go vet`/`staticcheck`; erros com contexto (`fmt.Errorf("...: %w", err)`); sem pânico em fluxo normal.

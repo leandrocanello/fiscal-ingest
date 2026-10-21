@@ -19,6 +19,6 @@ function Nova-Tarefa($Nome, $Hora, $Script, $LimiteHoras) {
 }
 
 Nova-Tarefa "fiscal-janela-1"   "08:00" "janela.sh"     5
-# Semana 2 em diante (D5): descomente a segunda janela.
-# Nova-Tarefa "fiscal-janela-2" "13:00" "janela.sh"     5
+# D5 (ADR-029): duas janelas desde o início.
+Nova-Tarefa "fiscal-janela-2" "13:00" "janela.sh"     5
 Nova-Tarefa "fiscal-fechamento" "17:50" "fechamento.sh" 1

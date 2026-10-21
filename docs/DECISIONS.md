@@ -232,6 +232,51 @@
 
 ---
 
+## ADR-025 — Acesso a dados: JDBI + Flyway (D1)
+
+**Data:** 2026-10-21
+**Contexto:** O núcleo depende de SQL explícito: `ON CONFLICT DO NOTHING`, CAS por versão, `SKIP LOCKED`, tabelas append-only, RLS.
+**Decisão:** **JDBI 3** (camada fina sobre JDBC: mapeamento, transações, parâmetros nomeados) + **Flyway** para migrations. Sem JPA/Hibernate e sem Spring Data JPA.
+**Consequências:** SQL visível e testável (Testcontainers); nada de dirty checking/cache de 1º nível escondendo escritas.
+
+---
+
+## ADR-026 — Testes de propriedade com jqwik (D2)
+
+**Data:** 2026-10-21
+**Contexto:** Invariantes como "cursor nunca decresce", "ledger idempotente" e "feed sem buracos" são propriedades, não exemplos.
+**Decisão:** **jqwik** (integra ao JUnit Platform) para testes de propriedade.
+**Consequências:** Cada invariante da `CLAUDE.md` §2.2 que for uma propriedade ganha um `@Property`.
+
+---
+
+## ADR-027 — Spring Boot nos módulos de aplicação (D3)
+
+**Data:** 2026-10-21
+**Contexto:** A API de entrega precisa de OAuth2 para integradores, métricas e robustez de longo prazo; o autor já usa Spring Boot.
+**Decisão:** **Spring Boot 3.x somente nos `app-*`** (composição). `domain`, `adapter-*`, `ingest-push`, `cert-vault` e `infra-*` continuam **sem Spring** (verificado por ArchUnit). Persistência via JDBI (ADR-025). Threads virtuais (`spring.threads.virtual.enabled=true`). OAuth dos integradores avaliado com Spring Authorization Server; métricas por Actuator + Micrometer.
+**Consequências:** Ecossistema maduro; custo de memória/startup aceito nos apps. Revisa a recomendação inicial de "framework leve" (CLAUDE.md §23).
+
+---
+
+## ADR-028 — Logs com SLF4J + Logback JSON; observabilidade com Grafana no fim (D4)
+
+**Data:** 2026-10-21
+**Contexto:** Logs estruturados com campos de correlação e mascaramento (CLAUDE.md §20).
+**Decisão:** **SLF4J** (API) + **Logback** com encoder **JSON** (logstash-logback-encoder). Na Fase 10: Prometheus (métricas do Actuator) + Loki (logs) + **Grafana**.
+**Consequências:** O `domain` não loga (sem dependência); logs nas bordas, nunca com segredo ou XML.
+
+---
+
+## ADR-029 — Ritmo do modo autônomo: duas janelas desde o início (D5)
+
+**Data:** 2026-10-21
+**Contexto:** O autor quer o máximo de avanço por dia útil; revisão noturna de ~1h.
+**Decisão:** Segunda a sexta, janelas às **08:00** e **13:00**, fechamento às 17:50. Freios mantidos em `autonomo/config.sh` (fila de 2 PRs, ~800 linhas/dia).
+**Consequências:** Risco de esgotar o limite **semanal** da assinatura antes de sexta; se acontecer, reduzir `MAX_CHAMADAS_JANELA`.
+
+---
+
 ## Pendências de decisão (a confirmar)
 
 - [x] **Credencial/certificado** → bytes do `.pfx` + senha, só em memória, entregues pelo `CofreDeCertificados`; nunca caminho de disco no domínio. Cache de `SSLContext` por certificado no adapter (LRU/TTL). *(2026-10-21)*

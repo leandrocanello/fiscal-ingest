@@ -2,19 +2,24 @@
 
 > Plataforma **open source** de ingestão (download) de **documentos fiscais eletrônicos brasileiros** via webservices do governo — rápida, segura e auditável.
 
-[![Status](https://img.shields.io/badge/status-WIP%20(Fase%200)-orange)](docs/ARCHITECTURE.md)
+[![Status](https://img.shields.io/badge/status-WIP%20(Fase%201.5)-orange)](docs/ARCHITECTURE.md)
 
 ---
 
 ## 🎯 O que é
 
-Sistema para baixar automaticamente documentos fiscais (NF-e, CT-e, MDF-e, NFS-e, etc.) dos webservices da SEFAZ/RFB, com:
+Um **hub de DF-e**: reúne **todos os documentos fiscais eletrônicos de uma empresa** — os que ela
+**recebe** (buscados no Ambiente Nacional por NSU) e os que ela **emite** (enviados por um agente local
+que vigia a pasta do ERP, ou obtidos via `autXML`) —, guarda tudo com histórico e auditoria, e entrega
+por **API e webhook** ao software contábil.
 
-- **Corretude** — respeito às regras da SEFAZ (rate-limit, não-retrocesso de NSU, manifestação).
-- **Segurança** — certificado digital mTLS; prevenção de bloqueio de CNPJ (`cStat 656`).
-- **Performance** — separação *control plane × data plane*; XML nunca passa pelo core.
-- **Extensibilidade** — adicionar fontes (estados/esferas) **sem tocar no core**.
-- **Auditabilidade** — NSU Ledger *append-only* permite *replay* e auditoria.
+- **Corretude** — respeito às regras da SEFAZ (NSU, bloqueio por CNPJ, manifestação).
+- **Nunca perder documento** — grava o bruto antes de avançar; ledger append-only.
+- **Captura genérica** — funciona com qualquer ERP que grave o XML autorizado.
+- **Entrega confiável** — feed sequencial sem buracos + webhooks assinados com retentativa.
+- **Extensível** — novas fontes entram por portas, sem tocar no core.
+
+Visão completa, regras e plano: **[CLAUDE.md](CLAUDE.md)**.
 
 ---
 
@@ -42,20 +47,25 @@ Detalhes completos em **[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)**.
 
 | Fase | Descrição | Status |
 |------|-----------|--------|
-| 0 | Domínio puro (entidades + casos de uso) | 🔄 em andamento |
-| 1 | Contrato do adapter + adapter FAKE | ⏳ |
-| 2 | Adapter NF-e nacional (SOAP) | ⏳ |
-| 3 | Infra (Postgres/MinIO/Redis/Kafka) | ⏳ |
-| 4 | Entrega (API + docker-compose) | ⏳ |
+| 0 | Domínio puro | ✅ |
+| 1 | Contrato do adapter + adapter fake | ✅ |
+| 1.5 | Saneamento (build, auditoria, docs) | 🔄 |
+| 2 | Adapter NF-e Ambiente Nacional | 🔄 (2A ✅) |
+| 3 | Persistência e catálogo | ⏳ |
+| 4 | Scheduler, cofre de certificados, consentimento | ⏳ |
+| 5 | Porta push (agente/upload) | ⏳ |
+| 6 | API de entrega + webhooks | ⏳ |
+| 7 | Agente local em Go (`fiscal-agent`) | ⏳ |
 
-**Escopo v1:** NF-e (modelo 55) — Ambiente Nacional (`distNSU` + `consNSU` + manifestação + ledger + gap-recovery).
+Plano completo: `CLAUDE.md` §16.
 
 ---
 
 ## 🛠️ Stack
 
 - **Java 21+** (virtual threads) · **Gradle** (Kotlin DSL, multi-módulo)
-- **Postgres** (ledger/metadados) · **Kafka** (data plane) · **MinIO/S3** (blob XML gzip) · **Redis** (rate-limit/locks)
+- **Postgres** (fonte da verdade: ledger, catálogo, feed, outbox) · **MinIO/S3** (XML gzip) · Kafka/Redis quando a medição pedir
+- **Go** no agente local (repositório `fiscal-agent`)
 - **JUnit 5 + Mockito** (unit) · **Testcontainers** (integração) · **WireMock** (SEFAZ mock)
 - **Docker / docker-compose** (self-host)
 
@@ -75,13 +85,14 @@ docker-compose up -d
 
 - [**Arquitetura & Especificação**](docs/ARCHITECTURE.md) — fonte da verdade do projeto.
 - [**Registro de Decisões (ADRs)**](docs/DECISIONS.md) — contexto, decisão e consequência de cada escolha.
-- [**Regras do projeto (.clinerules)**](.clinerules) — convenções e invariantes lidas em toda sessão de desenvolvimento.
+- [**CLAUDE.md**](CLAUDE.md) — visão do produto, regras inegociáveis, arquitetura e plano de fases.
+- [**Auditoria da Fase 1.5**](docs/AUDITORIA-1.5.md) — estado do código recuperado.
 
 ---
 
 ## 🤝 Contribuindo
 
-Projeto open source, desenvolvido com **TDD estrito** (teste primeiro → falha → implementação) e passos pequenos e revisáveis. Veja as regras em [.clinerules](.clinerules) antes de começar.
+Projeto open source, desenvolvido com **TDD estrito** (teste primeiro → falha → implementação) e passos pequenos e revisáveis. Veja as regras no [CLAUDE.md](CLAUDE.md) antes de começar.
 
 ---
 
@@ -91,4 +102,4 @@ Este projeto **não** tem afiliação com a SEFAZ/RFB. Uso por sua conta e risco
 
 ## 📄 Licença
 
-A definir (provável MIT ou Apache 2.0).
+Em decisão (ADR-022: *open core* Apache-2.0 × AGPL-3.0).

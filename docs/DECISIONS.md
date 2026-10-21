@@ -33,12 +33,17 @@
 
 ---
 
-## ADR-004 — Manifestação por CNPJ (ciência automática default)
+## ADR-004 — Manifestação por CNPJ (revisado: ciência automática desligada por padrão)
 
 **Data:** 2026-07-09
 **Contexto:** Resumo (resNFe) chega sem XML completo; a manifestação (ciência) é o gatilho para liberar o procNFe num NSU posterior. Necessidade de flexibilidade: alguns CNPjs querem automático, outros manual por nota.
 **Decisão:** Preferência de manifestação é **por CNPJ**, persistida no banco. Default = **ciência automática**. Backend consulta antes de agir.
 **Consequências:** Novo campo de configuração no cadastro de CNPJ; caso de uso de manifestação lê essa preferência. JSON com notas pendentes pode ser exposto para manifestação manual.
+
+> **Revisado em 2026-10-21 (ver ADR-016):** o padrão passa a ser **ciência automática DESLIGADA**.
+> A ciência é uma declaração em nome do destinatário e só pode ser ligada com consentimento explícito
+> da empresa (finalidade `CIENCIA_AUTOMATICA`). Confirmação, desconhecimento e operação não realizada
+> são sempre manuais, com auditoria. Só o certificado da própria empresa pode manifestar.
 
 ---
 
@@ -78,9 +83,158 @@
 
 ---
 
+
+## Decisões da v2 (2026-10-21)
+
+> Detalhes em `CLAUDE.md` §17.2.
+
+## ADR-009 — Plataforma em Java 21; agente local em Go
+
+**Data:** 2026-10-21
+**Contexto:** Avaliação de Go × Java para o motor e para o agente que roda no cliente.
+**Decisão:** Motor em **Java 21** (maturidade de XML-DSig/SOAP/JAXB, projeto de referência em Java, equipe produtiva). Agente local em **Go** (binário único, sem runtime, serviço leve em Windows e Linux).
+**Consequências:** Dois repositórios e duas toolchains; contrato entre eles por OpenAPI versionado.
+
+---
+
+## ADR-010 — Postgres é a fonte da verdade
+
+**Data:** 2026-10-21
+**Contexto:** Escala com Kafka/Redis/Postgres; quem decide o estado?
+**Decisão:** Cursor, `bloqueado_ate`, ledger, catálogo e feed vivem no Postgres. Lock em Redis é otimização; a proteção final contra corrida é o **CAS por versão**.
+**Consequências:** Se Redis/Kafka caírem, o sistema para de andar mas não corrompe estado.
+
+---
+
+## ADR-011 — Dois estágios: fetch/receive e process
+
+**Data:** 2026-10-21
+**Contexto:** Parse e regras não podem atrasar a coleta.
+**Decisão:** O estágio de coleta/recebimento só obtém, grava o bruto e registra. Parse, catálogo, manifestação e feed rodam no estágio de processamento.
+**Consequências:** Parser lento nunca trava a coleta; reprocessamento a partir do bruto.
+
+---
+
+## ADR-012 — Grave primeiro, avance depois
+
+**Data:** 2026-10-21
+**Contexto:** Falha entre receber e registrar não pode perder documento.
+**Decisão:** O bruto é persistido no object store **antes** de cursor, ledger ou catálogo avançarem.
+**Consequências:** Falha no meio = reler o lote; idempotência obrigatória no registro.
+
+---
+
+## ADR-013 — Multi-tenant desde o início
+
+**Data:** 2026-10-21
+**Contexto:** Milhares de escritórios contábeis.
+**Decisão:** Tenant = escritório. `tenant_id` em toda tabela de negócio, RLS no Postgres, prefixo de tenant no object store.
+**Consequências:** Teste obrigatório de isolamento entre tenants.
+
+---
+
+## ADR-014 — Cofre de certificados; N certificados por tenant
+
+**Data:** 2026-10-21
+**Contexto:** Escritórios usam o próprio certificado e o das empresas (com contrato).
+**Decisão:** `CofreDeCertificados` como capacidade de primeira classe; certificado tem titular (empresa ou escritório); envelope encryption; decifra só em memória.
+**Consequências:** Rotação sem perder cursor; alertas de vencimento; uso de certificado de terceiro exige consentimento registrado.
+
+---
+
+## ADR-015 — Outbox transacional
+
+**Data:** 2026-10-21
+**Contexto:** Publicar eventos sem perder nem duplicar estado.
+**Decisão:** Eventos gravados na mesma transação do estado; um relay publica. Consumidores idempotentes.
+**Consequências:** Entrega pelo menos uma vez em todo o pipeline.
+
+---
+
+## ADR-016 — Finalidades de consentimento separadas
+
+**Data:** 2026-10-21
+**Contexto:** Coleta, ciência automática, entrega a integradores e crédito são usos distintos (LGPD).
+**Decisão:** `consentimento.finalidade` ∈ {COLETA_DFE, CIENCIA_AUTOMATICA, ENTREGA_INTEGRADOR, CREDITO}, verificada na hora do acesso. Revisa o ADR-004 (ciência automática desligada por padrão).
+**Consequências:** Nenhum uso de dado sem a finalidade correspondente vigente.
+
+---
+
+## ADR-017 — Porta push como segunda entrada
+
+**Data:** 2026-10-21
+**Contexto:** Saídas da empresa não vêm pela distribuição do AN.
+**Decisão:** Agente local, e-mail em cópia e upload convergem em `POST /v1/ingestao/arquivos`, tratados como entrada **não confiável** até validação.
+**Consequências:** Parser seguro (sem XXE), limites, validação de assinatura e do CNPJ do agente.
+
+---
+
+## ADR-018 — Catálogo canônico com proveniência
+
+**Data:** 2026-10-21
+**Contexto:** A mesma nota pode chegar por vários canais.
+**Decisão:** 1 documento por `(tenant, chave)`, N arquivos, N proveniências com `confianca`. Ledger de NSU ≠ catálogo. Empresa dona definida **pelo conteúdo do XML**.
+**Consequências:** Sem duplicatas; base para auditoria e para o futuro uso em crédito.
+
+---
+
+## ADR-019 — Saídas via `autXML` com certificado do escritório
+
+**Data:** 2026-10-21
+**Contexto:** Canal de saídas sem instalar nada no cliente.
+**Decisão:** O ERP inclui o CNPJ do escritório no `autXML`; a coleta pelo certificado do escritório recebe essas notas e o processor as roteia pelo conteúdo.
+**Consequências:** Só prospectivo; depende do ERP; **validar em homologação**.
+
+---
+
+## ADR-020 — Feed sequencial com sequenciador único
+
+**Data:** 2026-10-21
+**Contexto:** Integradores não podem perder notas; sequences do Postgres confirmam fora de ordem.
+**Decisão:** `feed.seq` atribuído por um único escritor (com lease). `GET /v1/feed?desde=` é a fonte da verdade; webhooks só notificam.
+**Consequências:** Teste de propriedade "nenhum leitor pula item".
+
+---
+
+## ADR-021 — Kafka e Redis adiáveis *(Proposto)*
+
+**Data:** 2026-10-21
+**Contexto:** Complexidade operacional antes de haver volume.
+**Decisão:** Começar com outbox + filas no Postgres (`SKIP LOCKED`) e portas definidas; Kafka/Redis entram quando a medição pedir.
+**Consequências:** Menos infraestrutura no início, sem mudar o domínio depois.
+
+---
+
+## ADR-022 — Licença *(Proposto)*
+
+**Data:** 2026-10-21
+**Contexto:** Projeto open source com possível produto pago em cima.
+**Decisão:** Avaliar *open core* (motor Apache-2.0) × AGPL-3.0. Decidir antes do primeiro release público.
+**Consequências:** —
+
+---
+
+## ADR-023 — Integrador como ator de primeira classe
+
+**Data:** 2026-10-21
+**Contexto:** Softwares contábeis de terceiros recebem as notas por webhook.
+**Decisão:** OAuth2 client credentials para o integrador + autorização do tenant por empresa e escopo, verificada a cada requisição.
+**Consequências:** Revogação imediata; trilha de auditoria por entrega.
+
+---
+
+## ADR-024 — Agente sem regra fiscal
+
+**Data:** 2026-10-21
+**Contexto:** Agente roda em ambientes heterogêneos e é difícil de atualizar.
+**Decisão:** O agente só descobre, vigia, classifica pelo conteúdo e envia. Validação, deduplicação e regras ficam na plataforma.
+**Consequências:** Menos suporte; regras mudam sem atualizar o agente.
+
+---
+
 ## Pendências de decisão (a confirmar)
 
-- [ ] **Credencial/certificado**: formato exato do value object `Credencial` (caminho `.pfx` + senha? bytes?). Cache de sessão SOAP no adapter (transient)?
-- [ ] **Libs SOAP fiscais**: qual base open source usar no adapter NF-e nacional? (ex.: [DFe4j](https://github.com/Sharepoint-Brasil/DFe4j), [Java-NFe](https://github.com/Samuel-Oliveira/Java_NFe), WSDL bruto via JAX-WS?)
-- [ ] **Formato do `BlobRef`**: UUID? caminho S3? hash?
-- [ ] **Estratégia de particionamento do Postgres** (ledger): por `cnpj`? por mês?
+- [x] **Credencial/certificado** → bytes do `.pfx` + senha, só em memória, entregues pelo `CofreDeCertificados`; nunca caminho de disco no domínio. Cache de `SSLContext` por certificado no adapter (LRU/TTL). *(2026-10-21)*
+- [x] **Libs SOAP fiscais** → sem lib fiscal grande: HTTP (`java.net.http`) + JAXB + Santuario; projetos de terceiros só como referência de comportamento, com checagem de licença. *(2026-10-21)*
+- [x] **Formato do `BlobRef`** → chave determinística e legível + sha256 registrado no Postgres (layout em `CLAUDE.md` §8.1). *(2026-10-21)*
+- [x] **Particionamento do Postgres** → começar sem particionar; projetar para hash por tenant/CNPJ; ativar só com medição. *(2026-10-21)*

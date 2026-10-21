@@ -9,6 +9,29 @@
 
 ---
 
+## 0. Atualização da implementação (2026-10-21)
+
+A implementação está em `autonomo/` (scripts testados em simulação; instalação em `autonomo/INSTALACAO.md`).
+Diferenças em relação ao desenho abaixo:
+
+| Tema | Desenho original | Como ficou | Por quê |
+|---|---|---|---|
+| Mestre do projeto | renomear `CLAUDE.md` → `docs/PROJETO.md` | **`CLAUDE.md` continua sendo o mestre**; regras do ciclo vão em `autonomo/papeis/*.md` via `--append-system-prompt` | evita quebrar links e mantém o mesmo contexto nas sessões interativas |
+| Estado | `autonomo/` no repositório | **branch própria `auto/estado`** (pasta `estado/`), em worktree separada; só o script faz commit/push nela | o `main` é protegido; você edita PARA-VOCE/ROADMAP direto no GitHub |
+| Scripts | rodam do repositório | rodam de um **worktree estável no main** (`~/fiscal-motor`) | o agente troca de branch; bash lê o script enquanto executa |
+| Hooks | `.claude/settings.json` versionado | **`--settings autonomo/claude-settings.json`** só nas chamadas autônomas | não afeta suas sessões no Windows |
+| Pedir mudanças | "Request changes" no PR | **rótulo `pedir-mudancas`** + comentários | o GitHub não deixa revisar/aprovar PR aberto pelo seu próprio token |
+| Fila de revisão | limite só no empilhamento | **limite global** de PRs abertos (`FILA_REVISAO_MAX`) | sua hora de revisão é o gargalo |
+
+Itens [VERIFICAR] resolvidos (Claude Code 2.1.306):
+- Hooks **disparam** com `--dangerously-skip-permissions` (inclusive via `--settings`) e recebem caminho absoluto + variáveis de ambiente.
+- `--append-system-prompt`, `--max-turns` (opção oculta, funciona), `--output-format json`, `--settings`, `--add-dir` existem.
+- Turnos esgotados: `subtype: "error_max_turns"`, `is_error: true`, exit 1 com JSON (**sem** JSON o exit é 0 — por isso o script sempre usa JSON).
+
+Ainda [VERIFICAR]: texto exato do limite de uso da assinatura (`bin/resultado.sh`); `wsl --install --name`; Agendador com usuário deslogado.
+
+---
+
 ## 1. A ideia em 6 regras
 
 1. **Um script decide e a IA executa.** O script lê o estado (arquivos + git), escolhe a próxima ação e chama o

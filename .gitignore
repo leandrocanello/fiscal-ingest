@@ -1,0 +1,47 @@
+# Gradle
+.gradle/
+build/
+
+# IDE - IntelliJ IDEA
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
+
+# IDE - Eclipse
+.classpath
+.project
+.settings/
+bin/
+!autonomo/bin/
+
+# IDE - VSCode
+.vscode/
+
+# Sistema operacional
+.DS_Store
+Thumbs.db
+
+# Certificados e segredos — NUNCA commitar
+*.pfx
+*.p12
+*.cer
+*.key
+*.pem
+*.jks
+# Certificados de teste são gerados em tempo de execução pelos próprios testes (nunca versionados)
+
+# Logs
+*.log
+
+# Arquivos sensíveis do ambiente
+.env
+.env.local
+*.env
+!*.env.example
+
+# Build nativo (futuro)
+*.so
+*.dll
+*.dylib

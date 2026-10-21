@@ -1,0 +1,51 @@
+# REGRAS INEGOCIÁVEIS DO PROJETO — FISCAL-INGEST
+# O Cline lê este arquivo em TODA conversa. Respeite estritamente.
+
+## Idioma
+- Responda SEMPRE em português do Brasil (pt-BR).
+
+## Metodologia
+- TDD OBRIGATÓRIO: escreva o teste PRIMEIRO, rode e veja FALHAR, só então implemente.
+- NUNCA implemente antes do teste existir e falhar.
+- Passos pequenos e revisáveis. Ao fim de cada incremento, PARE e resuma.
+- NÃO despeje o sistema inteiro de uma vez.
+
+## Decisões explícitas
+- Toda decisão arquitetural relevante ou ambígua: PARE E PERGUNTE. Não assuma.
+- Nada de "vibe code". Justifique decisões de design.
+
+## Domínio (Fiscal BR — ingestão/download)
+- NÃO reinvente o protocolo da SEFAZ. Use libs open source nos adapters.
+- Seu valor é a ORQUESTRAÇÃO, não outro cliente SOAP.
+- Antes de codar qualquer módulo: PROPONHA o design e aguarde OK.
+
+## Invariantes críticas de segurança
+- NUNCA enviar ao adapter um NSU/cursor ANTERIOR ao já consumido → gera cStat 656 e BLOQUEIA o CNPJ.
+- 1 CNPJ processado POR VEZ por fonte (nunca em paralelo).
+- O XML NUNCA passa pelo core/scheduler — vai direto ao object store. Só metadado + NSU tocam o domínio.
+
+## Arquitetura
+- Clean Architecture + Ports & Adapters (Hexagonal). Domínio PURO no centro (sem I/O, sem framework).
+- Separação Control Plane (scheduler, token bucket, due-time por CNPJ) × Data Plane (stream, workers stateless).
+- NSU Ledger append-only como espinha dorsal (por fonte + CNPJ).
+- Contrato único do adapter: Descriptor + buscarLote/buscarUm/manifestar + Desfecho normalizado.
+- Cursor é OPACO pro core (só guarda e devolve; nunca interpreta).
+
+## Stack
+- Java 21+ (virtual threads), Gradle (Kotlin DSL), multi-módulo.
+- Postgres (ledger), Kafka (data plane), MinIO/S3 (blob XML gzip), Redis (rate-limit/locks).
+- Testes: JUnit 5 + Mockito (unit), Testcontainers (integração), WireMock (SEFAZ). NUNCA bater na SEFAZ real.
+
+## Manifestação (decisão do usuário)
+- Por CNPJ: cada CNPJ define se quer ciência AUTOMÁTICA (default) ou manifestação manual por nota.
+- Essa preferência fica no banco. Backend consulta antes de agir.
+
+## Pacote raiz
+- br.com.doc
+
+## Projeto
+- Open source, self-host via docker-compose, sem deploy em servidor por ora.
+- Crescerá com o tempo — base sólida e testável, NÃO MVP apressado.
+
+## Escopo v1
+- NF-e (modelo 55) Ambiente Nacional: distNSU + consNSU + manifestação (ciência) + ledger + gap-recovery.

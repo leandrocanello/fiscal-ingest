@@ -1,7 +1,9 @@
 # Fiscal-Ingest — Arquitetura e Especificação
 
 > Plataforma open source de **ingestão (download) de documentos fiscais eletrônicos brasileiros**.
-> Este documento é a **fonte da verdade** do projeto. O Cline o lê para manter contexto.
+> Especificação técnica do motor de coleta e dos contratos do core.
+> **A visão completa do produto (v2 — hub de DF-e) está em [`CLAUDE.md`](../CLAUDE.md)**, que prevalece
+> em caso de conflito. Este arquivo foi alinhado à v2 na Fase 1.5 (2026-10-21).
 
 ---
 
@@ -34,7 +36,11 @@ Sistema de baixa automática de documentos fiscais (NF-e, CT-e, MDF-e, NFS-e, et
 ### 3.1 NSU (Número Sequencial Único)
 - Cada CNPJ tem uma sequência de NSUs por fonte no Ambiente Nacional.
 - **Não se pode retroceder**: pedir NSU já consumido → `cStat 656` (Consumo Indevido) → **bloqueia o CNPJ**.
-- Limites: ~20 consultas pontuais (consNSU)/hora; ~1 lote (distNSU)/hora.
+- **Bloqueio por CNPJ consultado:** quando a consulta não traz documento novo (`cStat 137`, tipicamente
+  `ultNSU == maxNSU`), novas consultas daquele CNPJ ficam bloqueadas por ~1h. **Não** é um limite fixo de
+  "1 lote por hora": enquanto houver documentos (`ultNSU < maxNSU`), o loop continua **[VALIDAR]**.
+  A duração é configurável por fonte (`PoliticaRateLimit`), nunca fixa no código.
+- Consultas pontuais (consNSU/consChNFe): ~20/hora **[VALIDAR]**.
 - Documentos ficam ~90 dias disponíveis; depois retornam "fora do prazo".
 
 ### 3.2 Fluxo NF-e (manifestação é o gatilho)
@@ -96,6 +102,23 @@ Sistema de baixa automática de documentos fiscais (NF-e, CT-e, MDF-e, NFS-e, et
 
 > É essa separação que impede o core de virar gargalo.
 
+**Complementos da v2** (detalhes em `CLAUDE.md` §6):
+- **Postgres é a fonte da verdade** (ADR-010). Redis e Kafka são aceleradores e podem ser adiados (ADR-021):
+  a primeira versão usa outbox + filas no Postgres.
+- **Dois estágios** (ADR-011): *fetch/receive* (chama a fonte ou recebe o arquivo, grava o bruto, registra)
+  e *process* (parse, catálogo, manifestação, feed).
+- **Grave primeiro, avance depois** (ADR-012) e **outbox transacional** (ADR-015).
+
+### 4.3.1 Porta push, catálogo e feed (v2)
+
+- **Porta push** (ADR-017): o agente local (Go), o e-mail em cópia e o upload manual entram por
+  `POST /v1/ingestao/arquivos` e convergem no mesmo pipeline.
+- **Catálogo canônico** (ADR-018): 1 documento por `(tenant, chave)`, N arquivos, N proveniências com
+  nível de confiança. O ledger de NSU controla a coleta; o catálogo é o que o produto expõe.
+  A empresa dona é definida **pelos CNPJs dentro do XML** (necessário para o `autXML`, ADR-019).
+- **Feed sequencial** (ADR-020): `GET /v1/feed?desde=<seq>`, escrito por um sequenciador único;
+  webhooks só notificam.
+
 ### 4.4 NSU Ledger (espinha dorsal)
 
 - Append-only. Registra **TODO NSU** por `(fonte, cnpj)` + desfecho.
@@ -142,13 +165,17 @@ public sealed interface Desfecho
 
     record Ok()                                  implements Desfecho {}
     record Vazio()                               implements Desfecho {} // 137: nada novo
-    record LimiteAtingido(Duration retryApos)    implements Desfecho {} // 656/632: NÃO avança ponteiro
+    record LimiteAtingido(Duration retryApos)    implements Desfecho {} // 656: NÃO avança ponteiro (632: a confirmar)
     record IndisponivelTemporario(Duration r)    implements Desfecho {} // timeout/5xx/429
     record IndisponivelDefinitivo(String motivo) implements Desfecho {} // schema incompatível
     record ErroAutenticacao(String motivo)       implements Desfecho {} // certificado
     record ServicoFora(String motivo)            implements Desfecho {} // 109: paralisado
 }
 ```
+
+> **Mapeamento de `cStat` em revisão** (ver `docs/AUDITORIA-1.5.md` e `CLAUDE.md` §3.2): `632` está em
+> conflito entre as versões dos docs, `108` provavelmente significa *serviço paralisado momentaneamente*
+> (não "em operação") e `589` precisa virar erro de consistência. Tudo **[VALIDAR]** no MOC antes de mudar os testes.
 
 ### 5.4 Cursor (opaco para o core)
 
@@ -220,7 +247,7 @@ public record Documento(
 |---|---------|---------|
 | 1 | Build tool | **Gradle** (Kotlin DSL), multi-módulo. Java 21+. |
 | 2 | Object store writer | O **adapter (infra)** escreve o XML no blob store e devolve só `BlobRef`. Core nunca vê bytes. |
-| 3 | Manifestação | Por **CNPJ**: define ciência **automática (default)** ou manual. Preferência no banco; backend consulta antes de agir. |
+| 3 | Manifestação | Por **CNPJ**. Ciência automática **desligada por padrão**; só liga com consentimento explícito da empresa (ADR-004 revisado). Demais manifestações sempre manuais e auditadas. |
 | 4 | Ledger idempotência | Re-inserir mesmo NSU = **ignora silenciosamente** (não lança erro). Ledger vazio no `GapCalculator` = retorna `[]`. |
 | 5 | Pacote raiz | **`br.com.doc`**. |
 | 6 | Escopo v1 | NF-e (55) Ambiente Nacional: distNSU + consNSU + manifestação + ledger + gap-recovery. |
@@ -234,10 +261,11 @@ public record Documento(
 |--------|-----------|
 | Linguagem | Java 21+ (virtual threads) |
 | Build | Gradle (Kotlin DSL) |
-| Ledger/Metadados | Postgres (particionado) |
-| Data plane / Stream | Kafka (particionado por CNPJ, com replay) |
-| Object storage | MinIO / S3 (XML gzip) |
-| Estado quente / rate-limit / locks | Redis |
+| Ledger/Metadados/Catálogo/Feed | Postgres (fonte da verdade; particionar só com medição) |
+| Data plane / Stream | Outbox + filas no Postgres; Kafka quando a medição pedir (ADR-021) |
+| Object storage | MinIO / S3 (XML gzip, imutável, sha256) |
+| Estado quente / rate-limit / locks | Postgres (lease + CAS); Redis quando a medição pedir (ADR-021) |
+| Agente local | Go (repositório separado `fiscal-agent`, ADR-009) |
 | Scheduler | Dedicado (due-time + token bucket por CNPJ) |
 | Unit tests | JUnit 5 + Mockito |
 | Integration tests | Testcontainers (Postgres/Kafka/MinIO) |
@@ -249,25 +277,26 @@ public record Documento(
 ## 8. Estrutura de Módulos
 
 ```
-fiscal-ingest/                         (raiz, settings.gradle.kts)
-├── .clinerules                        REGRAS lidas pelo Cline em toda conversa
+fiscal-ingest/                         (este repositório)
+├── CLAUDE.md                          visão v2, regras e plano (prevalece)
 ├── docs/
 │   ├── ARCHITECTURE.md                este arquivo
-│   └── DECISIONS.md                   registro de decisões (ADR leve)
-├── domain/                            ★ PURO — centro, sem I/O, sem framework
-│   └── src/{main,test}/java/br/com/doc/ingest/domain/...
-├── adapter-fake/                      Fase 1: SourceAdapter em memória
-├── adapter-nfe-nacional/              Fase 2: SOAP distNSU/consNSU/manifestação
-├── infra-ledger-postgres/             Fase 3
-├── infra-blob-minio/                  Fase 3
-├── infra-ratelimit-redis/             Fase 3
-├── infra-stream-kafka/                Fase 3
-├── scheduler/                         control plane
-├── delivery-api/                      Fase 4 (REST + eventos)
-├── docker-compose.yml
-├── settings.gradle.kts
-├── build.gradle.kts
-└── README.md
+│   ├── DECISIONS.md                   ADRs
+│   └── AUDITORIA-1.5.md               estado do código recuperado
+├── domain/                            ★ PURO — sem I/O, sem framework
+├── adapter-fake/                      SourceAdapter em memória
+├── adapter-nfe-nacional/              pull: distNSU/consNSU/consChNFe/manifestação
+├── ingest-push/                       (previsto) parse seguro, classificação, assinatura, roteamento
+├── cert-vault/                        (previsto) CofreDeCertificados
+├── infra-postgres/                    (previsto) ledger, estado_coleta, catálogo, feed, outbox, RLS
+├── infra-blob-minio/                  (previsto)
+├── infra-stream-kafka/                (fase 10, se medido)
+├── infra-ratelimit-redis/             (fase 10, se medido)
+├── app-scheduler/ app-worker/ app-api/  (previstos) composição
+├── api-contract/                      (previsto) openapi.yaml
+└── docker-compose.yml                 (previsto)
+
+fiscal-agent/                          repositório separado, Go (CLAUDE.md §10)
 ```
 
 ### Pacote raiz Java
@@ -275,24 +304,11 @@ fiscal-ingest/                         (raiz, settings.gradle.kts)
 
 ---
 
-## 9. Fases de Entrega (cada uma em TDD)
+## 9. Fases de Entrega
 
-### Fase 0 — Domínio puro (COMEÇAR AQUI)
-Entidades (`Documento`, `Nsu`/`Cursor`, `Ledger`) e casos de uso (`GapCalculator`, `AvancarPonteiro`, `RecuperarGap`, `RateLimitPolicy`/`TokenBucket`).
-**Sem I/O, sem framework.** Testes unitários primeiro.
-
-### Fase 1 — Contrato do adapter + adapter FAKE em memória
-Testa o core sem SEFAZ.
-
-### Fase 2 — Adapter real NF-e nacional (SOAP)
-`distNSU`/`consNSU` + manifestação, mapeando `cStat` 137/138/656/632/108/109 → `Desfecho`.
-WireMock cobre os cenarios.
-
-### Fase 3 — Infra
-Ledger (Postgres), blob (MinIO), scheduler + rate-limit (Redis), stream (Kafka). Testcontainers.
-
-### Fase 4 — Entrega
-API + eventos; docker-compose ponta a ponta.
+O plano de fases vigente está em `CLAUDE.md` §16 (0 ✅ · 1 ✅ · 1.5 saneamento · 2 adapter NF-e AN
+(2A ✅) · 3 persistência e catálogo · 4 scheduler e cofre · 5 porta push · 6 API de entrega e webhooks ·
+7 agente Go · 8 auditoria de saídas · 9+ ...). Cada fase em TDD, com parada para revisão.
 
 ---
 
@@ -303,6 +319,8 @@ API + eventos; docker-compose ponta a ponta.
 3. **XML fora do core**: só metadado + NSU tocam o domínio/scheduler.
 4. **Core desacoplado de origens**: nenhum `cStat`/HTTP vaza do adapter.
 5. **TDD**: nada é implementado sem teste anterior falhando.
+
+> Lista completa (14 invariantes, incluindo catálogo, push e entrega): `CLAUDE.md` §2.2.
 
 ---
 

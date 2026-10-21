@@ -10,11 +10,11 @@
 > Tipos: AUTO · AUTO+ (sensível: Opus + revisão forte) · RASCUNHO · DECISAO · HUMANO
 
 ## Etapa 1 — Saneamento (Fase 1.5)
-- [h] E1-S01 | HUMANO   | deps: -      | build: wrapper, settings, arquivos recuperados (PR fase-1.5/build) — rodar ./gradlew test e mergear
-- [h] E1-S02 | HUMANO   | deps: -      | docs alinhados à v2 (PR fase-1.5/docs) — revisar e mergear
-- [ ] E1-S03 | DECISAO  | deps: -      | decisões que destravam o agente (D1–D5 em PARA-VOCE)
+- [x] E1-S01 | HUMANO   | deps: -      | build: wrapper, settings, arquivos recuperados (PR fase-1.5/build) — rodar ./gradlew test e mergear
+- [x] E1-S02 | HUMANO   | deps: -      | docs alinhados à v2 (PR fase-1.5/docs) — revisar e mergear
+- [x] E1-S03 | DECISAO  | deps: -      | decisões que destravam o agente (D1–D5: ADRs 025–029)
 - [ ] E1-S04 | AUTO     | deps: E1-S01 | ArchUnit: regra "domain não depende de nada"
-- [ ] E1-S05 | AUTO     | deps: E1-S01,E1-S03 | jqwik + propriedades do que já existe (GapCalculator, TokenBucket, Nsu)
+- [ ] E1-S05 | AUTO     | deps: E1-S01,E1-S03 | jqwik (ADR-026) + propriedades do que já existe (GapCalculator, TokenBucket, Nsu)
 - [ ] E1-S06 | AUTO+    | deps: E1-S05 | invariante 1: guarda + teste de propriedade de não-retrocesso no AvancarPonteiroUseCase (auditoria A4)
 
 ## Etapa 2 — Adapter NF-e Ambiente Nacional (Fase 2)
@@ -33,7 +33,7 @@
 - [ ] E2-S12 | HUMANO   | deps: E2-S09,E2-S11 | smoke em homologação: distNSU, consChNFe, ciência, autXML
 
 ## Etapa 3 — Persistência e catálogo (Fase 3)
-- [ ] E3-S01 | AUTO     | deps: E1-S03 | Flyway + esquema base (tenant, empresa, estado_coleta, ledger_*)
+- [ ] E3-S01 | AUTO     | deps: E1-S03 | JDBI + Flyway (ADR-025) + esquema base (tenant, empresa, estado_coleta, ledger_*)
 - [ ] E3-S02 | AUTO+    | deps: E3-S01 | CAS do cursor + testes de caos (dois fetchers, um avança)
 - [ ] E3-S03 | AUTO+    | deps: E3-S01 | RLS por tenant + teste "A não lê B"
 - [ ] E3-S04 | AUTO     | deps: E3-S01 | outbox transacional + relay (fila no Postgres)
@@ -50,7 +50,7 @@
 - [ ] E4-S05 | AUTO     | deps: E4-S01..04 | simulação de N CNPJs sem nenhum 656
 
 ## Etapa 5 — Porta push + API de entrega (Fases 5 e 6)
-- [ ] E5-S01 | DECISAO  | deps: -      | framework HTTP dos app-* (D3)
+- [x] E5-S01 | DECISAO  | deps: -      | framework HTTP dos app-*: Spring Boot só nos app-* (ADR-027)
 - [ ] E5-S02 | AUTO+    | deps: E3-S06,E5-S01 | POST /v1/ingestao/arquivos + parser seguro (XXE, zip bomb)
 - [ ] E5-S03 | AUTO+    | deps: E5-S02 | validação de assinatura + confiança + CNPJ do agente
 - [ ] E5-S04 | AUTO+    | deps: E3-S04 | sequenciador do feed + teste de propriedade "sem buracos"

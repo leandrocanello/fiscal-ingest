@@ -74,7 +74,7 @@ Repita algumas vezes, olhando os commits em `~/fiscal-ingest` e o PR que aparece
 cd <onde estiver o repositório no Windows>\autonomo\windows
 .\agendar.ps1
 ```
-Semana 1: só a janela das 08:00 + fechamento às 17:50. Depois, descomente a janela das 13:00 no script e rode de novo.
+Registra as janelas das 08:00 e 13:00 + fechamento às 17:50 (ADR-029). Se o limite semanal acabar antes de sexta, reduza `MAX_CHAMADAS_JANELA` em `autonomo/config.sh`.
 Energia: desative a suspensão em horário comercial ou ative "temporizadores de ativação". Deixe o usuário logado (tela bloqueada serve).
 
 ## Operação do dia a dia

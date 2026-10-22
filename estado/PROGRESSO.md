@@ -58,3 +58,5 @@
 - 2026-10-22 13:00 · E1-S05: último passo (Javadocs dos *PropriedadesTest já presentes; suíte inteira verde, 4 classes jqwik executadas) · próximo: revisão
 - 2026-10-22 13:01 · E1-S05: passo concluído sem alteração de código (aceito)
 - 2026-10-22 13:01 · E1-S05: DESENVOLVER ok
+- 2026-10-22 13:01 · E1-S05: verificação ok (propriedades Nsu/GapCalculator/TokenBucket executadas, suíte inteira verde, sem alterar testes antigos, jqwik só em testImplementation) · próximo: revisão / E1-S06
+- 2026-10-22 13:01 · E1-S05: VERIFICAR ok

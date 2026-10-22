@@ -76,4 +76,11 @@ class TokenBucketPropriedadesTest {
             }
         }
     }
+
+    @Property
+    void intervaloSubMilissegundoRejeitado(@ForAll @LongRange(min = 1, max = 999_999) long nanos) {
+        org.assertj.core.api.Assertions.assertThatThrownBy(
+                        () -> new TokenBucket(1, Duration.ofNanos(nanos), new RelogioManual(INICIO)))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
 }

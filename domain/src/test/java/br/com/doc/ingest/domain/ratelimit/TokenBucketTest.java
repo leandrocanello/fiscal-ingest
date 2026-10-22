@@ -148,4 +148,15 @@ class TokenBucketTest {
             assertThat(parcial.retryApos()).isEqualTo(Duration.ofMinutes(30));
         }
     }
+
+    @Test
+    @DisplayName("deve rejeitar intervalo de recarga menor que 1 ms")
+    void deveRejeitarIntervaloSubMilissegundo() {
+        Clock relogio = Clock.fixed(Instant.parse("2026-07-11T12:00:00Z"), ZoneId.of("UTC"));
+
+        org.assertj.core.api.Assertions.assertThatThrownBy(
+                        () -> new TokenBucket(1, Duration.ofNanos(500_000), relogio))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("1 ms");
+    }
 }

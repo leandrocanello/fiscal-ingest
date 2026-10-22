@@ -10,3 +10,5 @@
 - 2026-10-21 23:09 · E1-S04: DESENVOLVER ok
 - 2026-10-21 · E1-S04: regra nenhumaClasseDoDominioFalaDeCStat + meta-teste; falha inicial: compileTestJava 'cannot find symbol' (NAO_FALA_DE_CSTAT); suíte verde · próximo: refatoração/comentários (último passo)
 - 2026-10-21 23:13 · E1-S04: DESENVOLVER ok
+- 2026-10-21 23:13 · E1-S04: comentário em RegrasDoDominio e build.gradle.kts; `./gradlew test` verde (passo de refatoração, sem falha esperada) · próximo: revisão
+- 2026-10-21 23:13 · E1-S04: DESENVOLVER ok

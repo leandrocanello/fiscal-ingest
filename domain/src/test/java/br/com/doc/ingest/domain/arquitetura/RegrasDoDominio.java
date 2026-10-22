@@ -13,4 +13,10 @@ public final class RegrasDoDominio {
             .should().dependOnClassesThat()
             .resideOutsideOfPackages("java..", "br.com.doc.ingest.domain..")
             .because("o domínio é puro: só JDK e o próprio pacote (CLAUDE.md §19, inv. 4)");
+
+    public static final ArchRule NAO_FAZ_IO = noClasses()
+            .should().dependOnClassesThat()
+            .resideInAnyPackage("java.io..", "java.nio.file..", "java.nio.channels..",
+                    "java.net..", "java.sql..", "javax..")
+            .because("o domínio não faz I/O (CLAUDE.md §2.2, inv. 3)");
 }

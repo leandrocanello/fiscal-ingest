@@ -51,4 +51,29 @@ class TokenBucketPropriedadesTest {
             assertThat(balde.tokensDisponiveis()).isBetween(0L, capacidade);
         }
     }
+
+    @Property
+    void retryAposEhHonesto(
+            @ForAll @LongRange(min = 1, max = 50) long capacidade,
+            @ForAll @LongRange(min = 1, max = 7_200_000) long intervaloMs,
+            @ForAll("decimosDeIntervalo") List<Integer> passos) {
+        RelogioManual relogio = new RelogioManual(INICIO);
+        Duration intervalo = Duration.ofMillis(intervaloMs);
+        TokenBucket balde = new TokenBucket(capacidade, intervalo, relogio);
+
+        for (int decimos : passos) {
+            relogio.avancar(Duration.ofMillis(intervaloMs * decimos / 10));
+
+            ResultadoConsumo r = balde.tentarConsumir();
+            if (r.permitido()) {
+                assertThat(r.retryApos()).isNull();
+            } else {
+                assertThat(r.retryApos()).isNotNull();
+                assertThat(r.retryApos()).isPositive().isLessThanOrEqualTo(intervalo);
+
+                relogio.avancar(r.retryApos());
+                assertThat(balde.tentarConsumir().permitido()).isTrue();
+            }
+        }
+    }
 }

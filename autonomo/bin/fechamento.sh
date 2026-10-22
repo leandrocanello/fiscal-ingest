@@ -3,6 +3,7 @@
 set -uo pipefail
 source "$(dirname "$0")/lib.sh"
 [[ $(date +%u) -ge 6 ]] && exit 0
+exec </dev/null
 "$AQUI/estado-git.sh" puxar
 estado_init_dia
 "$AQUI/sincronizar.sh" || true

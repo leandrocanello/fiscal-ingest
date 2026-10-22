@@ -6,6 +6,7 @@ source "$(dirname "$0")/lib.sh"
 mkdir -p "$FI_ESTADO_DIR/logs"
 LOG="$FI_ESTADO_DIR/logs/$(date +%F_%H%M).log"
 exec >>"$LOG" 2>&1
+exec </dev/null   # nenhum filho pode ler do terminal (evita SIGTTIN: processo pausado que nem o timeout mata)
 
 [[ $(date +%u) -ge 6 ]] && { log "fim de semana — nada a fazer"; exit 0; }
 [[ -f "$FI_ESTADO_DIR/PARAR" ]] && { log "arquivo PARAR presente — saindo"; exit 0; }
@@ -34,7 +35,7 @@ for ((i=1; i<=MAX_CHAMADAS_JANELA; i++)); do
 
   ANTES=$(git -C "$FI_REPO" rev-parse HEAD)
   SAIDA="$FI_ESTADO_DIR/logs/$(date +%F_%H%M%S)-$ID-$ACAO.json"
-  ( cd "$FI_REPO" && FI_PAPEL="$PAPEL" FI_SUB="$ID" timeout "${TIMEOUT_CHAMADA_MIN}m" \
+  ( cd "$FI_REPO" && FI_PAPEL="$PAPEL" FI_SUB="$ID" timeout -k 30s "${TIMEOUT_CHAMADA_MIN}m" \
       claude -p "$("$AQUI/prompt.sh" "$ACAO" "$ID" "$BASE")" \
         --append-system-prompt "$(cat "$FI_MOTOR/autonomo/papeis/comum.md" "$FI_MOTOR/autonomo/papeis/$PAPEL.md")" \
         --settings "$FI_MOTOR/autonomo/claude-settings.json" \
@@ -52,7 +53,12 @@ for ((i=1; i<=MAX_CHAMADAS_JANELA; i++)); do
             "$AQUI/estado-git.sh" salvar "$ID: $ACAO falhou"; continue ;;
   esac
 
-  if "$AQUI/verificar.sh" checar "$ACAO" "$ID" "$ANTES"; then
+  "$AQUI/verificar.sh" checar "$ACAO" "$ID" "$ANTES"; rc_ver=$?
+  if (( rc_ver == 2 )); then
+    log "verificação travou/estourou o tempo (problema de ambiente, não do agente) — encerrando a janela"
+    "$AQUI/estado-git.sh" salvar "$ID: verificação estourou o tempo"; break
+  fi
+  if (( rc_ver == 0 )); then
     case "$ACAO" in
       PREPARAR) rm_set "$ID" h; progresso "$ID: preparado para você (PARA-VOCE.md)" ;;
       REVISAR)

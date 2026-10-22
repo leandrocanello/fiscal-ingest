@@ -11,6 +11,7 @@ export CLAUDE_CONFIG_DIR="${CLAUDE_CONFIG_DIR:-$HOME/.claude-pessoal}"
 # Limites
 MAX_CHAMADAS_JANELA=${MAX_CHAMADAS_JANELA:-20}        # chamadas ao Claude por janela
 TIMEOUT_CHAMADA_MIN=${TIMEOUT_CHAMADA_MIN:-45}        # minutos por chamada
+TIMEOUT_TESTES_MIN=${TIMEOUT_TESTES_MIN:-20}          # minutos para a suíte na verificação
 MAX_TURNS=${MAX_TURNS:-60}                  # turnos por chamada
 ORCAMENTO_DIFF_DIA=${ORCAMENTO_DIFF_DIA:-800}        # linhas (adicionadas+removidas) em src/main por dia
 FILA_REVISAO_MAX=${FILA_REVISAO_MAX:-2}            # subetapas em [r]/[c] ao mesmo tempo
@@ -22,7 +23,7 @@ MODELO_FORTE="opus"
 MODELO_PADRAO="sonnet"
 
 # Comando de testes (suíte inteira)
-COMANDO_TESTES="${COMANDO_TESTES:-./gradlew test --no-daemon -q}"
+COMANDO_TESTES="${COMANDO_TESTES:-./gradlew test --no-daemon --console=plain}"
 
 # Arquivos que o agente nunca pode alterar no repositório de código
 PROTEGIDOS=(CLAUDE.md AUTONOMO.md docs/ARCHITECTURE.md docs/DECISIONS.md .claude autonomo .github)

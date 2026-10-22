@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Verificação depois de cada chamada (AUTONOMO.md §7.2). Quem decide "deu certo" é este script.
-#   verificar.sh checar   ACAO ID ANTES   → exit 0 se aprovado; senão reverte e conta falha
+#   verificar.sh checar   ACAO ID ANTES   → exit 0 aprovado · 1 reprovado (revertido) · 2 ambiente travou (mantido)
 #   verificar.sh falha    ID ANTES MOTIVO → reverte e conta falha
 #   verificar.sh reverter ID ANTES MOTIVO → reverte sem contar falha
 set -uo pipefail
@@ -52,8 +52,19 @@ case "$ACAO" in
     if [[ -n "$(git status --porcelain)" ]]; then falha "$ID" "$ANTES" "terminou com alterações sem commit"; exit 1; fi
     if [[ "$(git rev-parse HEAD)" == "$ANTES" && "$ACAO" == "DESENVOLVER" ]]; then
       falha "$ID" "$ANTES" "nenhum commit feito"; exit 1; fi
-    if ! timeout 30m bash -c "$COMANDO_TESTES" > "$FI_ESTADO_DIR/logs/ultimo-teste.log" 2>&1; then
-      falha "$ID" "$ANTES" "suíte vermelha (ver logs/ultimo-teste.log)"; exit 1; fi
+    # Para daemons que o agente tenha deixado (seguram locks) e roda a suíte sem terminal, com kill garantido.
+    ./gradlew --stop -q </dev/null >/dev/null 2>&1 || true
+    pkill -f GradleDaemon 2>/dev/null || true
+    timeout -k 30s "${TIMEOUT_TESTES_MIN}m" bash -c "$COMANDO_TESTES" </dev/null > "$FI_ESTADO_DIR/logs/ultimo-teste.log" 2>&1
+    rc_testes=$?
+    pkill -f GradleDaemon 2>/dev/null || true   # nada fica pendurado segurando lock
+    if (( rc_testes == 124 || rc_testes == 137 )); then
+      # Estourou o tempo: problema de ambiente. NÃO reverte o trabalho do agente nem conta falha.
+      progresso "$ID: verificação estourou ${TIMEOUT_TESTES_MIN} min — trabalho mantido, janela encerrada (ver logs/ultimo-teste.log)"
+      exit 2
+    elif (( rc_testes != 0 )); then
+      falha "$ID" "$ANTES" "suíte vermelha (ver logs/ultimo-teste.log)"; exit 1
+    fi
     linhas=$(git diff --numstat "$ANTES" HEAD -- '*/src/main/*' | awk '{s+=$1+$2} END {print s+0}')
     estado_inc .diff_hoje "$linhas" ;;
 esac

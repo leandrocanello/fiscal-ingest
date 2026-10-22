@@ -51,7 +51,17 @@ case "$ACAO" in
   DESENVOLVER|VERIFICAR|CORRIGIR)
     if [[ -n "$(git status --porcelain)" ]]; then falha "$ID" "$ANTES" "terminou com alterações sem commit"; exit 1; fi
     if [[ "$(git rev-parse HEAD)" == "$ANTES" && "$ACAO" == "DESENVOLVER" ]]; then
-      falha "$ID" "$ANTES" "nenhum commit feito"; exit 1; fi
+      # Sem commit só é aceito se o passo foi fechado no plano (ex.: "conferir X" que já estava certo).
+      # O estado é salvo (commit) depois de cada chamada, então comparar com o HEAD da branch de estado
+      # mostra exatamente o que esta chamada mudou no plano.
+      fechados_antes=$(git -C "$FI_ESTADO" show "HEAD:estado/planos/$ID.md" 2>/dev/null | grep -c '^- \[x\]')
+      fechados_agora=$(grep -c '^- \[x\]' "$FI_ESTADO_DIR/planos/$ID.md" 2>/dev/null)
+      if (( ${fechados_agora:-0} > ${fechados_antes:-0} )); then
+        progresso "$ID: passo concluído sem alteração de código (aceito)"
+      else
+        falha "$ID" "$ANTES" "nenhum commit feito e nenhum passo fechado no plano"; exit 1
+      fi
+    fi
     # Para daemons que o agente tenha deixado (seguram locks) e roda a suíte sem terminal, com kill garantido.
     ./gradlew --stop -q </dev/null >/dev/null 2>&1 || true
     pkill -f GradleDaemon 2>/dev/null || true

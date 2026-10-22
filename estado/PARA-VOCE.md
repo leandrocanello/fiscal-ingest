@@ -15,3 +15,7 @@
 Último motivo: nenhum commit feito
 Logs: `estado/logs/` (arquivos *-E1-S05-*.json). Para destravar: ajuste o plano `estado/planos/E1-S05.md`
 ou responda aqui, e troque o status no ROADMAP de `[!]` para `[~]`.
+
+### [DUVIDA] E2-S00 — 2026-10-22 — CLAUDE.md §5 ainda cita CXF
+- O que é preciso: após a E2-S00, a tabela da §5 (linha `adapter-nfe-nacional`) diz "dependências CXF + Santuario + WireMock". CLAUDE.md é protegido para o agente.
+- Recomendação: trocar por "`java.net.http` + JAXB + Santuario + WireMock" quando revisar o PR.

@@ -37,3 +37,5 @@
 - 2026-10-22 08:07 · E1-S05: suíte verde, Javadocs das *PropriedadesTest conferidos (já presentes) · próximo: verificação/revisão
 - 2026-10-22 08:07 · E1-S05: revertido — nenhum commit feito
 - 2026-10-22 08:07 · E1-S05: [!] bloqueado após 3 falhas
+- 2026-10-22 08:08 · E2-S00: plano criado (3 passos: remover CXF com teste-guarda de classpath, conferir Santuario/JAXB, conferir árvore de dependências) · próximo: desenvolvimento
+- 2026-10-22 08:08 · E2-S00: revertido — PLANEJAR alterou o repositório de código

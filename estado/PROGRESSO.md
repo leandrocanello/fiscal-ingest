@@ -60,3 +60,6 @@
 - 2026-10-22 13:01 · E1-S05: DESENVOLVER ok
 - 2026-10-22 13:01 · E1-S05: verificação ok (propriedades Nsu/GapCalculator/TokenBucket executadas, suíte inteira verde, sem alterar testes antigos, jqwik só em testImplementation) · próximo: revisão / E1-S06
 - 2026-10-22 13:01 · E1-S05: VERIFICAR ok
+- 2026-10-22 13:03 · E1-S05: REVISAR — APROVAR PARA PR (suíte verde, 1000 tries/propriedade; ressalvas não bloqueantes: JUnit 5.10→5.13 implícito, inv. 2 de exclusão mútua ainda sem teste) · próximo: abrir PR / E1-S06
+- 2026-10-22 13:03 · E1-S05: REVISAR ok
+- 2026-10-22 13:03 · E1-S05: PR aberto para revisão

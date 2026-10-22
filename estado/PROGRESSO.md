@@ -17,3 +17,5 @@
 - 2026-10-21 23:30 · E1-S04: REVISAR — APROVAR PARA PR (4 regras ArchUnit + meta-testes; suíte verde; nota: archunit-junit5 sobe JUnit do domain p/ 5.14.4) · próximo: PR/merge pelo autor
 - 2026-10-21 23:15 · E1-S04: REVISAR ok
 - 2026-10-21 23:15 · E1-S04: PR aberto para revisão
+- 2026-10-21 23:40 · E1-S05: PLANEJAR — plano com 7 passos (jqwik no build raiz, propriedades de Nsu/GapCalculator/TokenBucket, validação de intervalo <1ms); DA-2 e DA-3 registradas · próximo: desenvolvimento (sonnet)
+- 2026-10-21 23:17 · E1-S05: PLANEJAR ok

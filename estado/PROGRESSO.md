@@ -28,3 +28,5 @@
 - 2026-10-22 08:03 · E1-S05: DESENVOLVER ok
 - 2026-10-22 08:04 · E1-S05: TokenBucketPropriedadesTest.retryAposEhHonesto (passou de primeira; sem falha prévia, só teste novo conforme plano) · próximo: intervaloSubMilissegundoRejeitado (DA-3)
 - 2026-10-22 08:04 · E1-S05: DESENVOLVER ok
+- 2026-10-22 08:05 · E1-S05: TokenBucket rejeita intervalo < 1 ms (teste falhou: 2 testes novos vermelhos; depois suíte verde) · próximo: passo final (Javadoc nos *PropriedadesTest)
+- 2026-10-22 08:05 · E1-S05: DESENVOLVER ok

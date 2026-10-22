@@ -49,3 +49,5 @@
 - 2026-10-22 08:12 · E2-S00: DESENVOLVER ok
 - 2026-10-22 08:20 · E2-S00: runtimeClasspath sem cxf/javax (0 ocorrências), suíte verde; todos os passos de Desenvolvimento concluídos · próximo: revisão
 - 2026-10-22 08:12 · E2-S00: DESENVOLVER ok
+- 2026-10-22 08:13 · E2-S00: VERIFICAR ok (classpath sem CXF/javax, suíte verde, testes antigos intactos) · próximo: revisão
+- 2026-10-22 08:13 · E2-S00: VERIFICAR ok

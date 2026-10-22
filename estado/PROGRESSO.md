@@ -14,3 +14,6 @@
 - 2026-10-21 23:13 · E1-S04: DESENVOLVER ok
 - 2026-10-21 23:14 · E1-S04: VERIFICAR ok — 4 regras ArchUnit com meta-teste (9 testes), sem dependência de produção nova, `./gradlew test` verde; nenhum código novo necessário · próximo: revisão
 - 2026-10-21 23:14 · E1-S04: VERIFICAR ok
+- 2026-10-21 23:30 · E1-S04: REVISAR — APROVAR PARA PR (4 regras ArchUnit + meta-testes; suíte verde; nota: archunit-junit5 sobe JUnit do domain p/ 5.14.4) · próximo: PR/merge pelo autor
+- 2026-10-21 23:15 · E1-S04: REVISAR ok
+- 2026-10-21 23:15 · E1-S04: PR aberto para revisão

@@ -13,7 +13,7 @@
 - [x] E1-S01 | HUMANO   | deps: -      | build: wrapper, settings, arquivos recuperados (PR fase-1.5/build) — rodar ./gradlew test e mergear
 - [x] E1-S02 | HUMANO   | deps: -      | docs alinhados à v2 (PR fase-1.5/docs) — revisar e mergear
 - [x] E1-S03 | DECISAO  | deps: -      | decisões que destravam o agente (D1–D5: ADRs 025–029)
-- [~] E1-S04 | AUTO     | deps: E1-S01 | ArchUnit: regra "domain não depende de nada"
+- [r] E1-S04 | AUTO     | deps: E1-S01 | ArchUnit: regra "domain não depende de nada"
 - [ ] E1-S05 | AUTO     | deps: E1-S01,E1-S03 | jqwik (ADR-026) + propriedades do que já existe (GapCalculator, TokenBucket, Nsu)
 - [ ] E1-S06 | AUTO+    | deps: E1-S05 | invariante 1: guarda + teste de propriedade de não-retrocesso no AvancarPonteiroUseCase (auditoria A4)
 

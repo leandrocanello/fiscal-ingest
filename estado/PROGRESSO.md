@@ -45,3 +45,5 @@
 - 2026-10-22 08:10 · E2-S00: DESENVOLVER ok
 - 2026-10-22 08:10 · E2-S00: SantuarioDisponivelTest (guarda, passou direto; sem falha esperada) · próximo: WireMockHttpClientSmokeTest
 - 2026-10-22 08:11 · E2-S00: DESENVOLVER ok
+- 2026-10-22 08:11 · E2-S00: WireMockHttpClientSmokeTest (guarda; passou direto, suíte verde) · próximo: verificar runtimeClasspath sem cxf/javax
+- 2026-10-22 08:12 · E2-S00: DESENVOLVER ok

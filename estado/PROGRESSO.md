@@ -43,3 +43,5 @@
 - 2026-10-22 08:09 · E2-S00: PLANEJAR ok
 - 2026-10-22 08:10 · E2-S00: passo 1 — ClasspathSemJavaxTest falhou (org.apache.cxf.Bus presente; 1 de 4 falhas), CXF removido, suíte verde · próximo: SantuarioDisponivelTest
 - 2026-10-22 08:10 · E2-S00: DESENVOLVER ok
+- 2026-10-22 08:10 · E2-S00: SantuarioDisponivelTest (guarda, passou direto; sem falha esperada) · próximo: WireMockHttpClientSmokeTest
+- 2026-10-22 08:11 · E2-S00: DESENVOLVER ok

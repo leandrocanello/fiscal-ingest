@@ -26,3 +26,5 @@
 - 2026-10-22 08:02 · E1-S05: DESENVOLVER ok
 - 2026-10-22 08:03 · E1-S05: TokenBucketPropriedadesTest.nuncaLiberaMaisQueCapacidadeMaisRecargas + RelogioManual (passou de primeira; teste de caracterização, sem produção) · próximo: retryAposEhHonesto
 - 2026-10-22 08:03 · E1-S05: DESENVOLVER ok
+- 2026-10-22 08:04 · E1-S05: TokenBucketPropriedadesTest.retryAposEhHonesto (passou de primeira; sem falha prévia, só teste novo conforme plano) · próximo: intervaloSubMilissegundoRejeitado (DA-3)
+- 2026-10-22 08:04 · E1-S05: DESENVOLVER ok

@@ -10,3 +10,8 @@
 - **E1-S03 (D1–D5)** — 2026-10-21: D1 JDBI + Flyway (ADR-025) · D2 jqwik (ADR-026) ·
   D3 Spring Boot só nos `app-*` (ADR-027) · D4 SLF4J + Logback JSON, Grafana na Fase 10 (ADR-028) ·
   D5 duas janelas por dia, 08:00 e 13:00 (ADR-029).
+
+### [BLOQUEIO] E1-S05 — 2026-10-22 — 3 falhas seguidas
+Último motivo: nenhum commit feito
+Logs: `estado/logs/` (arquivos *-E1-S05-*.json). Para destravar: ajuste o plano `estado/planos/E1-S05.md`
+ou responda aqui, e troque o status no ROADMAP de `[!]` para `[~]`.

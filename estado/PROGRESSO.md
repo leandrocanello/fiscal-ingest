@@ -39,3 +39,5 @@
 - 2026-10-22 08:07 · E1-S05: [!] bloqueado após 3 falhas
 - 2026-10-22 08:08 · E2-S00: plano criado (3 passos: remover CXF com teste-guarda de classpath, conferir Santuario/JAXB, conferir árvore de dependências) · próximo: desenvolvimento
 - 2026-10-22 08:08 · E2-S00: revertido — PLANEJAR alterou o repositório de código
+- 2026-10-22 08:09 · E2-S00: plano refeito sem tocar no repositório (4 passos: guarda de classpath sem javax/CXF + remoção do CXF, guarda Santuario, smoke java.net.http × WireMock local, conferência da árvore) · próximo: desenvolvimento
+- 2026-10-22 08:09 · E2-S00: PLANEJAR ok

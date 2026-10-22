@@ -8,3 +8,5 @@
 - 2026-10-21 23:08 · E1-S04: DESENVOLVER ok
 - 2026-10-21 23:09 · E1-S04: regra dominioNaoUsaRelogioSolto + 2 meta-testes (falha inicial: símbolo inexistente; suíte verde) · próximo: nenhumaClasseDoDominioFalaDeCStat
 - 2026-10-21 23:09 · E1-S04: DESENVOLVER ok
+- 2026-10-21 · E1-S04: regra nenhumaClasseDoDominioFalaDeCStat + meta-teste; falha inicial: compileTestJava 'cannot find symbol' (NAO_FALA_DE_CSTAT); suíte verde · próximo: refatoração/comentários (último passo)
+- 2026-10-21 23:13 · E1-S04: DESENVOLVER ok

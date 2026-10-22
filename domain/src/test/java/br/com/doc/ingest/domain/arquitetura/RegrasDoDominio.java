@@ -1,6 +1,10 @@
 package br.com.doc.ingest.domain.arquitetura;
 
+import com.tngtech.archunit.core.domain.JavaClass;
+import com.tngtech.archunit.lang.ArchCondition;
 import com.tngtech.archunit.lang.ArchRule;
+import com.tngtech.archunit.lang.ConditionEvents;
+import com.tngtech.archunit.lang.SimpleConditionEvent;
 
 import java.time.Clock;
 import java.time.Instant;
@@ -41,4 +45,26 @@ public final class RegrasDoDominio {
                     "Thread.sleep(..)",
                     c -> c.getTargetOwner().isEquivalentTo(Thread.class) && c.getName().equals("sleep")))
             .because("o domínio recebe o tempo por Clock injetado (CLAUDE.md §15)");
+
+    private static boolean mencionaCStat(String nome) {
+        return nome.toLowerCase().contains("cstat");
+    }
+
+    private static final ArchCondition<JavaClass> FALAR_DE_CSTAT =
+            new ArchCondition<>("ter nome de classe, campo ou método contendo 'cstat'") {
+                @Override
+                public void check(JavaClass classe, ConditionEvents eventos) {
+                    if (mencionaCStat(classe.getSimpleName())) {
+                        eventos.add(SimpleConditionEvent.satisfied(classe, "classe " + classe.getName()));
+                    }
+                    classe.getFields().stream().filter(f -> mencionaCStat(f.getName()))
+                            .forEach(f -> eventos.add(SimpleConditionEvent.satisfied(f, "campo " + f.getFullName())));
+                    classe.getMethods().stream().filter(m -> mencionaCStat(m.getName()))
+                            .forEach(m -> eventos.add(SimpleConditionEvent.satisfied(m, "método " + m.getFullName())));
+                }
+            };
+
+    public static final ArchRule NAO_FALA_DE_CSTAT = noClasses()
+            .should(FALAR_DE_CSTAT)
+            .because("cStat é detalhe do adapter; o core só vê Desfecho (CLAUDE.md §2.2, inv. 4)");
 }

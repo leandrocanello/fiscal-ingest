@@ -1,5 +1,6 @@
 package br.com.doc.ingest.domain.arquitetura;
 
+import br.com.doc.ingest.domain.arquitetura.fixture.CStatVazado;
 import br.com.doc.ingest.domain.arquitetura.fixture.DependeDeBiblioteca;
 import br.com.doc.ingest.domain.arquitetura.fixture.LeArquivo;
 import br.com.doc.ingest.domain.arquitetura.fixture.UsaRelogioDoSistema;
@@ -59,5 +60,17 @@ class ArquiteturaDominioTest {
         JavaClasses fixture = new ClassFileImporter().importClasses(UsaRelogioInjetado.class);
         assertThatCode(() -> RegrasDoDominio.NAO_USA_RELOGIO_SOLTO.check(fixture))
                 .doesNotThrowAnyException();
+    }
+
+    @Test
+    void nenhumaClasseDoDominioFalaDeCStat() {
+        RegrasDoDominio.NAO_FALA_DE_CSTAT.check(DOMINIO);
+    }
+
+    @Test
+    void metaTeste_regraDeCStatFalhaEmFixtureComMembroCStat() {
+        JavaClasses fixture = new ClassFileImporter().importClasses(CStatVazado.class);
+        assertThatThrownBy(() -> RegrasDoDominio.NAO_FALA_DE_CSTAT.check(fixture))
+                .isInstanceOf(AssertionError.class);
     }
 }

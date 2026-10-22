@@ -6,3 +6,5 @@
 - 2026-10-21 23:01 · E1-S04: revertido — suíte vermelha (ver logs/ultimo-teste.log)
 - 2026-10-21 · E1-S04: regra dominioNaoFazIo (falhou por compilação: NAO_FAZ_IO inexistente; depois verde, suíte inteira) · próximo: dominioNaoUsaRelogioSolto
 - 2026-10-21 23:08 · E1-S04: DESENVOLVER ok
+- 2026-10-21 23:09 · E1-S04: regra dominioNaoUsaRelogioSolto + 2 meta-testes (falha inicial: símbolo inexistente; suíte verde) · próximo: nenhumaClasseDoDominioFalaDeCStat
+- 2026-10-21 23:09 · E1-S04: DESENVOLVER ok

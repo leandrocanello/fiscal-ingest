@@ -51,3 +51,6 @@
 - 2026-10-22 08:12 · E2-S00: DESENVOLVER ok
 - 2026-10-22 08:13 · E2-S00: VERIFICAR ok (classpath sem CXF/javax, suíte verde, testes antigos intactos) · próximo: revisão
 - 2026-10-22 08:13 · E2-S00: VERIFICAR ok
+- 2026-10-22 08:14 · E2-S00: REVISAR — APROVAR PARA PR (suíte verde, classpath sem CXF/javax; 2 ressalvas menores) · próximo: abrir PR
+- 2026-10-22 08:14 · E2-S00: REVISAR ok
+- 2026-10-22 08:14 · E2-S00: PR aberto para revisão

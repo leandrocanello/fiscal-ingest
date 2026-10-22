@@ -1,5 +1,6 @@
 // Módulo DOMÍNIO — deve permanecer PURO (sem I/O, sem framework).
 // Nenhuma dependência além do JDK. Nem mesmo Jackson/SLF4J/JDBC.
+// A pureza é verificada por ArchUnit (domain/src/test/.../arquitetura/RegrasDoDominio).
 // Esta restrição é intencional e faz parte da arquitetura (ver docs/ARCHITECTURE.md §4.1).
 dependencies {
     val testImplementation by configurations

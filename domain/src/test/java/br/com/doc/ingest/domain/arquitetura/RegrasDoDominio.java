@@ -15,6 +15,10 @@ import java.time.ZonedDateTime;
 
 import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.noClasses;
 
+/**
+ * Regras ArchUnit de pureza do domínio. Ver CLAUDE.md §19 (regra de dependência)
+ * e §2.2 (inv. 3: sem XML/I-O no core; inv. 4: core desacoplado da origem).
+ */
 public final class RegrasDoDominio {
 
     private RegrasDoDominio() {

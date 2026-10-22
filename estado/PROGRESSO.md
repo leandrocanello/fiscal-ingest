@@ -30,3 +30,5 @@
 - 2026-10-22 08:04 · E1-S05: DESENVOLVER ok
 - 2026-10-22 08:05 · E1-S05: TokenBucket rejeita intervalo < 1 ms (teste falhou: 2 testes novos vermelhos; depois suíte verde) · próximo: passo final (Javadoc nos *PropriedadesTest)
 - 2026-10-22 08:05 · E1-S05: DESENVOLVER ok
+- 2026-10-22 08:06 · E1-S05: último passo de desenvolvimento — Javadocs dos 3 *PropriedadesTest já presentes; suíte verde (6+5+3 propriedades executadas) · próximo: verificação/revisão
+- 2026-10-22 08:06 · E1-S05: revertido — nenhum commit feito

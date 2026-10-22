@@ -32,3 +32,5 @@
 - 2026-10-22 08:05 · E1-S05: DESENVOLVER ok
 - 2026-10-22 08:06 · E1-S05: último passo de desenvolvimento — Javadocs dos 3 *PropriedadesTest já presentes; suíte verde (6+5+3 propriedades executadas) · próximo: verificação/revisão
 - 2026-10-22 08:06 · E1-S05: revertido — nenhum commit feito
+- 2026-10-22 08:20 · E1-S05: último passo marcado [x]; Javadocs já estavam nos commits anteriores, suíte inteira verde, sem alteração de código (nada a commitar) · próximo: verificação/revisão
+- 2026-10-22 08:07 · E1-S05: revertido — nenhum commit feito

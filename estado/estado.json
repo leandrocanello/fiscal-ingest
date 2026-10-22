@@ -1,6 +1,12 @@
 {
   "data": "2026-10-21",
   "diff_hoje": 0,
-  "chamadas_hoje": 0,
-  "revertidas_hoje": 0
+  "chamadas_hoje": 1,
+  "revertidas_hoje": 0,
+  "base": {
+    "E1-S04": "main"
+  },
+  "falhas": {
+    "E1-S04": 0
+  }
 }

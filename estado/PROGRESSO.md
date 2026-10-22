@@ -24,3 +24,5 @@
 - 2026-10-22 08:00 · E1-S05: DESENVOLVER ok
 - 2026-10-22 08:02 · E1-S05: GapCalculatorPropriedadesTest (6 propriedades, verdes de primeira — só teste, sem produção, então sem falha prévia) · próximo: TokenBucket nuncaLiberaMaisQueCapacidadeMaisRecargas
 - 2026-10-22 08:02 · E1-S05: DESENVOLVER ok
+- 2026-10-22 08:03 · E1-S05: TokenBucketPropriedadesTest.nuncaLiberaMaisQueCapacidadeMaisRecargas + RelogioManual (passou de primeira; teste de caracterização, sem produção) · próximo: retryAposEhHonesto
+- 2026-10-22 08:03 · E1-S05: DESENVOLVER ok

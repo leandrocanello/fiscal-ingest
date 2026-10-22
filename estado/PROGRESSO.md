@@ -20,3 +20,5 @@
 - 2026-10-21 23:40 · E1-S05: PLANEJAR — plano com 7 passos (jqwik no build raiz, propriedades de Nsu/GapCalculator/TokenBucket, validação de intervalo <1ms); DA-2 e DA-3 registradas · próximo: desenvolvimento (sonnet)
 - 2026-10-21 23:17 · E1-S05: PLANEJAR ok
 - 2026-10-21 · E1-S05: jqwik 1.9.3 no subprojects (Platform já alinhado em 1.13.1); falha inicial: 'package net.jqwik.api does not exist'; suíte verde com @Property executado · próximo: NsuPropriedadesTest
+- 2026-10-22 08:00 · E1-S05: NsuPropriedadesTest (5 testes, passam de primeira — comportamento já existente, sem código de produção; suíte verde) · próximo: GapCalculatorPropriedadesTest
+- 2026-10-22 08:00 · E1-S05: DESENVOLVER ok

@@ -12,3 +12,5 @@
 - 2026-10-21 23:13 · E1-S04: DESENVOLVER ok
 - 2026-10-21 23:13 · E1-S04: comentário em RegrasDoDominio e build.gradle.kts; `./gradlew test` verde (passo de refatoração, sem falha esperada) · próximo: revisão
 - 2026-10-21 23:13 · E1-S04: DESENVOLVER ok
+- 2026-10-21 23:14 · E1-S04: VERIFICAR ok — 4 regras ArchUnit com meta-teste (9 testes), sem dependência de produção nova, `./gradlew test` verde; nenhum código novo necessário · próximo: revisão
+- 2026-10-21 23:14 · E1-S04: VERIFICAR ok

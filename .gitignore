@@ -45,3 +45,6 @@ Thumbs.db
 *.so
 *.dll
 *.dylib
+
+# jqwik
+.jqwik-database

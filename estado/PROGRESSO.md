@@ -55,3 +55,6 @@
 - 2026-10-22 08:14 · E2-S00: REVISAR ok
 - 2026-10-22 08:14 · E2-S00: PR aberto para revisão
 - 2026-10-22 12:15 · E1-S05: desbloqueada manualmente após fix/passo-sem-codigo (PR #6); contador de falhas zerado
+- 2026-10-22 13:00 · E1-S05: último passo (Javadocs dos *PropriedadesTest já presentes; suíte inteira verde, 4 classes jqwik executadas) · próximo: revisão
+- 2026-10-22 13:01 · E1-S05: passo concluído sem alteração de código (aceito)
+- 2026-10-22 13:01 · E1-S05: DESENVOLVER ok

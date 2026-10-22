@@ -47,3 +47,5 @@
 - 2026-10-22 08:11 · E2-S00: DESENVOLVER ok
 - 2026-10-22 08:11 · E2-S00: WireMockHttpClientSmokeTest (guarda; passou direto, suíte verde) · próximo: verificar runtimeClasspath sem cxf/javax
 - 2026-10-22 08:12 · E2-S00: DESENVOLVER ok
+- 2026-10-22 08:20 · E2-S00: runtimeClasspath sem cxf/javax (0 ocorrências), suíte verde; todos os passos de Desenvolvimento concluídos · próximo: revisão
+- 2026-10-22 08:12 · E2-S00: DESENVOLVER ok

@@ -18,14 +18,39 @@ public final class ExtratorMetadados {
     private ExtratorMetadados() {
     }
 
+    /** Extrai os metadados; o elemento raiz precisa corresponder ao tipo. {@code DESCONHECIDO} é rejeitado. */
     public static MetadadosDfe extrair(TipoSchemaDfe tipo, byte[] xml) {
+        String raizEsperada = raizEsperada(tipo);
         Coletor c = new Coletor();
-        percorrer(xml, c::folha);
+        percorrer(xml, raiz -> {
+            if (!raiz.equals(raizEsperada)) {
+                throw new DocZipInvalidoException("Elemento raiz diverge do schema informado");
+            }
+        }, c::folha);
         return c.montar();
     }
 
+    /** Como {@link #extrair}, mas schema desconhecido não é erro: devolve vazio (o bruto é preservado pelo chamador). */
+    public static Optional<MetadadosDfe> extrairSeConhecido(TipoSchemaDfe tipo, byte[] xml) {
+        if (tipo == TipoSchemaDfe.DESCONHECIDO) {
+            return Optional.empty();
+        }
+        return Optional.of(extrair(tipo, xml));
+    }
+
+    private static String raizEsperada(TipoSchemaDfe tipo) {
+        return switch (tipo) {
+            case RES_NFE -> "resNFe";
+            case PROC_NFE -> "nfeProc";
+            case RES_EVENTO -> "resEvento";
+            case PROC_EVENTO_NFE -> "procEventoNFe";
+            case DESCONHECIDO -> throw new DocZipInvalidoException("Schema desconhecido não tem metadados");
+        };
+    }
+
     /** Percorre o XML chamando {@code folha} com o caminho (ex.: {@code resNFe/chNFe}) e o texto. */
-    private static void percorrer(byte[] xml, java.util.function.BiConsumer<String, String> folha) {
+    private static void percorrer(byte[] xml, java.util.function.Consumer<String> raiz,
+                                  java.util.function.BiConsumer<String, String> folha) {
         XMLStreamReader r = XmlSeguro.novoLeitor(xml);
         Deque<String> caminho = new ArrayDeque<>();
         StringBuilder texto = new StringBuilder();
@@ -35,6 +60,9 @@ public final class ExtratorMetadados {
                 switch (r.next()) {
                     case XMLStreamConstants.START_ELEMENT -> {
                         caminho.addLast(r.getLocalName());
+                        if (caminho.size() == 1) {
+                            raiz.accept(r.getLocalName());
+                        }
                         texto.setLength(0);
                         temFilho = false;
                         String id = r.getAttributeValue(null, "Id");

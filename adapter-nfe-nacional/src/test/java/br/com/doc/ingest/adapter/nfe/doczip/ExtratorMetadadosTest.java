@@ -131,4 +131,25 @@ class ExtratorMetadadosTest {
             assertThat(m.cnpjEmitente()).isEmpty();
         }
     }
+
+    @Test
+    @DisplayName("schemaQueDivergeDaRaizLancaDocZipInvalido")
+    void schemaQueDivergeDaRaizLancaDocZipInvalido() {
+        String xml = "<resNFe><chNFe>" + CHAVE + "</chNFe></resNFe>";
+
+        assertThatThrownBy(() -> ExtratorMetadados.extrair(TipoSchemaDfe.PROC_NFE, bytes(xml)))
+                .isInstanceOf(DocZipInvalidoException.class);
+    }
+
+    @Test
+    @DisplayName("schemaDesconhecidoEhClassificadoENaoDescartado")
+    void schemaDesconhecidoEhClassificadoENaoDescartado() {
+        byte[] xml = bytes("<algoNovo><x>1</x></algoNovo>");
+        byte[] copia = xml.clone();
+
+        var m = ExtratorMetadados.extrairSeConhecido(TipoSchemaDfe.DESCONHECIDO, xml);
+
+        assertThat(m).isEmpty();
+        assertThat(xml).isEqualTo(copia);
+    }
 }

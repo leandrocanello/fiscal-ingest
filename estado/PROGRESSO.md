@@ -107,3 +107,5 @@
 - 2026-10-23 08:19 · E2-S04: DESENVOLVER ok
 - 2026-10-23 08:20 · E2-S04: porta BlobStore + BlobConflitanteException no domain (sem teste novo; ArchUnit e suíte verdes) · próximo: BlobStoreEmMemoria (gravar/ler)
 - 2026-10-23 08:20 · E2-S04: DESENVOLVER ok
+- 2026-10-23 08:30 · E2-S04: BlobStoreEmMemoria gravar/ler (falha inicial: cannot find symbol BlobStoreEmMemoria; suíte verde) · próximo: idempotência e conflito
+- 2026-10-23 08:21 · E2-S04: DESENVOLVER ok

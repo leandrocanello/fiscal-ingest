@@ -63,3 +63,6 @@
 - 2026-10-22 13:03 · E1-S05: REVISAR — APROVAR PARA PR (suíte verde, 1000 tries/propriedade; ressalvas não bloqueantes: JUnit 5.10→5.13 implícito, inv. 2 de exclusão mútua ainda sem teste) · próximo: abrir PR / E1-S06
 - 2026-10-22 13:03 · E1-S05: REVISAR ok
 - 2026-10-22 13:03 · E1-S05: PR aberto para revisão
+- 2026-10-23 08:00 · E1-S04: mergeado por você ✔
+- 2026-10-23 08:00 · E1-S05: mergeado por você ✔
+- 2026-10-23 08:00 · E2-S00: mergeado por você ✔

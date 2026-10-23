@@ -113,3 +113,5 @@
 - 2026-10-23 13:01 · E2-S04: DESENVOLVER ok
 - 2026-10-23 13:02 · E2-S04: sha256 divergente rejeitado (falha antes: AssertionError em BlobStoreEmMemoriaTest:82, sem exceção) · próximo: clone defensivo
 - 2026-10-23 13:02 · E2-S04: DESENVOLVER ok
+- 2026-10-23 13:03 · E2-S04: teste alterarArrayDeEntradaOuSaidaNaoMudaOBlob (falhou com Optional.of(conteudo)/sem clone: 1 failed; clone() já existia da implementação anterior) · próximo: propriedades jqwik do BlobStoreEmMemoria
+- 2026-10-23 13:03 · E2-S04: DESENVOLVER ok

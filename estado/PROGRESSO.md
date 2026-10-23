@@ -140,3 +140,5 @@
 - 2026-10-23 13:27 · E2-S05: DESENVOLVER ok
 - 2026-10-23 13:28 · E2-S05: extrator de metadados de resEvento/procEventoNFe (falha inicial: cnpjAutorEvento inexistente, erro de compilação; suíte verde depois) · próximo: conferir raiz x schema (DA-6)
 - 2026-10-23 13:28 · E2-S05: DESENVOLVER ok
+- 2026-10-23 13:29 · E2-S05: raiz×schema e DESCONHECIDO sem exceção (extrairSeConhecido); falha vista só como erro de compilação, não executada isoladamente · próximo: propriedades jqwik
+- 2026-10-23 13:29 · E2-S05: DESENVOLVER ok

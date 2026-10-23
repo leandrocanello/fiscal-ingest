@@ -10,12 +10,5 @@
 - **E1-S03 (D1–D5)** — 2026-10-21: D1 JDBI + Flyway (ADR-025) · D2 jqwik (ADR-026) ·
   D3 Spring Boot só nos `app-*` (ADR-027) · D4 SLF4J + Logback JSON, Grafana na Fase 10 (ADR-028) ·
   D5 duas janelas por dia, 08:00 e 13:00 (ADR-029).
-
-### [BLOQUEIO] E1-S05 — 2026-10-22 — 3 falhas seguidas
-Último motivo: nenhum commit feito
-Logs: `estado/logs/` (arquivos *-E1-S05-*.json). Para destravar: ajuste o plano `estado/planos/E1-S05.md`
-ou responda aqui, e troque o status no ROADMAP de `[!]` para `[~]`.
-
-### [DUVIDA] E2-S00 — 2026-10-22 — CLAUDE.md §5 ainda cita CXF
-- O que é preciso: após a E2-S00, a tabela da §5 (linha `adapter-nfe-nacional`) diz "dependências CXF + Santuario + WireMock". CLAUDE.md é protegido para o agente.
-- Recomendação: trocar por "`java.net.http` + JAXB + Santuario + WireMock" quando revisar o PR.
+- **[BLOQUEIO] E1-S05** — 2026-10-22: era bug do script (passo sem código); corrigido em `fix/passo-sem-codigo` e E1-S05 mergeada.
+- **[DUVIDA] E2-S00** — 2026-10-22: CLAUDE.md §5 atualizado (sem CXF) no PR `ajustes/fila-e-docs`.

@@ -91,3 +91,5 @@
 - 2026-10-23 08:12 · E2-S01: DESENVOLVER ok
 - 2026-10-23 08:20 · E2-S01: fechamento de FONTES-OFICIAIS.md (índice real, resumo, [DUVIDA] guarda 11×5 anos) · próximo: verificação/revisão
 - 2026-10-23 08:13 · E2-S01: DESENVOLVER ok
+- 2026-10-23 08:40 · E2-S01: VERIFICAR ok (6 itens [x], suíte verde, commit vazio com cobertura) · próximo: revisão
+- 2026-10-23 08:14 · E2-S01: VERIFICAR ok

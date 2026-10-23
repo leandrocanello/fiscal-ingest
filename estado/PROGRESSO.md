@@ -136,3 +136,5 @@
 - 2026-10-23 13:25 · E2-S05: DESENVOLVER ok
 - 2026-10-23 13:26 · E2-S05: ExtratorMetadados/MetadadosDfe para resNFe (teste falhou por classes inexistentes: 'cannot find symbol'; suíte verde) · próximo: procNFe (emit/dest/autXML/transp)
 - 2026-10-23 13:26 · E2-S05: DESENVOLVER ok
+- 2026-10-23 13:27 · E2-S05: extrator procNFe (emitente/dest/CPF/autXML/transportador); falha inicial: DocZipInvalidoException (chave ausente) em 3 testes · próximo: resEvento/procEvento
+- 2026-10-23 13:27 · E2-S05: DESENVOLVER ok

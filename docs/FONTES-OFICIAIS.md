@@ -32,11 +32,11 @@ Se a norma mudar, mude **o teste primeiro**.
 | 7 | Assinatura: SHA-1 × SHA-256, C14N, formato do `Id` do evento | PENDENTE | E2-S11 (XML-DSig); validador de assinatura da porta push |
 | 8 | Qual certificado consulta qual CNPJ (raiz, filiais, procurador) | PENDENTE | E2D (carregador `.pfx`); cofre (§7); `estado_coleta` |
 | 9 | URLs e versões de WSDL/XSD (produção e homologação); política de versão das NTs | PENDENTE | Adapter 2B–2E; E2-S12; vendorização de XSD |
-| 10 | Janela real de retenção do AN | PENDENTE | Backfill; prioridade da Fase 2→3 |
+| 10 | Janela real de retenção do AN | FONTE LOCALIZADA | Backfill; prioridade da Fase 2→3 |
 | 11 | Limites por IP ou volume global | PENDENTE | Backoff global por endpoint; dimensionamento (§6.2); Fase 10 |
 | 12 | Serviço de consulta de situação/protocolo por chave (limites) | PENDENTE | `CONFIRMADO_SEFAZ` (§4); Fase 5 |
-| 13 | NFCom/NF3e; cronograma IBS/CBS na NF-e; adesão ao ADN da NFS-e | PENDENTE | Parser versionado; Fase 11+ |
-| 14 | Prazo legal de guarda dos XML (validar com jurídico) | PENDENTE | Política de retenção/expurgo (§14) |
+| 13 | NFCom/NF3e; cronograma IBS/CBS na NF-e; adesão ao ADN da NFS-e | FONTE LOCALIZADA | Parser versionado; Fase 11+ |
+| 14 | Prazo legal de guarda dos XML (validar com jurídico) | FONTE LOCALIZADA | Política de retenção/expurgo (§14) |
 
 ## Rastreio: [VALIDAR] de origem → item
 | Origem | Item(ns) |
@@ -143,40 +143,44 @@ Se a norma mudar, mude **o teste primeiro**.
 
 ### Item 10 — Janela real de retenção do AN
 - **Pergunta:** Janela real de retenção do AN.
-- **Fonte:** _(PENDENTE)_
-- **Trecho:** _(PENDENTE)_
-- **Leitura proposta:** _(PENDENTE)_
-- **Status:** PENDENTE
+- **Fonte:** (secundária) resultado de busca (WebSearch, 2026-10-23; páginas não abertas): Portal SPED https://portalspedbrasil.com.br/?p=17633 · nfe.io https://nfe.io/docs/distribuicao-processamento-e-periodicidade/index.md · TekSystem https://teksystem.com.br/tekwiki/images/c/c7/Distribui%C3%A7%C3%A3o_de_DFe.pdf · NT 2014.002 v1.02c (cópia Senior; trechos recuperados não mostram o texto sobre retenção) https://documentacao.senior.com.br/exigenciaslegais/resources/documentos%20para%20download/nt2014_002_v1.02c_wsnfedistribuicaodfe.pdf. Links do item 2 (NetCPA, "período retroativo máximo de 90 dias"). **Fonte primária (NT no portal): NÃO LOCALIZADO.**
+- **Trecho:** Paráfrase de resumo de busca: com `ultNSU` zero/antigo o AN devolve o que foi recebido nos "últimos 3 meses"; consultas pontuais (`consChNFe`/`consNSU`) com "período retroativo máximo de 90 (noventa) dias".
+- **Leitura proposta:** ~3 meses (≈90 dias) é coerente com o CLAUDE.md §3.1 ("~90 dias"). Fontes divergem levemente (3 meses × 90 dias) e nenhuma é primária; se conta da recepção no AN ou da emissão: NÃO LOCALIZADO. Sem divergência confirmada.
+- **Status:** FONTE LOCALIZADA (parcial; só secundárias, resumos de busca)
 - **Afeta:** Backfill; prioridade da Fase 2→3
 
 ### Item 11 — Limites por IP ou volume global
 - **Pergunta:** Limites por IP ou volume global.
-- **Fonte:** _(PENDENTE)_
-- **Trecho:** _(PENDENTE)_
-- **Leitura proposta:** _(PENDENTE)_
-- **Status:** PENDENTE
+- **Fonte:** (secundária) resultado de busca (WebSearch, 2026-10-23): NT 2014.002 via Senior (link no item 1), Portal SPED https://portalspedbrasil.com.br/?p=17443, Oobj https://oobj.com.br/nota-tecnica/alteracoes-na-classificacao-de-uso-indevido/ (páginas não abertas). **Fonte primária: NÃO LOCALIZADO.**
+- **Trecho:** Nenhum trecho sobre IP ou volume global. As regras resumidas são por CNPJ: "Se consultar fora da sequência, será bloqueado"; várias aplicações no mesmo CNPJ "devem seguir a mesma sequência ascendente de NSU". Resumo: retomar a consulta antes de 1h zera a contagem.
+- **Leitura proposta:** Nada indica limite por IP; as fontes só descrevem controle por CNPJ/NSU. Ausência de menção **não** prova ausência de limite: mantém-se a cautela do CLAUDE.md §6.2 (backoff global por endpoint). Item em aberto para o smoke (E2-S12). Sem divergência confirmada.
+- **Status:** PENDENTE (sem fonte que trate de IP/volume global)
 - **Afeta:** Backoff global por endpoint; dimensionamento (§6.2); Fase 10
 
 ### Item 12 — Serviço de consulta de situação/protocolo por chave (limites)
 - **Pergunta:** Serviço de consulta de situação/protocolo por chave (limites).
-- **Fonte:** _(PENDENTE)_
-- **Trecho:** _(PENDENTE)_
-- **Leitura proposta:** _(PENDENTE)_
-- **Status:** PENDENTE
+- **Fonte:** (secundária) resultado de busca (WebSearch, 2026-10-23): Oobj https://oobj.com.br/?p=10469, Focus NFe https://focusnfe.com.br/blog/rejeicao-656/ (páginas não abertas). **Fonte primária (Manual de Orientação / NT do `NFeConsultaProtocolo`, NT 2013.007 citada na busca): NÃO LOCALIZADO.**
+- **Trecho:** Resumo de busca, não confirmado: penalidades por consumo indevido citam NF-e consultada "mais de 10 vezes em 1 hora" (NT 2018.002, segundo fornecedor). Nada específico sobre limites do serviço por chave para terceiros.
+- **Leitura proposta:** O serviço existe pelo nome (`NFeConsultaProtocolo`, a confirmar no portal), mas limites, quem pode consultar e a situação retornada: NÃO LOCALIZADO. O nível `CONFIRMADO_SEFAZ` (§4) segue dependendo desta conferência. Sem divergência confirmada.
+- **Status:** PENDENTE (só pista secundária sobre ~10 consultas/h por NF-e, não verificada)
 - **Afeta:** `CONFIRMADO_SEFAZ` (§4); Fase 5
 
 ### Item 13 — NFCom/NF3e; cronograma IBS/CBS na NF-e; adesão ao ADN da NFS-e
 - **Pergunta:** NFCom/NF3e; cronograma IBS/CBS na NF-e; adesão ao ADN da NFS-e.
-- **Fonte:** _(PENDENTE)_
-- **Trecho:** _(PENDENTE)_
-- **Leitura proposta:** _(PENDENTE)_
-- **Status:** PENDENTE
+- **Fonte:** (secundária) resultados de busca (WebSearch, 2026-10-23; páginas não abertas):
+  - NFCom/NF3e: Teknisa https://universidade.teknisa.com/wp-content/uploads/2026/03/ERP_REVIEW_022026_REVERP0225V1.pdf · SEF/SC https://www.sef.sc.gov.br/api-portal/Documento/Ver/6987 · Inventti (NFCom, Ajuste SINIEF 7/2022) https://inventti.com.br/?p=17429.
+  - IBS/CBS: Systax https://www.systax.com.br/?p=42952 · Contábeis https://www.contabeis.com.br/artigos/76943/nf-e-novas-regras-e-cronogramas-para-ibs-e-cbs-em-2026-2027/ · Senior (NT 2025.002 v1.10) https://documentacao.senior.com.br/exigenciaslegais/noticias/federal/2025/2025-06-10-nota-tecnica-2025-002-v-1-10-reforma-tributaria-adequacao-nfe-nfce.
+  - ADN: CRC-CE https://www.crc-ce.org.br/crcnovo/files/12052026.pdf · Convergência Digital https://convergenciadigital.com.br/?p=44440 · Jornal Contábil https://jornalcontabil.com.br/noticia/nfs-e-nacional-o-que-muda-na-emissao-de-notas-e-prazos/amp/.
+  **Fontes primárias (portais NFCom/NF3e, NF-e, NFS-e nacional): NÃO LOCALIZADO.**
+- **Trecho:** Paráfrases de resumo de busca: (NFCom/NF3e) Teknisa diz que a SEFAZ não disponibiliza canal de consulta para os modelos 62 e 66, ao contrário do 55; (IBS/CBS) NT 2025.002 v1.40 (20/05/2026) com datas críticas adiadas para 03/08/2026; Simples/MEI em produção em 04/01/2027; versões antigas previam 05/01/2026 — fontes divergem em versão e datas; (ADN) padrão nacional obrigatório para municípios desde 01/01/2026 (LC 214/2025), com opção de emissor próprio integrado; DF manteve emissor próprio.
+- **Leitura proposta:** NFCom/NF3e: indício (fraco) de que **não há distribuição**, o que reforça push (CLAUDE.md §3.6) — não confirmado. IBS/CBS: parser versionado continua necessário; datas a conferir na NT vigente. ADN: obrigatório em 2026, mas cobertura efetiva por município não medida. Sem divergência confirmada.
+- **Status:** FONTE LOCALIZADA (parcial; só secundárias; NFCom/NF3e e datas de IBS/CBS não verificadas)
 - **Afeta:** Parser versionado; Fase 11+
 
 ### Item 14 — Prazo legal de guarda dos XML (validar com jurídico)
 - **Pergunta:** Prazo legal de guarda dos XML (validar com jurídico).
-- **Fonte:** _(PENDENTE)_
-- **Trecho:** _(PENDENTE)_
-- **Leitura proposta:** _(PENDENTE)_
-- **Status:** PENDENTE
+- **Fonte:** (secundária) resultados de busca (WebSearch, 2026-10-23; páginas não abertas): Econet https://blog.econeteditora.com.br/padronizado-prazo-de-guarda/ · NetCPA https://netcpa.com.br/colunas/novo-prazo-para-guarda-de-documentos-eletronicos/25241 · Contábeis https://www.contabeis.com.br/artigos/70492/novo-ajuste-sinief-exige-guarda-de-documentos-fiscais-por-11-anos/ · Contábeis (fórum, Ajuste SINIEF 07/05) https://www.contabeis.com.br/forum/tributos-estaduais-municipais/65855/armazenamento-nf-e/. **Fonte primária (texto do Ajuste SINIEF 07/05, Ajuste SINIEF 2/2025, CTN): NÃO LOCALIZADO.**
+- **Trecho:** Paráfrase: Ajuste SINIEF 07/05 — emitente e destinatário mantêm a NF-e em arquivo digital "pelo prazo estabelecido na legislação tributária"; CTN arts. 173/174: 5 anos; Ajuste SINIEF 2/2025 (segundo as fontes): 132 meses (11 anos) contados da autorização — fontes discordam se obriga o contribuinte ou só os procedimentos do Fisco.
+- **Leitura proposta:** ⚠ DIVERGE DO CLAUDE.md §14 (guarda fiscal "costuma ser de 5 anos"): há indício de prazo de 11 anos (132 meses) em ato recente, de alcance incerto. Não alterar a CLAUDE.md; **validar com o jurídico** (§21 item 14). Até lá, não expurgar.
+- **Status:** FONTE LOCALIZADA (parcial; só secundárias; alcance do prazo de 11 anos em conflito)
 - **Afeta:** Política de retenção/expurgo (§14)

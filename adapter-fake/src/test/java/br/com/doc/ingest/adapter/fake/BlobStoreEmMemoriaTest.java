@@ -1,5 +1,6 @@
 package br.com.doc.ingest.adapter.fake;
 
+import br.com.doc.ingest.domain.blob.BlobConflitanteException;
 import br.com.doc.ingest.domain.blob.BlobRef;
 import br.com.doc.ingest.domain.blob.Sha256;
 import org.junit.jupiter.api.Test;
@@ -7,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import java.nio.charset.StandardCharsets;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class BlobStoreEmMemoriaTest {
 
@@ -40,5 +42,35 @@ class BlobStoreEmMemoriaTest {
         BlobRef outra = new BlobRef(CHAVE, Sha256.hex("b".getBytes(StandardCharsets.UTF_8)));
 
         assertThat(store.ler(outra)).isEmpty();
+    }
+
+    @Test
+    void gravarDuasVezesMesmoConteudoEhIdempotente() {
+        byte[] conteudo = "conteudo".getBytes(StandardCharsets.UTF_8);
+        String sha = Sha256.hex(conteudo);
+
+        BlobRef primeira = store.gravar(CHAVE, conteudo, sha);
+        BlobRef segunda = store.gravar(CHAVE, conteudo.clone(), sha);
+
+        assertThat(segunda).isEqualTo(primeira);
+        assertThat(store.ler(primeira)).hasValue(conteudo);
+    }
+
+    @Test
+    void mesmaChaveConteudoDiferenteRejeitada() {
+        byte[] original = "original".getBytes(StandardCharsets.UTF_8);
+        byte[] outro = "outro".getBytes(StandardCharsets.UTF_8);
+        String shaOriginal = Sha256.hex(original);
+        String shaOutro = Sha256.hex(outro);
+        store.gravar(CHAVE, original, shaOriginal);
+
+        assertThatThrownBy(() -> store.gravar(CHAVE, outro, shaOutro))
+                .isInstanceOf(BlobConflitanteException.class)
+                .hasMessageContaining(CHAVE)
+                .hasMessageContaining(shaOriginal)
+                .hasMessageContaining(shaOutro)
+                .hasMessageNotContaining("original")
+                .hasMessageNotContaining("outro");
+        assertThat(store.ler(new BlobRef(CHAVE, shaOriginal))).hasValue(original);
     }
 }

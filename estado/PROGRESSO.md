@@ -83,3 +83,5 @@
 - 2026-10-23 08:07 · E2-S01: DESENVOLVER ok
 - 2026-10-23 · E2-S01: itens 4–5 de FONTES-OFICIAIS (fontes secundárias; limite autXML 9×10 em aberto; texto do PDF da NT não extraído) · próximo: itens 6–7
 - 2026-10-23 08:08 · E2-S01: DESENVOLVER ok
+- 2026-10-23 08:20 · E2-S01: itens 6–7 em FONTES-OFICIAIS (só secundárias; códigos, SHA-1×256 e Id do evento NÃO LOCALIZADO) · próximo: itens 8–9
+- 2026-10-23 08:09 · E2-S01: DESENVOLVER ok

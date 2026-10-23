@@ -14,7 +14,7 @@ TIMEOUT_CHAMADA_MIN=${TIMEOUT_CHAMADA_MIN:-45}        # minutos por chamada
 TIMEOUT_TESTES_MIN=${TIMEOUT_TESTES_MIN:-20}          # minutos para a suíte na verificação
 MAX_TURNS=${MAX_TURNS:-60}                  # turnos por chamada
 ORCAMENTO_DIFF_DIA=${ORCAMENTO_DIFF_DIA:-800}        # linhas (adicionadas+removidas) em src/main por dia
-FILA_REVISAO_MAX=${FILA_REVISAO_MAX:-2}            # subetapas em [r]/[c] ao mesmo tempo
+FILA_REVISAO_MAX=${FILA_REVISAO_MAX:-4}            # subetapas em [r]/[c] ao mesmo tempo (era 2; revisão de 3/noite foi tranquila)
 PARAR_ANTES_DO_FIM_MIN=${PARAR_ANTES_DO_FIM_MIN:-15}     # encerra a janela N min antes das 5h
 MAX_FALHAS=${MAX_FALHAS:-3}                  # falhas no mesmo passo antes de marcar [!]
 

@@ -22,22 +22,13 @@ A prioridade é **fazer certo**: passos pequenos, TDD, decisões registradas. Na
 
 ## 0. Protocolo de entrada (como começar cada sessão)
 
-Você está **retomando** um projeto existente. O histórico anterior (feito com outro modelo, via Cline)
-foi recuperado de logs e pode ter inconsistências. Na **primeira sessão após a v2**, faça nesta ordem:
+**A auditoria inicial (Fase 1.5) foi concluída em 2026-10-21/22** — ver `docs/AUDITORIA-1.5.md`.
+Wrapper, `settings`, arquivos perdidos e docs já foram corrigidos; não refaça essa auditoria.
 
-1. **Auditoria do repositório, somente leitura.**
-   - Compare a árvore de módulos com a seção 5.
-   - Gere o wrapper se faltar (`gradle wrapper --gradle-version 8.10.2`). Hoje só existe
-     `gradle/wrapper/gradle-wrapper.properties`.
-   - O `settings.gradle.kts` inclui módulos que **não existem** (`infra-*`, `scheduler`, `delivery-api`).
-     Comente-os até que sejam criados.
-   - Rode `./gradlew test` e reporte o que compila, o que falha e quantos testes passam por módulo.
-   - Procure arquivos truncados ou imports quebrados, já que o código veio de logs.
-2. **Proponha as correções nos docs** da seção 18 (README, ARCHITECTURE, DECISIONS, `.clinerules`)
-   e **aguarde OK**.
-3. **Retome a Fase 2 pelo Sub-passo 2B** (seção 16).
-
-Nas sessões seguintes: leia este arquivo, veja em que fase ou sub-passo o projeto está (seção 16) e siga.
+Em cada sessão:
+1. Leia este arquivo e veja em que fase/subetapa o projeto está (seção 16; no modo autônomo, o
+   `ROADMAP.md` da branch `auto/estado`).
+2. Siga o plano da subetapa. Achados da auditoria ainda abertos estão em `docs/AUDITORIA-1.5.md` §2.
 
 **Regra de ouro:** proponha o design → aguarde OK → escreva o teste → veja falhar → implemente →
 pare e resuma. Incrementos pequenos. Na dúvida entre "avançar" e "perguntar", **pergunte**.
@@ -277,22 +268,20 @@ depois no **mesmo catálogo**.
 
 ---
 
-## 5. Estado atual do repositório (recuperado — verifique!)
+## 5. Estado atual do repositório (atualizado em 2026-10-22)
 
-Pacote raiz `br.com.doc.ingest`. Gradle Kotlin DSL, multi-módulo, Java 21.
+Pacote raiz `br.com.doc.ingest`. Gradle Kotlin DSL (wrapper 8.10.2), multi-módulo, Java 21.
 
-| Módulo | Conteúdo | Status declarado |
+| Módulo | Conteúdo | Status |
 |---|---|---|
-| `domain` | `Nsu`, `Cnpj`, `FonteId`, `Documento`; `adapter/{Cursor, Desfecho, Capacidades, ContextoConsulta, SourceAdapter, AdapterDescriptor, Credencial, BuscarLoteResultado, BuscarUmResultado, ConsultaPontualPort}`; `ledger/{StatusNsu, EntradaLedger, GapCalculator, NsuLedger}`; `ratelimit/{TokenBucket, ResultadoConsumo}`; `usecase/{AvancarPonteiroUseCase, RecuperarGapUseCase, ResultadoAvanco, ResultadoRecuperacao}` | **Fase 0 concluída (≈38 testes)** |
-| `adapter-fake` | `FakeSourceAdapter` em memória | **Fase 1 concluída (≈5 testes)** |
-| `adapter-nfe-nacional` | `mapping/CStatMapper` (≈10 testes); JAXB `soap/{DistDfeInt, DocZip, RetDistDfeInt}` (≈5 testes); dependências CXF + Santuario + WireMock | **Fase 2, Sub-A concluída** |
+| `domain` | `Nsu`, `Cnpj`, `FonteId`, `Documento`; `adapter/{Cursor, Desfecho, Capacidades, ContextoConsulta, SourceAdapter, AdapterDescriptor, Credencial, BuscarLoteResultado, BuscarUmResultado, ConsultaPontualPort}`; `ledger/{StatusNsu, EntradaLedger, GapCalculator, NsuLedger}`; `ratelimit/{TokenBucket, ResultadoConsumo}`; `usecase/{AvancarPonteiroUseCase, RecuperarGapUseCase, ResultadoAvanco, ResultadoRecuperacao}`; regras **ArchUnit** de pureza (E1-S04) e **propriedades jqwik** (E1-S05) | Fases 0 e 1.5 concluídas |
+| `adapter-fake` | `FakeSourceAdapter` em memória | Fase 1 concluída |
+| `adapter-nfe-nacional` | `mapping/CStatMapper`; JAXB `soap/{DistDfeInt, DocZip, RetDistDfeInt, package-info}`; dependências **`java.net.http` + JAXB jakarta + Santuario + WireMock** (CXF removido na E2-S00) | Fase 2, Sub-A concluída |
 
-**Armadilhas conhecidas:**
-- Faltam `gradlew`, `gradlew.bat` e `gradle-wrapper.jar`.
-- O `settings.gradle.kts` lista 6 módulos inexistentes.
-- O código veio de logs: confira se há arquivos truncados, imports faltando ou testes que dependiam de
-  arquivos não recuperados. **Corrija com testes.**
-- O README diz "Fase 0 em andamento", o que está desatualizado.
+**Pontos de atenção:**
+- Achados da auditoria ainda não corrigidos (ex.: `cStat 108` mapeado como `Ok`; `Credencial` com caminho
+  em vez de bytes) estão em `docs/AUDITORIA-1.5.md` §2 e entram pelas subetapas do roadmap.
+- O jqwik puxa o JUnit Platform 5.13 implicitamente; alinhar com `junit-bom` quando oportuno.
 - Existe um **projeto importado do GitHub** usado como referência de certificados e SOAP. Use-o como
   referência de comportamento. Confira a licença antes de reaproveitar qualquer coisa e reescreva com teste.
   Pergunte ao autor o nome e o caminho quando precisar.
@@ -759,7 +748,7 @@ e sem `Instant.now()` solto no domínio); cada invariante da seção 2.2 com tes
 |---|---|---|
 | 0 ✅ | Domínio puro | revalidar `:domain:test` |
 | 1 ✅ | Contrato do adapter + fake | revalidar |
-| **1.5** | **Saneamento**: wrapper, `settings`, auditoria, correção dos docs (seção 18) | `./gradlew test` verde; docs coerentes |
+| 1.5 ✅ | Saneamento: wrapper, `settings`, auditoria, correção dos docs | concluída em 2026-10-22 |
 | **2** | **Adapter NF-e AN** — 2A ✅ CStatMapper + JAXB · **2B** `buscarLote` (envelope `distDFeInt`, decode de `docZip`, classificação, porta `BlobStore`, envelope bruto) · **2C** `buscarUm` + `consChNFe` · **2D** carregador de `.pfx` (inclui legado) + `SSLContext` por certificado + cache · **2E** `manifestar` (XML-DSig, C14N, algoritmo **[VALIDAR]**) | suíte de contrato verde; nenhum `cStat` no core; smoke de homologação documentado, **incluindo o `autXML`** |
 | **3** | **Persistência**: 3A Postgres (`estado_coleta`, `ledger_*`, CAS, outbox, Flyway, RLS) · 3B MinIO (`BlobStore`, layout, sha256) · 3C **catálogo** + processor de parse + **roteamento pelo conteúdo** + quarentena | testes de integração e de caos verdes; 1 CNPJ (empresa) e 1 CNPJ (escritório/`autXML`) ponta a ponta local |
 | **4** | **Scheduler + cofre**: claim `SKIP LOCKED` + lease, `due_at`, fairness; `CofreDeCertificados` local cifrado; consentimento; estados por CNPJ; alertas de vencimento | coleta contínua de vários CNPJs sem 656 em simulação |

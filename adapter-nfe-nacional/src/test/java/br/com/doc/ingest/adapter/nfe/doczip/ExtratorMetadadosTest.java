@@ -103,4 +103,32 @@ class ExtratorMetadadosTest {
                 .isInstanceOf(DocZipInvalidoException.class)
                 .hasMessageNotContaining("SEGREDO");
     }
+
+    @Test
+    @DisplayName("resEventoEProcEventoExtraemChaveTipoESequencia")
+    void resEventoEProcEventoExtraemChaveTipoESequencia() {
+        String res = "<resEvento xmlns=\"http://www.portalfiscal.inf.br/nfe\" versao=\"1.01\">"
+                + "<cOrgao>91</cOrgao><CNPJ>22222222000122</CNPJ><chNFe>" + CHAVE + "</chNFe>"
+                + "<dhEvento>2026-10-21T09:00:00-03:00</dhEvento><tpEvento>210210</tpEvento>"
+                + "<nSeqEvento>1</nSeqEvento><xEvento>Ciencia da Operacao</xEvento></resEvento>";
+        String proc = "<procEventoNFe xmlns=\"http://www.portalfiscal.inf.br/nfe\" versao=\"1.00\"><evento>"
+                + "<infEvento Id=\"ID210210" + CHAVE + "01\"><cOrgao>91</cOrgao><CNPJ>22222222000122</CNPJ>"
+                + "<chNFe>" + CHAVE + "</chNFe><dhEvento>2026-10-21T09:00:00-03:00</dhEvento>"
+                + "<tpEvento>210210</tpEvento><nSeqEvento>1</nSeqEvento></infEvento></evento>"
+                + "<retEvento><infEvento><chNFe>" + CHAVE + "</chNFe><tpEvento>210210</tpEvento>"
+                + "<nSeqEvento>1</nSeqEvento></infEvento></retEvento></procEventoNFe>";
+
+        for (var par : java.util.List.of(
+                java.util.Map.entry(TipoSchemaDfe.RES_EVENTO, res),
+                java.util.Map.entry(TipoSchemaDfe.PROC_EVENTO_NFE, proc))) {
+            MetadadosDfe m = ExtratorMetadados.extrair(par.getKey(), bytes(par.getValue()));
+
+            assertThat(m.chave()).isEqualTo(CHAVE);
+            assertThat(m.modelo()).isEqualTo("55");
+            assertThat(m.tipoEvento()).contains("210210");
+            assertThat(m.seqEvento()).contains(1);
+            assertThat(m.cnpjAutorEvento()).contains("22222222000122");
+            assertThat(m.cnpjEmitente()).isEmpty();
+        }
+    }
 }

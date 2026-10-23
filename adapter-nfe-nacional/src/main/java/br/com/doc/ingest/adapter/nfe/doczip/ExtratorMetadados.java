@@ -76,6 +76,9 @@ public final class ExtratorMetadados {
         String cnpjTransportador;
         String serie;
         String numero;
+        String tipoEvento;
+        String seqEvento;
+        String autorEvento;
         final List<String> autorizados = new ArrayList<>();
 
         void folha(String caminho, String texto) {
@@ -91,6 +94,10 @@ public final class ExtratorMetadados {
                 case "resNFe/vNF" -> valor = texto;
                 case "resNFe/cSitNFe" -> situacao = texto;
                 case "resNFe/tpNF" -> tipoOperacao = texto;
+                case "resEvento/chNFe", "procEventoNFe/evento/infEvento/chNFe" -> chave = texto;
+                case "resEvento/CNPJ", "procEventoNFe/evento/infEvento/CNPJ" -> autorEvento = texto;
+                case "resEvento/tpEvento", "procEventoNFe/evento/infEvento/tpEvento" -> tipoEvento = texto;
+                case "resEvento/nSeqEvento", "procEventoNFe/evento/infEvento/nSeqEvento" -> seqEvento = texto;
                 default -> { }
             }
         }
@@ -121,8 +128,10 @@ public final class ExtratorMetadados {
                     Optional.ofNullable(numero).map(v -> longo(v, "Número inválido")),
                     Optional.ofNullable(emissao).map(ExtratorMetadados::data),
                     Optional.ofNullable(valor).map(ExtratorMetadados::decimal),
-                    Optional.empty(), Optional.empty(),
-                    Optional.ofNullable(situacao), Optional.ofNullable(tipoOperacao));
+                    Optional.ofNullable(tipoEvento),
+                    Optional.ofNullable(seqEvento).map(v -> inteiro(v, "Sequência do evento inválida")),
+                    Optional.ofNullable(situacao), Optional.ofNullable(tipoOperacao),
+                    Optional.ofNullable(autorEvento));
         }
     }
 

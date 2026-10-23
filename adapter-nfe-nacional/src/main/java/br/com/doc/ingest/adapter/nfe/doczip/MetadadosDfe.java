@@ -23,6 +23,7 @@ import java.util.Optional;
  * @param seqEvento             sequência do evento
  * @param situacao              {@code cSitNFe} do resumo
  * @param tipoOperacao          {@code tpNF} (0 entrada, 1 saída)
+ * @param cnpjAutorEvento       CNPJ do autor do evento (só em eventos)
  */
 public record MetadadosDfe(
         String chave,
@@ -38,7 +39,8 @@ public record MetadadosDfe(
         Optional<String> tipoEvento,
         Optional<Integer> seqEvento,
         Optional<String> situacao,
-        Optional<String> tipoOperacao) {
+        Optional<String> tipoOperacao,
+        Optional<String> cnpjAutorEvento) {
 
     public MetadadosDfe {
         cnpjsAutorizados = List.copyOf(cnpjsAutorizados);

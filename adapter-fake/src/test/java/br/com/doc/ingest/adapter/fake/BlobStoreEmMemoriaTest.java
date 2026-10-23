@@ -84,4 +84,19 @@ class BlobStoreEmMemoriaTest {
         assertThat(store.ler(new BlobRef(CHAVE, shaErrado))).isEmpty();
         assertThat(store.ler(new BlobRef(CHAVE, Sha256.hex(conteudo)))).isEmpty();
     }
+
+    @Test
+    void alterarArrayDeEntradaOuSaidaNaoMudaOBlob() {
+        byte[] entrada = "conteudo".getBytes(StandardCharsets.UTF_8);
+        byte[] esperado = entrada.clone();
+        String sha = Sha256.hex(entrada);
+        BlobRef ref = store.gravar(CHAVE, entrada, sha);
+
+        entrada[0] = 'X';
+        byte[] lido = store.ler(ref).orElseThrow();
+        assertThat(lido).isEqualTo(esperado);
+
+        lido[0] = 'Y';
+        assertThat(store.ler(ref)).hasValue(esperado);
+    }
 }

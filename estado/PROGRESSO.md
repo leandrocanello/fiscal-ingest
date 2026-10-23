@@ -150,3 +150,5 @@
 - 2026-10-23 13:34 · E2-S05: REVISAR ok
 - 2026-10-23 13:35 · E2-S05: REVISAR (2ª passada) — APROVAR PARA PR confirmado, suíte verde, sem achado novo · próximo: abrir PR
 - 2026-10-23 13:35 · E2-S05: REVISAR ok
+- 2026-10-23 17:50 · E2-S01: mergeado por você ✔
+- 2026-10-23 17:50 · E2-S04: mergeado por você ✔

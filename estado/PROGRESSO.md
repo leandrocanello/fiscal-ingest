@@ -103,3 +103,5 @@
 - 2026-10-23 08:17 · E2-S04: PLANEJAR ok
 - 2026-10-23 08:18 · E2-S04: Sha256 (falha inicial: compileTestJava 'cannot find symbol' Sha256) · próximo: BlobRefTest
 - 2026-10-23 08:18 · E2-S04: DESENVOLVER ok
+- 2026-10-23 08:25 · E2-S04: BlobRef (falha inicial: compileTestJava 'cannot find symbol' BlobRef); suíte verde; commit feito · próximo: porta BlobStore
+- 2026-10-23 08:19 · E2-S04: DESENVOLVER ok

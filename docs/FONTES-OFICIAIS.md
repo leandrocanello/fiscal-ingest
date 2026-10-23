@@ -1,6 +1,6 @@
 # FONTES-OFICIAIS — registro de fontes dos [VALIDAR]
 
-> **RASCUNHO** (esqueleto criado em 2026-10-23, subetapa E2-S01). Nenhum item foi pesquisado ainda.
+> **RASCUNHO** (E2-S01, 2026-10-23). Todos os itens pesquisados; nenhum conferido pelo autor. Só há fontes secundárias: nenhuma NT/MOC primária foi lida.
 
 ## Propósito
 Registrar, para cada item da CLAUDE.md §21, **onde** está a resposta oficial (documento, versão, seção/página,
@@ -23,20 +23,20 @@ Se a norma mudar, mude **o teste primeiro**.
 ## Índice
 | Nº | Tema | Status | Afeta |
 |---|---|---|---|
-| 1 | Bloqueio após `137`; comportamento com `ultNSU < maxNSU` | PENDENTE | CStatMapperTest; E2-S02; E4 (scheduler, `PoliticaRateLimit`) |
-| 2 | Limites de `consNSU`/`consChNFe`; duração do bloqueio por `656` | PENDENTE | E2-S02; E2-S0x (`buscarUm`); E4 |
-| 3 | Lista vigente de `cStat` (107/108/109/137/138/589/632/656) e mapeamento para `Desfecho` | PENDENTE | CStatMapperTest; E2-S02 (DECISAO); E2-S03; achados A1/A2/A3 |
-| 4 | Atores atendidos pela distribuição; emitente recebe eventos das próprias notas? | PENDENTE | Roteamento pelo conteúdo (§7.3); canais A/B |
-| 5 | `autXML`: limite de ocorrências, recebimento pela distribuição, CT-e | PENDENTE | ADR-019; E2-S12 (smoke); canal B |
-| 6 | Manifestação: códigos, prazos, efeito no `procNFe`, quem assina | PENDENTE | E2-S09/E2-S11 (`manifestar`); ADR-004 |
-| 7 | Assinatura: SHA-1 × SHA-256, C14N, formato do `Id` do evento | PENDENTE | E2-S11 (XML-DSig); validador de assinatura da porta push |
+| 1 | Bloqueio após `137`; comportamento com `ultNSU < maxNSU` | FONTE LOCALIZADA (parcial) | CStatMapperTest; E2-S02; E4 (scheduler, `PoliticaRateLimit`) |
+| 2 | Limites de `consNSU`/`consChNFe`; duração do bloqueio por `656` | FONTE LOCALIZADA (parcial) | E2-S02; E2-S0x (`buscarUm`); E4 |
+| 3 | Lista vigente de `cStat` (107/108/109/137/138/589/632/656) e mapeamento para `Desfecho` | FONTE LOCALIZADA (parcial) | CStatMapperTest; E2-S02 (DECISAO); E2-S03; achados A1/A2/A3 |
+| 4 | Atores atendidos pela distribuição; emitente recebe eventos das próprias notas? | FONTE LOCALIZADA (parcial) | Roteamento pelo conteúdo (§7.3); canais A/B |
+| 5 | `autXML`: limite de ocorrências, recebimento pela distribuição, CT-e | FONTE LOCALIZADA (parcial) | ADR-019; E2-S12 (smoke); canal B |
+| 6 | Manifestação: códigos, prazos, efeito no `procNFe`, quem assina | FONTE LOCALIZADA (parcial) | E2-S09/E2-S11 (`manifestar`); ADR-004 |
+| 7 | Assinatura: SHA-1 × SHA-256, C14N, formato do `Id` do evento | FONTE LOCALIZADA (parcial) | E2-S11 (XML-DSig); validador de assinatura da porta push |
 | 8 | Qual certificado consulta qual CNPJ (raiz, filiais, procurador) | PENDENTE | E2D (carregador `.pfx`); cofre (§7); `estado_coleta` |
 | 9 | URLs e versões de WSDL/XSD (produção e homologação); política de versão das NTs | PENDENTE | Adapter 2B–2E; E2-S12; vendorização de XSD |
-| 10 | Janela real de retenção do AN | FONTE LOCALIZADA | Backfill; prioridade da Fase 2→3 |
+| 10 | Janela real de retenção do AN | FONTE LOCALIZADA (parcial) | Backfill; prioridade da Fase 2→3 |
 | 11 | Limites por IP ou volume global | PENDENTE | Backoff global por endpoint; dimensionamento (§6.2); Fase 10 |
 | 12 | Serviço de consulta de situação/protocolo por chave (limites) | PENDENTE | `CONFIRMADO_SEFAZ` (§4); Fase 5 |
-| 13 | NFCom/NF3e; cronograma IBS/CBS na NF-e; adesão ao ADN da NFS-e | FONTE LOCALIZADA | Parser versionado; Fase 11+ |
-| 14 | Prazo legal de guarda dos XML (validar com jurídico) | FONTE LOCALIZADA | Política de retenção/expurgo (§14) |
+| 13 | NFCom/NF3e; cronograma IBS/CBS na NF-e; adesão ao ADN da NFS-e | FONTE LOCALIZADA (parcial) | Parser versionado; Fase 11+ |
+| 14 | Prazo legal de guarda dos XML (validar com jurídico) | FONTE LOCALIZADA (parcial) ⚠ | Política de retenção/expurgo (§14) |
 
 ## Rastreio: [VALIDAR] de origem → item
 | Origem | Item(ns) |
@@ -184,3 +184,29 @@ Se a norma mudar, mude **o teste primeiro**.
 - **Leitura proposta:** ⚠ DIVERGE DO CLAUDE.md §14 (guarda fiscal "costuma ser de 5 anos"): há indício de prazo de 11 anos (132 meses) em ato recente, de alcance incerto. Não alterar a CLAUDE.md; **validar com o jurídico** (§21 item 14). Até lá, não expurgar.
 - **Status:** FONTE LOCALIZADA (parcial; só secundárias; alcance do prazo de 11 anos em conflito)
 - **Afeta:** Política de retenção/expurgo (§14)
+
+## Resumo para o autor
+
+**Aviso geral:** nenhuma fonte primária (NT/MOC no portal da NF-e) foi lida; o portal deu "Too many redirects" e os PDFs de terceiros não puderam ser extraídos. Tudo abaixo é pista secundária.
+
+### (a) Contradições com o CLAUDE.md (⚠)
+- **Item 14 (guarda):** indício de 132 meses (11 anos, Ajuste SINIEF 2/2025) contra os "5 anos" do §14. Alcance incerto. Entrada `[DUVIDA] E2-S01` em PARA-VOCE.md. Até lá, não expurgar.
+- Sem ⚠ nos demais. Atenção a dois pontos em aberto: `autXML` com limite 9 × 10 (item 5) e `108`/`632` sem fonte (item 3).
+
+### (b) NÃO LOCALIZADO
+- Texto primário da NT 2014.002 (itens 1–5, 8, 10, 11).
+- `ultNSU < maxNSU` após 138 (item 1); duração do bloqueio do `656` por pontuais (item 2).
+- `cStat` 107/108/109/632 (item 3).
+- `autXML` para CT-e (item 5).
+- Códigos 2102xx, efeito da Ciência no `procNFe` e quem assina (item 6).
+- SHA-1 × SHA-256 e formato do `Id` do evento (item 7).
+- Regra raiz/filial/procurador (item 8).
+- URL de produção, pacote `PL_*` e política de versão (item 9).
+- Limite por IP/volume (item 11) e serviço de protocolo (item 12).
+
+### (c) Ordem sugerida de conferência
+1. Item 3 (`cStat` 108/632/589) e itens 1–2: destravam a E2-S02.
+2. Item 9 (URLs/`PL_*`) e item 8 (certificado): destravam o adapter e a E2D.
+3. Itens 6–7: E2-S11.
+4. Itens 4–5 e 11: smoke E2-S12.
+5. Item 14 com o jurídico; itens 10, 12, 13 depois.

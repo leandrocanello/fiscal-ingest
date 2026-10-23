@@ -132,3 +132,5 @@
 - 2026-10-23 13:11 · E2-S05: DESENVOLVER ok
 - 2026-10-23 · E2-S05: teto de 10 MiB na descompactação do docZip (falha inicial: construtor/LIMITE_PADRAO_BYTES inexistentes, erro de compilação; depois suíte verde) · próximo: leitor StAX seguro (XmlSeguro)
 - 2026-10-23 13:12 · E2-S05: DESENVOLVER ok
+- 2026-10-23 13:16 · E2-S05: XmlSeguro (StAX sem DTD/XXE); falha inicial: 'cannot find symbol XmlSeguro' · próximo: MetadadosDfe + extrator resNFe
+- 2026-10-23 13:25 · E2-S05: DESENVOLVER ok

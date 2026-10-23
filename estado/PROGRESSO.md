@@ -115,3 +115,5 @@
 - 2026-10-23 13:02 · E2-S04: DESENVOLVER ok
 - 2026-10-23 13:03 · E2-S04: teste alterarArrayDeEntradaOuSaidaNaoMudaOBlob (falhou com Optional.of(conteudo)/sem clone: 1 failed; clone() já existia da implementação anterior) · próximo: propriedades jqwik do BlobStoreEmMemoria
 - 2026-10-23 13:03 · E2-S04: DESENVOLVER ok
+- 2026-10-23 13:04 · E2-S04: propriedades jqwik do BlobStoreEmMemoria (regravarNuncaAlteraConteudo + concorrência com virtual threads); não houve vermelho, pois a implementação já existia dos passos anteriores; suíte inteira verde · próximo: verificação/revisão
+- 2026-10-23 13:04 · E2-S04: DESENVOLVER ok

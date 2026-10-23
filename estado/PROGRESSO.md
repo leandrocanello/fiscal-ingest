@@ -128,3 +128,5 @@
 - 2026-10-23 13:09 · E2-S05: DESENVOLVER ok
 - 2026-10-23 13:20 · E2-S05: DocZipDecoder base64+gzip (falha inicial: 'cannot find symbol' DocZipDecoder/DocZipDecodificado; suíte verde depois) · próximo: DocZipInvalidoException e erros
 - 2026-10-23 13:10 · E2-S05: DESENVOLVER ok
+- 2026-10-23 13:11 · E2-S05: DocZipInvalidoException e tradução de falhas (base64, gzip, NSU, vazio) · falha vista: 5 de 7 testes do DocZipDecoderTest falharam com exceção crua · próximo: limite de gzip (DA-6)
+- 2026-10-23 13:11 · E2-S05: DESENVOLVER ok

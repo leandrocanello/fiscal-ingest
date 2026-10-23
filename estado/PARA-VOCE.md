@@ -55,3 +55,9 @@ Resposta:
 Último motivo: nenhum commit feito e nenhum passo fechado no plano
 Logs: `estado/logs/` (arquivos *-E1-S06-*.json). Para destravar: ajuste o plano `estado/planos/E1-S06.md`
 ou responda aqui, e troque o status no ROADMAP de `[!]` para `[~]`.
+
+### [DUVIDA] E2-S01 — 2026-10-23 — Prazo de guarda do XML: 5 anos (CLAUDE.md §14) × 11 anos?
+Em `docs/FONTES-OFICIAIS.md` (item 14), fontes secundárias citam o Ajuste SINIEF 2/2025 com 132 meses (11 anos) contados da autorização; o §14 diz "costuma ser 5 anos". Alcance incerto (contribuinte ou só o Fisco); o texto primário não foi lido.
+Opções: (a) manter 5 anos como mínimo e tratar o prazo como configurável por política; (b) adotar 11 anos; (c) esperar o parecer do jurídico.
+Recomendação: (a) com expurgo desligado até o parecer. Não editei o CLAUDE.md.
+Resposta:

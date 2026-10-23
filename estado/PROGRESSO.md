@@ -89,3 +89,5 @@
 - 2026-10-23 08:11 · E2-S01: DESENVOLVER ok
 - 2026-10-23 08:12 · E2-S01: itens 10–14 em FONTES-OFICIAIS.md (só fontes secundárias; ⚠ guarda 11 anos × 5 do §14) · próximo: fechamento (índice, resumo, PARA-VOCE)
 - 2026-10-23 08:12 · E2-S01: DESENVOLVER ok
+- 2026-10-23 08:20 · E2-S01: fechamento de FONTES-OFICIAIS.md (índice real, resumo, [DUVIDA] guarda 11×5 anos) · próximo: verificação/revisão
+- 2026-10-23 08:13 · E2-S01: DESENVOLVER ok

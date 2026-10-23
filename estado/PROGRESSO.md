@@ -105,3 +105,5 @@
 - 2026-10-23 08:18 · E2-S04: DESENVOLVER ok
 - 2026-10-23 08:25 · E2-S04: BlobRef (falha inicial: compileTestJava 'cannot find symbol' BlobRef); suíte verde; commit feito · próximo: porta BlobStore
 - 2026-10-23 08:19 · E2-S04: DESENVOLVER ok
+- 2026-10-23 08:20 · E2-S04: porta BlobStore + BlobConflitanteException no domain (sem teste novo; ArchUnit e suíte verdes) · próximo: BlobStoreEmMemoria (gravar/ler)
+- 2026-10-23 08:20 · E2-S04: DESENVOLVER ok

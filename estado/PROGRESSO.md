@@ -138,3 +138,5 @@
 - 2026-10-23 13:26 · E2-S05: DESENVOLVER ok
 - 2026-10-23 13:27 · E2-S05: extrator procNFe (emitente/dest/CPF/autXML/transportador); falha inicial: DocZipInvalidoException (chave ausente) em 3 testes · próximo: resEvento/procEvento
 - 2026-10-23 13:27 · E2-S05: DESENVOLVER ok
+- 2026-10-23 13:28 · E2-S05: extrator de metadados de resEvento/procEventoNFe (falha inicial: cnpjAutorEvento inexistente, erro de compilação; suíte verde depois) · próximo: conferir raiz x schema (DA-6)
+- 2026-10-23 13:28 · E2-S05: DESENVOLVER ok

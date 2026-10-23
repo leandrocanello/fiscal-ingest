@@ -85,3 +85,5 @@
 - 2026-10-23 08:08 · E2-S01: DESENVOLVER ok
 - 2026-10-23 08:20 · E2-S01: itens 6–7 em FONTES-OFICIAIS (só secundárias; códigos, SHA-1×256 e Id do evento NÃO LOCALIZADO) · próximo: itens 8–9
 - 2026-10-23 08:09 · E2-S01: DESENVOLVER ok
+- 2026-10-23 · E2-S01: itens 8–9 de FONTES-OFICIAIS (fonte primária não localizada; URL de homologação só como texto, não acessada) · próximo: itens 10–14
+- 2026-10-23 08:11 · E2-S01: DESENVOLVER ok

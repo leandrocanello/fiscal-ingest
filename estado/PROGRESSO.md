@@ -77,3 +77,5 @@
 - 2026-10-23 08:03 · E1-S06: [!] bloqueado após 3 falhas
 - 2026-10-23 08:04 · E2-S01: PLANEJAR — plano RASCUNHO em planos/E2-S01.md (7 passos: esqueleto + 5 blocos de itens da §21 + fechamento; só docs de documentação, nunca webservice; nenhuma decisão pendente) · próximo: DESENVOLVER passo 1 (esqueleto de docs/FONTES-OFICIAIS.md)
 - 2026-10-23 08:04 · E2-S01: PLANEJAR ok
+- 2026-10-23 08:05 · E2-S01: esqueleto de docs/FONTES-OFICIAIS.md (índice, rastreio, 14 itens PENDENTE); sem código, sem teste aplicável · próximo: itens 1–3 (cStat/bloqueio)
+- 2026-10-23 08:05 · E2-S01: DESENVOLVER ok

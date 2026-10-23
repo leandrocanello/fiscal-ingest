@@ -35,6 +35,10 @@ não pode compará-lo. A auditoria deixou "design a propor". A escolha muda o co
 1. Responda abaixo: "A/B/C" + sub-decisões 1 e 2.
 2. Se não for A, eu replanejo os passos 2–4 do plano.
 3. No ROADMAP, troque E1-S06 de `[h]`/`[!]` para `[ ]` para liberar o dev.
+4. Em `planos/E1-S06.md`, troque também os dois `[!]` (linha "aguardando decisão" → `[x]`; passo 1 → `[ ]`).
+
+Obs. (2026-10-23 08:02): o ROADMAP está com E1-S06 em `[~]`, então o script continua chamando o DESENVOLVER,
+que não tem como avançar. Sugiro `[h]` até você responder.
 
 Resposta:
 

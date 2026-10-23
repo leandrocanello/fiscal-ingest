@@ -70,3 +70,5 @@
 - 2026-10-23 08:01 · E1-S06: PLANEJAR ok
 - 2026-10-23 08:02 · E1-S06: DESENVOLVER não executado — passo 1 do plano é [!] e a [DECISAO] E1-S06 no PARA-VOCE segue sem resposta (muda contrato de BuscarLoteResultado/ResultadoAvanco); nenhum código alterado · próximo: autor responder A/B/C + sub-decisões 1 e 2 e liberar E1-S06 no ROADMAP
 - 2026-10-23 08:02 · E1-S06: revertido — nenhum commit feito e nenhum passo fechado no plano
+- 2026-10-23 08:02 · E1-S06: DESENVOLVER — passo 1 marcado [!] (depende da [DECISAO] E1-S06, sem resposta; muda contrato de BuscarLoteResultado/ResultadoAvanco); nenhum código alterado, sem commit · próximo: autor responder A/B/C + sub-decisões e liberar plano/ROADMAP
+- 2026-10-23 08:02 · E1-S06: revertido — nenhum commit feito e nenhum passo fechado no plano

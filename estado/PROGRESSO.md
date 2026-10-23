@@ -75,3 +75,5 @@
 - 2026-10-23 08:03 · E1-S06: DESENVOLVER não executado — o 1º "[ ]" depende da [DECISAO] E1-S06 (linha [!] no plano), ainda sem resposta no PARA-VOCE; nenhum código alterado, sem commit · próximo: autor responder A/B/C + sub-decisões 1 e 2 e pôr E1-S06 em [h]/[ ] no ROADMAP
 - 2026-10-23 08:03 · E1-S06: revertido — nenhum commit feito e nenhum passo fechado no plano
 - 2026-10-23 08:03 · E1-S06: [!] bloqueado após 3 falhas
+- 2026-10-23 08:04 · E2-S01: PLANEJAR — plano RASCUNHO em planos/E2-S01.md (7 passos: esqueleto + 5 blocos de itens da §21 + fechamento; só docs de documentação, nunca webservice; nenhuma decisão pendente) · próximo: DESENVOLVER passo 1 (esqueleto de docs/FONTES-OFICIAIS.md)
+- 2026-10-23 08:04 · E2-S01: PLANEJAR ok

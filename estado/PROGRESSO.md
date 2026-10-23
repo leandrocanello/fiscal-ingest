@@ -81,3 +81,5 @@
 - 2026-10-23 08:05 · E2-S01: DESENVOLVER ok
 - 2026-10-23 08:06 · E2-S01: itens 1–3 de FONTES-OFICIAIS (só fontes secundárias; ultNSU<maxNSU, 107/108/109/632 NÃO LOCALIZADO; sem código, sem teste novo) · próximo: itens 4–5
 - 2026-10-23 08:07 · E2-S01: DESENVOLVER ok
+- 2026-10-23 · E2-S01: itens 4–5 de FONTES-OFICIAIS (fontes secundárias; limite autXML 9×10 em aberto; texto do PDF da NT não extraído) · próximo: itens 6–7
+- 2026-10-23 08:08 · E2-S01: DESENVOLVER ok

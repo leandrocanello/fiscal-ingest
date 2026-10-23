@@ -117,3 +117,5 @@
 - 2026-10-23 13:03 · E2-S04: DESENVOLVER ok
 - 2026-10-23 13:04 · E2-S04: propriedades jqwik do BlobStoreEmMemoria (regravarNuncaAlteraConteudo + concorrência com virtual threads); não houve vermelho, pois a implementação já existia dos passos anteriores; suíte inteira verde · próximo: verificação/revisão
 - 2026-10-23 13:04 · E2-S04: DESENVOLVER ok
+- 2026-10-23 13:10 · E2-S04: verificação ok (propriedade e concorrência, ArchUnit 9/9, grep byte[], suíte inteira verde com --rerun-tasks); sem alteração de código · próximo: revisão
+- 2026-10-23 13:05 · E2-S04: VERIFICAR ok

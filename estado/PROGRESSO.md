@@ -124,3 +124,5 @@
 - 2026-10-23 13:06 · E2-S04: PR aberto para revisão
 - 2026-10-23 13:07 · E2-S05: plano criado (9 passos; DA-6 teto de gzip 10 MiB + schema desconhecido guardado) · próximo: desenvolver
 - 2026-10-23 13:08 · E2-S05: PLANEJAR ok
+- 2026-10-23 · E2-S05: TipoSchemaDfe + ClassificadorSchema (falha inicial: 'cannot find symbol' em ClassificadorSchema/TipoSchemaDfe; suíte verde depois) · próximo: DocZipDecoder base64+gzip
+- 2026-10-23 13:09 · E2-S05: DESENVOLVER ok

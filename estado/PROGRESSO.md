@@ -134,3 +134,5 @@
 - 2026-10-23 13:12 · E2-S05: DESENVOLVER ok
 - 2026-10-23 13:16 · E2-S05: XmlSeguro (StAX sem DTD/XXE); falha inicial: 'cannot find symbol XmlSeguro' · próximo: MetadadosDfe + extrator resNFe
 - 2026-10-23 13:25 · E2-S05: DESENVOLVER ok
+- 2026-10-23 13:26 · E2-S05: ExtratorMetadados/MetadadosDfe para resNFe (teste falhou por classes inexistentes: 'cannot find symbol'; suíte verde) · próximo: procNFe (emit/dest/autXML/transp)
+- 2026-10-23 13:26 · E2-S05: DESENVOLVER ok

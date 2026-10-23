@@ -94,19 +94,19 @@ Se a norma mudar, mude **o teste primeiro**.
 - **Afeta:** CStatMapperTest; E2-S02 (DECISAO); E2-S03; achados A1/A2/A3
 
 ### Item 4 — Atores atendidos pela distribuição; emitente recebe eventos das próprias notas?
-- **Pergunta:** Atores atendidos pela distribuição; emitente recebe eventos das próprias notas?.
-- **Fonte:** _(PENDENTE)_
-- **Trecho:** _(PENDENTE)_
-- **Leitura proposta:** _(PENDENTE)_
-- **Status:** PENDENTE
+- **Pergunta:** Atores atendidos pela distribuição; emitente recebe eventos das próprias notas?
+- **Fonte:** (secundária) Senior, resumo da NT 2014.002 (10/03/2022) — https://documentacao.senior.com.br/exigenciaslegais/noticias/federal/2022/2022-03-10-nt-2014-002-atualizacao-das-regras-de-uso-indevido-do-web-service-nfedistribuicaodfe (acessado 2026-10-23); (secundária) resumos de busca sobre NT 2014.002 v1.13–1.15 (Tecnospeed, Focus NFe, Portal SPED; acessados via WebSearch em 2026-10-23, páginas não abertas individualmente). PDFs da NT (v1.13–1.15 em inventti.com.br; v1.40, jul/2026, em reformatributaria.com) são **cópias de terceiros**; o de v1.13–1.15 foi baixado, mas o texto está comprimido e **não pôde ser extraído** (sem `pdftotext`/`pypdf` no ambiente); o v1.40 não foi aberto. **Fonte primária (NT no portal nfe.fazenda.gov.br): NÃO LOCALIZADO.**
+- **Trecho:** Senior: "do mesmo ator (emitente ou destinatário ou transportador na NF-e ou indicado no campo autxml)". Resumo de busca da NT v1.13 (parafraseado, não literal): eventos gerados pelo Fisco são distribuídos ao emitente independentemente da manifestação do destinatário, inclusive quando emitente e destinatário são o mesmo (vigência 09/12/2021).
+- **Leitura proposta:** Atores: emitente, destinatário, transportador e terceiros no `autXML` (consistente com CLAUDE.md §3.1). Emitente **recebe eventos** das próprias notas (ao menos os gerados pelo Fisco) — confirma a hipótese do **[VALIDAR]** só em parte: eventos de manifestação do destinatário ao emitente **NÃO LOCALIZADO**. Sobre o XML da nota emitida não voltar ao emitente: só há um relato de fórum (ACBr, secundária) de que o emitente não gera NSU para a própria nota; **não confirmado** na NT. Disponibilidade: "até 3 meses" após recepção no AN (resumo de busca/blog; confirmar na NT — ver item 10). ⚠ Nenhuma divergência confirmada com o CLAUDE.md §3.1.
+- **Status:** FONTE LOCALIZADA (parcial; só secundárias; NT primária não lida)
 - **Afeta:** Roteamento pelo conteúdo (§7.3); canais A/B
 
 ### Item 5 — `autXML`: limite de ocorrências, recebimento pela distribuição, CT-e
 - **Pergunta:** `autXML`: limite de ocorrências, recebimento pela distribuição, CT-e.
-- **Fonte:** _(PENDENTE)_
-- **Trecho:** _(PENDENTE)_
-- **Leitura proposta:** _(PENDENTE)_
-- **Status:** PENDENTE
+- **Fonte:** (secundária) Portal SPED Brasil, fórum (resultado de busca, https://portalspedbrasil.com.br/?p=16028, acessado 2026-10-23, via WebSearch; página não aberta); (secundária) UpSeller, "Como autorizar CNPJ/CPF de terceiros para baixar nota fiscal (AutXML)" — https://upseller.com/pt/help-doc-article-1219 (acessado 2026-10-23, via WebSearch; página não aberta); Senior (link no item 4). **Fonte primária (MOC/leiaute, grupo GA01; NT 2020.007): NÃO LOCALIZADO.**
+- **Trecho:** Fórum: emitente pode informar "até 10" CNPJ/CPF; UpSeller: "máximo de 9" autorizações — **fontes discordam** (paráfrase de resumo de busca). Rejeições citadas: 423 (CNPJ/CPF já autorizado) e 421 (CNPJ do próprio emitente no `autXML`) — não verificadas. Resumo da NT 2014.002: terceiro só recebe a NF-e se seu CNPJ/CPF constar no `autXML` (nota de rodapé de tabela da NT).
+- **Leitura proposta:** Terceiro no `autXML` recebe pela distribuição (coerente com §3.4/ADR-019), em consulta com o próprio certificado. Limite: **10 vs 9 — NÃO CONFIRMADO** (CLAUDE.md diz ~10). CT-e: **NÃO LOCALIZADO**. Ocorrências do `autXML` além do limite e efeito sobre o escritório (se o ERP já usa vagas) ficam para o autor/smoke. Sem divergência confirmada.
+- **Status:** FONTE LOCALIZADA (parcial; só secundárias; limite 9×10 em conflito; CT-e NÃO LOCALIZADO)
 - **Afeta:** ADR-019; E2-S12 (smoke); canal B
 
 ### Item 6 — Manifestação: códigos, prazos, efeito no `procNFe`, quem assina

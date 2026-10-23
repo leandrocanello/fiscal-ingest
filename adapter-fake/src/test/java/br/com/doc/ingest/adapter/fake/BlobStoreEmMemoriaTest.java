@@ -73,4 +73,15 @@ class BlobStoreEmMemoriaTest {
                 .hasMessageNotContaining("outro");
         assertThat(store.ler(new BlobRef(CHAVE, shaOriginal))).hasValue(original);
     }
+
+    @Test
+    void shaInformadoQueNaoBateComBytesRejeitado() {
+        byte[] conteudo = "conteudo".getBytes(StandardCharsets.UTF_8);
+        String shaErrado = Sha256.hex("outra coisa".getBytes(StandardCharsets.UTF_8));
+
+        assertThatThrownBy(() -> store.gravar(CHAVE, conteudo, shaErrado))
+                .isInstanceOf(IllegalArgumentException.class);
+        assertThat(store.ler(new BlobRef(CHAVE, shaErrado))).isEmpty();
+        assertThat(store.ler(new BlobRef(CHAVE, Sha256.hex(conteudo)))).isEmpty();
+    }
 }

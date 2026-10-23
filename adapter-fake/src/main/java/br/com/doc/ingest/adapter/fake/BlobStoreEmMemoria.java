@@ -17,6 +17,9 @@ public class BlobStoreEmMemoria implements BlobStore {
     @Override
     public BlobRef gravar(String chave, byte[] conteudo, String sha256) {
         BlobRef ref = new BlobRef(chave, sha256);
+        if (!Sha256.hex(conteudo).equals(sha256)) {
+            throw new IllegalArgumentException("sha256 informado não confere com o conteúdo para a chave " + chave);
+        }
         byte[] copia = conteudo.clone();
         objetos.compute(chave, (k, existente) -> {
             if (existente == null) {

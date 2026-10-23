@@ -99,3 +99,5 @@
 - 2026-10-23 08:16 · E2-S02: PREPARAR ok — item [DECISAO] em PARA-VOCE (108/109, 632, 589, fallback; roteiro MOC/NT 2014.002) · próximo: autor responde e marca E2-S02 [x] para liberar E2-S03
 - 2026-10-23 08:16 · E2-S02: PREPARAR ok
 - 2026-10-23 08:16 · E2-S02: preparado para você (PARA-VOCE.md)
+- 2026-10-23 08:17 · E2-S04: PLANEJAR ok — plano com 8 passos (Sha256, BlobRef, porta, BlobStoreEmMemoria em adapter-fake, idempotência/conflito, propriedades); DA-4/DA-5 registradas · próximo: DESENVOLVER E2-S04
+- 2026-10-23 08:17 · E2-S04: PLANEJAR ok

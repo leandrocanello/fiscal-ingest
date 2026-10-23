@@ -22,3 +22,15 @@
 **Opções:** (a) rejeitar no construtor intervalo < 1 ms; (b) passar a calcular em nanos; (c) só restringir o gerador do teste.
 **Escolha:** (a) — falha cedo e clara; nenhum limite real da SEFAZ é sub-milissegundo. Mudança de 1 linha com teste.
 **Como desfazer:** remover a validação e o teste `intervaloSubMilissegundoRejeitado`; se preferir (b), trocar `toMillis` por `toNanos` nos dois cálculos.
+
+### DA-4 · 2026-10-23 · E2-S04
+**Contexto:** a CLAUDE.md §9 pede a porta `BlobStore` no domain "com implementação em memória nos testes", mas não diz em que módulo ela mora; a E2-S07 (adapter-nfe-nacional) vai precisar dela nos testes.
+**Opções:** (a) `domain/src/test` (não reutilizável por outro módulo); (b) plugin `java-test-fixtures` no domain; (c) `adapter-fake` (main), módulo que já reúne os fakes, consumido via `testImplementation(project(":adapter-fake"))`.
+**Escolha:** (c) — sem plugin novo, segue o padrão do `FakeSourceAdapter` e não põe estado mutável no domain.
+**Como desfazer:** mover `BlobStoreEmMemoria` (+ teste) para `domain/src/testFixtures` com o plugin `java-test-fixtures`.
+
+### DA-5 · 2026-10-23 · E2-S04
+**Contexto:** formato do `BlobRef` já decidido (chave determinística + sha256, DECISIONS.md l.284), mas o `Documento` ainda usa `Optional<String> blobRef` (auditoria A8, prevista para E3).
+**Opções:** (a) trocar o campo do `Documento` agora; (b) criar só o record `BlobRef(chave, sha256)` e deixar o `Documento` para E3.
+**Escolha:** (b) — mantém a subetapa pequena e não mexe em `FakeSourceAdapter`/testes existentes; A8 continua aberta.
+**Como desfazer:** trocar `Optional<String>` por `Optional<BlobRef>` no `Documento` e ajustar os usos.

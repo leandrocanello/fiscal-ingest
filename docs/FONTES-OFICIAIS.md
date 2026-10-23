@@ -71,26 +71,26 @@ Se a norma mudar, mude **o teste primeiro**.
 
 ### Item 1 — Bloqueio após `137`; comportamento com `ultNSU < maxNSU`
 - **Pergunta:** Bloqueio após `137`; comportamento com `ultNSU < maxNSU`.
-- **Fonte:** _(PENDENTE)_
-- **Trecho:** _(PENDENTE)_
-- **Leitura proposta:** _(PENDENTE)_
-- **Status:** PENDENTE
+- **Fonte:** (secundária) Senior, "NT 2014.002 - Atualização das Regras de Uso Indevido do Web Service NFeDistribuicaoDFe" (10/03/2022) — https://documentacao.senior.com.br/exigenciaslegais/noticias/federal/2022/2022-03-10-nt-2014-002-atualizacao-das-regras-de-uso-indevido-do-web-service-nfedistribuicaodfe (acessado 2026-10-23); (secundária) NetCPA, mesma NT (07/03/2022, atualizado 23/10/2023) — https://netcpa.com.br/colunas/nf-e-04032022-atualizacao-das-regras-de-uso-indevido-do-web-service-nfedistribuicaodfe-nt-2014002/13214 (acessado 2026-10-23). **Fonte primária (texto da NT no portal nfe.fazenda.gov.br): NÃO LOCALIZADO** — a página do portal deu "Too many redirects" no WebFetch.
+- **Trecho:** "Se não existir mais documentos a serem retornados (cStat=137) o usuário deve aguardar uma hora para realizar nova consulta." · "A realização de novas consultas em 1h, após receber a mensagem cStat137, gerará o uso indevido, retornando cStat=656." Para `ultNSU == maxNSU`: o texto manda aguardar 1h e diz que consultas fora da sequência de NSU serão bloqueadas.
+- **Leitura proposta:** Confirma o ~1h após `137` (CLAUDE.md §3.2). Sobre `ultNSU < maxNSU`: as fontes **não trazem trecho explícito**; só tratam a igualdade. A leitura (continuar de imediato a partir do `ultNSU` retornado) é inferência, **NÃO confirmada**. Duração do bloqueio por `656`: 1h segundo a resposta de busca (secundária), sem trecho literal da NT.
+- **Status:** FONTE LOCALIZADA (parcial; só secundárias; `ultNSU < maxNSU` NÃO LOCALIZADO)
 - **Afeta:** CStatMapperTest; E2-S02; E4 (scheduler, `PoliticaRateLimit`)
 
 ### Item 2 — Limites de `consNSU`/`consChNFe`; duração do bloqueio por `656`
 - **Pergunta:** Limites de `consNSU`/`consChNFe`; duração do bloqueio por `656`.
-- **Fonte:** _(PENDENTE)_
-- **Trecho:** _(PENDENTE)_
-- **Leitura proposta:** _(PENDENTE)_
-- **Status:** PENDENTE
+- **Fonte:** (secundária) Senior, "NT 2014.002 - Atualização das Regras de Uso Indevido do Web Service NFeDistribuicaoDFe" (10/03/2022) — https://documentacao.senior.com.br/exigenciaslegais/noticias/federal/2022/2022-03-10-nt-2014-002-atualizacao-das-regras-de-uso-indevido-do-web-service-nfedistribuicaodfe (acessado 2026-10-23); (secundária) NetCPA, mesma NT (07/03/2022, atualizado 23/10/2023) — https://netcpa.com.br/colunas/nf-e-04032022-atualizacao-das-regras-de-uso-indevido-do-web-service-nfedistribuicaodfe-nt-2014002/13214 (acessado 2026-10-23). **Fonte primária (texto da NT no portal nfe.fazenda.gov.br): NÃO LOCALIZADO** — a página do portal deu "Too many redirects" no WebFetch.
+- **Trecho:** "Será permitido um número limitado de consultas por chave de acesso ou NSU em um período de 1hora." · "656 - Consumo indevido - ultrapassou o limite de 20 consultas por hora." · "período retroativo máximo de 90 (noventa) dias" (NetCPA).
+- **Leitura proposta:** Confirma ~20 consultas/hora para `consNSU`/`consChNFe` (CLAUDE.md §3.2), com o mesmo `656`. Não se sabe se o limite é por CNPJ, por certificado ou por IP, nem se a contagem é conjunta entre `consNSU` e `consChNFe`: **NÃO LOCALIZADO**. Duração do bloqueio do `656` por excesso de pontuais: NÃO LOCALIZADO.
+- **Status:** FONTE LOCALIZADA (parcial; só secundárias)
 - **Afeta:** E2-S02; E2-S0x (`buscarUm`); E4
 
 ### Item 3 — Lista vigente de `cStat` (107/108/109/137/138/589/632/656) e mapeamento para `Desfecho`
 - **Pergunta:** Lista vigente de `cStat` (107/108/109/137/138/589/632/656) e mapeamento para `Desfecho`.
-- **Fonte:** _(PENDENTE)_
-- **Trecho:** _(PENDENTE)_
-- **Leitura proposta:** _(PENDENTE)_
-- **Status:** PENDENTE
+- **Fonte:** (secundária) NCM Buscador, rejeição 589 (cita "MOC NF-e/NFC-e, tabela de códigos e regras de validação, consolidação de 09/10/2026") — https://buscadorncm.com.br/nfe/rejeicoes/589 (acessado 2026-10-23); NT 2014.002 via Senior/NetCPA (links no item 1, acessados 2026-10-23). **Fonte primária (MOC/Anexo de rejeições no portal): NÃO LOCALIZADO.** Buscas por `107`, `108`, `109` e `632` no contexto da distribuição não devolveram fonte aberta e confiável.
+- **Trecho:** `589`: "Número do NSU informado superior ao maior NSU do Ambiente Nacional" (rejeição). `137`/`138`/`656`: ver itens 1–2 (a NT não cita `138`). `107`, `108`, `109`, `632`: **NÃO LOCALIZADO** nesta sessão (os textos usuais — 107 "Serviço em Operação", 108 "Paralisado Momentaneamente", 109 "Paralisado sem Previsão" — vêm da memória e **não** foram verificados; não usar).
+- **Leitura proposta:** Proposta (para a E2-S02 decidir, nada foi alterado): `589` → erro de consistência, nunca retentar (coerente com CLAUDE.md §3.2 e ARCHITECTURE l.178; auditoria A3). Hoje `CStatMapper` mapeia `108` → `Ok` (A1; sem fonte localizada que o sustente) e `632` → `LimiteAtingido` (A2; sem fonte localizada) — `CStatMapperTest` cobre esses casos e depende de conferir os itens 1–3. `656` → `LimiteAtingido` consistente com a NT. ⚠ Nenhuma divergência confirmada com o CLAUDE.md nesta etapa; `632` segue em aberto.
+- **Status:** FONTE LOCALIZADA (parcial: só `589`/`656`/`137`; `107/108/109/632` NÃO LOCALIZADO)
 - **Afeta:** CStatMapperTest; E2-S02 (DECISAO); E2-S03; achados A1/A2/A3
 
 ### Item 4 — Atores atendidos pela distribuição; emitente recebe eventos das próprias notas?

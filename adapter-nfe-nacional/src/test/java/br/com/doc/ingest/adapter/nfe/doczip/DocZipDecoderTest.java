@@ -12,6 +12,7 @@ import java.util.Base64;
 import java.util.zip.GZIPOutputStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @DisplayName("Decoder de docZip (base64 + gzip)")
 class DocZipDecoderTest {
@@ -59,5 +60,50 @@ class DocZipDecoderTest {
                 docZip("12345", "procNFe_v4.00.xsd", gzipBase64(new byte[]{1, 2, 3}, false)));
         assertThat(r.nsu()).isEqualTo(new Nsu(12345));
         assertThat(r.tipo()).isEqualTo(TipoSchemaDfe.PROC_NFE);
+    }
+
+    @Test
+    @DisplayName("base64InvalidoLancaDocZipInvalido")
+    void base64InvalidoLancaDocZipInvalido() {
+        assertThatThrownBy(() -> decoder.decodificar(docZip("5", "resNFe_v1.01.xsd", "@@@não-é-base64@@@")))
+                .isInstanceOf(DocZipInvalidoException.class);
+    }
+
+    @Test
+    @DisplayName("gzipCorrompidoLancaDocZipInvalido")
+    void gzipCorrompidoLancaDocZipInvalido() {
+        String semGzip = Base64.getEncoder().encodeToString("isto não é gzip".getBytes(StandardCharsets.UTF_8));
+        assertThatThrownBy(() -> decoder.decodificar(docZip("5", "resNFe_v1.01.xsd", semGzip)))
+                .isInstanceOf(DocZipInvalidoException.class);
+    }
+
+    @Test
+    @DisplayName("nsuAusenteOuNaoNumericoLancaDocZipInvalido")
+    void nsuAusenteOuNaoNumericoLancaDocZipInvalido() throws IOException {
+        String conteudo = gzipBase64(new byte[]{1}, false);
+        for (String nsu : new String[]{null, "", "abc", "-1"}) {
+            assertThatThrownBy(() -> decoder.decodificar(docZip(nsu, "resNFe_v1.01.xsd", conteudo)))
+                    .isInstanceOf(DocZipInvalidoException.class);
+        }
+    }
+
+    @Test
+    @DisplayName("conteudoVazioLancaDocZipInvalido")
+    void conteudoVazioLancaDocZipInvalido() {
+        for (String conteudo : new String[]{null, "", "  \r\n "}) {
+            assertThatThrownBy(() -> decoder.decodificar(docZip("5", "resNFe_v1.01.xsd", conteudo)))
+                    .isInstanceOf(DocZipInvalidoException.class);
+        }
+    }
+
+    @Test
+    @DisplayName("mensagemDeErroNaoContemConteudo")
+    void mensagemDeErroNaoContemConteudo() {
+        String segredo = Base64.getEncoder().encodeToString("SEGREDO-CONTEUDO".getBytes(StandardCharsets.UTF_8));
+        assertThatThrownBy(() -> decoder.decodificar(docZip("42", "resNFe_v1.01.xsd", segredo)))
+                .isInstanceOf(DocZipInvalidoException.class)
+                .hasMessageContaining("42")
+                .hasMessageNotContaining(segredo)
+                .hasMessageNotContaining("SEGREDO");
     }
 }

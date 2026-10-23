@@ -12,16 +12,32 @@ import java.util.zip.GZIPInputStream;
 public final class DocZipDecoder {
 
     public DocZipDecodificado decodificar(DocZip docZip) {
+        Nsu nsu = lerNsu(docZip.getNsu());
+        String prefixo = "docZip NSU " + nsu.valor();
+        String conteudo = docZip.getContent();
+        if (conteudo == null || conteudo.isBlank()) {
+            throw new DocZipInvalidoException(prefixo + ": conteúdo vazio");
+        }
+        byte[] gzip;
         try {
-            Nsu nsu = new Nsu(Long.parseLong(docZip.getNsu().strip()));
-            byte[] gzip = Base64.getMimeDecoder().decode(docZip.getContent());
-            try (GZIPInputStream in = new GZIPInputStream(new ByteArrayInputStream(gzip))) {
-                byte[] xml = in.readAllBytes();
-                return new DocZipDecodificado(nsu,
-                        ClassificadorSchema.classificar(docZip.getSchema()), docZip.getSchema(), xml);
-            }
+            gzip = Base64.getMimeDecoder().decode(conteudo);
+        } catch (IllegalArgumentException e) {
+            throw new DocZipInvalidoException(prefixo + ": base64 inválido");
+        }
+        try (GZIPInputStream in = new GZIPInputStream(new ByteArrayInputStream(gzip))) {
+            byte[] xml = in.readAllBytes();
+            return new DocZipDecodificado(nsu,
+                    ClassificadorSchema.classificar(docZip.getSchema()), docZip.getSchema(), xml);
         } catch (IOException e) {
-            throw new IllegalStateException(e);
+            throw new DocZipInvalidoException(prefixo + ": gzip corrompido");
+        }
+    }
+
+    private static Nsu lerNsu(String bruto) {
+        try {
+            return new Nsu(Long.parseLong(bruto.strip()));
+        } catch (NullPointerException | IllegalArgumentException e) {
+            throw new DocZipInvalidoException("docZip com NSU ausente ou inválido");
         }
     }
 }

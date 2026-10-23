@@ -127,18 +127,18 @@ Se a norma mudar, mude **o teste primeiro**.
 
 ### Item 8 — Qual certificado consulta qual CNPJ (raiz, filiais, procurador)
 - **Pergunta:** Qual certificado consulta qual CNPJ (raiz, filiais, procurador).
-- **Fonte:** _(PENDENTE)_
-- **Trecho:** _(PENDENTE)_
-- **Leitura proposta:** _(PENDENTE)_
-- **Status:** PENDENTE
+- **Fonte:** (secundária) resumo de busca (WebSearch, 2026-10-23) sobre NT 2014.002 v1.40 (jul/2026) — PDF de cópia de terceiros https://www.reformatributaria.com/wp-content/uploads/2026/07/NT2014.002_v1.40-WsNFeDistribuicaoDFe-CNPJ-alfa.pdf (acessado 2026-10-23; **texto não extraível** pelo WebFetch, PDF comprimido); (secundária) fórum ACBr https://www.projetoacbr.com.br/forum/topic/40491-pode-usar-o-certificado-digital-da-matriz-apra-assinal-nfenfce-e-vice-versa/ (resultado de busca, página não aberta). **Fonte primária (seção "Validação do Certificado de Transmissão" da NT 2014.002 no portal): NÃO LOCALIZADO.**
+- **Trecho:** nenhum trecho literal obtido. Resumo de busca (parafraseado): a distribuição entrega ao ator cujo CNPJ/CPF consta em emit/dest/transporta/autXML; um relato de fórum diz que certificado de filial foi aceito para documento da matriz em homologação (anedótico).
+- **Leitura proposta:** Regra raiz/filial/procurador **NÃO LOCALIZADA** em fonte aberta. Mantém-se a premissa segura do CLAUDE.md §3.5/§7.2 (cada certificado consulta o CNPJ do próprio titular). Conferir a seção de validação do certificado na NT 2014.002 v1.40 lendo o PDF manualmente. Sem divergência confirmada.
+- **Status:** PENDENTE (nada primário; só pista secundária)
 - **Afeta:** E2D (carregador `.pfx`); cofre (§7); `estado_coleta`
 
 ### Item 9 — URLs e versões de WSDL/XSD (produção e homologação); política de versão das NTs
 - **Pergunta:** URLs e versões de WSDL/XSD (produção e homologação); política de versão das NTs.
-- **Fonte:** _(PENDENTE)_
-- **Trecho:** _(PENDENTE)_
-- **Leitura proposta:** _(PENDENTE)_
-- **Status:** PENDENTE
+- **Fonte:** (secundária) fórum ACBr, "Web Service de Distribuição de Documentos Fiscais Eletrônicos" — https://www.projetoacbr.com.br/forum/topic/15776-web-service-de-distribui%C3%A7%C3%A3o-de-documentos-fiscais-eletr%C3%B4nicos/ (acessado 2026-10-23); NT 2014.002 v1.40 (PDF de terceiros, ver item 8; vigência 08/07/2026 em teste e produção, segundo resumo de busca). **Portal da NF-e (página de web services / download de schemas `PL_*`): NÃO LOCALIZADO** — buscas por "PL_009" e URLs nacionais só devolveram páginas estaduais e fóruns antigos.
+- **Trecho:** URL de homologação citada no fórum (**texto copiado, NÃO ACESSAR**): `https://hom.nfe.fazenda.gov.br/NFeDistribuicaoDFe/NFeDistribuicaoDFe.asmx`. URL de produção: **NÃO LOCALIZADA** (o fórum só diz que a de produção sairia depois, 06/10/2014, sem endereço). Texto de 2014; pode estar desatualizada.
+- **Leitura proposta:** Só há uma URL de homologação, de fonte secundária de 2014: confirmar no portal antes de usar. Pacote de schemas vigente (`PL_*`), versão do WSDL e política de versionamento das NTs: **NÃO LOCALIZADO**. Neste doc nenhuma URL de webservice foi aberta (invariante 14).
+- **Status:** PENDENTE (URL de homologação só como pista secundária; produção, pacote `PL_*` e política de versão NÃO LOCALIZADO)
 - **Afeta:** Adapter 2B–2E; E2-S12; vendorização de XSD
 
 ### Item 10 — Janela real de retenção do AN

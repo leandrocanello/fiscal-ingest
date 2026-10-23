@@ -87,3 +87,5 @@
 - 2026-10-23 08:09 · E2-S01: DESENVOLVER ok
 - 2026-10-23 · E2-S01: itens 8–9 de FONTES-OFICIAIS (fonte primária não localizada; URL de homologação só como texto, não acessada) · próximo: itens 10–14
 - 2026-10-23 08:11 · E2-S01: DESENVOLVER ok
+- 2026-10-23 08:12 · E2-S01: itens 10–14 em FONTES-OFICIAIS.md (só fontes secundárias; ⚠ guarda 11 anos × 5 do §14) · próximo: fechamento (índice, resumo, PARA-VOCE)
+- 2026-10-23 08:12 · E2-S01: DESENVOLVER ok

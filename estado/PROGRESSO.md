@@ -126,3 +126,5 @@
 - 2026-10-23 13:08 · E2-S05: PLANEJAR ok
 - 2026-10-23 · E2-S05: TipoSchemaDfe + ClassificadorSchema (falha inicial: 'cannot find symbol' em ClassificadorSchema/TipoSchemaDfe; suíte verde depois) · próximo: DocZipDecoder base64+gzip
 - 2026-10-23 13:09 · E2-S05: DESENVOLVER ok
+- 2026-10-23 13:20 · E2-S05: DocZipDecoder base64+gzip (falha inicial: 'cannot find symbol' DocZipDecoder/DocZipDecodificado; suíte verde depois) · próximo: DocZipInvalidoException e erros
+- 2026-10-23 13:10 · E2-S05: DESENVOLVER ok

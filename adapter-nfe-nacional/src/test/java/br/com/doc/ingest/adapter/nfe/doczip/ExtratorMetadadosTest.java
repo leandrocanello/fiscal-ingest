@@ -44,6 +44,56 @@ class ExtratorMetadadosTest {
         assertThat(m.tipoEvento()).isEmpty();
     }
 
+    private static String procNFe(String destinatario) {
+        return "<nfeProc xmlns=\"http://www.portalfiscal.inf.br/nfe\" versao=\"4.00\"><NFe><infNFe Id=\"NFe" + CHAVE
+                + "\" versao=\"4.00\">"
+                + "<ide><cUF>35</cUF><mod>55</mod><serie>1</serie><nNF>123</nNF>"
+                + "<dhEmi>2026-10-20T10:30:00-03:00</dhEmi></ide>"
+                + "<emit><CNPJ>11111111000191</CNPJ><xNome>Emitente</xNome></emit>"
+                + "<dest>" + destinatario + "<xNome>Destinatario</xNome></dest>"
+                + "<total><ICMSTot><vNF>1234.56</vNF></ICMSTot></total>"
+                + "<transp><transporta><CNPJ>33333333000133</CNPJ></transporta></transp>"
+                + "<autXML><CNPJ>44444444000144</CNPJ></autXML>"
+                + "<autXML><CNPJ>55555555000155</CNPJ></autXML>"
+                + "</infNFe></NFe><protNFe><infProt><chNFe>" + CHAVE + "</chNFe></infProt></protNFe></nfeProc>";
+    }
+
+    @Test
+    @DisplayName("procNFeExtraiEmitenteDestinatarioAutXmlETransportador")
+    void procNFeExtraiEmitenteDestinatarioAutXmlETransportador() {
+        MetadadosDfe m = ExtratorMetadados.extrair(TipoSchemaDfe.PROC_NFE,
+                bytes(procNFe("<CNPJ>22222222000122</CNPJ>")));
+
+        assertThat(m.chave()).isEqualTo(CHAVE);
+        assertThat(m.modelo()).isEqualTo("55");
+        assertThat(m.serie()).contains(1);
+        assertThat(m.numero()).contains(123L);
+        assertThat(m.emissao()).contains(OffsetDateTime.parse("2026-10-20T10:30:00-03:00"));
+        assertThat(m.cnpjEmitente()).contains("11111111000191");
+        assertThat(m.documentoDestinatario()).contains("22222222000122");
+        assertThat(m.cnpjsAutorizados()).containsExactly("44444444000144", "55555555000155");
+        assertThat(m.cnpjTransportador()).contains("33333333000133");
+        assertThat(m.valorTotal()).contains(new BigDecimal("1234.56"));
+    }
+
+    @Test
+    @DisplayName("destinatário pessoa física usa dest/CPF")
+    void destinatarioCpf() {
+        MetadadosDfe m = ExtratorMetadados.extrair(TipoSchemaDfe.PROC_NFE,
+                bytes(procNFe("<CPF>12345678901</CPF>")));
+
+        assertThat(m.documentoDestinatario()).contains("12345678901");
+    }
+
+    @Test
+    @DisplayName("toStringMascaraCpf")
+    void toStringMascaraCpf() {
+        MetadadosDfe m = ExtratorMetadados.extrair(TipoSchemaDfe.PROC_NFE,
+                bytes(procNFe("<CPF>12345678901</CPF>")));
+
+        assertThat(m.toString()).doesNotContain("12345678901").contains("8901");
+    }
+
     @Test
     @DisplayName("chave que não tem 44 dígitos lança DocZipInvalido sem eco do valor")
     void chaveInvalida() {

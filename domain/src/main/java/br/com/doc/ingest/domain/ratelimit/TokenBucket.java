@@ -33,7 +33,7 @@ public class TokenBucket {
 
     /**
      * @param capacidade        número máximo de tokens (ex: 1 para distNSU)
-     * @param intervaloRecarga  tempo para regenerar 1 token (ex: 1h para distNSU)
+     * @param intervaloRecarga  tempo para regenerar 1 token (ex: 1h para distNSU); mínimo 1 ms
      * @param clock             fonte de tempo (injetável para testes)
      */
     public TokenBucket(long capacidade, Duration intervaloRecarga, Clock clock) {
@@ -42,6 +42,10 @@ public class TokenBucket {
         }
         if (intervaloRecarga == null || intervaloRecarga.isZero() || intervaloRecarga.isNegative()) {
             throw new IllegalArgumentException("Intervalo de recarga deve ser positivo");
+        }
+        if (intervaloRecarga.toMillis() < 1) {
+            throw new IllegalArgumentException(
+                    "Intervalo de recarga deve ser >= 1 ms (resolução do bucket): " + intervaloRecarga);
         }
         this.capacidade = capacidade;
         this.intervaloRecarga = intervaloRecarga;

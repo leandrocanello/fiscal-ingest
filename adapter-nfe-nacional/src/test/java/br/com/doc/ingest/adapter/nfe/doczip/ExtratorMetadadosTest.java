@@ -1,0 +1,56 @@
+package br.com.doc.ingest.adapter.nfe.doczip;
+
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+
+import java.math.BigDecimal;
+import java.nio.charset.StandardCharsets;
+import java.time.OffsetDateTime;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
+@DisplayName("Extrator de metadados do DF-e")
+class ExtratorMetadadosTest {
+
+    /** Chave sintética: UF 35, AAMM 2610, CNPJ 11111111000191, mod 55, série 001, nNF 123. */
+    static final String CHAVE = "35261011111111000191550010000001231123456780";
+
+    private static byte[] bytes(String xml) {
+        return xml.getBytes(StandardCharsets.UTF_8);
+    }
+
+    @Test
+    @DisplayName("resNFeExtraiChaveEmitenteDataValorSituacao")
+    void resNFeExtraiChaveEmitenteDataValorSituacao() {
+        String xml = "<resNFe xmlns=\"http://www.portalfiscal.inf.br/nfe\" versao=\"1.01\">"
+                + "<chNFe>" + CHAVE + "</chNFe>"
+                + "<CNPJ>11111111000191</CNPJ><xNome>Emitente Ficticio</xNome><IE>123</IE>"
+                + "<dhEmi>2026-10-20T10:30:00-03:00</dhEmi><tpNF>1</tpNF><vNF>1234.56</vNF>"
+                + "<digVal>abc</digVal><dhRecbto>2026-10-20T10:31:00-03:00</dhRecbto>"
+                + "<nProt>135260000000001</nProt><cSitNFe>1</cSitNFe></resNFe>";
+
+        MetadadosDfe m = ExtratorMetadados.extrair(TipoSchemaDfe.RES_NFE, bytes(xml));
+
+        assertThat(m.chave()).isEqualTo(CHAVE);
+        assertThat(m.modelo()).isEqualTo("55");
+        assertThat(m.cnpjEmitente()).contains("11111111000191");
+        assertThat(m.emissao()).contains(OffsetDateTime.parse("2026-10-20T10:30:00-03:00"));
+        assertThat(m.valorTotal()).contains(new BigDecimal("1234.56"));
+        assertThat(m.situacao()).contains("1");
+        assertThat(m.tipoOperacao()).contains("1");
+        assertThat(m.documentoDestinatario()).isEmpty();
+        assertThat(m.cnpjsAutorizados()).isEmpty();
+        assertThat(m.tipoEvento()).isEmpty();
+    }
+
+    @Test
+    @DisplayName("chave que não tem 44 dígitos lança DocZipInvalido sem eco do valor")
+    void chaveInvalida() {
+        String xml = "<resNFe><chNFe>123SEGREDO</chNFe></resNFe>";
+
+        assertThatThrownBy(() -> ExtratorMetadados.extrair(TipoSchemaDfe.RES_NFE, bytes(xml)))
+                .isInstanceOf(DocZipInvalidoException.class)
+                .hasMessageNotContaining("SEGREDO");
+    }
+}

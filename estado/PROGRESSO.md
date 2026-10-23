@@ -66,3 +66,5 @@
 - 2026-10-23 08:00 · E1-S04: mergeado por você ✔
 - 2026-10-23 08:00 · E1-S05: mergeado por você ✔
 - 2026-10-23 08:00 · E2-S00: mergeado por você ✔
+- 2026-10-23 08:01 · E1-S06: plano escrito (opção A + enum MotivoAvanco) e decisão aberta em PARA-VOCE (comparação de posição com Cursor opaco) · próximo: aguardar resposta do autor e então DESENVOLVER E1-S06
+- 2026-10-23 08:01 · E1-S06: PLANEJAR ok

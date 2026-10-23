@@ -96,3 +96,6 @@
 - 2026-10-23 08:15 · E2-S01: revisão concluída, APROVAR PARA PR (doc só com fontes secundárias, nenhum código alterado) · próximo: autor confere item 3 (108/632) na NT 2014.002 v1.40 para destravar a E2-S02
 - 2026-10-23 08:15 · E2-S01: REVISAR ok
 - 2026-10-23 08:15 · E2-S01: PR aberto para revisão
+- 2026-10-23 08:16 · E2-S02: PREPARAR ok — item [DECISAO] em PARA-VOCE (108/109, 632, 589, fallback; roteiro MOC/NT 2014.002) · próximo: autor responde e marca E2-S02 [x] para liberar E2-S03
+- 2026-10-23 08:16 · E2-S02: PREPARAR ok
+- 2026-10-23 08:16 · E2-S02: preparado para você (PARA-VOCE.md)

@@ -79,3 +79,5 @@
 - 2026-10-23 08:04 · E2-S01: PLANEJAR ok
 - 2026-10-23 08:05 · E2-S01: esqueleto de docs/FONTES-OFICIAIS.md (índice, rastreio, 14 itens PENDENTE); sem código, sem teste aplicável · próximo: itens 1–3 (cStat/bloqueio)
 - 2026-10-23 08:05 · E2-S01: DESENVOLVER ok
+- 2026-10-23 08:06 · E2-S01: itens 1–3 de FONTES-OFICIAIS (só fontes secundárias; ultNSU<maxNSU, 107/108/109/632 NÃO LOCALIZADO; sem código, sem teste novo) · próximo: itens 4–5
+- 2026-10-23 08:07 · E2-S01: DESENVOLVER ok

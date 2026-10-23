@@ -144,3 +144,5 @@
 - 2026-10-23 13:29 · E2-S05: DESENVOLVER ok
 - 2026-10-23 13:30 · E2-S05: propriedades jqwik do decode de docZip (passaram de primeira — implementação já cobria; sem falha prévia a colar) · próximo: verificação/revisão
 - 2026-10-23 13:31 · E2-S05: DESENVOLVER ok
+- 2026-10-23 13:40 · E2-S05: verificação concluída (propriedades, XXE, gzip bomb, domain intacto, suíte verde) · próximo: revisão
+- 2026-10-23 13:31 · E2-S05: VERIFICAR ok

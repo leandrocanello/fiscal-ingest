@@ -34,3 +34,9 @@
 **Opções:** (a) trocar o campo do `Documento` agora; (b) criar só o record `BlobRef(chave, sha256)` e deixar o `Documento` para E3.
 **Escolha:** (b) — mantém a subetapa pequena e não mexe em `FakeSourceAdapter`/testes existentes; A8 continua aberta.
 **Como desfazer:** trocar `Optional<String>` por `Optional<BlobRef>` no `Documento` e ajustar os usos.
+
+### DA-6 · 2026-10-23 · E2-S05
+**Contexto:** o decode de `docZip` precisa de um teto de descompressão (proteção contra gzip bomb, §13) e de uma regra para `schema` desconhecido ou divergente da raiz do XML; os docs não fixam nenhum dos dois.
+**Opções:** (a) teto fixo de 10 MiB por documento descompactado, configurável no construtor; schema desconhecido → classificado como `DESCONHECIDO` (bytes mantidos, nunca descartados); schema que diverge da raiz → `DocZipInvalidoException`; (b) sem teto; (c) schema desconhecido lança exceção.
+**Escolha:** (a) — protege a memória sem perder documento (inv. 5: o que não se reconhece é guardado, quem decide o status no ledger é a E2-S07); divergência é sinal de resposta corrompida e não deve virar metadado errado.
+**Como desfazer:** mudar a constante `LIMITE_PADRAO_BYTES` em `DocZipDecoder`; trocar o ramo `DESCONHECIDO` do `ClassificadorSchema` por exceção.

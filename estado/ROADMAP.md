@@ -23,7 +23,7 @@
 - [h] E2-S02 | DECISAO  | deps: E2-S01 | mapeamento de cStat (108/632/589) a partir das fontes oficiais (auditoria A1–A3)
 - [ ] E2-S03 | AUTO+    | deps: E2-S02 | aplicar o mapeamento decidido no CStatMapper (testes primeiro)
 - [r] E2-S04 | AUTO     | deps: E1-S01 | porta BlobStore no domain + implementação em memória
-- [ ] E2-S05 | AUTO     | deps: E1-S01 | decode de docZip (base64+gzip) + classificador de schema + extração de metadados
+- [~] E2-S05 | AUTO     | deps: E1-S01 | decode de docZip (base64+gzip) + classificador de schema + extração de metadados
 - [ ] E2-S06 | AUTO     | deps: E2-S05 | interface de transporte SOAP + montagem do envelope distDFeInt
 - [ ] E2-S07 | AUTO+    | deps: E2-S04,E2-S06,E2-S03 | buscarLote com WireMock (137/138/656/108/109/timeout/5xx/malformado)
 - [ ] E2-S08 | AUTO     | deps: E2-S07 | suíte de contrato do SourceAdapter (fake + nfe-nacional)

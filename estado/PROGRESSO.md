@@ -122,3 +122,5 @@
 - 2026-10-23 13:06 · E2-S04: REVISAR ok — APROVAR PARA PR (sem achado bloqueante; 2 observações de TDD/concorrência no parecer) · próximo: abrir PR
 - 2026-10-23 13:06 · E2-S04: REVISAR ok
 - 2026-10-23 13:06 · E2-S04: PR aberto para revisão
+- 2026-10-23 13:07 · E2-S05: plano criado (9 passos; DA-6 teto de gzip 10 MiB + schema desconhecido guardado) · próximo: desenvolver
+- 2026-10-23 13:08 · E2-S05: PLANEJAR ok

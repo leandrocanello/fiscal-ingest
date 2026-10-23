@@ -111,18 +111,18 @@ Se a norma mudar, mude **o teste primeiro**.
 
 ### Item 6 — Manifestação: códigos, prazos, efeito no `procNFe`, quem assina
 - **Pergunta:** Manifestação: códigos, prazos, efeito no `procNFe`, quem assina.
-- **Fonte:** _(PENDENTE)_
-- **Trecho:** _(PENDENTE)_
-- **Leitura proposta:** _(PENDENTE)_
-- **Status:** PENDENTE
+- **Fonte:** (secundária) Tecnospeed, "Nota Técnica 2020.001" — https://blog.tecnospeed.com.br/nota-tecnica-2020-001 (acessado 2026-10-23); (secundária) resumo de busca sobre NT 2020.001 v1.10 (notagateway.com.br; página deu 504, **não aberta**). A NT 2020.001 unificou as antigas NT 2012.002 e 2013.001 (resumo de busca, não verificado na NT). **Fonte primária (NT 2020.001 no portal nfe.fazenda.gov.br): NÃO LOCALIZADO.**
+- **Trecho:** "reduzindo o limite de 180 dias para 90 dias, contados da data de autorização da NF-e" (manifestação conclusiva, v1.60). Ciência: 10 dias, só no texto alternativo de imagem (frágil). Quem registra: o destinatário (CNPJ/CPF).
+- **Leitura proposta:** Prazos: conclusivas até 90 dias da autorização; Ciência 10 dias (**não confiável**; um resumo antigo citava 10/35/70/15 dias, regime anterior). Os códigos 210200/210210/210220/210240, o efeito da Ciência na liberação do `procNFe` e a regra de que só o certificado do destinatário assina: **NÃO LOCALIZADO** (continuam vindo da memória/CLAUDE.md §3.3). Resumo de busca: uma manifestação conclusiva pode ser retificada uma vez (NT 2020.001 v1.50), vale a última — não verificado. Sem divergência confirmada.
+- **Status:** FONTE LOCALIZADA (parcial; só secundárias; códigos, efeito no `procNFe` e quem assina NÃO LOCALIZADO)
 - **Afeta:** E2-S09/E2-S11 (`manifestar`); ADR-004
 
 ### Item 7 — Assinatura: SHA-1 × SHA-256, C14N, formato do `Id` do evento
 - **Pergunta:** Assinatura: SHA-1 × SHA-256, C14N, formato do `Id` do evento.
-- **Fonte:** _(PENDENTE)_
-- **Trecho:** _(PENDENTE)_
-- **Leitura proposta:** _(PENDENTE)_
-- **Status:** PENDENTE
+- **Fonte:** (secundária) NCM Buscador, rejeição 298 (cita "MOC NF-e/NFC-e, consolidação de 09/10/2026", sem versão) — https://buscadorncm.com.br/nfe/rejeicoes/298 (acessado 2026-10-23); (secundária) resumo de busca de ato da SEF-SC (AtoDiat 26/056, Anexo I; PDF **não aberto**). **Fonte primária (MOC, anexo de assinatura digital): NÃO LOCALIZADO.**
+- **Trecho:** Rejeição 298, regra F01: "Não assinado o atributo "Id" (falta "Reference URI" na assinatura)" · "Faltam os "Transform Algorithm" previstos na assinatura ("C14N" e "Enveloped")".
+- **Leitura proposta:** A assinatura deve referenciar o `Id` e conter os transforms Enveloped + C14N (xml-c14n-20010315, segundo resumo de busca não verificado). SHA-1 × SHA-256: o resumo da SEF-SC cita RSA + SHA-256, mas **não confirmado** em fonte aberta; a página do MOC não menciona algoritmo. Formato do `Id` do evento (`ID`+tpEvento+chNFe+nSeqEvento): **NÃO LOCALIZADO** (só da memória). Decisão do algoritmo fica para E2-S11 após conferência do autor.
+- **Status:** FONTE LOCALIZADA (parcial; só secundárias; SHA-1×SHA-256 e `Id` do evento NÃO LOCALIZADO)
 - **Afeta:** E2-S11 (XML-DSig); validador de assinatura da porta push
 
 ### Item 8 — Qual certificado consulta qual CNPJ (raiz, filiais, procurador)

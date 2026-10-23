@@ -50,3 +50,8 @@ Resposta:
   D5 duas janelas por dia, 08:00 e 13:00 (ADR-029).
 - **[BLOQUEIO] E1-S05** — 2026-10-22: era bug do script (passo sem código); corrigido em `fix/passo-sem-codigo` e E1-S05 mergeada.
 - **[DUVIDA] E2-S00** — 2026-10-22: CLAUDE.md §5 atualizado (sem CXF) no PR `ajustes/fila-e-docs`.
+
+### [BLOQUEIO] E1-S06 — 2026-10-23 — 3 falhas seguidas
+Último motivo: nenhum commit feito e nenhum passo fechado no plano
+Logs: `estado/logs/` (arquivos *-E1-S06-*.json). Para destravar: ajuste o plano `estado/planos/E1-S06.md`
+ou responda aqui, e troque o status no ROADMAP de `[!]` para `[~]`.

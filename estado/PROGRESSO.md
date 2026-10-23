@@ -72,3 +72,6 @@
 - 2026-10-23 08:02 · E1-S06: revertido — nenhum commit feito e nenhum passo fechado no plano
 - 2026-10-23 08:02 · E1-S06: DESENVOLVER — passo 1 marcado [!] (depende da [DECISAO] E1-S06, sem resposta; muda contrato de BuscarLoteResultado/ResultadoAvanco); nenhum código alterado, sem commit · próximo: autor responder A/B/C + sub-decisões e liberar plano/ROADMAP
 - 2026-10-23 08:02 · E1-S06: revertido — nenhum commit feito e nenhum passo fechado no plano
+- 2026-10-23 08:03 · E1-S06: DESENVOLVER não executado — o 1º "[ ]" depende da [DECISAO] E1-S06 (linha [!] no plano), ainda sem resposta no PARA-VOCE; nenhum código alterado, sem commit · próximo: autor responder A/B/C + sub-decisões 1 e 2 e pôr E1-S06 em [h]/[ ] no ROADMAP
+- 2026-10-23 08:03 · E1-S06: revertido — nenhum commit feito e nenhum passo fechado no plano
+- 2026-10-23 08:03 · E1-S06: [!] bloqueado após 3 falhas

@@ -15,7 +15,7 @@
 - [x] E1-S03 | DECISAO  | deps: -      | decisões que destravam o agente (D1–D5: ADRs 025–029)
 - [x] E1-S04 | AUTO     | deps: E1-S01 | ArchUnit: regra "domain não depende de nada"
 - [x] E1-S05 | AUTO     | deps: E1-S01,E1-S03 | jqwik (ADR-026) + propriedades do que já existe (GapCalculator, TokenBucket, Nsu)
-- [~] E1-S06 | AUTO+    | deps: E1-S05 | invariante 1: guarda + teste de propriedade de não-retrocesso no AvancarPonteiroUseCase (auditoria A4)
+- [!] E1-S06 | AUTO+    | deps: E1-S05 | invariante 1: guarda + teste de propriedade de não-retrocesso no AvancarPonteiroUseCase (auditoria A4)
 
 ## Etapa 2 — Adapter NF-e Ambiente Nacional (Fase 2)
 - [x] E2-S00 | AUTO     | deps: E1-S01,E1-S02 | remover CXF (javax) do adapter: HTTP + JAXB + Santuario (auditoria A9)

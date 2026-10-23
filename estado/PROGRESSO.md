@@ -111,3 +111,5 @@
 - 2026-10-23 08:21 · E2-S04: DESENVOLVER ok
 - 2026-10-23 · E2-S04: idempotência e conflito no BlobStoreEmMemoria (falha: 'Expecting code to raise a throwable' em mesmaChaveConteudoDiferenteRejeitada); suíte verde · próximo: shaInformadoQueNaoBateComBytesRejeitado
 - 2026-10-23 13:01 · E2-S04: DESENVOLVER ok
+- 2026-10-23 13:02 · E2-S04: sha256 divergente rejeitado (falha antes: AssertionError em BlobStoreEmMemoriaTest:82, sem exceção) · próximo: clone defensivo
+- 2026-10-23 13:02 · E2-S04: DESENVOLVER ok

@@ -19,7 +19,7 @@
 
 ## Etapa 2 — Adapter NF-e Ambiente Nacional (Fase 2)
 - [x] E2-S00 | AUTO     | deps: E1-S01,E1-S02 | remover CXF (javax) do adapter: HTTP + JAXB + Santuario (auditoria A9)
-- [~] E2-S01 | RASCUNHO | deps: -      | docs/FONTES-OFICIAIS.md: rascunho com links do MOC/NTs para cada [VALIDAR] do CLAUDE.md §21
+- [r] E2-S01 | RASCUNHO | deps: -      | docs/FONTES-OFICIAIS.md: rascunho com links do MOC/NTs para cada [VALIDAR] do CLAUDE.md §21
 - [ ] E2-S02 | DECISAO  | deps: E2-S01 | mapeamento de cStat (108/632/589) a partir das fontes oficiais (auditoria A1–A3)
 - [ ] E2-S03 | AUTO+    | deps: E2-S02 | aplicar o mapeamento decidido no CStatMapper (testes primeiro)
 - [ ] E2-S04 | AUTO     | deps: E1-S01 | porta BlobStore no domain + implementação em memória

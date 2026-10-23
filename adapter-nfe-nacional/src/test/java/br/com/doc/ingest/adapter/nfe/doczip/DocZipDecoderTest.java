@@ -97,6 +97,34 @@ class DocZipDecoderTest {
     }
 
     @Test
+    @DisplayName("gzipAcimaDoLimiteEhRejeitado")
+    void gzipAcimaDoLimiteEhRejeitado() throws IOException {
+        DocZipDecoder limitado = new DocZipDecoder(1024);
+        byte[] grande = new byte[1025]; // comprime a quase nada
+        assertThatThrownBy(() -> limitado.decodificar(
+                docZip("9", "resNFe_v1.01.xsd", gzipBase64(grande, false))))
+                .isInstanceOf(DocZipInvalidoException.class)
+                .hasMessageContaining("9")
+                .hasMessageContaining("limite");
+    }
+
+    @Test
+    @DisplayName("exatamenteNoLimiteEhAceito")
+    void exatamenteNoLimiteEhAceito() throws IOException {
+        DocZipDecoder limitado = new DocZipDecoder(1024);
+        byte[] exato = new byte[1024];
+        DocZipDecodificado r = limitado.decodificar(
+                docZip("9", "resNFe_v1.01.xsd", gzipBase64(exato, false)));
+        assertThat(r.xml()).hasSize(1024);
+    }
+
+    @Test
+    @DisplayName("limitePadraoEh10MiB")
+    void limitePadraoEh10MiB() {
+        assertThat(DocZipDecoder.LIMITE_PADRAO_BYTES).isEqualTo(10 * 1024 * 1024);
+    }
+
+    @Test
     @DisplayName("mensagemDeErroNaoContemConteudo")
     void mensagemDeErroNaoContemConteudo() {
         String segredo = Base64.getEncoder().encodeToString("SEGREDO-CONTEUDO".getBytes(StandardCharsets.UTF_8));

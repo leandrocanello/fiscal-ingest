@@ -109,3 +109,5 @@
 - 2026-10-23 08:20 · E2-S04: DESENVOLVER ok
 - 2026-10-23 08:30 · E2-S04: BlobStoreEmMemoria gravar/ler (falha inicial: cannot find symbol BlobStoreEmMemoria; suíte verde) · próximo: idempotência e conflito
 - 2026-10-23 08:21 · E2-S04: DESENVOLVER ok
+- 2026-10-23 · E2-S04: idempotência e conflito no BlobStoreEmMemoria (falha: 'Expecting code to raise a throwable' em mesmaChaveConteudoDiferenteRejeitada); suíte verde · próximo: shaInformadoQueNaoBateComBytesRejeitado
+- 2026-10-23 13:01 · E2-S04: DESENVOLVER ok

@@ -146,3 +146,5 @@
 - 2026-10-23 13:31 · E2-S05: DESENVOLVER ok
 - 2026-10-23 13:40 · E2-S05: verificação concluída (propriedades, XXE, gzip bomb, domain intacto, suíte verde) · próximo: revisão
 - 2026-10-23 13:31 · E2-S05: VERIFICAR ok
+- 2026-10-23 13:45 · E2-S05: REVISAR — APROVAR PARA PR (5 achados não bloqueantes: teste fraco da inv. 5, CPF ignorado, hardening do XmlSeguro) · próximo: abrir PR
+- 2026-10-23 13:34 · E2-S05: REVISAR ok

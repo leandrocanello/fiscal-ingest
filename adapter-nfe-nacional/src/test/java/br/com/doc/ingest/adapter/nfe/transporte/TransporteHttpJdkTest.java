@@ -125,6 +125,40 @@ class TransporteHttpJdkTest {
     }
 
     @Test
+    void falhaNaoExpoeCorpoNemEnvelope() {
+        servidor.stubFor(post(urlEqualTo(CAMINHO)).willReturn(aResponse().withStatus(200)
+                .withBody("SEGREDO-XYZ".repeat(200))));
+        var pequeno = new TransporteHttpJdk(HttpClient.newHttpClient(), Duration.ofSeconds(5), 1024);
+        byte[] envelope = "<a>SEGREDO-XYZ</a>".getBytes(StandardCharsets.UTF_8);
+
+        ResultadoTransporte r = pequeno.enviar(endpoint(), ACTION, envelope);
+
+        assertThat(r.toString()).doesNotContain("SEGREDO-XYZ");
+        var falha = (ResultadoTransporte.FalhaTransporte) r;
+        assertThat(falha.motivo().toString()).doesNotContain("SEGREDO-XYZ");
+    }
+
+    @Test
+    void toStringDaRespostaNaoMostraCorpo() {
+        var resposta = new ResultadoTransporte.RespostaHttp(200, "SEGREDO-XYZ".getBytes(StandardCharsets.UTF_8));
+
+        assertThat(resposta.toString()).doesNotContain("SEGREDO-XYZ").contains("200").contains("11");
+    }
+
+    @Test
+    void respostaTemCopiaDefensivaEIgualdadePorConteudo() {
+        byte[] original = {1, 2, 3};
+        var a = new ResultadoTransporte.RespostaHttp(200, original);
+        original[0] = 9;
+
+        assertThat(a.corpo()).containsExactly(1, 2, 3);
+        a.corpo()[0] = 9;
+        assertThat(a.corpo()).containsExactly(1, 2, 3);
+        assertThat(a).isEqualTo(new ResultadoTransporte.RespostaHttp(200, new byte[] {1, 2, 3}));
+        assertThat(a.hashCode()).isEqualTo(new ResultadoTransporte.RespostaHttp(200, new byte[] {1, 2, 3}).hashCode());
+    }
+
+    @Test
     void limitePadraoEDezesseisMebibytes() {
         assertThat(TransporteHttpJdk.LIMITE_PADRAO_BYTES).isEqualTo(16L * 1024 * 1024);
     }

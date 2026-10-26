@@ -9,14 +9,21 @@ import br.com.doc.ingest.domain.ledger.StatusNsu;
 import br.com.doc.ingest.domain.model.Cnpj;
 import br.com.doc.ingest.domain.model.Documento;
 import br.com.doc.ingest.domain.model.FonteId;
+import br.com.doc.ingest.domain.model.Nsu;
 
 /**
  * Caso de uso que avanca o ponteiro (cursor) com base no Desfecho.
  *
- * Regras criticas:
- * - Ok / Vazio -> avanca cursor + persiste entradas no ledger
- * - LimiteAtingido -> NAO avanca (cStat 656)
- * - IndisponivelTemporario -> NAO avanca (retry sem mover ponteiro)
+ * <p>Regras criticas (invariante 1 — nao-retrocesso de NSU):
+ * <ul>
+ *   <li>So avanca se novo &ge; atual ({@code resultado.ultNsu()} comparado com {@code ultNsuAtual}).
+ *       Novo &gt; atual em Ok/Vazio = {@link MotivoAvanco#AVANCOU}; igual = {@link MotivoAvanco#NAO_AVANCOU}
+ *       (em Ok, os documentos ainda sao registrados, de forma idempotente — ADR-005).</li>
+ *   <li>Recuo (novo &lt; atual) = {@link MotivoAvanco#RETROCESSO_REJEITADO}: erro de consistencia, nunca
+ *       retentar; nada e registrado no ledger e cursor/NSU de entrada sao devolvidos.</li>
+ *   <li>LimiteAtingido, IndisponivelTemporario, IndisponivelDefinitivo, ErroAutenticacao, ServicoFora
+ *       -> NAO avanca e nao registra nada.</li>
+ * </ul>
  */
 public class AvancarPonteiroUseCase {
 
@@ -26,26 +33,38 @@ public class AvancarPonteiroUseCase {
         this.ledger = ledger;
     }
 
-    public ResultadoAvanco executar(FonteId fonte, Cnpj cnpj, Cursor cursorAtual, BuscarLoteResultado resultado) {
+    public ResultadoAvanco executar(FonteId fonte, Cnpj cnpj, Cursor cursorAtual, Nsu ultNsuAtual,
+                                   BuscarLoteResultado resultado) {
         Desfecho desfecho = resultado.desfecho();
 
         return switch (desfecho) {
             case Desfecho.Ok ok -> {
+                if (resultado.ultNsu().ehMenorQue(ultNsuAtual)) {
+                    yield new ResultadoAvanco(cursorAtual, ultNsuAtual, MotivoAvanco.RETROCESSO_REJEITADO);
+                }
                 registrarDocumentos(fonte, cnpj, resultado);
-                Cursor novoCursor = resultado.proximoCursor();
-                yield new ResultadoAvanco(novoCursor, true);
+                yield avancarSeMaior(cursorAtual, ultNsuAtual, resultado);
             }
             case Desfecho.Vazio vazio -> {
-                Cursor novoCursor = resultado.proximoCursor();
-                yield new ResultadoAvanco(novoCursor, true);
+                if (resultado.ultNsu().ehMenorQue(ultNsuAtual)) {
+                    yield new ResultadoAvanco(cursorAtual, ultNsuAtual, MotivoAvanco.RETROCESSO_REJEITADO);
+                }
+                yield avancarSeMaior(cursorAtual, ultNsuAtual, resultado);
             }
             // NAO avanca em nenhum destes casos (protecao cStat 656)
-            case Desfecho.LimiteAtingido la -> new ResultadoAvanco(cursorAtual, false);
-            case Desfecho.IndisponivelTemporario it -> new ResultadoAvanco(cursorAtual, false);
-            case Desfecho.IndisponivelDefinitivo id -> new ResultadoAvanco(cursorAtual, false);
-            case Desfecho.ErroAutenticacao ea -> new ResultadoAvanco(cursorAtual, false);
-            case Desfecho.ServicoFora sf -> new ResultadoAvanco(cursorAtual, false);
+            case Desfecho.LimiteAtingido la -> new ResultadoAvanco(cursorAtual, ultNsuAtual, MotivoAvanco.NAO_AVANCOU);
+            case Desfecho.IndisponivelTemporario it -> new ResultadoAvanco(cursorAtual, ultNsuAtual, MotivoAvanco.NAO_AVANCOU);
+            case Desfecho.IndisponivelDefinitivo id -> new ResultadoAvanco(cursorAtual, ultNsuAtual, MotivoAvanco.NAO_AVANCOU);
+            case Desfecho.ErroAutenticacao ea -> new ResultadoAvanco(cursorAtual, ultNsuAtual, MotivoAvanco.NAO_AVANCOU);
+            case Desfecho.ServicoFora sf -> new ResultadoAvanco(cursorAtual, ultNsuAtual, MotivoAvanco.NAO_AVANCOU);
         };
+    }
+
+    private ResultadoAvanco avancarSeMaior(Cursor cursorAtual, Nsu ultNsuAtual, BuscarLoteResultado resultado) {
+        if (resultado.ultNsu().ehMaiorQue(ultNsuAtual)) {
+            return new ResultadoAvanco(resultado.proximoCursor(), resultado.ultNsu(), MotivoAvanco.AVANCOU);
+        }
+        return new ResultadoAvanco(cursorAtual, ultNsuAtual, MotivoAvanco.NAO_AVANCOU);
     }
 
     private void registrarDocumentos(FonteId fonte, Cnpj cnpj, BuscarLoteResultado resultado) {

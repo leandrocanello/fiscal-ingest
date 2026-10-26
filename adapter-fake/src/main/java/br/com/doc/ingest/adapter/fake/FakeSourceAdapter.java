@@ -19,6 +19,9 @@ import java.util.concurrent.ConcurrentHashMap;
  *   <li>autenticar: no-op (nao faz nada)</li>
  * </ul>
  *
+ * <p>{@code ultNsu} do lote = maior NSU dos documentos pre-carregados. Limitacao: como o fake
+ * nao recebe o NSU atual (so o {@link Cursor} opaco), devolve {@code Nsu(0)} quando o lote e vazio.
+ *
  * <p>Este adapter NAO deve ser usado em producao. Serve apenas para testes do core.
  */
 public class FakeSourceAdapter implements SourceAdapter {
@@ -58,6 +61,7 @@ public class FakeSourceAdapter implements SourceAdapter {
             return new BuscarLoteResultado(
                     List.of(),
                     cursor,
+                    new Nsu(0),
                     false,
                     new Desfecho.Vazio()
             );
@@ -66,6 +70,7 @@ public class FakeSourceAdapter implements SourceAdapter {
         return new BuscarLoteResultado(
                 List.copyOf(documentos),
                 cursor,
+                documentos.stream().map(Documento::nsu).max(Comparator.naturalOrder()).orElseThrow(),
                 false,
                 new Desfecho.Ok()
         );

@@ -225,3 +225,5 @@
 - 2026-10-26 13:17 · E2-S06: DESENVOLVER ok
 - 2026-10-26 13:18 · E2-S06: TransporteSoap/ResultadoTransporte/TransporteHttpJdk (POST SOAP 1.2, bytes exatos); falha vista: compileTestJava 'cannot find symbol TransporteHttpJdk/ResultadoTransporte' · próximo: 5xx/4xx como RespostaHttp
 - 2026-10-26 13:18 · E2-S06: DESENVOLVER ok
+- 2026-10-26 13:19 · E2-S06: teste status5xxE4xxVoltamComoRespostaHttp (passou de primeira: a implementação já não decidia pelo status; teste de caracterização) · próximo: timeout/conexão
+- 2026-10-26 13:19 · E2-S06: DESENVOLVER ok

@@ -204,3 +204,5 @@
 - 2026-10-26 13:05 · E1-S06: DESENVOLVER ok
 - 2026-10-26 13:10 · E1-S06: passo 6 (propriedade cursorNuncaRecua, jqwik) feito; passou de primeira (esperado pelo plano); validada por mutação temporária (Vazio sem guarda): 'AvancarPonteiroUseCasePropriedadesTest > cursorNuncaRecua FAILED — AssertionFailedError at AvancarPonteiroUseCasePropriedadesTest.java:46'; código restaurado, suíte verde (100 testes) · próximo: propriedades retrocessoNaoRegistraNada + desfechoDeParadaNaoRegistraNada
 - 2026-10-26 13:07 · E1-S06: DESENVOLVER ok
+- 2026-10-26 13:09 · E1-S06: passo 7 (propriedades retrocessoNaoRegistraNada + desfechoDeParadaNaoRegistraNada, jqwik) feito; passaram de primeira (esperado pelo plano); validadas por mutação temporária (registrar antes da guarda em Ok e registrar em ServicoFora): 'retrocessoNaoRegistraNada FAILED — AssertionError at AvancarPonteiroUseCasePropriedadesTest.java:83', 'desfechoDeParadaNaoRegistraNada FAILED — AssertionError at ...:102'; código restaurado, suíte verde (102 testes) · próximo: Javadoc de AvancarPonteiroUseCase/BuscarLoteResultado/ResultadoAvanco
+- 2026-10-26 13:09 · E1-S06: DESENVOLVER ok

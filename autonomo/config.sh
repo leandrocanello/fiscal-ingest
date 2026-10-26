@@ -9,7 +9,7 @@ export FI_ESTADO_DIR="$FI_ESTADO/estado"                  # pasta com ROADMAP, p
 export CLAUDE_CONFIG_DIR="${CLAUDE_CONFIG_DIR:-$HOME/.claude-pessoal}"
 
 # Limites
-MAX_CHAMADAS_JANELA=${MAX_CHAMADAS_JANELA:-20}        # chamadas ao Claude por janela
+MAX_CHAMADAS_JANELA=${MAX_CHAMADAS_JANELA:-200}       # chamadas por janela (era 20; ~1 min cada → quem limita é o tempo, a cota e o orçamento de diff)
 TIMEOUT_CHAMADA_MIN=${TIMEOUT_CHAMADA_MIN:-45}        # minutos por chamada
 TIMEOUT_TESTES_MIN=${TIMEOUT_TESTES_MIN:-20}          # minutos para a suíte na verificação
 MAX_TURNS=${MAX_TURNS:-60}                  # turnos por chamada

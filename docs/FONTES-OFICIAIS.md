@@ -23,16 +23,16 @@ Se a norma mudar, mude **o teste primeiro**.
 ## Índice
 | Nº | Tema | Status | Afeta |
 |---|---|---|---|
-| 1 | Bloqueio após `137`; comportamento com `ultNSU < maxNSU` | FONTE LOCALIZADA (parcial) | CStatMapperTest; E2-S02; E4 (scheduler, `PoliticaRateLimit`) |
+| 1 | Bloqueio após `137`; comportamento com `ultNSU < maxNSU` | FONTE PRIMÁRIA LOCALIZADA (MOC 7.0 §5.7.4.4) | CStatMapperTest; E2-S02; E4 (scheduler, `PoliticaRateLimit`) |
 | 2 | Limites de `consNSU`/`consChNFe`; duração do bloqueio por `656` | FONTE LOCALIZADA (parcial) | E2-S02; E2-S0x (`buscarUm`); E4 |
-| 3 | Lista vigente de `cStat` (107/108/109/137/138/589/632/656) e mapeamento para `Desfecho` | FONTE LOCALIZADA (parcial) | CStatMapperTest; E2-S02 (DECISAO); E2-S03; achados A1/A2/A3 |
+| 3 | Lista vigente de `cStat` (107/108/109/137/138/589/632/656) e mapeamento para `Desfecho` | FONTE PRIMÁRIA LOCALIZADA (MOC 7.0, Tab. 5-20 e 5-29) | CStatMapperTest; E2-S02 (DECISAO); E2-S03; achados A1/A2/A3 |
 | 4 | Atores atendidos pela distribuição; emitente recebe eventos das próprias notas? | FONTE LOCALIZADA (parcial) | Roteamento pelo conteúdo (§7.3); canais A/B |
 | 5 | `autXML`: limite de ocorrências, recebimento pela distribuição, CT-e | FONTE LOCALIZADA (parcial) | ADR-019; E2-S12 (smoke); canal B |
 | 6 | Manifestação: códigos, prazos, efeito no `procNFe`, quem assina | FONTE LOCALIZADA (parcial) | E2-S09/E2-S11 (`manifestar`); ADR-004 |
 | 7 | Assinatura: SHA-1 × SHA-256, C14N, formato do `Id` do evento | FONTE LOCALIZADA (parcial) | E2-S11 (XML-DSig); validador de assinatura da porta push |
-| 8 | Qual certificado consulta qual CNPJ (raiz, filiais, procurador) | PENDENTE | E2D (carregador `.pfx`); cofre (§7); `estado_coleta` |
+| 8 | Qual certificado consulta qual CNPJ (raiz, filiais, procurador) | FONTE PRIMÁRIA LOCALIZADA (parcial; MOC 7.0 H04/H05) | E2D (carregador `.pfx`); cofre (§7); `estado_coleta` |
 | 9 | URLs e versões de WSDL/XSD (produção e homologação); política de versão das NTs | PENDENTE | Adapter 2B–2E; E2-S12; vendorização de XSD |
-| 10 | Janela real de retenção do AN | FONTE LOCALIZADA (parcial) | Backfill; prioridade da Fase 2→3 |
+| 10 | Janela real de retenção do AN | FONTE PRIMÁRIA LOCALIZADA (MOC 7.0 H15) | Backfill; prioridade da Fase 2→3 |
 | 11 | Limites por IP ou volume global | PENDENTE | Backoff global por endpoint; dimensionamento (§6.2); Fase 10 |
 | 12 | Serviço de consulta de situação/protocolo por chave (limites) | PENDENTE | `CONFIRMADO_SEFAZ` (§4); Fase 5 |
 | 13 | NFCom/NF3e; cronograma IBS/CBS na NF-e; adesão ao ADN da NFS-e | FONTE LOCALIZADA (parcial) | Parser versionado; Fase 11+ |
@@ -210,3 +210,35 @@ Se a norma mudar, mude **o teste primeiro**.
 3. Itens 6–7: E2-S11.
 4. Itens 4–5 e 11: smoke E2-S12.
 5. Item 14 com o jurídico; itens 10, 12, 13 depois.
+
+## Conferência com fonte primária — MOC 7.0 (2026-10-26)
+
+**Documento:** *Manual de Orientação ao Contribuinte – MOC – versão 7.0 – NF-e e NFC-e*, "Versão 7.00 – Novembro de 2020"
+(PDF oficial fornecido pelo autor em 2026-10-26; 150 páginas). ⚠ É de 2020: NTs posteriores (ex.: NT 2014.002, atualizações
+de 2022) podem ter mudado regras de uso indevido; os códigos abaixo seguem valendo até prova em contrário.
+
+| cStat | Texto literal | Onde | Leitura |
+|---|---|---|---|
+| 107 | "107-Serviço em Operação" | §5.5.5, p. 86 (`nfeStatusServico`) | serviço ok |
+| 108 | "Rejeição: Serviço Paralisado Momentaneamente (curto prazo)" | Tab. 5-20, regra K03, p. 86 | **não é sucesso** → indisponibilidade temporária (confirma auditoria A1) |
+| 109 | "Rejeição: Serviço Paralisado sem Previsão" | Tab. 5-20, regra K04, p. 86 | paralisação longa → serviço fora |
+| 137 | "137-Nenhum documento localizado" | §5.7.4.4, p. 94 | `Vazio` |
+| 138 | "138-Documento(s) localizado(s)" | §5.7.4.4, p. 94 | `Ok` |
+| 589 | "Rejeição: Número do NSU informado superior ao maior NSU do Ambiente Nacional" | Tab. 5-29, regra H06 (distNSU e consNSU), p. 96 | cursor inconsistente, nunca retentar (confirma A3) |
+| 632 | "Rejeição: Solicitação fora de prazo, a NF-e não está mais disponível para download" — regra: "Verificar se NF-e está no prazo de download, 90 dias da data de recebimento da NF-e no Ambiente Nacional" | Tab. 5-29, regra H15 (**só consChNFe**), p. 96 | **fora de prazo, não excesso de consultas** → `LimiteAtingido` atual está errado (confirma A2) |
+| 656 | "656–Rejeição: Consumo Indevido" — para "sucessivas tentativas de busca de registros já disponibilizados anteriormente" | §5.7.7.1, p. 99 | `LimiteAtingido` |
+
+Outros achados da Tab. 5-29 (p. 96) e do §5.7.4.4 (p. 94):
+- **Item 1:** "A empresa deverá aguardar um tempo mínimo de uma hora para efetuar uma nova solicitação de distribuição caso
+  receba a indicação que não existem mais documentos a serem pesquisados [...]. Se o NSU informado (tag:ultNSU) for igual ao
+  maior NSU do Ambiente Nacional (tag:maxNSU), então não existem mais documentos a serem pesquisados no momento."
+  → a espera de 1h vale quando `ultNSU == maxNSU`; com `ultNSU < maxNSU` há mais documentos (leitura do CLAUDE.md §3.2 confirmada por implicação).
+- **Item 8:** `593` "CNPJ-Base consultado difere do CNPJ-Base do Certificado Digital" (H04) e `472` "CPF consultado difere do
+  CPF do Certificado Digital" (H05) → a regra é **mesma raiz de CNPJ** (8 dígitos): o e-CNPJ da matriz consulta as filiais.
+  Procurador: não tratado no MOC.
+- **Item 10:** prazo de download de **90 dias da data de recebimento no AN** (H15, para consChNFe).
+- **Item 4:** `641` "NF-e indisponível para o emitente" (H17, consChNFe) → o emitente não baixa a própria NF-e por chave
+  (reforça CLAUDE.md §3.1 e a razão do agente/`autXML`).
+- Também na Tab. 5-29: `640` interessado sem permissão para a NF-e; `653`/`654` NF-e cancelada/denegada, arquivo indisponível;
+  `217` NF-e inexistente; `236`, `614`–`619` chave inválida; `252` ambiente divergente; `489`/`490` CNPJ/CPF inválido.
+

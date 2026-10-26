@@ -166,6 +166,35 @@ class AvancarPonteiroUseCaseTest {
     }
 
     @Nested
+    @DisplayName("Retrocesso (invariante 1)")
+    class Retrocesso {
+
+        @Test
+        @DisplayName("deve rejeitar retrocesso em Ok sem registrar nada no ledger")
+        void deveRejeitarRetrocessoEmOk() {
+            Cursor cursorInicial = new Cursor("bookmark-100");
+            NsuLedgerFake ledger = new NsuLedgerFake();
+            AvancarPonteiroUseCase useCase = new AvancarPonteiroUseCase(ledger);
+
+            BuscarLoteResultado resultado = new BuscarLoteResultado(
+                    List.of(doc(98, "RESUMO"), doc(99, "COMPLETO")),
+                    new Cursor("bookmark-99"),
+                    new Nsu(99),
+                    false,
+                    new Desfecho.Ok()
+            );
+
+            ResultadoAvanco avanco = useCase.executar(fonte, cnpj, cursorInicial, new Nsu(100), resultado);
+
+            assertThat(avanco.motivo()).isEqualTo(MotivoAvanco.RETROCESSO_REJEITADO);
+            assertThat(avanco.avancou()).isFalse();
+            assertThat(avanco.cursorAtual()).isEqualTo(cursorInicial);
+            assertThat(avanco.ultNsu()).isEqualTo(new Nsu(100));
+            assertThat(ledger.registrados).isEmpty();
+        }
+    }
+
+    @Nested
     @DisplayName("Persistência no ledger")
     class PersistenciaLedger {
 

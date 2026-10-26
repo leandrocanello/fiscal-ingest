@@ -33,6 +33,9 @@ public class AvancarPonteiroUseCase {
 
         return switch (desfecho) {
             case Desfecho.Ok ok -> {
+                if (resultado.ultNsu().ehMenorQue(ultNsuAtual)) {
+                    yield new ResultadoAvanco(cursorAtual, ultNsuAtual, MotivoAvanco.RETROCESSO_REJEITADO);
+                }
                 registrarDocumentos(fonte, cnpj, resultado);
                 Cursor novoCursor = resultado.proximoCursor();
                 yield new ResultadoAvanco(novoCursor, resultado.ultNsu(), MotivoAvanco.AVANCOU);

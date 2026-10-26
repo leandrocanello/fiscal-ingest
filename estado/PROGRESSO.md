@@ -223,3 +223,5 @@
 - 2026-10-26 13:16 · E2-S06: DESENVOLVER ok
 - 2026-10-26 13:25 · E2-S06: envelope SOAP 1.2 + ContratoDistDfe (falhou por símbolo ausente; suíte verde) · próximo: TransporteHttpJdk
 - 2026-10-26 13:17 · E2-S06: DESENVOLVER ok
+- 2026-10-26 13:18 · E2-S06: TransporteSoap/ResultadoTransporte/TransporteHttpJdk (POST SOAP 1.2, bytes exatos); falha vista: compileTestJava 'cannot find symbol TransporteHttpJdk/ResultadoTransporte' · próximo: 5xx/4xx como RespostaHttp
+- 2026-10-26 13:18 · E2-S06: DESENVOLVER ok

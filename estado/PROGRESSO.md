@@ -233,3 +233,5 @@
 - 2026-10-26 13:21 · E2-S06: DESENVOLVER ok
 - 2026-10-26 13:22 · E2-S06: toString/cópia defensiva em RespostaHttp (inv. 13); falha inicial: toStringDaRespostaNaoMostraCorpo e respostaTemCopiaDefensiva (AssertionError) · próximo: nenhumaUrlDeSefazNoCodigo
 - 2026-10-26 13:22 · E2-S06: DESENVOLVER ok
+- 2026-10-26 13:23 · E2-S06: guarda nenhumaUrlDeSefazNoCodigo (viu falhar ao injetar .asmx; suíte verde) · próximo: Verificação do plano
+- 2026-10-26 13:23 · E2-S06: DESENVOLVER ok

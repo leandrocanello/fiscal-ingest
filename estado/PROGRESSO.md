@@ -221,3 +221,5 @@
 - 2026-10-26 13:16 · E2-S06: DESENVOLVER ok
 - 2026-10-26 12:00 · E2-S06: EnvelopeDistDfe.distNsu (ultNSU 15 dígitos, JAXB_FRAGMENT); teste falhou por compilação (símbolo EnvelopeDistDfe inexistente), suíte verde após · próximo: envelopeSoap12ComNfeDadosMsg / ContratoDistDfe
 - 2026-10-26 13:16 · E2-S06: DESENVOLVER ok
+- 2026-10-26 13:25 · E2-S06: envelope SOAP 1.2 + ContratoDistDfe (falhou por símbolo ausente; suíte verde) · próximo: TransporteHttpJdk
+- 2026-10-26 13:17 · E2-S06: DESENVOLVER ok

@@ -217,3 +217,5 @@
 - 2026-10-26 13:14 · E2-S06: PLANEJAR ok
 - 2026-10-26 12:00 · E2-S06: TipoAmbiente (passo 1; falha inicial: 'package TipoAmbiente does not exist') · próximo: ordem do schema em DistDfeInt (propOrder)
 - 2026-10-26 13:15 · E2-S06: DESENVOLVER ok
+- 2026-10-26 13:15 · E2-S06: propOrder em DistDfeInt + teste marshalRespeitaOrdemDoSchema (obs.: o teste já passava antes do propOrder, pois a ordem de declaração dos campos coincidia; propOrder torna a ordem explícita e protegida) · próximo: EnvelopeDistDfe.distNsu (ultNSU com 15 dígitos)
+- 2026-10-26 13:16 · E2-S06: DESENVOLVER ok

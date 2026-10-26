@@ -40,3 +40,9 @@
 **Opções:** (a) teto fixo de 10 MiB por documento descompactado, configurável no construtor; schema desconhecido → classificado como `DESCONHECIDO` (bytes mantidos, nunca descartados); schema que diverge da raiz → `DocZipInvalidoException`; (b) sem teto; (c) schema desconhecido lança exceção.
 **Escolha:** (a) — protege a memória sem perder documento (inv. 5: o que não se reconhece é guardado, quem decide o status no ledger é a E2-S07); divergência é sinal de resposta corrompida e não deve virar metadado errado.
 **Como desfazer:** mudar a constante `LIMITE_PADRAO_BYTES` em `DocZipDecoder`; trocar o ramo `DESCONHECIDO` do `ClassificadorSchema` por exceção.
+
+### DA-7 · 2026-10-26 · E2-S06
+**Contexto:** o envelope SOAP do `NFeDistribuicaoDFe` (namespace do WSDL, operação `nfeDistDFeInteresse`, `nfeDadosMsg`, action no `Content-Type` SOAP 1.2, formato de `ultNSU` com 15 dígitos, `cUFAutor` opcional) e as URLs ainda são PENDENTE em `docs/FONTES-OFICIAIS.md` item 9. Os docs também não fixam timeouts nem teto do corpo da resposta.
+**Opções:** (a) seguir os valores usuais do protocolo (de memória), isolados em uma única classe de constantes marcada [VALIDAR item 9], sem `cUFAutor`, sem nenhuma URL embutida no código (endpoint vem do construtor), timeouts e teto de resposta (16 MiB) configuráveis; (b) parar a subetapa até o autor validar o WSDL.
+**Escolha:** (a). Os testes só falam com WireMock (inv. 14); um valor errado aparece no smoke (E2-S12) e se corrige em um lugar só. Parar travaria a E2-S07 sem ganho.
+**Como desfazer:** editar `ContratoDistDfe` (constantes) e os padrões de `TransporteHttpJdk`; incluir `cUFAutor` em `DistDfeInt` com `propOrder`.

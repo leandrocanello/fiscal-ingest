@@ -213,3 +213,5 @@
 - 2026-10-26 13:12 · E1-S06: REVISAR — APROVAR PARA PR (inv. 1 com guarda + 3 propriedades; suíte verde); PR em planos/E1-S06-pr.md · próximo: merge pelo autor
 - 2026-10-26 13:12 · E1-S06: REVISAR ok
 - 2026-10-26 13:12 · E1-S06: PR aberto para revisão
+- 2026-10-26 13:14 · E2-S06: PLANEJAR — plano com 10 passos (envelope distDFeInt SOAP 1.2 + TransporteSoap/TransporteHttpJdk); DA-7 (constantes do protocolo isoladas, [VALIDAR item 9]) · próximo: desenvolver passo 1 (TipoAmbiente)
+- 2026-10-26 13:14 · E2-S06: PLANEJAR ok

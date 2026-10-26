@@ -170,3 +170,5 @@
 - 2026-10-26 08:04 · E2-S05: REVISAR ok
 - 2026-10-26 08:05 · E2-S05: 11ª revisão, APROVAR mantido (nada mudou; testes verdes) · próximo: script/autor abrir o PR da E2-S05 (ver PARA-VOCE)
 - 2026-10-26 08:05 · E2-S05: REVISAR ok
+- 2026-10-26 08:05 · E2-S05: 12ª revisão, APROVAR mantido (HEAD 7db3c65 inalterado; testes verdes) · próximo: script/autor abrir o PR da E2-S05 (ver PARA-VOCE)
+- 2026-10-26 08:05 · E2-S05: REVISAR ok

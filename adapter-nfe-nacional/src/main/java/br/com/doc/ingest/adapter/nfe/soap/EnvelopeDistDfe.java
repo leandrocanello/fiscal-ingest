@@ -12,8 +12,6 @@ import java.nio.charset.StandardCharsets;
 /** Monta o corpo {@code distDFeInt} da consulta por ultNSU. */
 public final class EnvelopeDistDfe {
 
-    static final String VERSAO_LAYOUT = "1.01";
-
     private static final JAXBContext CONTEXTO = criarContexto();
 
     private EnvelopeDistDfe() {
@@ -30,7 +28,7 @@ public final class EnvelopeDistDfe {
     /** Fragmento XML (sem declaração), UTF-8. O ultNSU vai com 15 dígitos. */
     public static byte[] distNsu(TipoAmbiente ambiente, Cnpj cnpj, Nsu ultNsu) {
         DistDfeInt req = new DistDfeInt();
-        req.setVersao(VERSAO_LAYOUT);
+        req.setVersao(ContratoDistDfe.VERSAO_LAYOUT);
         req.setTpAmb(ambiente.codigoTpAmb());
         req.setCnpj(cnpj.valor());
         req.setUltNsu(String.format("%015d", ultNsu.valor()));
@@ -44,5 +42,18 @@ public final class EnvelopeDistDfe {
         } catch (JAXBException e) {
             throw new IllegalStateException("Falha ao montar distDFeInt", e);
         }
+    }
+
+    /** Envelope SOAP 1.2 completo (UTF-8, com prólogo) em volta do distDFeInt. */
+    public static byte[] soap12DistNsu(TipoAmbiente ambiente, Cnpj cnpj, Nsu ultNsu) {
+        String corpo = new String(distNsu(ambiente, cnpj, ultNsu), StandardCharsets.UTF_8);
+        String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+                + "<soap12:Envelope xmlns:soap12=\"" + ContratoDistDfe.NS_SOAP12 + "\">"
+                + "<soap12:Body>"
+                + "<" + ContratoDistDfe.OPERACAO + " xmlns=\"" + ContratoDistDfe.NS_WSDL + "\">"
+                + "<nfeDadosMsg>" + corpo + "</nfeDadosMsg>"
+                + "</" + ContratoDistDfe.OPERACAO + ">"
+                + "</soap12:Body></soap12:Envelope>";
+        return xml.getBytes(StandardCharsets.UTF_8);
     }
 }

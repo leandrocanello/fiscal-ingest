@@ -219,3 +219,5 @@
 - 2026-10-26 13:15 · E2-S06: DESENVOLVER ok
 - 2026-10-26 13:15 · E2-S06: propOrder em DistDfeInt + teste marshalRespeitaOrdemDoSchema (obs.: o teste já passava antes do propOrder, pois a ordem de declaração dos campos coincidia; propOrder torna a ordem explícita e protegida) · próximo: EnvelopeDistDfe.distNsu (ultNSU com 15 dígitos)
 - 2026-10-26 13:16 · E2-S06: DESENVOLVER ok
+- 2026-10-26 12:00 · E2-S06: EnvelopeDistDfe.distNsu (ultNSU 15 dígitos, JAXB_FRAGMENT); teste falhou por compilação (símbolo EnvelopeDistDfe inexistente), suíte verde após · próximo: envelopeSoap12ComNfeDadosMsg / ContratoDistDfe
+- 2026-10-26 13:16 · E2-S06: DESENVOLVER ok

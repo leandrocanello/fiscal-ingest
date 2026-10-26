@@ -55,6 +55,12 @@ com log de alerta do cStat bruto (sem XML) para descobrir códigos novos.
 
 Resposta:
 
+### [DUVIDA] E2-S01 — 2026-10-23 — Prazo de guarda do XML: 5 anos (CLAUDE.md §14) × 11 anos?
+Em `docs/FONTES-OFICIAIS.md` (item 14), fontes secundárias citam o Ajuste SINIEF 2/2025 com 132 meses (11 anos) contados da autorização; o §14 diz "costuma ser 5 anos". Alcance incerto (contribuinte ou só o Fisco); o texto primário não foi lido.
+Opções: (a) manter 5 anos como mínimo e tratar o prazo como configurável por política; (b) adotar 11 anos; (c) esperar o parecer do jurídico.
+Recomendação: (a) com expurgo desligado até o parecer. Não editei o CLAUDE.md.
+Resposta:
+
 ## Resolvidos
 
 - **E1-S01 / E1-S02** — PRs #1 e #2 mergeados pelo autor em 2026-10-21 (testes verdes no PC dele).
@@ -66,10 +72,3 @@ Resposta:
 - **[DECISAO] E1-S06** — 2026-10-23: opção A + `enum MotivoAvanco`; igualdade em `Vazio` = não avançou. PR #15 mergeado em 2026-10-26.
 - **[BLOQUEIO] E1-S06** — 2026-10-23: era o plano esperando a decisão; corrigido no script (PR #14).
 - **[HUMANO] E2-S05** — 2026-10-26: PR #13 já estava mergeado; loop de REVISAR corrigido no script (PR #14).
-
-### [DUVIDA] E2-S01 — 2026-10-23 — Prazo de guarda do XML: 5 anos (CLAUDE.md §14) × 11 anos?
-Em `docs/FONTES-OFICIAIS.md` (item 14), fontes secundárias citam o Ajuste SINIEF 2/2025 com 132 meses (11 anos) contados da autorização; o §14 diz "costuma ser 5 anos". Alcance incerto (contribuinte ou só o Fisco); o texto primário não foi lido.
-Opções: (a) manter 5 anos como mínimo e tratar o prazo como configurável por política; (b) adotar 11 anos; (c) esperar o parecer do jurídico.
-Recomendação: (a) com expurgo desligado até o parecer. Não editei o CLAUDE.md.
-Resposta:
-

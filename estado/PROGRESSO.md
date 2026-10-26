@@ -194,3 +194,5 @@
 - 2026-10-26 08:10 · E2-S05: REVISAR ok
 - 2026-10-26 12:20 · E2-S05: [x] à mão — PR #13 já mergeado em 23/10 (loop de REVISAR encerrado)
 - 2026-10-26 12:20 · E1-S06: decisão A registrada; [!] → [~], falhas zeradas
+- 2026-10-26 13:10 · E1-S06: passo 2 (contrato ultNsu) feito em TDD. Falha vista: `AvancarPonteiroUseCaseTest.java:51: error: constructor BuscarLoteResultado ... cannot be applied to given types` / `:59: method executar ... cannot be applied` / `FakeSourceAdapterTest.java:71: cannot find symbol`. Suíte verde (63+5+22) · próximo: enum MotivoAvanco em ResultadoAvanco
+- 2026-10-26 13:01 · E1-S06: DESENVOLVER ok

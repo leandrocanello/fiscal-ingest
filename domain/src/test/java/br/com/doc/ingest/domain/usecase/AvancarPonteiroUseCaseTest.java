@@ -192,6 +192,73 @@ class AvancarPonteiroUseCaseTest {
             assertThat(avanco.ultNsu()).isEqualTo(new Nsu(100));
             assertThat(ledger.registrados).isEmpty();
         }
+
+        @Test
+        @DisplayName("deve rejeitar retrocesso em Vazio")
+        void deveRejeitarRetrocessoEmVazio() {
+            Cursor cursorInicial = new Cursor("bookmark-100");
+            NsuLedgerFake ledger = new NsuLedgerFake();
+            AvancarPonteiroUseCase useCase = new AvancarPonteiroUseCase(ledger);
+
+            BuscarLoteResultado resultado = new BuscarLoteResultado(
+                    List.of(),
+                    new Cursor("bookmark-50"),
+                    new Nsu(50),
+                    false,
+                    new Desfecho.Vazio()
+            );
+
+            ResultadoAvanco avanco = useCase.executar(fonte, cnpj, cursorInicial, new Nsu(100), resultado);
+
+            assertThat(avanco.motivo()).isEqualTo(MotivoAvanco.RETROCESSO_REJEITADO);
+            assertThat(avanco.cursorAtual()).isEqualTo(cursorInicial);
+            assertThat(avanco.ultNsu()).isEqualTo(new Nsu(100));
+            assertThat(ledger.registrados).isEmpty();
+        }
+
+        @Test
+        @DisplayName("Vazio com o mesmo NSU não avança e não é erro")
+        void vazioComMesmoNsuNaoAvancaSemErro() {
+            Cursor cursorInicial = new Cursor("bookmark-100");
+            AvancarPonteiroUseCase useCase = new AvancarPonteiroUseCase(new NsuLedgerFake());
+
+            BuscarLoteResultado resultado = new BuscarLoteResultado(
+                    List.of(),
+                    new Cursor("bookmark-100-bis"),
+                    new Nsu(100),
+                    false,
+                    new Desfecho.Vazio()
+            );
+
+            ResultadoAvanco avanco = useCase.executar(fonte, cnpj, cursorInicial, new Nsu(100), resultado);
+
+            assertThat(avanco.motivo()).isEqualTo(MotivoAvanco.NAO_AVANCOU);
+            assertThat(avanco.cursorAtual()).isEqualTo(cursorInicial);
+            assertThat(avanco.ultNsu()).isEqualTo(new Nsu(100));
+        }
+
+        @Test
+        @DisplayName("Ok com o mesmo NSU registra os documentos (idempotente) e não avança")
+        void okComMesmoNsuRegistraENaoAvanca() {
+            Cursor cursorInicial = new Cursor("bookmark-100");
+            NsuLedgerFake ledger = new NsuLedgerFake();
+            AvancarPonteiroUseCase useCase = new AvancarPonteiroUseCase(ledger);
+
+            BuscarLoteResultado resultado = new BuscarLoteResultado(
+                    List.of(doc(100, "COMPLETO")),
+                    new Cursor("bookmark-100-bis"),
+                    new Nsu(100),
+                    false,
+                    new Desfecho.Ok()
+            );
+
+            ResultadoAvanco avanco = useCase.executar(fonte, cnpj, cursorInicial, new Nsu(100), resultado);
+
+            assertThat(avanco.motivo()).isEqualTo(MotivoAvanco.NAO_AVANCOU);
+            assertThat(avanco.cursorAtual()).isEqualTo(cursorInicial);
+            assertThat(avanco.ultNsu()).isEqualTo(new Nsu(100));
+            assertThat(ledger.registrados).hasSize(1);
+        }
     }
 
     @Nested

@@ -37,12 +37,13 @@ public class AvancarPonteiroUseCase {
                     yield new ResultadoAvanco(cursorAtual, ultNsuAtual, MotivoAvanco.RETROCESSO_REJEITADO);
                 }
                 registrarDocumentos(fonte, cnpj, resultado);
-                Cursor novoCursor = resultado.proximoCursor();
-                yield new ResultadoAvanco(novoCursor, resultado.ultNsu(), MotivoAvanco.AVANCOU);
+                yield avancarSeMaior(cursorAtual, ultNsuAtual, resultado);
             }
             case Desfecho.Vazio vazio -> {
-                Cursor novoCursor = resultado.proximoCursor();
-                yield new ResultadoAvanco(novoCursor, resultado.ultNsu(), MotivoAvanco.AVANCOU);
+                if (resultado.ultNsu().ehMenorQue(ultNsuAtual)) {
+                    yield new ResultadoAvanco(cursorAtual, ultNsuAtual, MotivoAvanco.RETROCESSO_REJEITADO);
+                }
+                yield avancarSeMaior(cursorAtual, ultNsuAtual, resultado);
             }
             // NAO avanca em nenhum destes casos (protecao cStat 656)
             case Desfecho.LimiteAtingido la -> new ResultadoAvanco(cursorAtual, ultNsuAtual, MotivoAvanco.NAO_AVANCOU);
@@ -51,6 +52,13 @@ public class AvancarPonteiroUseCase {
             case Desfecho.ErroAutenticacao ea -> new ResultadoAvanco(cursorAtual, ultNsuAtual, MotivoAvanco.NAO_AVANCOU);
             case Desfecho.ServicoFora sf -> new ResultadoAvanco(cursorAtual, ultNsuAtual, MotivoAvanco.NAO_AVANCOU);
         };
+    }
+
+    private ResultadoAvanco avancarSeMaior(Cursor cursorAtual, Nsu ultNsuAtual, BuscarLoteResultado resultado) {
+        if (resultado.ultNsu().ehMaiorQue(ultNsuAtual)) {
+            return new ResultadoAvanco(resultado.proximoCursor(), resultado.ultNsu(), MotivoAvanco.AVANCOU);
+        }
+        return new ResultadoAvanco(cursorAtual, ultNsuAtual, MotivoAvanco.NAO_AVANCOU);
     }
 
     private void registrarDocumentos(FonteId fonte, Cnpj cnpj, BuscarLoteResultado resultado) {

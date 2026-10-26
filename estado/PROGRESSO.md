@@ -198,3 +198,5 @@
 - 2026-10-26 13:01 · E1-S06: DESENVOLVER ok
 - 2026-10-26 13:02 · E1-S06: passo 3 (MotivoAvanco em ResultadoAvanco) feito; falha vista: 'AvancarPonteiroUseCaseTest.java:67: error: cannot find symbol' (motivo()/MotivoAvanco); suíte verde · próximo: deveRejeitarRetrocessoEmOk (guarda)
 - 2026-10-26 13:02 · E1-S06: DESENVOLVER ok
+- 2026-10-26 13:04 · E1-S06: passo 4 (guarda de retrocesso em Ok) feito; falha vista: 'deveRejeitarRetrocessoEmOk FAILED — expected: RETROCESSO_REJEITADO but was: AVANCOU' (AvancarPonteiroUseCaseTest.java:189); suíte verde (96 testes) · próximo: deveRejeitarRetrocessoEmVazio + vazioComMesmoNsuNaoAvancaSemErro
+- 2026-10-26 13:04 · E1-S06: DESENVOLVER ok

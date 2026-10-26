@@ -202,3 +202,5 @@
 - 2026-10-26 13:04 · E1-S06: DESENVOLVER ok
 - 2026-10-26 13:07 · E1-S06: passo 5 (guarda de retrocesso em Vazio + igualdade = NAO_AVANCOU) feito; falhas vistas: 'deve rejeitar retrocesso em Vazio FAILED (AvancarPonteiroUseCaseTest.java:213)', 'Vazio com o mesmo NSU não avança FAILED (:235)', 'Ok com o mesmo NSU ... FAILED (:257)'; suíte verde (99 testes) · próximo: propriedade cursorNuncaRecua (jqwik)
 - 2026-10-26 13:05 · E1-S06: DESENVOLVER ok
+- 2026-10-26 13:10 · E1-S06: passo 6 (propriedade cursorNuncaRecua, jqwik) feito; passou de primeira (esperado pelo plano); validada por mutação temporária (Vazio sem guarda): 'AvancarPonteiroUseCasePropriedadesTest > cursorNuncaRecua FAILED — AssertionFailedError at AvancarPonteiroUseCasePropriedadesTest.java:46'; código restaurado, suíte verde (100 testes) · próximo: propriedades retrocessoNaoRegistraNada + desfechoDeParadaNaoRegistraNada
+- 2026-10-26 13:07 · E1-S06: DESENVOLVER ok

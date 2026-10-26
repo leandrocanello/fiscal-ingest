@@ -208,3 +208,5 @@
 - 2026-10-26 13:09 · E1-S06: DESENVOLVER ok
 - 2026-10-26 13:10 · E1-S06: Javadoc da regra de não-retrocesso (último passo de Desenvolvimento; teste: nenhum, suíte verde) · próximo: Verificação/revisão da E1-S06
 - 2026-10-26 13:10 · E1-S06: DESENVOLVER ok
+- 2026-10-26 13:20 · E1-S06: VERIFICAR — suíte inteira verde (--rerun-tasks); cursorNuncaRecua/retrocessoNaoRegistraNada/desfechoDeParadaNaoRegistraNada (jqwik, 1000 tentativas) e ArchUnit 9/9 ok; nenhum código novo · próximo: revisão
+- 2026-10-26 13:11 · E1-S06: VERIFICAR ok

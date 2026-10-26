@@ -206,3 +206,5 @@
 - 2026-10-26 13:07 · E1-S06: DESENVOLVER ok
 - 2026-10-26 13:09 · E1-S06: passo 7 (propriedades retrocessoNaoRegistraNada + desfechoDeParadaNaoRegistraNada, jqwik) feito; passaram de primeira (esperado pelo plano); validadas por mutação temporária (registrar antes da guarda em Ok e registrar em ServicoFora): 'retrocessoNaoRegistraNada FAILED — AssertionError at AvancarPonteiroUseCasePropriedadesTest.java:83', 'desfechoDeParadaNaoRegistraNada FAILED — AssertionError at ...:102'; código restaurado, suíte verde (102 testes) · próximo: Javadoc de AvancarPonteiroUseCase/BuscarLoteResultado/ResultadoAvanco
 - 2026-10-26 13:09 · E1-S06: DESENVOLVER ok
+- 2026-10-26 13:10 · E1-S06: Javadoc da regra de não-retrocesso (último passo de Desenvolvimento; teste: nenhum, suíte verde) · próximo: Verificação/revisão da E1-S06
+- 2026-10-26 13:10 · E1-S06: DESENVOLVER ok

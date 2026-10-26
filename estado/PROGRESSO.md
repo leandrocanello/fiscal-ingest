@@ -227,3 +227,5 @@
 - 2026-10-26 13:18 · E2-S06: DESENVOLVER ok
 - 2026-10-26 13:19 · E2-S06: teste status5xxE4xxVoltamComoRespostaHttp (passou de primeira: a implementação já não decidia pelo status; teste de caracterização) · próximo: timeout/conexão
 - 2026-10-26 13:19 · E2-S06: DESENVOLVER ok
+- 2026-10-26 13:20 · E2-S06: timeout→TIMEOUT, porta fechada→CONEXAO (falha inicial: timeout virava CONEXAO) · próximo: limite de corpo (respostaAcimaDoLimite)
+- 2026-10-26 13:20 · E2-S06: DESENVOLVER ok

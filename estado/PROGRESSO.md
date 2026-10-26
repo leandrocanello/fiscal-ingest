@@ -152,3 +152,5 @@
 - 2026-10-23 13:35 · E2-S05: REVISAR ok
 - 2026-10-23 17:50 · E2-S01: mergeado por você ✔
 - 2026-10-23 17:50 · E2-S04: mergeado por você ✔
+- 2026-10-26 08:00 · E2-S05: REVISAR (3ª passada) — APROVAR PARA PR mantido; main avançou (E2-S01/E2-S04) sem sobreposição, suíte verde · próximo: abrir PR
+- 2026-10-26 08:00 · E2-S05: REVISAR ok

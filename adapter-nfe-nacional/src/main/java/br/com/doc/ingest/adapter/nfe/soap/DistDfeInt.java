@@ -18,6 +18,7 @@ import jakarta.xml.bind.annotation.*;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement(name = "distDFeInt", namespace = "http://www.portalfiscal.inf.br/nfe")
+@XmlType(propOrder = {"tpAmb", "cnpj", "distNsu"})
 public class DistDfeInt {
 
     @XmlAttribute(name = "versao")

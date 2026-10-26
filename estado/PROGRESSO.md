@@ -172,3 +172,5 @@
 - 2026-10-26 08:05 · E2-S05: REVISAR ok
 - 2026-10-26 08:05 · E2-S05: 12ª revisão, APROVAR mantido (HEAD 7db3c65 inalterado; testes verdes) · próximo: script/autor abrir o PR da E2-S05 (ver PARA-VOCE)
 - 2026-10-26 08:05 · E2-S05: REVISAR ok
+- 2026-10-26 08:06 · E2-S05: 13ª revisão, parecer APROVAR mantido (HEAD 7db3c65 inalterado, testes verdes) · próximo: abrir o PR a partir de planos/E2-S05-pr.md (loop do REVISAR, ver PARA-VOCE)
+- 2026-10-26 08:06 · E2-S05: REVISAR ok

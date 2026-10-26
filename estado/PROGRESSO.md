@@ -215,3 +215,5 @@
 - 2026-10-26 13:12 · E1-S06: PR aberto para revisão
 - 2026-10-26 13:14 · E2-S06: PLANEJAR — plano com 10 passos (envelope distDFeInt SOAP 1.2 + TransporteSoap/TransporteHttpJdk); DA-7 (constantes do protocolo isoladas, [VALIDAR item 9]) · próximo: desenvolver passo 1 (TipoAmbiente)
 - 2026-10-26 13:14 · E2-S06: PLANEJAR ok
+- 2026-10-26 12:00 · E2-S06: TipoAmbiente (passo 1; falha inicial: 'package TipoAmbiente does not exist') · próximo: ordem do schema em DistDfeInt (propOrder)
+- 2026-10-26 13:15 · E2-S06: DESENVOLVER ok

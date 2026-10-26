@@ -196,3 +196,5 @@
 - 2026-10-26 12:20 · E1-S06: decisão A registrada; [!] → [~], falhas zeradas
 - 2026-10-26 13:10 · E1-S06: passo 2 (contrato ultNsu) feito em TDD. Falha vista: `AvancarPonteiroUseCaseTest.java:51: error: constructor BuscarLoteResultado ... cannot be applied to given types` / `:59: method executar ... cannot be applied` / `FakeSourceAdapterTest.java:71: cannot find symbol`. Suíte verde (63+5+22) · próximo: enum MotivoAvanco em ResultadoAvanco
 - 2026-10-26 13:01 · E1-S06: DESENVOLVER ok
+- 2026-10-26 13:02 · E1-S06: passo 3 (MotivoAvanco em ResultadoAvanco) feito; falha vista: 'AvancarPonteiroUseCaseTest.java:67: error: cannot find symbol' (motivo()/MotivoAvanco); suíte verde · próximo: deveRejeitarRetrocessoEmOk (guarda)
+- 2026-10-26 13:02 · E1-S06: DESENVOLVER ok

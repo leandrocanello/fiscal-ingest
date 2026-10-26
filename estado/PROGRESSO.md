@@ -188,3 +188,5 @@
 - 2026-10-26 08:09 · E2-S05: REVISAR ok
 - 2026-10-26 08:09 · E2-S05: REVISAR (20ª passada) — parecer APROVAR mantido, HEAD 7db3c65 inalterado, testes verdes, PR sem alteração · próximo: abrir o PR a partir de planos/E2-S05-pr.md (loop registrado em PARA-VOCE.md)
 - 2026-10-26 08:09 · E2-S05: REVISAR ok
+- 2026-10-26 08:09 · E2-S05: 21ª revisão, sem mudança (APROVAR PARA PR mantido; PR pronto em planos/E2-S05-pr.md) · próximo: abrir o PR (ver [HUMANO] E2-S05 em PARA-VOCE.md)
+- 2026-10-26 08:10 · E2-S05: REVISAR ok

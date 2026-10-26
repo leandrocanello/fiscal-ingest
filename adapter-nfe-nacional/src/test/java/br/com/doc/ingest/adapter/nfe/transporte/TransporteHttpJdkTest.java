@@ -102,4 +102,30 @@ class TransporteHttpJdkTest {
         assertThat(resp.status()).isEqualTo(200);
         assertThat(resp.corpo()).isEqualTo(corpo);
     }
+
+    @Test
+    void respostaAcimaDoLimiteViraFalhaRespostaGrandeDemais() {
+        servidor.stubFor(post(urlEqualTo(CAMINHO)).willReturn(aResponse().withStatus(200).withBody(new byte[2048])));
+        var pequeno = new TransporteHttpJdk(HttpClient.newHttpClient(), Duration.ofSeconds(5), 1024);
+
+        ResultadoTransporte r = pequeno.enviar(endpoint(), ACTION, new byte[] {1});
+
+        assertThat(r).isEqualTo(new ResultadoTransporte.FalhaTransporte(ResultadoTransporte.Motivo.RESPOSTA_GRANDE_DEMAIS));
+    }
+
+    @Test
+    void exatamenteNoLimiteEhAceita() {
+        servidor.stubFor(post(urlEqualTo(CAMINHO)).willReturn(aResponse().withStatus(200).withBody(new byte[1024])));
+        var pequeno = new TransporteHttpJdk(HttpClient.newHttpClient(), Duration.ofSeconds(5), 1024);
+
+        ResultadoTransporte r = pequeno.enviar(endpoint(), ACTION, new byte[] {1});
+
+        assertThat(r).isInstanceOf(ResultadoTransporte.RespostaHttp.class);
+        assertThat(((ResultadoTransporte.RespostaHttp) r).corpo()).hasSize(1024);
+    }
+
+    @Test
+    void limitePadraoEDezesseisMebibytes() {
+        assertThat(TransporteHttpJdk.LIMITE_PADRAO_BYTES).isEqualTo(16L * 1024 * 1024);
+    }
 }

@@ -13,12 +13,15 @@ import br.com.doc.ingest.domain.model.Nsu;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -61,6 +64,7 @@ class AvancarPonteiroUseCaseTest {
             assertThat(avanco.cursorAtual()).isEqualTo(new Cursor("bookmark-105"));
             assertThat(avanco.ultNsu()).isEqualTo(new Nsu(105));
             assertThat(avanco.avancou()).isTrue();
+            assertThat(avanco.motivo()).isEqualTo(MotivoAvanco.AVANCOU);
         }
 
         @Test
@@ -81,6 +85,7 @@ class AvancarPonteiroUseCaseTest {
             ResultadoAvanco avanco = useCase.executar(fonte, cnpj, cursorInicial, new Nsu(100), resultado);
 
             assertThat(avanco.avancou()).isTrue();
+            assertThat(avanco.motivo()).isEqualTo(MotivoAvanco.AVANCOU);
             assertThat(avanco.cursorAtual()).isEqualTo(new Cursor("bookmark-101"));
             assertThat(avanco.ultNsu()).isEqualTo(new Nsu(101));
         }
@@ -108,6 +113,7 @@ class AvancarPonteiroUseCaseTest {
             ResultadoAvanco avanco = useCase.executar(fonte, cnpj, cursorInicial, new Nsu(100), resultado);
 
             assertThat(avanco.avancou()).isFalse();
+            assertThat(avanco.motivo()).isEqualTo(MotivoAvanco.NAO_AVANCOU);
             assertThat(avanco.cursorAtual()).isEqualTo(cursorInicial); // mantém o original
             assertThat(avanco.ultNsu()).isEqualTo(new Nsu(100));
         }
@@ -129,6 +135,30 @@ class AvancarPonteiroUseCaseTest {
 
             ResultadoAvanco avanco = useCase.executar(fonte, cnpj, cursorInicial, new Nsu(100), resultado);
 
+            assertThat(avanco.avancou()).isFalse();
+            assertThat(avanco.motivo()).isEqualTo(MotivoAvanco.NAO_AVANCOU);
+            assertThat(avanco.cursorAtual()).isEqualTo(cursorInicial);
+            assertThat(avanco.ultNsu()).isEqualTo(new Nsu(100));
+        }
+
+        @ParameterizedTest(name = "{0}")
+        @MethodSource("br.com.doc.ingest.domain.usecase.AvancarPonteiroUseCaseTest#desfechosDeParada")
+        @DisplayName("motivo é NAO_AVANCOU em todo desfecho de parada")
+        void motivoNaoAvancouEmDesfechoDeParada(Desfecho desfecho) {
+            Cursor cursorInicial = new Cursor("bookmark-100");
+            AvancarPonteiroUseCase useCase = new AvancarPonteiroUseCase(new NsuLedgerFake());
+
+            BuscarLoteResultado resultado = new BuscarLoteResultado(
+                    List.of(),
+                    new Cursor("bookmark-999"),
+                    new Nsu(999),
+                    false,
+                    desfecho
+            );
+
+            ResultadoAvanco avanco = useCase.executar(fonte, cnpj, cursorInicial, new Nsu(100), resultado);
+
+            assertThat(avanco.motivo()).isEqualTo(MotivoAvanco.NAO_AVANCOU);
             assertThat(avanco.avancou()).isFalse();
             assertThat(avanco.cursorAtual()).isEqualTo(cursorInicial);
             assertThat(avanco.ultNsu()).isEqualTo(new Nsu(100));
@@ -188,6 +218,16 @@ class AvancarPonteiroUseCaseTest {
 
             assertThat(ledger.registrados).isEmpty();
         }
+    }
+
+    static Stream<Desfecho> desfechosDeParada() {
+        return Stream.of(
+                new Desfecho.LimiteAtingido(Duration.ofHours(1)),
+                new Desfecho.IndisponivelTemporario(Duration.ofMinutes(5)),
+                new Desfecho.IndisponivelDefinitivo("schema"),
+                new Desfecho.ErroAutenticacao("certificado"),
+                new Desfecho.ServicoFora("paralisado")
+        );
     }
 
     // --- Helpers ---

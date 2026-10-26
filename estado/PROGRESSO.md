@@ -210,3 +210,6 @@
 - 2026-10-26 13:10 · E1-S06: DESENVOLVER ok
 - 2026-10-26 13:20 · E1-S06: VERIFICAR — suíte inteira verde (--rerun-tasks); cursorNuncaRecua/retrocessoNaoRegistraNada/desfechoDeParadaNaoRegistraNada (jqwik, 1000 tentativas) e ArchUnit 9/9 ok; nenhum código novo · próximo: revisão
 - 2026-10-26 13:11 · E1-S06: VERIFICAR ok
+- 2026-10-26 13:12 · E1-S06: REVISAR — APROVAR PARA PR (inv. 1 com guarda + 3 propriedades; suíte verde); PR em planos/E1-S06-pr.md · próximo: merge pelo autor
+- 2026-10-26 13:12 · E1-S06: REVISAR ok
+- 2026-10-26 13:12 · E1-S06: PR aberto para revisão

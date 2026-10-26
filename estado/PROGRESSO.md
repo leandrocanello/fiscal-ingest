@@ -231,3 +231,5 @@
 - 2026-10-26 13:20 · E2-S06: DESENVOLVER ok
 - 2026-10-26 · E2-S06: limite de corpo da resposta (RESPOSTA_GRANDE_DEMAIS, LIMITE_PADRAO 16 MiB); falha vista: `respostaAcimaDoLimiteViraFalhaRespostaGrandeDemais` FAILED · próximo: toString sem vazar conteúdo (inv. 13)
 - 2026-10-26 13:21 · E2-S06: DESENVOLVER ok
+- 2026-10-26 13:22 · E2-S06: toString/cópia defensiva em RespostaHttp (inv. 13); falha inicial: toStringDaRespostaNaoMostraCorpo e respostaTemCopiaDefensiva (AssertionError) · próximo: nenhumaUrlDeSefazNoCodigo
+- 2026-10-26 13:22 · E2-S06: DESENVOLVER ok

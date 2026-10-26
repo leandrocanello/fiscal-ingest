@@ -40,7 +40,7 @@ não pode compará-lo. A auditoria deixou "design a propor". A escolha muda o co
 Obs. (2026-10-23 08:02): o ROADMAP está com E1-S06 em `[~]`, então o script continua chamando o DESENVOLVER,
 que não tem como avançar. Sugiro `[h]` até você responder.
 
-Resposta:
+Resposta: **A** (2026-10-23, autor). Sub-decisão 1: sim — `Vazio` com `ultNsu == atual` é "não avançou", sem erro. Sub-decisão 2: `enum MotivoAvanco { AVANCOU, NAO_AVANCOU, RETROCESSO_REJEITADO }` no `ResultadoAvanco`.
 
 ### [DECISAO] E2-S02 — 2026-10-23 — Mapeamento de `cStat` 108 / 109 / 632 / 589 para `Desfecho` (auditoria A1–A3)
 
@@ -117,3 +117,5 @@ Resposta:
 - O que é preciso: a E2-S05 está aprovada desde 2026-10-23 e já passou por 22 revisões idênticas (última: 2026-10-26) (HEAD `7db3c65` sem mudança). O script parece não abrir o PR a partir de `planos/E2-S05-pr.md` e volta a chamar o REVISAR (ROADMAP ainda `[~]`).
 - Opções: (a) conferir no log do script por que o passo "abrir PR" não rodou/falhou e abrir o PR manualmente; (b) marcar a subetapa como pronta para o script avançar.
 - Recomendação: (a). O arquivo do PR está pronto e válido; cada nova revisão só gasta janela.
+
+Resposta (2026-10-26): o PR #13 já tinha sido mergeado em 2026-10-23 13:16; o script não vê merge de subetapa em `[~]`, por isso o loop. E2-S05 marcada `[x]` à mão; correção do script vai em PR.

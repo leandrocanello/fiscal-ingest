@@ -192,3 +192,5 @@
 - 2026-10-26 08:10 · E2-S05: REVISAR ok
 - 2026-10-26 08:10 · E2-S05: 22ª revisão, parecer APROVAR mantido (HEAD 7db3c65, testes verdes, PR em planos/E2-S05-pr.md) · próximo: humano abrir o PR / corrigir o loop do script
 - 2026-10-26 08:10 · E2-S05: REVISAR ok
+- 2026-10-26 12:20 · E2-S05: [x] à mão — PR #13 já mergeado em 23/10 (loop de REVISAR encerrado)
+- 2026-10-26 12:20 · E1-S06: decisão A registrada; [!] → [~], falhas zeradas

@@ -200,3 +200,5 @@
 - 2026-10-26 13:02 · E1-S06: DESENVOLVER ok
 - 2026-10-26 13:04 · E1-S06: passo 4 (guarda de retrocesso em Ok) feito; falha vista: 'deveRejeitarRetrocessoEmOk FAILED — expected: RETROCESSO_REJEITADO but was: AVANCOU' (AvancarPonteiroUseCaseTest.java:189); suíte verde (96 testes) · próximo: deveRejeitarRetrocessoEmVazio + vazioComMesmoNsuNaoAvancaSemErro
 - 2026-10-26 13:04 · E1-S06: DESENVOLVER ok
+- 2026-10-26 13:07 · E1-S06: passo 5 (guarda de retrocesso em Vazio + igualdade = NAO_AVANCOU) feito; falhas vistas: 'deve rejeitar retrocesso em Vazio FAILED (AvancarPonteiroUseCaseTest.java:213)', 'Vazio com o mesmo NSU não avança FAILED (:235)', 'Ok com o mesmo NSU ... FAILED (:257)'; suíte verde (99 testes) · próximo: propriedade cursorNuncaRecua (jqwik)
+- 2026-10-26 13:05 · E1-S06: DESENVOLVER ok

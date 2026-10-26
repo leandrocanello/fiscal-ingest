@@ -5,6 +5,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.net.http.HttpTimeoutException;
 import java.time.Duration;
 import java.util.Objects;
 
@@ -31,6 +32,8 @@ public final class TransporteHttpJdk implements TransporteSoap {
         try {
             HttpResponse<byte[]> resposta = cliente.send(requisicao, HttpResponse.BodyHandlers.ofByteArray());
             return new ResultadoTransporte.RespostaHttp(resposta.statusCode(), resposta.body());
+        } catch (HttpTimeoutException e) {
+            return new ResultadoTransporte.FalhaTransporte(ResultadoTransporte.Motivo.TIMEOUT);
         } catch (IOException e) {
             return new ResultadoTransporte.FalhaTransporte(ResultadoTransporte.Motivo.CONEXAO);
         } catch (InterruptedException e) {

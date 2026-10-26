@@ -71,6 +71,26 @@ class TransporteHttpJdkTest {
     }
 
     @Test
+    void atrasoAlemDoTimeoutViraFalhaTimeout() {
+        servidor.stubFor(post(urlEqualTo(CAMINHO)).willReturn(aResponse().withStatus(200).withFixedDelay(1500)));
+        var curto = new TransporteHttpJdk(HttpClient.newHttpClient(), Duration.ofMillis(200), 1024);
+
+        ResultadoTransporte r = curto.enviar(endpoint(), ACTION, new byte[] {1});
+
+        assertThat(r).isEqualTo(new ResultadoTransporte.FalhaTransporte(ResultadoTransporte.Motivo.TIMEOUT));
+    }
+
+    @Test
+    void portaFechadaViraFalhaConexao() {
+        URI fechado = endpoint();
+        servidor.stop();
+
+        ResultadoTransporte r = transporte.enviar(fechado, ACTION, new byte[] {1});
+
+        assertThat(r).isEqualTo(new ResultadoTransporte.FalhaTransporte(ResultadoTransporte.Motivo.CONEXAO));
+    }
+
+    @Test
     void respostaDevolveCorpoByteAByte() {
         byte[] corpo = {0, 1, 2, (byte) 0xFF, (byte) 0xC3, 10, 13, 127};
         servidor.stubFor(post(urlEqualTo(CAMINHO)).willReturn(aResponse().withStatus(200).withBody(corpo)));

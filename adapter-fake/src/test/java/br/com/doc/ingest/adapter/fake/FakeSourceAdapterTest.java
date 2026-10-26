@@ -68,6 +68,7 @@ class FakeSourceAdapterTest {
             assertThat(resultado.documentos()).hasSize(2);
             assertThat(resultado.documentos().get(0).nsu()).isEqualTo(nsu(1));
             assertThat(resultado.documentos().get(1).nsu()).isEqualTo(nsu(2));
+            assertThat(resultado.ultNsu()).isEqualTo(nsu(2));
             assertThat(resultado.temMais()).isFalse();
         }
 
@@ -81,6 +82,7 @@ class FakeSourceAdapterTest {
 
             assertThat(resultado.desfecho()).isInstanceOf(Desfecho.Vazio.class);
             assertThat(resultado.documentos()).isEmpty();
+            assertThat(resultado.ultNsu()).isEqualTo(nsu(0));
         }
     }
 

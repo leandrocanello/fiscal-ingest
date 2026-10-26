@@ -51,13 +51,15 @@ class AvancarPonteiroUseCaseTest {
             BuscarLoteResultado resultado = new BuscarLoteResultado(
                     List.of(),
                     new Cursor("bookmark-105"),
+                    new Nsu(105),
                     false,
                     new Desfecho.Ok()
             );
 
-            ResultadoAvanco avanco = useCase.executar(fonte, cnpj, cursorInicial, resultado);
+            ResultadoAvanco avanco = useCase.executar(fonte, cnpj, cursorInicial, new Nsu(100), resultado);
 
             assertThat(avanco.cursorAtual()).isEqualTo(new Cursor("bookmark-105"));
+            assertThat(avanco.ultNsu()).isEqualTo(new Nsu(105));
             assertThat(avanco.avancou()).isTrue();
         }
 
@@ -71,14 +73,16 @@ class AvancarPonteiroUseCaseTest {
             BuscarLoteResultado resultado = new BuscarLoteResultado(
                     List.of(),
                     new Cursor("bookmark-101"),
+                    new Nsu(101),
                     false,
                     new Desfecho.Vazio()
             );
 
-            ResultadoAvanco avanco = useCase.executar(fonte, cnpj, cursorInicial, resultado);
+            ResultadoAvanco avanco = useCase.executar(fonte, cnpj, cursorInicial, new Nsu(100), resultado);
 
             assertThat(avanco.avancou()).isTrue();
             assertThat(avanco.cursorAtual()).isEqualTo(new Cursor("bookmark-101"));
+            assertThat(avanco.ultNsu()).isEqualTo(new Nsu(101));
         }
     }
 
@@ -96,14 +100,16 @@ class AvancarPonteiroUseCaseTest {
             BuscarLoteResultado resultado = new BuscarLoteResultado(
                     List.of(),
                     new Cursor("bookmark-999"),  // adapter pode ter retornado cursor, mas ignoramos
+                    new Nsu(999),
                     false,
                     new Desfecho.LimiteAtingido(Duration.ofHours(1))
             );
 
-            ResultadoAvanco avanco = useCase.executar(fonte, cnpj, cursorInicial, resultado);
+            ResultadoAvanco avanco = useCase.executar(fonte, cnpj, cursorInicial, new Nsu(100), resultado);
 
             assertThat(avanco.avancou()).isFalse();
             assertThat(avanco.cursorAtual()).isEqualTo(cursorInicial); // mantém o original
+            assertThat(avanco.ultNsu()).isEqualTo(new Nsu(100));
         }
 
         @Test
@@ -116,14 +122,16 @@ class AvancarPonteiroUseCaseTest {
             BuscarLoteResultado resultado = new BuscarLoteResultado(
                     List.of(),
                     new Cursor("bookmark-999"),
+                    new Nsu(999),
                     false,
                     new Desfecho.IndisponivelTemporario(Duration.ofMinutes(5))
             );
 
-            ResultadoAvanco avanco = useCase.executar(fonte, cnpj, cursorInicial, resultado);
+            ResultadoAvanco avanco = useCase.executar(fonte, cnpj, cursorInicial, new Nsu(100), resultado);
 
             assertThat(avanco.avancou()).isFalse();
             assertThat(avanco.cursorAtual()).isEqualTo(cursorInicial);
+            assertThat(avanco.ultNsu()).isEqualTo(new Nsu(100));
         }
     }
 
@@ -146,11 +154,12 @@ class AvancarPonteiroUseCaseTest {
             BuscarLoteResultado resultado = new BuscarLoteResultado(
                     docs,
                     new Cursor("bookmark-200"),
+                    new Nsu(200),
                     false,
                     new Desfecho.Ok()
             );
 
-            useCase.executar(fonte, cnpj, Cursor.inicial(), resultado);
+            useCase.executar(fonte, cnpj, Cursor.inicial(), new Nsu(0), resultado);
 
             assertThat(ledger.registrados).hasSize(3);
             assertThat(ledger.registrados.get(0).nsu()).isEqualTo(new Nsu(1));
@@ -170,11 +179,12 @@ class AvancarPonteiroUseCaseTest {
             BuscarLoteResultado resultado = new BuscarLoteResultado(
                     List.of(doc(1, "RESUMO")),  // mesmo com doc, não registra
                     new Cursor("bookmark-200"),
+                    new Nsu(200),
                     false,
                     new Desfecho.LimiteAtingido(Duration.ofHours(1))
             );
 
-            useCase.executar(fonte, cnpj, Cursor.inicial(), resultado);
+            useCase.executar(fonte, cnpj, Cursor.inicial(), new Nsu(0), resultado);
 
             assertThat(ledger.registrados).isEmpty();
         }

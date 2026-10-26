@@ -9,6 +9,7 @@ import br.com.doc.ingest.domain.ledger.StatusNsu;
 import br.com.doc.ingest.domain.model.Cnpj;
 import br.com.doc.ingest.domain.model.Documento;
 import br.com.doc.ingest.domain.model.FonteId;
+import br.com.doc.ingest.domain.model.Nsu;
 
 /**
  * Caso de uso que avanca o ponteiro (cursor) com base no Desfecho.
@@ -26,25 +27,26 @@ public class AvancarPonteiroUseCase {
         this.ledger = ledger;
     }
 
-    public ResultadoAvanco executar(FonteId fonte, Cnpj cnpj, Cursor cursorAtual, BuscarLoteResultado resultado) {
+    public ResultadoAvanco executar(FonteId fonte, Cnpj cnpj, Cursor cursorAtual, Nsu ultNsuAtual,
+                                   BuscarLoteResultado resultado) {
         Desfecho desfecho = resultado.desfecho();
 
         return switch (desfecho) {
             case Desfecho.Ok ok -> {
                 registrarDocumentos(fonte, cnpj, resultado);
                 Cursor novoCursor = resultado.proximoCursor();
-                yield new ResultadoAvanco(novoCursor, true);
+                yield new ResultadoAvanco(novoCursor, resultado.ultNsu(), true);
             }
             case Desfecho.Vazio vazio -> {
                 Cursor novoCursor = resultado.proximoCursor();
-                yield new ResultadoAvanco(novoCursor, true);
+                yield new ResultadoAvanco(novoCursor, resultado.ultNsu(), true);
             }
             // NAO avanca em nenhum destes casos (protecao cStat 656)
-            case Desfecho.LimiteAtingido la -> new ResultadoAvanco(cursorAtual, false);
-            case Desfecho.IndisponivelTemporario it -> new ResultadoAvanco(cursorAtual, false);
-            case Desfecho.IndisponivelDefinitivo id -> new ResultadoAvanco(cursorAtual, false);
-            case Desfecho.ErroAutenticacao ea -> new ResultadoAvanco(cursorAtual, false);
-            case Desfecho.ServicoFora sf -> new ResultadoAvanco(cursorAtual, false);
+            case Desfecho.LimiteAtingido la -> new ResultadoAvanco(cursorAtual, ultNsuAtual, false);
+            case Desfecho.IndisponivelTemporario it -> new ResultadoAvanco(cursorAtual, ultNsuAtual, false);
+            case Desfecho.IndisponivelDefinitivo id -> new ResultadoAvanco(cursorAtual, ultNsuAtual, false);
+            case Desfecho.ErroAutenticacao ea -> new ResultadoAvanco(cursorAtual, ultNsuAtual, false);
+            case Desfecho.ServicoFora sf -> new ResultadoAvanco(cursorAtual, ultNsuAtual, false);
         };
     }
 

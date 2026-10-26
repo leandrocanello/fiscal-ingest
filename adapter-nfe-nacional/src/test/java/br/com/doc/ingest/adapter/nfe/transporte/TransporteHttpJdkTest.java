@@ -56,6 +56,21 @@ class TransporteHttpJdkTest {
     }
 
     @Test
+    void status5xxE4xxVoltamComoRespostaHttp() {
+        String fault = "<Envelope><Body><Fault>erro sintetico</Fault></Body></Envelope>";
+        for (int status : new int[] {500, 404}) {
+            servidor.stubFor(post(urlEqualTo(CAMINHO)).willReturn(aResponse().withStatus(status).withBody(fault)));
+
+            ResultadoTransporte r = transporte.enviar(endpoint(), ACTION, new byte[] {1});
+
+            assertThat(r).isInstanceOf(ResultadoTransporte.RespostaHttp.class);
+            ResultadoTransporte.RespostaHttp resp = (ResultadoTransporte.RespostaHttp) r;
+            assertThat(resp.status()).isEqualTo(status);
+            assertThat(resp.corpo()).isEqualTo(fault.getBytes(StandardCharsets.UTF_8));
+        }
+    }
+
+    @Test
     void respostaDevolveCorpoByteAByte() {
         byte[] corpo = {0, 1, 2, (byte) 0xFF, (byte) 0xC3, 10, 13, 127};
         servidor.stubFor(post(urlEqualTo(CAMINHO)).willReturn(aResponse().withStatus(200).withBody(corpo)));

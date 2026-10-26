@@ -17,6 +17,12 @@ for id in $(rm_ids_status r) $(rm_ids_status c); do
   fi
 done
 
+# Em andamento cujo PR você já mergeou (ex.: abriu o PR à mão): fecha a subetapa (caso E2-S05)
+for id in $(rm_ids_status '~'); do
+  [[ "$(gh pr view "auto/$id" --json state -q .state 2>/dev/null)" == "MERGED" ]] || continue
+  rm_set "$id" x; progresso "$id: PR já mergeado por você ✔ (estava [~])"
+done
+
 # Empilhadas: base auto/DEP que já foi mergeada → rebase para main
 for id in $(rm_ids_status '~') $(rm_ids_status r) $(rm_ids_status c); do
   base=$(estado_get ".base[\"$id\"]" || echo main)

@@ -63,7 +63,12 @@ for ((i=1; i<=MAX_CHAMADAS_JANELA; i++)); do
       PREPARAR) rm_set "$ID" h; progresso "$ID: preparado para você (PARA-VOCE.md)" ;;
       REVISAR)
         if [[ -f "$FI_ESTADO_DIR/planos/$ID-pr.md" ]] && ! plano_tem_aberto "$FI_ESTADO_DIR/planos/$ID.md" "Desenvolvimento"; then
-          "$AQUI/github.sh" publicar "$ID" "$BASE" && rm_set "$ID" r && progresso "$ID: PR aberto para revisão"
+          if "$AQUI/github.sh" publicar "$ID" "$BASE"; then rm_set "$ID" r; progresso "$ID: PR aberto para revisão"
+          else
+            # Sem isto o REVISAR roda de novo a cada chamada (22× em 2026-10-26)
+            rm_set "$ID" h; progresso "$ID: [h] revisão aprovada, mas abrir o PR falhou"
+            printf '\n### [HUMANO] %s — %s — abrir o PR falhou\nRevisão aprovada; `github.sh publicar` falhou (ver log da janela). Abra o PR com `planos/%s-pr.md` ou corrija e troque o status para `[~]`.\n' "$ID" "$(date +%F)" "$ID" >> "$FI_ESTADO_DIR/PARA-VOCE.md"
+          fi
         else
           progresso "$ID: revisor devolveu para correção"
         fi ;;

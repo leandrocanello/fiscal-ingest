@@ -22,6 +22,11 @@ fi
 
 # 3) Subetapa em andamento
 atual="$(rm_ids_status '~' | head -1)"
+# Plano com passo "- [!]" está esperando decisão sua: vira [h] em vez de gastar chamadas (caso E1-S06)
+if [[ -n "$atual" ]] && grep -qE '^\s*- \[!\]' "$FI_ESTADO_DIR/planos/$atual.md" 2>/dev/null; then
+  rm_set "$atual" h; progresso "$atual: plano aguarda decisão (passo [!]) → [h]"
+  atual="$(rm_ids_status '~' | head -1)"
+fi
 if [[ -n "$atual" ]]; then
   plano="$FI_ESTADO_DIR/planos/$atual.md"
   base="$(base_de "$atual")"

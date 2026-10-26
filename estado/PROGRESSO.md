@@ -158,3 +158,5 @@
 - 2026-10-26 08:01 · E2-S05: REVISAR ok
 - 2026-10-26 08:01 · E2-S05: 5ª revisão, parecer APROVAR mantido (nada mudou; testes verdes) · próximo: script abrir o PR da E2-S05
 - 2026-10-26 08:02 · E2-S05: REVISAR ok
+- 2026-10-26 08:02 · E2-S05: 6ª revisão, APROVAR mantido (nada mudou; testes verdes); loop de REVISAR sinalizado em PARA-VOCE · próximo: script/autor abrir o PR da E2-S05
+- 2026-10-26 08:02 · E2-S05: REVISAR ok

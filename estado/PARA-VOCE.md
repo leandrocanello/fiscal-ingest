@@ -112,3 +112,8 @@ Em `docs/FONTES-OFICIAIS.md` (item 14), fontes secundárias citam o Ajuste SINIE
 Opções: (a) manter 5 anos como mínimo e tratar o prazo como configurável por política; (b) adotar 11 anos; (c) esperar o parecer do jurídico.
 Recomendação: (a) com expurgo desligado até o parecer. Não editei o CLAUDE.md.
 Resposta:
+
+### [HUMANO] E2-S05 — 2026-10-26 — PR aprovado mas não aberto; REVISAR roda em loop
+- O que é preciso: a E2-S05 está aprovada desde 2026-10-23 e já passou por 6 revisões idênticas (HEAD `7db3c65` sem mudança). O script parece não abrir o PR a partir de `planos/E2-S05-pr.md` e volta a chamar o REVISAR (ROADMAP ainda `[~]`).
+- Opções: (a) conferir no log do script por que o passo "abrir PR" não rodou/falhou e abrir o PR manualmente; (b) marcar a subetapa como pronta para o script avançar.
+- Recomendação: (a). O arquivo do PR está pronto e válido; cada nova revisão só gasta janela.

@@ -14,10 +14,16 @@ import br.com.doc.ingest.domain.model.Nsu;
 /**
  * Caso de uso que avanca o ponteiro (cursor) com base no Desfecho.
  *
- * Regras criticas:
- * - Ok / Vazio -> avanca cursor + persiste entradas no ledger
- * - LimiteAtingido -> NAO avanca (cStat 656)
- * - IndisponivelTemporario -> NAO avanca (retry sem mover ponteiro)
+ * <p>Regras criticas (invariante 1 — nao-retrocesso de NSU):
+ * <ul>
+ *   <li>So avanca se novo &ge; atual ({@code resultado.ultNsu()} comparado com {@code ultNsuAtual}).
+ *       Novo &gt; atual em Ok/Vazio = {@link MotivoAvanco#AVANCOU}; igual = {@link MotivoAvanco#NAO_AVANCOU}
+ *       (em Ok, os documentos ainda sao registrados, de forma idempotente — ADR-005).</li>
+ *   <li>Recuo (novo &lt; atual) = {@link MotivoAvanco#RETROCESSO_REJEITADO}: erro de consistencia, nunca
+ *       retentar; nada e registrado no ledger e cursor/NSU de entrada sao devolvidos.</li>
+ *   <li>LimiteAtingido, IndisponivelTemporario, IndisponivelDefinitivo, ErroAutenticacao, ServicoFora
+ *       -> NAO avanca e nao registra nada.</li>
+ * </ul>
  */
 public class AvancarPonteiroUseCase {
 

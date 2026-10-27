@@ -296,3 +296,5 @@
 - 2026-10-27 08:38 · E3-S01: PLANEJAR ok
 - 2026-10-27 08:39 · E3-S01: enum Ambiente (falha inicial: cannot find symbol Ambiente) · próximo: módulo infra-postgres + Testcontainers
 - 2026-10-27 08:39 · E3-S01: DESENVOLVER ok
+- 2026-10-27 08:40 · E3-S01: módulo infra-postgres criado (JDBI, Flyway, Testcontainers); PostgresDisponivelTest verde (falha inicial: módulo/dependências inexistentes) · próximo: ArquiteturaInfraTest
+- 2026-10-27 08:40 · E3-S01: DESENVOLVER ok

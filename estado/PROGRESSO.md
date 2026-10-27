@@ -319,3 +319,5 @@
 - 2026-10-27 13:01 · E3-S01: REVISAR — APROVAR PARA PR (inv. 4/5/6/13 com teste; achados menores: TRUNCATE fora do trigger, URL no toString, tentativa append-only) · próximo: abrir PR
 - 2026-10-27 13:01 · E3-S01: REVISAR ok
 - 2026-10-27 13:01 · E3-S01: PR aberto para revisão
+- 2026-10-27 20:45 · E2-S11: decisão do autor registrada (RSA_SHA1 padrão, parametrizável; MOC 7.0) → [~] · E2-S13 criada (envio do evento)
+- 2026-10-27 20:45 · E2-S10/E2-S03: dúvidas respondidas (truststore (c); PR de docs pelo Claude)

@@ -29,8 +29,9 @@
 - [ ] E2-S08 | AUTO     | deps: E2-S07 | suíte de contrato do SourceAdapter (fake + nfe-nacional)
 - [ ] E2-S09 | AUTO     | deps: E2-S07 | buscarUm (consNSU) + consChNFe
 - [r] E2-S10 | AUTO+    | deps: E1-S01 | Credencial = bytes do .pfx + senha; carregador (inclui legado) + SSLContext por certificado + cache
-- [h] E2-S11 | AUTO+    | deps: E2-S10,E2-S01 | manifestar: evento 210210 + XML-DSig (com chave de teste gerada no teste)
-- [ ] E2-S12 | HUMANO   | deps: E2-S09,E2-S11 | smoke em homologação: distNSU, consChNFe, ciência, autXML
+- [~] E2-S11 | AUTO+    | deps: E2-S10,E2-S01 | manifestar: evento 210210 + XML-DSig (com chave de teste gerada no teste)
+- [ ] E2-S13 | AUTO+    | deps: E2-S07,E2-S11 | enviar o evento de manifestação (RecepcaoEvento SOAP) + mapear o retEvento
+- [ ] E2-S12 | HUMANO   | deps: E2-S09,E2-S13 | smoke em homologação: distNSU, consChNFe, ciência, autXML
 
 ## Etapa 3 — Persistência e catálogo (Fase 3)
 - [r] E3-S01 | AUTO     | deps: E1-S03 | JDBI + Flyway (ADR-025) + esquema base (tenant, empresa, estado_coleta, ledger_*)

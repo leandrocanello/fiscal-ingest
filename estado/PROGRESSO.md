@@ -261,3 +261,5 @@
 - 2026-10-27 08:13 · E2-S03: DESENVOLVER ok
 - 2026-10-27 08:13 · E2-S03: passo 8 (Javadoc CStatMapper/cabeçalho do teste/Desfecho só comentários; sem teste, passo de doc); suíte verde; Desenvolvimento concluído · próximo: Verificação/revisão
 - 2026-10-27 08:14 · E2-S03: DESENVOLVER ok
+- 2026-10-27 08:20 · E2-S03: VERIFICAR ok (jqwik, diff do domain só Javadoc, Logger só no CStatMapper, suíte inteira verde; nenhum teste novo necessário) · próximo: revisão
+- 2026-10-27 08:14 · E2-S03: VERIFICAR ok

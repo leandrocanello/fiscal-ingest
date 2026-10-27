@@ -21,7 +21,8 @@ public interface SourceAdapter extends ConsultaPontualPort {
     AdapterDescriptor descritor();
 
     /**
-     * Autentica na origem (ex: carrega certificado mTLS).
+     * Autentica na origem (ex: carrega o certificado mTLS a partir dos bytes do .pfx
+     * em memória). O adapter não guarda referência aos arrays da credencial.
      */
     void autenticar(Credencial credencial);
 

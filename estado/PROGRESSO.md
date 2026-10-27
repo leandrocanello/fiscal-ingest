@@ -291,3 +291,6 @@
 - 2026-10-27 08:35 · E2-S10: PR aberto para revisão
 - 2026-10-27 08:36 · E2-S11: PLANEJAR — plano em planos/E2-S11.md (9 passos; montagem 210210 + XML-DSig, envio SOAP fora); bloqueado por [DECISAO] E2-S11 em PARA-VOCE (algoritmo SHA-1×SHA-256, Id/C14N) · próximo: aguardar resposta do autor
 - 2026-10-27 08:37 · E2-S11: PLANEJAR ok
+- 2026-10-27 08:37 · E2-S11: plano aguarda decisão (passo [!]) → [h]
+- 2026-10-27 08:38 · E3-S01: PLANEJAR — plano em planos/E3-S01.md (9 passos; módulo infra-postgres, V1 tenant/empresa/estado_coleta/ledger_*, trigger append-only, JdbiNsuLedger idempotente); DA-10 (Ambiente no domínio, porta inalterada) e DA-11 (postgres:17, trigger, Testcontainers p/ Docker 29) · próximo: DESENVOLVER E3-S01
+- 2026-10-27 08:38 · E3-S01: PLANEJAR ok

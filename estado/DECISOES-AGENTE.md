@@ -58,3 +58,15 @@
 - **Opções:** (a) `bcpkix` só em `testImplementation` para gerar os pfx; `bcprov` em `implementation` **só se** o JDK 21 recusar o pfx legado (o teste decide), sem provider global; cache LRU+TTL próprio com `Clock` injetado; carregador exige exatamente uma chave privada no pfx (mais de uma = `AMBIGUO`); (b) Caffeine para o cache; (c) gerar pfx com `keytool` via processo externo.
 - **Escolha:** (a) — sem dependência nova em produção se não for preciso; cache pequeno e testável com relógio manual; pfx com duas chaves não tem titular claro.
 - **Como desfazer:** trocar `CacheSslContext` por Caffeine; remover `bcpkix`/`bcprov` do `adapter-nfe-nacional/build.gradle.kts`; aceitar o primeiro alias em `CarregadorPfx`.
+
+### DA-10 · 2026-10-27 · E3-S01
+- **Contexto:** o esquema (§8) chaveia `estado_coleta`/`ledger_*` por `(fonte, cnpj_consultado, ambiente)`, mas o domínio não tem `Ambiente` e a porta `NsuLedger` só recebe `(FonteId, Cnpj)`. Mudar a porta mexe nos dois use cases e em `ContextoConsulta` (ajuste v2 da §9, ainda sem subetapa própria).
+- **Opções:** (a) criar `enum Ambiente {PRODUCAO, HOMOLOGACAO}` no domínio agora, mas **sem** mudar a porta: `JdbiNsuLedger(Jdbi, Ambiente)` recebe o ambiente no construtor; (b) mudar a porta e os use cases já na E3-S01; (c) coluna `ambiente` com default fixo.
+- **Escolha:** (a) — a coluna e a chave ficam certas desde a V1 (sem migração depois), e a subetapa não cresce. A troca da porta fica para quando `ContextoConsulta` ganhar `ambiente`/`certificado_id`.
+- **Como desfazer:** passar `Ambiente` como parâmetro de `NsuLedger.registrar/listarEntradas` e remover do construtor do `JdbiNsuLedger`.
+
+### DA-11 · 2026-10-27 · E3-S01
+- **Contexto:** os docs fixam JDBI + Flyway + Testcontainers, mas não a versão do Postgres nem como garantir o append-only (inv. 6) no banco. O Docker da máquina é o Engine 29 (API mínima 1.44), que quebra Testcontainers antigos.
+- **Opções:** imagem `postgres:17-alpine` × 16; append-only só por convenção no código × **trigger** que rejeita `UPDATE`/`DELETE` em `ledger_nsu`/`ledger_tentativa`.
+- **Escolha:** `postgres:17-alpine` fixada num único lugar dos testes; trigger `BEFORE UPDATE OR DELETE ... RAISE EXCEPTION` nas tabelas append-only (defesa em profundidade, teste dedicado); Testcontainers na versão mais nova compatível com Docker 29 (2.0.x).
+- **Como desfazer:** trocar a tag da imagem; nova migration `DROP TRIGGER`.

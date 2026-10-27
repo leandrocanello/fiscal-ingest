@@ -1,13 +1,23 @@
 package br.com.doc.ingest.adapter.nfe.mapping;
 
 import br.com.doc.ingest.domain.adapter.Desfecho;
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.read.ListAppender;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.NullAndEmptySource;
+import org.junit.jupiter.params.provider.ValueSource;
+import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -130,6 +140,70 @@ class CStatMapperTest {
         void cStatVazio_DeveMapearParaIndisponivelTemporario() {
             Desfecho resultado = mapper.mapear("");
             assertThat(resultado).isInstanceOf(Desfecho.IndisponivelTemporario.class);
+        }
+
+        @Nested
+        @DisplayName("Log de alerta do fallback (inv. 13: so o cStat bruto, sem XML)")
+        class LogDoFallback {
+
+            private final Logger logger = (Logger) LoggerFactory.getLogger(CStatMapper.class);
+            private final ListAppender<ILoggingEvent> appender = new ListAppender<>();
+
+            @BeforeEach
+            void anexarAppender() {
+                appender.start();
+                logger.addAppender(appender);
+            }
+
+            @AfterEach
+            void removerAppender() {
+                logger.detachAppender(appender);
+            }
+
+            private List<ILoggingEvent> warns() {
+                return appender.list.stream().filter(e -> e.getLevel() == Level.WARN).toList();
+            }
+
+            @Test
+            @DisplayName("cStat 999 cai no fallback de 5 min e emite 1 WARN com o codigo bruto e texto fixo")
+            void fallbackLogaSoOCStatBruto() {
+                Desfecho resultado = mapper.mapear("999");
+
+                assertThat(resultado).isEqualTo(new Desfecho.IndisponivelTemporario(Duration.ofMinutes(5)));
+                assertThat(warns()).hasSize(1);
+                ILoggingEvent evento = warns().get(0);
+                assertThat(evento.getFormattedMessage()).contains("999");
+                // Unico dado variavel e o codigo; o resto da mensagem e o template fixo
+                assertThat(evento.getArgumentArray()).containsExactly("999");
+            }
+
+            @ParameterizedTest(name = "cStat [{0}]")
+            @NullAndEmptySource
+            @ValueSource(strings = {"   "})
+            @DisplayName("cStat nulo/vazio cai no fallback de 5 min e tambem emite WARN")
+            void fallbackNuloOuVazioTambemLoga(String cStat) {
+                Desfecho resultado = mapper.mapear(cStat);
+
+                assertThat(resultado).isEqualTo(new Desfecho.IndisponivelTemporario(Duration.ofMinutes(5)));
+                assertThat(warns()).hasSize(1);
+            }
+
+            @Test
+            @DisplayName("cStat longo com XML e logado truncado (<= 16 chars) e sem '<'")
+            void fallbackTruncaESanitizaEntradaLonga() {
+                String lixo = ("<x>" + "a".repeat(493) + "</x>");
+                assertThat(lixo).hasSize(500);
+
+                Desfecho resultado = mapper.mapear(lixo);
+
+                assertThat(resultado).isEqualTo(new Desfecho.IndisponivelTemporario(Duration.ofMinutes(5)));
+                assertThat(warns()).hasSize(1);
+                ILoggingEvent evento = warns().get(0);
+                assertThat(evento.getArgumentArray()).hasSize(1);
+                String logado = String.valueOf(evento.getArgumentArray()[0]);
+                assertThat(logado).hasSizeLessThanOrEqualTo(16).doesNotContain("<");
+                assertThat(evento.getFormattedMessage()).doesNotContain("<").doesNotContain("a".repeat(17));
+            }
         }
     }
 }

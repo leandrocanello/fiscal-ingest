@@ -1,6 +1,8 @@
 package br.com.doc.ingest.adapter.nfe.mapping;
 
 import br.com.doc.ingest.domain.adapter.Desfecho;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
 
@@ -25,6 +27,11 @@ import java.time.Duration;
  */
 public class CStatMapper {
 
+    private static final Logger LOG = LoggerFactory.getLogger(CStatMapper.class);
+
+    /** Tamanho maximo do cStat bruto no log (inv. 13: nunca vazar XML). */
+    private static final int MAX_CSTAT_NO_LOG = 16;
+
     /** Retry padrao para cStat de limite (656). */
     private static final Duration RETRY_PADRAO = Duration.ofHours(1);
 
@@ -39,7 +46,7 @@ public class CStatMapper {
      */
     public Desfecho mapear(String cStat) {
         if (cStat == null || cStat.isBlank()) {
-            return new Desfecho.IndisponivelTemporario(RETRY_TEMP);
+            return fallback(cStat);
         }
 
         return switch (cStat) {
@@ -65,7 +72,21 @@ public class CStatMapper {
             case "109" -> new Desfecho.ServicoFora("Serviço paralisado sem previsão (cStat 109)");
 
             // Desconhecido - fallback seguro
-            default -> new Desfecho.IndisponivelTemporario(RETRY_TEMP);
+            default -> fallback(cStat);
         };
+    }
+
+    private Desfecho fallback(String cStat) {
+        LOG.warn("cStat nao mapeado, usando fallback IndisponivelTemporario: [{}]", sanitizar(cStat));
+        return new Desfecho.IndisponivelTemporario(RETRY_TEMP);
+    }
+
+    /** So letras e digitos, truncado: o log nunca carrega XML nem texto livre da resposta. */
+    private static String sanitizar(String cStat) {
+        if (cStat == null) {
+            return "null";
+        }
+        String limpo = cStat.replaceAll("[^A-Za-z0-9]", "");
+        return limpo.length() > MAX_CSTAT_NO_LOG ? limpo.substring(0, MAX_CSTAT_NO_LOG) : limpo;
     }
 }

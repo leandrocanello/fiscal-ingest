@@ -55,6 +55,9 @@ public class CStatMapper {
             // NF-e fora do prazo de distribuicao (MOC 7.0 Tab. 5-29 H15, so consChNFe) - nao retentar
             case "632" -> new Desfecho.IndisponivelDefinitivo("Documento fora de prazo de distribuição (cStat 632)");
 
+            // NSU maior que o maxNSU (MOC 7.0 Tab. 5-29 H06) - erro de consistencia, nunca retentar
+            case "589" -> new Desfecho.IndisponivelDefinitivo("Cursor inconsistente: NSU > maxNSU (cStat 589)");
+
             // Servico paralisado momentaneamente (MOC 7.0 Tab. 5-20 K03) - tentar de novo
             case "108" -> new Desfecho.IndisponivelTemporario(RETRY_TEMP);
 

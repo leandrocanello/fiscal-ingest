@@ -77,6 +77,15 @@ class CStatMapperTest {
         void cStat632NaoEhLimiteAtingido() {
             assertThat(mapper.mapear("632")).isNotInstanceOf(Desfecho.LimiteAtingido.class);
         }
+
+        @Test
+        @DisplayName("cStat 589 vira IndisponivelDefinitivo 'cursor inconsistente' (MOC 7.0 Tab. 5-29 H06)")
+        void cStat589ViraIndisponivelDefinitivoCursorInconsistente() {
+            Desfecho resultado = mapper.mapear("589");
+            assertThat(resultado).isInstanceOf(Desfecho.IndisponivelDefinitivo.class);
+            assertThat(((Desfecho.IndisponivelDefinitivo) resultado).motivo())
+                    .containsIgnoringCase("cursor inconsistente");
+        }
     }
 
     @Nested

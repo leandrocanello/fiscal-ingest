@@ -276,3 +276,5 @@
 - 2026-10-27 08:23 · E2-S10: DESENVOLVER ok
 - 2026-10-27 08:26 · E2-S10: erros tipados do CarregadorPfx (falha vista: 'CarregadorPfxTest.java:53: error: cannot find symbol' MotivoCertificadoInvalido/CertificadoInvalidoException); suíte verde · próximo: pfx legado RC2/3DES
 - 2026-10-27 08:24 · E2-S10: DESENVOLVER ok
+- 2026-10-27 08:30 · E2-S10: pfx legado RC2/3DES — teste carregaPfxLegadoRc2E3Des passou de primeira (JDK 21 abre o legado; sem falha a colar, sem fallback BC); suíte verde · próximo: FabricaSslContext mTLS
+- 2026-10-27 08:26 · E2-S10: DESENVOLVER ok

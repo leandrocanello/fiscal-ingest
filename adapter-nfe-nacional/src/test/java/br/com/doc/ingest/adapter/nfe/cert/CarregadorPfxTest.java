@@ -1,11 +1,13 @@
 package br.com.doc.ingest.adapter.nfe.cert;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowableOfType;
 
 import br.com.doc.ingest.domain.adapter.Credencial;
 import br.com.doc.ingest.domain.blob.Sha256;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.HexFormat;
 import org.junit.jupiter.api.Test;
 
 class CarregadorPfxTest {
@@ -41,5 +43,64 @@ class CarregadorPfxTest {
         assertThat(credencial).isEqualTo(new Credencial(pfx, SENHA));
         assertThat(credencial.senha()).containsExactly(SENHA);
         assertThat(credencial.pfx()).isEqualTo(pfx);
+    }
+
+    @Test
+    void senhaErradaViraSenhaIncorreta() {
+        byte[] pfx = GeradorPfxDeTeste.moderno(SENHA, DE, ATE);
+
+        assertThat(motivoAoCarregar(pfx, "outra-senha".toCharArray()))
+                .isEqualTo(MotivoCertificadoInvalido.SENHA_INCORRETA);
+    }
+
+    @Test
+    void bytesCorrompidosViraIlegivel() {
+        byte[] pfx = GeradorPfxDeTeste.moderno(SENHA, DE, ATE);
+        byte[] corrompido = java.util.Arrays.copyOf(pfx, pfx.length / 2);
+
+        assertThat(motivoAoCarregar(corrompido, SENHA)).isEqualTo(MotivoCertificadoInvalido.ILEGIVEL);
+        assertThat(motivoAoCarregar("nao e um pfx".getBytes(), SENHA)).isEqualTo(MotivoCertificadoInvalido.ILEGIVEL);
+    }
+
+    @Test
+    void semChavePrivadaViraSemChave() {
+        byte[] pfx = GeradorPfxDeTeste.semChavePrivada(SENHA, DE, ATE);
+
+        assertThat(motivoAoCarregar(pfx, SENHA)).isEqualTo(MotivoCertificadoInvalido.SEM_CHAVE_PRIVADA);
+    }
+
+    @Test
+    void maisDeUmaChavePrivadaViraAmbiguo() {
+        byte[] pfx = GeradorPfxDeTeste.comDuasChavesPrivadas(SENHA, DE, ATE);
+
+        assertThat(motivoAoCarregar(pfx, SENHA)).isEqualTo(MotivoCertificadoInvalido.AMBIGUO);
+    }
+
+    @Test
+    void senhaErradaNaoApareceNaMensagem() {
+        byte[] pfx = GeradorPfxDeTeste.moderno(SENHA, DE, ATE);
+        String senhaErrada = "senha-errada-secreta-123";
+        byte[] corrompido = java.util.Arrays.copyOf(pfx, pfx.length / 2);
+
+        for (byte[] bytes : new byte[][] {pfx, corrompido}) {
+            CertificadoInvalidoException erro = catchThrowableOfType(CertificadoInvalidoException.class,
+                    () -> carregador.carregar(new Credencial(bytes, senhaErrada.toCharArray())));
+            assertThat(erro).isNotNull();
+            String hexPfx = HexFormat.of().formatHex(bytes, 0, 16);
+            for (Throwable t = erro; t != null; t = t.getCause()) {
+                assertThat(String.valueOf(t.getMessage()))
+                        .doesNotContain(senhaErrada)
+                        .doesNotContain(String.valueOf(SENHA))
+                        .doesNotContainIgnoringCase(hexPfx);
+                assertThat(String.valueOf(t)).doesNotContain(senhaErrada);
+            }
+        }
+    }
+
+    private MotivoCertificadoInvalido motivoAoCarregar(byte[] pfx, char[] senha) {
+        CertificadoInvalidoException erro = catchThrowableOfType(CertificadoInvalidoException.class,
+                () -> carregador.carregar(new Credencial(pfx, senha)));
+        assertThat(erro).as("deveria lançar CertificadoInvalidoException").isNotNull();
+        return erro.motivo();
     }
 }

@@ -59,6 +59,40 @@ final class GeradorPfxDeTeste {
         }
     }
 
+    /** PKCS#12 só com um certificado confiável, sem nenhuma chave privada. */
+    static byte[] semChavePrivada(char[] senha, Instant validoDe, Instant validoAte) {
+        try {
+            KeyStore ks = KeyStore.getInstance("PKCS12");
+            ks.load(null, null);
+            ks.setCertificateEntry(ALIAS, autoassinado(novoPar(), validoDe, validoAte));
+            return gravar(ks, senha);
+        } catch (Exception e) {
+            throw new IllegalStateException("falha ao gerar pfx sem chave de teste", e);
+        }
+    }
+
+    /** PKCS#12 com duas chaves privadas (titular ambíguo). */
+    static byte[] comDuasChavesPrivadas(char[] senha, Instant validoDe, Instant validoAte) {
+        try {
+            KeyStore ks = KeyStore.getInstance("PKCS12");
+            ks.load(null, null);
+            for (String alias : new String[] {ALIAS, ALIAS + "-2"}) {
+                KeyPair par = novoPar();
+                ks.setKeyEntry(alias, par.getPrivate(), senha,
+                        new Certificate[] {autoassinado(par, validoDe, validoAte)});
+            }
+            return gravar(ks, senha);
+        } catch (Exception e) {
+            throw new IllegalStateException("falha ao gerar pfx com duas chaves de teste", e);
+        }
+    }
+
+    private static byte[] gravar(KeyStore ks, char[] senha) throws Exception {
+        ByteArrayOutputStream saida = new ByteArrayOutputStream();
+        ks.store(saida, senha);
+        return saida.toByteArray();
+    }
+
     /** PKCS#12 legado: chave em PBEWithSHA1And3-KeyTripleDES-CBC, certificado em PBEWithSHA1And40BitRC2-CBC, MAC SHA-1. */
     static byte[] legado(char[] senha, Instant validoDe, Instant validoAte) {
         try {

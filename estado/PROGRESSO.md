@@ -247,3 +247,5 @@
 - 2026-10-27 08:04 · E2-S03: PLANEJAR ok
 - 2026-10-27 08:10 · E2-S03: passo 1 (cStat108NaoEhSucesso) — falha vista: "Expecting actual: Ok[] to be an instance of: Desfecho.IndisponivelTemporario but was instance of: Desfecho.Ok"; 108 → IndisponivelTemporario(5 min), 2 testes antigos 108→Ok removidos (A1, MOC 7.0 Tab. 5-20 K03); suíte verde; commit 09a354f · próximo: passo 2 (cStat109ViraServicoForaComMotivoSemPrevisao)
 - 2026-10-27 08:05 · E2-S03: DESENVOLVER ok
+- 2026-10-27 08:15 · E2-S03: passo 2 (cStat109ViraServicoForaComMotivoSemPrevisao) — falha vista: "Expecting actual: \"Servico paralisado (cStat 109)\" to contain: \"sem previsão\" (ignoring case)"; motivo do 109 ajustado; suíte verde; commit aeecc80 · próximo: passo 3 (cStat632ViraIndisponivelDefinitivoForaDePrazo)
+- 2026-10-27 08:06 · E2-S03: DESENVOLVER ok

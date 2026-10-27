@@ -10,6 +10,8 @@ import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 import javax.net.ssl.SSLContext;
 
 /**
@@ -19,7 +21,10 @@ import javax.net.ssl.SSLContext;
  * fingerprint e gera outro contexto; {@link #invalidar(String)} força a recarga. O TTL conta a partir da
  * criação da entrada, pelo {@link Clock} injetado.
  *
- * <p>Por ora, um lock único serializa {@link #obter(Credencial)}, inclusive a carga.
+ * <p>Sincronização por chave: o índice LRU fica sob um lock curto, e a carga do .pfx acontece fora dele, num
+ * futuro por fingerprint. Chamadas concorrentes com o mesmo .pfx esperam a mesma carga (abre uma vez só);
+ * .pfx diferentes carregam em paralelo. Se a carga falhar, a entrada sai do cache e a falha vai a todos que
+ * esperavam por ela.
  */
 public class CacheSslContext {
 
@@ -53,17 +58,49 @@ public class CacheSslContext {
         };
     }
 
-    public synchronized SSLContext obter(Credencial credencial) {
+    public SSLContext obter(Credencial credencial) {
         Objects.requireNonNull(credencial, "credencial");
         String fingerprint = fingerprint(credencial);
-        Instant agora = relogio.instant();
-        Entrada entrada = entradas.get(fingerprint);
-        if (entrada != null && agora.isBefore(entrada.criadaEm().plus(ttl))) {
-            return entrada.contexto();
+        Entrada entrada;
+        boolean carregarAqui = false;
+        synchronized (this) {
+            Instant agora = relogio.instant();
+            entrada = entradas.get(fingerprint);
+            if (entrada == null || !agora.isBefore(entrada.criadaEm().plus(ttl))) {
+                entrada = new Entrada(new CompletableFuture<>(), agora);
+                entradas.put(fingerprint, entrada);
+                carregarAqui = true;
+            }
         }
-        SSLContext contexto = fabrica.criar(carregador.carregar(credencial), confianca);
-        entradas.put(fingerprint, new Entrada(contexto, agora));
-        return contexto;
+        if (carregarAqui) {
+            carregar(credencial, fingerprint, entrada);
+        }
+        return aguardar(entrada.contexto());
+    }
+
+    private void carregar(Credencial credencial, String fingerprint, Entrada entrada) {
+        try {
+            entrada.contexto().complete(fabrica.criar(carregador.carregar(credencial), confianca));
+        } catch (RuntimeException | Error e) {
+            synchronized (this) {
+                entradas.remove(fingerprint, entrada);
+            }
+            entrada.contexto().completeExceptionally(e);
+        }
+    }
+
+    private static SSLContext aguardar(CompletableFuture<SSLContext> contexto) {
+        try {
+            return contexto.join();
+        } catch (CompletionException e) {
+            if (e.getCause() instanceof RuntimeException r) {
+                throw r;
+            }
+            if (e.getCause() instanceof Error erro) {
+                throw erro;
+            }
+            throw e;
+        }
     }
 
     public synchronized void invalidar(String fingerprint) {
@@ -83,6 +120,6 @@ public class CacheSslContext {
         }
     }
 
-    private record Entrada(SSLContext contexto, Instant criadaEm) {
+    private record Entrada(CompletableFuture<SSLContext> contexto, Instant criadaEm) {
     }
 }

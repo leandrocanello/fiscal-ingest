@@ -1,12 +1,19 @@
 package br.com.doc.ingest.adapter.nfe.cert;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import br.com.doc.ingest.domain.adapter.Credencial;
 import br.com.doc.ingest.domain.blob.Sha256;
 import java.security.KeyStore;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
 import javax.net.ssl.SSLContext;
 import org.junit.jupiter.api.BeforeAll;
@@ -107,6 +114,40 @@ class CacheSslContextTest {
 
         assertThat(credencial.pfx()).isEqualTo(pfxA);
         assertThat(credencial.senha()).isEqualTo(SENHA);
+    }
+
+    @Test
+    void acessoConcorrenteCarregaUmaVezSo() throws Exception {
+        CacheSslContext cache = cache(4);
+        CountDownLatch largada = new CountDownLatch(1);
+        List<Future<SSLContext>> resultados = new ArrayList<>();
+
+        try (ExecutorService executor = Executors.newVirtualThreadPerTaskExecutor()) {
+            for (int i = 0; i < 50; i++) {
+                resultados.add(executor.submit(() -> {
+                    largada.await();
+                    return cache.obter(credencial(pfxA));
+                }));
+            }
+            largada.countDown();
+        }
+
+        SSLContext primeiro = resultados.get(0).get();
+        for (Future<SSLContext> resultado : resultados) {
+            assertThat(resultado.get()).isSameAs(primeiro);
+        }
+        assertThat(carregador.chamadas.get()).isEqualTo(1);
+    }
+
+    @Test
+    void falhaNaCargaNaoFicaNoCache() {
+        CacheSslContext cache = cache(4);
+
+        assertThatThrownBy(() -> cache.obter(new Credencial(pfxA, "senha-errada".toCharArray())))
+                .isInstanceOf(CertificadoInvalidoException.class);
+
+        assertThat(cache.obter(credencial(pfxA))).isNotNull();
+        assertThat(cache.tamanho()).isEqualTo(1);
     }
 
     private CacheSslContext cache(int capacidade) {

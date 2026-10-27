@@ -238,3 +238,5 @@
 - 2026-10-26 20:25 · E2-S02: decisão do autor registrada (D1 a · D2 a · D3 a · fallback sim; fonte MOC 7.0) → [x]
 - 2026-10-26 20:27 · E2-S01: dúvida do prazo de guarda respondida pelo autor (5 anos, configurável)
 - 2026-10-27 08:00 · E1-S06: mergeado por você ✔
+- 2026-10-27 08:01 · E2-S06: verificação ok — contrato do transporte (200/4xx/5xx/timeout/conexão/limite) já coberto com WireMock em localhost, git diff main...HEAD vazio em domain/, suíte inteira verde, nenhum teste novo necessário (sem commit: nada mudou no repositório) · próximo: revisão
+- 2026-10-27 08:01 · E2-S06: VERIFICAR ok

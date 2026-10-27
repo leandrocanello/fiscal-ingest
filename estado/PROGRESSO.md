@@ -298,3 +298,5 @@
 - 2026-10-27 08:39 · E3-S01: DESENVOLVER ok
 - 2026-10-27 08:40 · E3-S01: módulo infra-postgres criado (JDBI, Flyway, Testcontainers); PostgresDisponivelTest verde (falha inicial: módulo/dependências inexistentes) · próximo: ArquiteturaInfraTest
 - 2026-10-27 08:40 · E3-S01: DESENVOLVER ok
+- 2026-10-27 08:41 · E3-S01: ArquiteturaInfraTest (2 regras ArchUnit, nasce verde por ser só regra; suíte inteira verde) · próximo: MigracoesTest + V1__esquema_base.sql
+- 2026-10-27 08:41 · E3-S01: DESENVOLVER ok

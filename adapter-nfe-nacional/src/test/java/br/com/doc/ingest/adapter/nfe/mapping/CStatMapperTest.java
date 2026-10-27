@@ -22,7 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * - 137: nenhum documento encontrado (Vazio)
  * - 656: consumo indevido (LimiteAtingido - NAO avancar ponteiro!)
  * - 632: excesso de consultas (LimiteAtingido)
- * - 108: servico em operacao (Ok - servico disponivel)
+ * - 108: servico paralisado momentaneamente (IndisponivelTemporario - MOC 7.0)
  * - 109: servico paralisado (ServicoFora)
  */
 @DisplayName("CStatMapper (cStat -> Desfecho)")
@@ -46,13 +46,6 @@ class CStatMapperTest {
         void cStat137_DeveMapearParaVazio() {
             Desfecho resultado = mapper.mapear("137");
             assertThat(resultado).isInstanceOf(Desfecho.Vazio.class);
-        }
-
-        @Test
-        @DisplayName("cStat 108 deve mapear para Ok (servico em operacao)")
-        void cStat108_DeveMapearParaOk() {
-            Desfecho resultado = mapper.mapear("108");
-            assertThat(resultado).isInstanceOf(Desfecho.Ok.class);
         }
     }
 
@@ -90,11 +83,14 @@ class CStatMapperTest {
         }
 
         @Test
-        @DisplayName("cStat 108 ja testado como Ok acima (servico em operacao)")
-        void cStat108_JaTestado() {
-            // Apenas confirmacao - 108 = servico em operacao = Ok
+        @DisplayName("cStat 108 (servico paralisado momentaneamente) nao e sucesso: vira IndisponivelTemporario")
+        void cStat108NaoEhSucesso() {
+            // MOC 7.0 Tab. 5-20 K03: 108 = "Servico Paralisado Momentaneamente (curto prazo)".
+            // Tratar como Ok faria o loop avancar sem documento (achado A1 da auditoria).
             Desfecho resultado = mapper.mapear("108");
-            assertThat(resultado).isInstanceOf(Desfecho.Ok.class);
+            assertThat(resultado).isInstanceOf(Desfecho.IndisponivelTemporario.class);
+            assertThat(((Desfecho.IndisponivelTemporario) resultado).retryApos())
+                    .isGreaterThan(Duration.ZERO);
         }
     }
 

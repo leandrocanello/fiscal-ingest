@@ -14,7 +14,7 @@ import java.time.Duration;
  * <ul>
  *   <li><b>138</b> - documento localizado -> {@link Desfecho.Ok}</li>
  *   <li><b>137</b> - nenhum documento encontrado -> {@link Desfecho.Vazio}</li>
- *   <li><b>108</b> - servico em operacao -> {@link Desfecho.Ok}</li>
+ *   <li><b>108</b> - servico paralisado momentaneamente -> {@link Desfecho.IndisponivelTemporario}</li>
  *   <li><b>656</b> - consumo indevido -> {@link Desfecho.LimiteAtingido} (CRITICO!)</li>
  *   <li><b>632</b> - excesso de consultas -> {@link Desfecho.LimiteAtingido}</li>
  *   <li><b>109</b> - servico paralisado -> {@link Desfecho.ServicoFora}</li>
@@ -44,13 +44,16 @@ public class CStatMapper {
 
         return switch (cStat) {
             // Sucesso
-            case "138", "108" -> new Desfecho.Ok();
+            case "138" -> new Desfecho.Ok();
 
             // Vazio - nada novo
             case "137" -> new Desfecho.Vazio();
 
             // Limite atingido - NAO avancar ponteiro (cStat 656/632)
             case "656", "632" -> new Desfecho.LimiteAtingido(RETRY_PADRAO);
+
+            // Servico paralisado momentaneamente (MOC 7.0 Tab. 5-20 K03) - tentar de novo
+            case "108" -> new Desfecho.IndisponivelTemporario(RETRY_TEMP);
 
             // Servico fora
             case "109" -> new Desfecho.ServicoFora("Servico paralisado (cStat 109)");

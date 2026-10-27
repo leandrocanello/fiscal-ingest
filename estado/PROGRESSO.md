@@ -280,3 +280,5 @@
 - 2026-10-27 08:26 · E2-S10: DESENVOLVER ok
 - 2026-10-27 08:28 · E2-S10: FabricaSslContext mTLS (falha vista: 'FabricaSslContextTest.java:47: error: cannot find symbol' FabricaSslContext); 4 testes WireMock HTTPS localhost; suíte verde · próximo: CacheSslContext LRU/TTL
 - 2026-10-27 08:28 · E2-S10: DESENVOLVER ok
+- 2026-10-27 08:40 · E2-S10: CacheSslContext LRU/TTL (falha vista: 'CacheSslContextTest.java:43: error: cannot find symbol' CacheSslContext); 6 testes; suíte verde · próximo: concorrência (virtual threads) + propriedades jqwik do cache
+- 2026-10-27 08:30 · E2-S10: DESENVOLVER ok

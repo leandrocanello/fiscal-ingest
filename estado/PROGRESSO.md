@@ -302,3 +302,5 @@
 - 2026-10-27 08:41 · E3-S01: DESENVOLVER ok
 - 2026-10-27 09:00 · E3-S01: Migracoes + V1 do esquema base (MigracoesTest falhou por classe inexistente, depois verde) · próximo: EsquemaRestricoesTest
 - 2026-10-27 08:43 · E3-S01: DESENVOLVER ok
+- 2026-10-27 08:44 · E3-S01: EsquemaRestricoesTest (5 testes) — passaram de primeira, pois a V1 já trazia UNIQUE/CHECKs; sem falha prévia observável · próximo: AppendOnlyTest (V2 triggers)
+- 2026-10-27 08:44 · E3-S01: DESENVOLVER ok

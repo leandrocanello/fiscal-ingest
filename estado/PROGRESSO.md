@@ -255,3 +255,5 @@
 - 2026-10-27 08:08 · E2-S03: DESENVOLVER ok
 - 2026-10-27 08:30 · E2-S03: passo 5 (cStat656ViraLimiteAtingidoDeUmaHora + tabela @CsvSource dos 7 cStat) — passou de primeira (caracterização: código já usava 1h); testes redundantes de 138/137/109/656 substituídos pela tabela; suíte verde · próximo: passo 6 (fallbackLogaSoOCStatBruto)
 - 2026-10-27 08:09 · E2-S03: DESENVOLVER ok
+- 2026-10-27 08:40 · E2-S03: passo 6 (fallbackLogaSoOCStatBruto + nulo/vazio + entrada longa com XML) — falha vista: "Expected size: 1 but was: 0 in: []" (nenhum WARN); fallback agora loga WARN com cStat sanitizado (só [A-Za-z0-9], ≤ 16 chars); slf4j-api + logback (teste) no adapter (DA-8); suíte verde · próximo: passo 7 (propriedades jqwik soCodigosDeSucessoViramOkOuVazio / codigosDesconhecidosViramFallback)
+- 2026-10-27 08:11 · E2-S03: DESENVOLVER ok

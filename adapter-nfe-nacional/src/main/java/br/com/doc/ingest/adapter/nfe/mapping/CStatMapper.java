@@ -55,8 +55,8 @@ public class CStatMapper {
             // Servico paralisado momentaneamente (MOC 7.0 Tab. 5-20 K03) - tentar de novo
             case "108" -> new Desfecho.IndisponivelTemporario(RETRY_TEMP);
 
-            // Servico fora
-            case "109" -> new Desfecho.ServicoFora("Servico paralisado (cStat 109)");
+            // Servico paralisado sem previsao (MOC 7.0 Tab. 5-20 K03)
+            case "109" -> new Desfecho.ServicoFora("Serviço paralisado sem previsão (cStat 109)");
 
             // Desconhecido - fallback seguro
             default -> new Desfecho.IndisponivelTemporario(RETRY_TEMP);

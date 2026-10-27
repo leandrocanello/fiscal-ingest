@@ -83,6 +83,15 @@ class CStatMapperTest {
         }
 
         @Test
+        @DisplayName("cStat 109 vira ServicoFora com motivo citando 'sem previsao'")
+        void cStat109ViraServicoForaComMotivoSemPrevisao() {
+            // MOC 7.0 Tab. 5-20 K03: 109 = "Servico Paralisado sem Previsao".
+            Desfecho resultado = mapper.mapear("109");
+            assertThat(resultado).isInstanceOf(Desfecho.ServicoFora.class);
+            assertThat(((Desfecho.ServicoFora) resultado).motivo()).containsIgnoringCase("sem previsão");
+        }
+
+        @Test
         @DisplayName("cStat 108 (servico paralisado momentaneamente) nao e sucesso: vira IndisponivelTemporario")
         void cStat108NaoEhSucesso() {
             // MOC 7.0 Tab. 5-20 K03: 108 = "Servico Paralisado Momentaneamente (curto prazo)".

@@ -1,0 +1,165 @@
+package br.com.doc.ingest.adapter.nfe.transporte;
+
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.binaryEqualTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.post;
+import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
+import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import com.github.tomakehurst.wiremock.WireMockServer;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.nio.charset.StandardCharsets;
+import java.time.Duration;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+/** Inv. 14: só WireMock em localhost. */
+class TransporteHttpJdkTest {
+
+    private static final String CAMINHO = "/ws/teste";
+    private static final String ACTION = "http://exemplo.local/acao";
+
+    private WireMockServer servidor;
+    private TransporteHttpJdk transporte;
+
+    @BeforeEach
+    void subir() {
+        servidor = new WireMockServer(options().dynamicPort());
+        servidor.start();
+        transporte = new TransporteHttpJdk(HttpClient.newHttpClient(), Duration.ofSeconds(5), 1024 * 1024);
+    }
+
+    @AfterEach
+    void parar() {
+        servidor.stop();
+    }
+
+    private URI endpoint() {
+        return URI.create("http://localhost:" + servidor.port() + CAMINHO);
+    }
+
+    @Test
+    void enviaPostSoap12ComActionEBytesExatos() {
+        servidor.stubFor(post(urlEqualTo(CAMINHO)).willReturn(aResponse().withStatus(200)));
+        byte[] envelope = "<a>áé</a>".getBytes(StandardCharsets.UTF_8);
+
+        transporte.enviar(endpoint(), ACTION, envelope);
+
+        servidor.verify(postRequestedFor(urlEqualTo(CAMINHO))
+                .withHeader("Content-Type", equalTo("application/soap+xml; charset=utf-8; action=\"" + ACTION + "\""))
+                .withRequestBody(binaryEqualTo(envelope)));
+    }
+
+    @Test
+    void status5xxE4xxVoltamComoRespostaHttp() {
+        String fault = "<Envelope><Body><Fault>erro sintetico</Fault></Body></Envelope>";
+        for (int status : new int[] {500, 404}) {
+            servidor.stubFor(post(urlEqualTo(CAMINHO)).willReturn(aResponse().withStatus(status).withBody(fault)));
+
+            ResultadoTransporte r = transporte.enviar(endpoint(), ACTION, new byte[] {1});
+
+            assertThat(r).isInstanceOf(ResultadoTransporte.RespostaHttp.class);
+            ResultadoTransporte.RespostaHttp resp = (ResultadoTransporte.RespostaHttp) r;
+            assertThat(resp.status()).isEqualTo(status);
+            assertThat(resp.corpo()).isEqualTo(fault.getBytes(StandardCharsets.UTF_8));
+        }
+    }
+
+    @Test
+    void atrasoAlemDoTimeoutViraFalhaTimeout() {
+        servidor.stubFor(post(urlEqualTo(CAMINHO)).willReturn(aResponse().withStatus(200).withFixedDelay(1500)));
+        var curto = new TransporteHttpJdk(HttpClient.newHttpClient(), Duration.ofMillis(200), 1024);
+
+        ResultadoTransporte r = curto.enviar(endpoint(), ACTION, new byte[] {1});
+
+        assertThat(r).isEqualTo(new ResultadoTransporte.FalhaTransporte(ResultadoTransporte.Motivo.TIMEOUT));
+    }
+
+    @Test
+    void portaFechadaViraFalhaConexao() {
+        URI fechado = endpoint();
+        servidor.stop();
+
+        ResultadoTransporte r = transporte.enviar(fechado, ACTION, new byte[] {1});
+
+        assertThat(r).isEqualTo(new ResultadoTransporte.FalhaTransporte(ResultadoTransporte.Motivo.CONEXAO));
+    }
+
+    @Test
+    void respostaDevolveCorpoByteAByte() {
+        byte[] corpo = {0, 1, 2, (byte) 0xFF, (byte) 0xC3, 10, 13, 127};
+        servidor.stubFor(post(urlEqualTo(CAMINHO)).willReturn(aResponse().withStatus(200).withBody(corpo)));
+
+        ResultadoTransporte r = transporte.enviar(endpoint(), ACTION, new byte[] {1});
+
+        assertThat(r).isInstanceOf(ResultadoTransporte.RespostaHttp.class);
+        ResultadoTransporte.RespostaHttp resp = (ResultadoTransporte.RespostaHttp) r;
+        assertThat(resp.status()).isEqualTo(200);
+        assertThat(resp.corpo()).isEqualTo(corpo);
+    }
+
+    @Test
+    void respostaAcimaDoLimiteViraFalhaRespostaGrandeDemais() {
+        servidor.stubFor(post(urlEqualTo(CAMINHO)).willReturn(aResponse().withStatus(200).withBody(new byte[2048])));
+        var pequeno = new TransporteHttpJdk(HttpClient.newHttpClient(), Duration.ofSeconds(5), 1024);
+
+        ResultadoTransporte r = pequeno.enviar(endpoint(), ACTION, new byte[] {1});
+
+        assertThat(r).isEqualTo(new ResultadoTransporte.FalhaTransporte(ResultadoTransporte.Motivo.RESPOSTA_GRANDE_DEMAIS));
+    }
+
+    @Test
+    void exatamenteNoLimiteEhAceita() {
+        servidor.stubFor(post(urlEqualTo(CAMINHO)).willReturn(aResponse().withStatus(200).withBody(new byte[1024])));
+        var pequeno = new TransporteHttpJdk(HttpClient.newHttpClient(), Duration.ofSeconds(5), 1024);
+
+        ResultadoTransporte r = pequeno.enviar(endpoint(), ACTION, new byte[] {1});
+
+        assertThat(r).isInstanceOf(ResultadoTransporte.RespostaHttp.class);
+        assertThat(((ResultadoTransporte.RespostaHttp) r).corpo()).hasSize(1024);
+    }
+
+    @Test
+    void falhaNaoExpoeCorpoNemEnvelope() {
+        servidor.stubFor(post(urlEqualTo(CAMINHO)).willReturn(aResponse().withStatus(200)
+                .withBody("SEGREDO-XYZ".repeat(200))));
+        var pequeno = new TransporteHttpJdk(HttpClient.newHttpClient(), Duration.ofSeconds(5), 1024);
+        byte[] envelope = "<a>SEGREDO-XYZ</a>".getBytes(StandardCharsets.UTF_8);
+
+        ResultadoTransporte r = pequeno.enviar(endpoint(), ACTION, envelope);
+
+        assertThat(r.toString()).doesNotContain("SEGREDO-XYZ");
+        var falha = (ResultadoTransporte.FalhaTransporte) r;
+        assertThat(falha.motivo().toString()).doesNotContain("SEGREDO-XYZ");
+    }
+
+    @Test
+    void toStringDaRespostaNaoMostraCorpo() {
+        var resposta = new ResultadoTransporte.RespostaHttp(200, "SEGREDO-XYZ".getBytes(StandardCharsets.UTF_8));
+
+        assertThat(resposta.toString()).doesNotContain("SEGREDO-XYZ").contains("200").contains("11");
+    }
+
+    @Test
+    void respostaTemCopiaDefensivaEIgualdadePorConteudo() {
+        byte[] original = {1, 2, 3};
+        var a = new ResultadoTransporte.RespostaHttp(200, original);
+        original[0] = 9;
+
+        assertThat(a.corpo()).containsExactly(1, 2, 3);
+        a.corpo()[0] = 9;
+        assertThat(a.corpo()).containsExactly(1, 2, 3);
+        assertThat(a).isEqualTo(new ResultadoTransporte.RespostaHttp(200, new byte[] {1, 2, 3}));
+        assertThat(a.hashCode()).isEqualTo(new ResultadoTransporte.RespostaHttp(200, new byte[] {1, 2, 3}).hashCode());
+    }
+
+    @Test
+    void limitePadraoEDezesseisMebibytes() {
+        assertThat(TransporteHttpJdk.LIMITE_PADRAO_BYTES).isEqualTo(16L * 1024 * 1024);
+    }
+}

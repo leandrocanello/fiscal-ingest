@@ -259,3 +259,5 @@
 - 2026-10-27 08:11 · E2-S03: DESENVOLVER ok
 - 2026-10-27 08:50 · E2-S03: passo 7 (propriedades jqwik soCodigosDeSucessoViramOkOuVazio + codigosDesconhecidosViramFallback) — passaram de primeira (caracterização); mutação temporária 108→Ok fez falhar: "so 137/138 viram Ok ou Vazio; nenhum outro cStat pode avancar o cursor FAILED" (revertida); suíte verde · próximo: passo 8 (Javadoc CStatMapper/teste/Desfecho)
 - 2026-10-27 08:13 · E2-S03: DESENVOLVER ok
+- 2026-10-27 08:13 · E2-S03: passo 8 (Javadoc CStatMapper/cabeçalho do teste/Desfecho só comentários; sem teste, passo de doc); suíte verde; Desenvolvimento concluído · próximo: Verificação/revisão
+- 2026-10-27 08:14 · E2-S03: DESENVOLVER ok

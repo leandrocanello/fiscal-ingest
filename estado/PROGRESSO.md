@@ -272,3 +272,5 @@
 - 2026-10-27 08:19 · E2-S10: DESENVOLVER ok
 - 2026-10-27 08:21 · E2-S10: passo 2 — GeradorPfxDeTeste (moderno/legado, bcpkix 1.79 em testImplementation; 3 testes; falha inicial: `GeradorPfxDeTesteTest.java:36: error: cannot find symbol` (GeradorPfxDeTeste)); suíte verde · próximo: CarregadorPfx + CertificadoCarregado
 - 2026-10-27 08:21 · E2-S10: DESENVOLVER ok
+- 2026-10-27 08:23 · E2-S10: CarregadorPfx + CertificadoCarregado (falha vista: 'error: cannot find symbol' CarregadorPfx/CertificadoCarregado em CarregadorPfxTest.java:17 e CertificadoCarregadoTest.java:14); suíte verde · próximo: erros tipados (CertificadoInvalidoException)
+- 2026-10-27 08:23 · E2-S10: DESENVOLVER ok

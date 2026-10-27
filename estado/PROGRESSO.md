@@ -294,3 +294,5 @@
 - 2026-10-27 08:37 · E2-S11: plano aguarda decisão (passo [!]) → [h]
 - 2026-10-27 08:38 · E3-S01: PLANEJAR — plano em planos/E3-S01.md (9 passos; módulo infra-postgres, V1 tenant/empresa/estado_coleta/ledger_*, trigger append-only, JdbiNsuLedger idempotente); DA-10 (Ambiente no domínio, porta inalterada) e DA-11 (postgres:17, trigger, Testcontainers p/ Docker 29) · próximo: DESENVOLVER E3-S01
 - 2026-10-27 08:38 · E3-S01: PLANEJAR ok
+- 2026-10-27 08:39 · E3-S01: enum Ambiente (falha inicial: cannot find symbol Ambiente) · próximo: módulo infra-postgres + Testcontainers
+- 2026-10-27 08:39 · E3-S01: DESENVOLVER ok

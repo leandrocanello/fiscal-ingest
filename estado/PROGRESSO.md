@@ -268,3 +268,5 @@
 - 2026-10-27 08:16 · E2-S03: PR aberto para revisão
 - 2026-10-27 08:17 · E2-S10: plano criado (8 passos; DA-9; DUVIDA truststore ICP-Brasil, não bloqueia) · próximo: desenvolver
 - 2026-10-27 08:18 · E2-S10: PLANEJAR ok
+- 2026-10-27 08:19 · E2-S10: passo 1 — Credencial = bytes do pfx + senha (CredencialTest 5 testes; falha inicial: `CredencialTest.java:20: error: constructor Credencial in record Credencial cannot be applied to given types`); suíte verde · próximo: GeradorPfxDeTeste (bcpkix em testImplementation)
+- 2026-10-27 08:19 · E2-S10: DESENVOLVER ok

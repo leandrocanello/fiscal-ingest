@@ -251,3 +251,5 @@
 - 2026-10-27 08:06 · E2-S03: DESENVOLVER ok
 - 2026-10-27 08:20 · E2-S03: passo 3 (cStat632ViraIndisponivelDefinitivoForaDePrazo + cStat632NaoEhLimiteAtingido) — falha vista: "Expecting actual: LimiteAtingido[retryApos=PT1H] to be an instance of: Desfecho.IndisponivelDefinitivo" / "not to be an instance of: Desfecho.LimiteAtingido"; 632 → IndisponivelDefinitivo("fora de prazo"), teste antigo 632→LimiteAtingido substituído (A2); suíte verde · próximo: passo 4 (cStat589ViraIndisponivelDefinitivoCursorInconsistente)
 - 2026-10-27 08:07 · E2-S03: DESENVOLVER ok
+- 2026-10-27 08:25 · E2-S03: passo 4 (cStat589ViraIndisponivelDefinitivoCursorInconsistente) — falha vista: "Expecting actual: IndisponivelTemporario[retryApos=PT5M] to be an instance of: Desfecho.IndisponivelDefinitivo"; novo case 589 → IndisponivelDefinitivo("Cursor inconsistente: NSU > maxNSU") (A3); suíte verde · próximo: passo 5 (cStat656ViraLimiteAtingidoDeUmaHora + tabela @CsvSource)
+- 2026-10-27 08:08 · E2-S03: DESENVOLVER ok

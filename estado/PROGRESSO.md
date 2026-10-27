@@ -270,3 +270,5 @@
 - 2026-10-27 08:18 · E2-S10: PLANEJAR ok
 - 2026-10-27 08:19 · E2-S10: passo 1 — Credencial = bytes do pfx + senha (CredencialTest 5 testes; falha inicial: `CredencialTest.java:20: error: constructor Credencial in record Credencial cannot be applied to given types`); suíte verde · próximo: GeradorPfxDeTeste (bcpkix em testImplementation)
 - 2026-10-27 08:19 · E2-S10: DESENVOLVER ok
+- 2026-10-27 08:21 · E2-S10: passo 2 — GeradorPfxDeTeste (moderno/legado, bcpkix 1.79 em testImplementation; 3 testes; falha inicial: `GeradorPfxDeTesteTest.java:36: error: cannot find symbol` (GeradorPfxDeTeste)); suíte verde · próximo: CarregadorPfx + CertificadoCarregado
+- 2026-10-27 08:21 · E2-S10: DESENVOLVER ok

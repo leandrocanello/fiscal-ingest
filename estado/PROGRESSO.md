@@ -306,3 +306,5 @@
 - 2026-10-27 08:44 · E3-S01: DESENVOLVER ok
 - 2026-10-27 08:45 · E3-S01: AppendOnlyTest + V2 triggers append-only (falha inicial: AssertionError AppendOnlyTest.java:42, update não recusado); suíte verde · próximo: PostgresConfig/FabricaJdbi
 - 2026-10-27 08:45 · E3-S01: DESENVOLVER ok
+- 2026-10-27 08:46 · E3-S01: PostgresConfig (toString mascarado) + FabricaJdbi; falha inicial: 'cannot find symbol' (PostgresConfig/FabricaJdbi), suíte inteira verde · próximo: JdbiNsuLedgerTest
+- 2026-10-27 08:46 · E3-S01: DESENVOLVER ok

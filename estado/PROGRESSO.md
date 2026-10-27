@@ -286,3 +286,6 @@
 - 2026-10-27 08:33 · E2-S10: DESENVOLVER ok
 - 2026-10-27 08:40 · E2-S10: VERIFICAR ok — suíte inteira verde (./gradlew test), ArquiteturaDominioTest verde, nenhum pfx/p12/jks versionado, nenhuma senha em log/mensagem, invariantes 3/4/13/14 com testes dedicados; nenhum teste novo necessário · próximo: revisão
 - 2026-10-27 08:33 · E2-S10: VERIFICAR ok
+- 2026-10-27 08:34 · E2-S10: REVISAR — APROVADO PARA PR (4 achados menores no parecer); PR em planos/E2-S10-pr.md · próximo: abrir PR / revisão do autor
+- 2026-10-27 08:35 · E2-S10: REVISAR ok
+- 2026-10-27 08:35 · E2-S10: PR aberto para revisão

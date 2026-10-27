@@ -22,6 +22,9 @@ import java.util.List;
  * <p>Exige exatamente uma chave privada no .pfx. Falhas viram {@link CertificadoInvalidoException} com
  * {@link MotivoCertificadoInvalido}, sem senha nem bytes na mensagem.
  *
+ * <p>Aceita o formato moderno (PBES2/AES) e o legado (chave em 3DES, certificado em RC2-40, MAC SHA-1):
+ * o {@code KeyStore} PKCS12 do JDK 21 abre os dois, sem precisar do BouncyCastle.
+ *
  * <p>Nada é lido de disco nem registrado em log; a cópia da senha é zerada após o uso (inv. 13).
  */
 public class CarregadorPfx {

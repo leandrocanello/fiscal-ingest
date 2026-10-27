@@ -34,6 +34,20 @@ class CarregadorPfxTest {
     }
 
     @Test
+    void carregaPfxLegadoRc2E3Des() {
+        byte[] pfx = GeradorPfxDeTeste.legado(SENHA, DE, ATE);
+
+        CertificadoCarregado cert = carregador.carregar(new Credencial(pfx, SENHA));
+
+        assertThat(cert.chavePrivada().getAlgorithm()).isEqualTo("RSA");
+        assertThat(cert.cadeia()).hasSize(1);
+        assertThat(cert.cadeia()[0].getSubjectX500Principal().getName()).contains(GeradorPfxDeTeste.CN);
+        assertThat(cert.fingerprint()).isEqualTo(Sha256.hex(pfx));
+        assertThat(cert.validoDe()).isEqualTo(DE.truncatedTo(ChronoUnit.SECONDS));
+        assertThat(cert.validoAte()).isEqualTo(ATE.truncatedTo(ChronoUnit.SECONDS));
+    }
+
+    @Test
     void naoAlteraACredencial() {
         byte[] pfx = GeradorPfxDeTeste.moderno(SENHA, DE, ATE);
         Credencial credencial = new Credencial(pfx, SENHA);

@@ -64,10 +64,18 @@ class CStatMapperTest {
         }
 
         @Test
-        @DisplayName("cStat 632 deve mapear para LimiteAtingido (excesso de consultas)")
-        void cStat632_DeveMapearParaLimiteAtingido() {
+        @DisplayName("cStat 632 vira IndisponivelDefinitivo 'fora de prazo' (MOC 7.0 Tab. 5-29 H15)")
+        void cStat632ViraIndisponivelDefinitivoForaDePrazo() {
             Desfecho resultado = mapper.mapear("632");
-            assertThat(resultado).isInstanceOf(Desfecho.LimiteAtingido.class);
+            assertThat(resultado).isInstanceOf(Desfecho.IndisponivelDefinitivo.class);
+            assertThat(((Desfecho.IndisponivelDefinitivo) resultado).motivo())
+                    .containsIgnoringCase("fora de prazo");
+        }
+
+        @Test
+        @DisplayName("cStat 632 nao bloqueia o CNPJ (nao e LimiteAtingido)")
+        void cStat632NaoEhLimiteAtingido() {
+            assertThat(mapper.mapear("632")).isNotInstanceOf(Desfecho.LimiteAtingido.class);
         }
     }
 

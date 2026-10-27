@@ -25,7 +25,7 @@ import java.time.Duration;
  */
 public class CStatMapper {
 
-    /** Retry padrao para cStat de limite (656/632). */
+    /** Retry padrao para cStat de limite (656). */
     private static final Duration RETRY_PADRAO = Duration.ofHours(1);
 
     /** Retry padrao para cStat desconhecido/indisponivel. */
@@ -49,8 +49,11 @@ public class CStatMapper {
             // Vazio - nada novo
             case "137" -> new Desfecho.Vazio();
 
-            // Limite atingido - NAO avancar ponteiro (cStat 656/632)
-            case "656", "632" -> new Desfecho.LimiteAtingido(RETRY_PADRAO);
+            // Consumo indevido - NAO avancar ponteiro
+            case "656" -> new Desfecho.LimiteAtingido(RETRY_PADRAO);
+
+            // NF-e fora do prazo de distribuicao (MOC 7.0 Tab. 5-29 H15, so consChNFe) - nao retentar
+            case "632" -> new Desfecho.IndisponivelDefinitivo("Documento fora de prazo de distribuição (cStat 632)");
 
             // Servico paralisado momentaneamente (MOC 7.0 Tab. 5-20 K03) - tentar de novo
             case "108" -> new Desfecho.IndisponivelTemporario(RETRY_TEMP);

@@ -23,7 +23,7 @@ public sealed interface Desfecho
     /** Nada novo a relatar (ex: cStat 137 — sem documentos). */
     record Vazio() implements Desfecho {}
 
-    /** Limite de consumo atingido (ex: cStat 656/632). NÃO avançar o ponteiro. */
+    /** Limite de consumo atingido (ex: cStat 656). NÃO avançar o ponteiro. */
     record LimiteAtingido(Duration retryApos) implements Desfecho {}
 
     /** Indisponibilidade temporária (ex: timeout, 5xx, 429). Retry sem avançar. */
@@ -35,6 +35,6 @@ public sealed interface Desfecho
     /** Falha de autenticação (ex: certificado inválido). */
     record ErroAutenticacao(String motivo) implements Desfecho {}
 
-    /** Serviço paralisado (ex: cStat 108/109). */
+    /** Serviço paralisado (ex: cStat 109). */
     record ServicoFora(String motivo) implements Desfecho {}
 }

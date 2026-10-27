@@ -300,3 +300,5 @@
 - 2026-10-27 08:40 · E3-S01: DESENVOLVER ok
 - 2026-10-27 08:41 · E3-S01: ArquiteturaInfraTest (2 regras ArchUnit, nasce verde por ser só regra; suíte inteira verde) · próximo: MigracoesTest + V1__esquema_base.sql
 - 2026-10-27 08:41 · E3-S01: DESENVOLVER ok
+- 2026-10-27 09:00 · E3-S01: Migracoes + V1 do esquema base (MigracoesTest falhou por classe inexistente, depois verde) · próximo: EsquemaRestricoesTest
+- 2026-10-27 08:43 · E3-S01: DESENVOLVER ok

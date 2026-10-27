@@ -316,3 +316,6 @@
 - 2026-10-27 08:49 · E3-S01: VERIFICAR ok
 - 2026-10-27 08:50 · E3-S01: revertido — chamada terminou com ERRO
 - 2026-10-27 08:50 · E3-S01: revertido — limite de uso no meio da chamada
+- 2026-10-27 13:01 · E3-S01: REVISAR — APROVAR PARA PR (inv. 4/5/6/13 com teste; achados menores: TRUNCATE fora do trigger, URL no toString, tentativa append-only) · próximo: abrir PR
+- 2026-10-27 13:01 · E3-S01: REVISAR ok
+- 2026-10-27 13:01 · E3-S01: PR aberto para revisão

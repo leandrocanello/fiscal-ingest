@@ -33,7 +33,7 @@
 - [ ] E2-S12 | HUMANO   | deps: E2-S09,E2-S11 | smoke em homologação: distNSU, consChNFe, ciência, autXML
 
 ## Etapa 3 — Persistência e catálogo (Fase 3)
-- [~] E3-S01 | AUTO     | deps: E1-S03 | JDBI + Flyway (ADR-025) + esquema base (tenant, empresa, estado_coleta, ledger_*)
+- [r] E3-S01 | AUTO     | deps: E1-S03 | JDBI + Flyway (ADR-025) + esquema base (tenant, empresa, estado_coleta, ledger_*)
 - [ ] E3-S02 | AUTO+    | deps: E3-S01 | CAS do cursor + testes de caos (dois fetchers, um avança)
 - [ ] E3-S03 | AUTO+    | deps: E3-S01 | RLS por tenant + teste "A não lê B"
 - [ ] E3-S04 | AUTO     | deps: E3-S01 | outbox transacional + relay (fila no Postgres)

@@ -52,6 +52,23 @@ class DistDfeJaxbTest {
             String xml = sw.toString();
             assertThat(xml).contains("distDFeInt").contains("12345678000199").contains("ultNSU").contains("100");
         }
+
+        @Test
+        @DisplayName("marshal respeita a ordem do schema: tpAmb, CNPJ, distNSU")
+        void marshalRespeitaOrdemDoSchema() throws Exception {
+            DistDfeInt req = new DistDfeInt();
+            req.setVersao("1.01");
+            req.setTpAmb("1");
+            req.setCnpj("11111111000191");
+            req.setUltNsu("100");
+            Marshaller m = ctx(DistDfeInt.class).createMarshaller();
+            StringWriter sw = new StringWriter();
+            m.marshal(req, sw);
+            String xml = sw.toString();
+            assertThat(xml).contains("versao=\"1.01\"");
+            assertThat(xml.indexOf("<tpAmb>")).isNotNegative().isLessThan(xml.indexOf("<CNPJ>"));
+            assertThat(xml.indexOf("<CNPJ>")).isLessThan(xml.indexOf("<distNSU>"));
+        }
     }
 
     @Nested

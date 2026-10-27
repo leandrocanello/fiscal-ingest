@@ -12,18 +12,25 @@ import java.time.Duration;
  * <p>Este e o ponto onde o dialeto SEFAZ vira linguagem do core.
  * O core NUNCA ve cStat - so ve Desfecho.
  *
- * <p><b>Mapeamentos principais (distDFe / consNSU):</b>
+ * <p><b>Mapeamentos (distDFe / consNSU / consChNFe) — fonte: MOC 7.0, decisao E2-S02:</b>
  * <ul>
  *   <li><b>138</b> - documento localizado -> {@link Desfecho.Ok}</li>
  *   <li><b>137</b> - nenhum documento encontrado -> {@link Desfecho.Vazio}</li>
- *   <li><b>108</b> - servico paralisado momentaneamente -> {@link Desfecho.IndisponivelTemporario}</li>
- *   <li><b>656</b> - consumo indevido -> {@link Desfecho.LimiteAtingido} (CRITICO!)</li>
- *   <li><b>632</b> - excesso de consultas -> {@link Desfecho.LimiteAtingido}</li>
- *   <li><b>109</b> - servico paralisado -> {@link Desfecho.ServicoFora}</li>
+ *   <li><b>656</b> - consumo indevido -> {@link Desfecho.LimiteAtingido} de 1h (CRITICO!)</li>
+ *   <li><b>632</b> - NF-e fora do prazo de distribuicao (Tab. 5-29 H15, so consChNFe)
+ *       -> {@link Desfecho.IndisponivelDefinitivo} (nao bloqueia o CNPJ)</li>
+ *   <li><b>589</b> - NSU maior que o maxNSU (Tab. 5-29 H06) -> {@link Desfecho.IndisponivelDefinitivo}
+ *       ("cursor inconsistente"; nunca retentar)</li>
+ *   <li><b>108</b> - servico paralisado momentaneamente (Tab. 5-20 K03)
+ *       -> {@link Desfecho.IndisponivelTemporario} de 5 min</li>
+ *   <li><b>109</b> - servico paralisado sem previsao (Tab. 5-20 K03) -> {@link Desfecho.ServicoFora}</li>
  * </ul>
  *
- * <p>cStat desconhecido/nulo/vazio -> {@link Desfecho.IndisponivelTemporario}
- * (fallback seguro - prefere tentar de novo a assumir que deu certo).
+ * <p>So 137/138 viram {@code Ok}/{@code Vazio}: nenhum outro cStat pode avancar o cursor (inv. 1).
+ *
+ * <p>cStat desconhecido/nulo/vazio -> {@link Desfecho.IndisponivelTemporario} de 5 min
+ * (fallback seguro - prefere tentar de novo a assumir que deu certo), com log WARN
+ * so do codigo bruto sanitizado (letras/digitos, ate 16 chars; inv. 13).
  */
 public class CStatMapper {
 

@@ -27,13 +27,15 @@ import static org.assertj.core.api.Assertions.assertThat;
  * Este e o coracao do adapter: e onde o dialeto da SEFAZ vira linguagem do core.
  * O core NUNCA ve cStat - so ve Desfecho.
  *
- * Mapeamentos (distDFe / consNSU):
+ * Mapeamentos (MOC 7.0, decisao E2-S02):
  * - 138: documento localizado (Ok)
  * - 137: nenhum documento encontrado (Vazio)
- * - 656: consumo indevido (LimiteAtingido - NAO avancar ponteiro!)
- * - 632: excesso de consultas (LimiteAtingido)
- * - 108: servico paralisado momentaneamente (IndisponivelTemporario - MOC 7.0)
- * - 109: servico paralisado (ServicoFora)
+ * - 656: consumo indevido (LimiteAtingido de 1h - NAO avancar ponteiro!)
+ * - 632: NF-e fora do prazo de distribuicao (IndisponivelDefinitivo - Tab. 5-29 H15)
+ * - 589: NSU maior que o maxNSU (IndisponivelDefinitivo "cursor inconsistente" - Tab. 5-29 H06)
+ * - 108: servico paralisado momentaneamente (IndisponivelTemporario - Tab. 5-20 K03)
+ * - 109: servico paralisado sem previsao (ServicoFora - Tab. 5-20 K03)
+ * - qualquer outro / nulo / vazio: fallback IndisponivelTemporario de 5 min + WARN sanitizado
  */
 @DisplayName("CStatMapper (cStat -> Desfecho)")
 class CStatMapperTest {

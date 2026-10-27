@@ -263,3 +263,6 @@
 - 2026-10-27 08:14 · E2-S03: DESENVOLVER ok
 - 2026-10-27 08:20 · E2-S03: VERIFICAR ok (jqwik, diff do domain só Javadoc, Logger só no CStatMapper, suíte inteira verde; nenhum teste novo necessário) · próximo: revisão
 - 2026-10-27 08:14 · E2-S03: VERIFICAR ok
+- 2026-10-27 08:15 · E2-S03: REVISAR ok — APROVAR PARA PR (invariantes 1/4/13 com teste; obs.: 632→Definitivo afeta o CNPJ inteiro em consChNFe) · próximo: abrir PR
+- 2026-10-27 08:15 · E2-S03: REVISAR ok
+- 2026-10-27 08:16 · E2-S03: PR aberto para revisão

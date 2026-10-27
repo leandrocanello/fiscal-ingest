@@ -17,6 +17,9 @@ import org.bouncycastle.asn1.DERBMPString;
 import org.bouncycastle.asn1.DEROctetString;
 import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
 import org.bouncycastle.asn1.x500.X500Name;
+import org.bouncycastle.asn1.x509.Extension;
+import org.bouncycastle.asn1.x509.GeneralName;
+import org.bouncycastle.asn1.x509.GeneralNames;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
 import org.bouncycastle.cert.jcajce.JcaX509v3CertificateBuilder;
 import org.bouncycastle.crypto.engines.DESedeEngine;
@@ -56,6 +59,27 @@ final class GeradorPfxDeTeste {
             return saida.toByteArray();
         } catch (Exception e) {
             throw new IllegalStateException("falha ao gerar pfx moderno de teste", e);
+        }
+    }
+
+    /** PKCS#12 de servidor TLS para {@code localhost} (SAN DNS), para o WireMock HTTPS dos testes de mTLS. */
+    static byte[] servidorLocalhost(char[] senha, Instant validoDe, Instant validoAte) {
+        try {
+            KeyPair par = novoPar();
+            X500Name sujeito = new X500Name("CN=localhost");
+            JcaX509v3CertificateBuilder builder = new JcaX509v3CertificateBuilder(sujeito,
+                    new BigInteger(64, ALEATORIO).abs().add(BigInteger.ONE),
+                    Date.from(validoDe), Date.from(validoAte), sujeito, par.getPublic());
+            builder.addExtension(Extension.subjectAlternativeName, false,
+                    new GeneralNames(new GeneralName(GeneralName.dNSName, "localhost")));
+            X509Certificate cert = new JcaX509CertificateConverter().getCertificate(
+                    builder.build(new JcaContentSignerBuilder("SHA256withRSA").build(par.getPrivate())));
+            KeyStore ks = KeyStore.getInstance("PKCS12");
+            ks.load(null, null);
+            ks.setKeyEntry(ALIAS, par.getPrivate(), senha, new Certificate[] {cert});
+            return gravar(ks, senha);
+        } catch (Exception e) {
+            throw new IllegalStateException("falha ao gerar pfx de servidor de teste", e);
         }
     }
 

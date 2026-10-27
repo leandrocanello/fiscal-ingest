@@ -312,3 +312,5 @@
 - 2026-10-27 08:47 · E3-S01: DESENVOLVER ok
 - 2026-10-27 08:48 · E3-S01: propriedade jqwik de idempotência do ledger (passou de primeira: JdbiNsuLedger já cobria ON CONFLICT DO NOTHING; teste de caracterização, sem falha prévia) · suíte inteira verde · próximo: Verificação/revisão
 - 2026-10-27 08:48 · E3-S01: DESENVOLVER ok
+- 2026-10-27 08:49 · E3-S01: VERIFICAR ok — infra-postgres 18 testes (jqwik, Testcontainers, ArchUnit) + domain 82, suíte inteira verde com --rerun-tasks; sem defeitos, sem código novo · próximo: revisão
+- 2026-10-27 08:49 · E3-S01: VERIFICAR ok

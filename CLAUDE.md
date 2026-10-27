@@ -200,9 +200,11 @@ estaduais. Não desenhe nada que impeça esses itens, mas **não os implemente**
   - `138` → `Ok`
   - `137` → `Vazio`
   - `656` → `LimiteAtingido` (em produção, é **bug de invariante**)
-  - `108`/`109` → `ServicoFora` ou `IndisponivelTemporario`
-  - `632` → **a confirmar** (a v1 do ARCHITECTURE mapeava para `LimiteAtingido` e a v1 deste arquivo para `ServicoFora`; validar o significado na NT)
-  - `589` (NSU maior que o máximo) → **erro de consistência** (cursor corrompido), nunca retentar
+  - `108` (paralisado momentaneamente) → `IndisponivelTemporario` (backoff); `109` (paralisado sem previsão) → `ServicoFora`
+  - `632` (só `consChNFe`: fora do prazo de 90 dias para download) → `IndisponivelDefinitivo` daquela consulta, sem bloquear o CNPJ
+  - `589` (NSU maior que o máximo) → `IndisponivelDefinitivo` (cursor inconsistente), nunca retentar
+  - cStat desconhecido → `IndisponivelTemporario(5 min)` + alerta com o código bruto (sem XML)
+  - Fonte: MOC 7.0, Tab. 5-20 e 5-29 (decisão E2-S02, 2026-10-26; `docs/FONTES-OFICIAIS.md`)
   - rejeições de certificado ou schema → `ErroAutenticacao` ou `IndisponivelDefinitivo`
 
 ### 3.3 Manifestação do destinatário
@@ -703,7 +705,7 @@ Os PDFs (DANFE) ficam guardados como anexo informativo, **nunca** como fonte de 
   (`evidencia_ref`). O código **materializa** o que o contrato definir. Quem é controlador e quem é
   operador deve ser alinhado com o jurídico.
 - **Revogação:** a coleta para (`CONSENTIMENTO_REVOGADO`) e a entrega para o integrador para. A retenção
-  e o expurgo seguem uma política definida (guarda fiscal costuma ser de 5 anos **[VALIDAR com jurídico]**), com expurgo auditado.
+  e o expurgo seguem uma política definida (guarda de **5 anos**, decisão do autor em 2026-10-26; prazo configurável), com expurgo auditado.
 - **Trilha:** quem acessou, baixou, manifestou ou entregou, quando e com qual consentimento. Imutável.
 - **Titular:** exportação e expurgo por empresa, com auditoria.
 - **Dados pessoais em NF-e** (nomes, CPFs, endereços): mascarados em logs; ambientes de teste só com dados sintéticos.

@@ -29,7 +29,7 @@ Se a norma mudar, mude **o teste primeiro**.
 | 4 | Atores atendidos pela distribuição; emitente recebe eventos das próprias notas? | FONTE LOCALIZADA (parcial) | Roteamento pelo conteúdo (§7.3); canais A/B |
 | 5 | `autXML`: limite de ocorrências, recebimento pela distribuição, CT-e | FONTE LOCALIZADA (parcial) | ADR-019; E2-S12 (smoke); canal B |
 | 6 | Manifestação: códigos, prazos, efeito no `procNFe`, quem assina | FONTE LOCALIZADA (parcial) | E2-S09/E2-S11 (`manifestar`); ADR-004 |
-| 7 | Assinatura: SHA-1 × SHA-256, C14N, formato do `Id` do evento | FONTE LOCALIZADA (parcial) | E2-S11 (XML-DSig); validador de assinatura da porta push |
+| 7 | Assinatura: SHA-1 × SHA-256, C14N, formato do `Id` do evento | FONTE PRIMÁRIA LOCALIZADA (MOC 7.0 Tab. 4-2; p. 100) | E2-S11 (XML-DSig); validador de assinatura da porta push |
 | 8 | Qual certificado consulta qual CNPJ (raiz, filiais, procurador) | FONTE PRIMÁRIA LOCALIZADA (parcial; MOC 7.0 H04/H05) | E2D (carregador `.pfx`); cofre (§7); `estado_coleta` |
 | 9 | URLs e versões de WSDL/XSD (produção e homologação); política de versão das NTs | PENDENTE | Adapter 2B–2E; E2-S12; vendorização de XSD |
 | 10 | Janela real de retenção do AN | FONTE PRIMÁRIA LOCALIZADA (MOC 7.0 H15) | Backfill; prioridade da Fase 2→3 |
@@ -241,4 +241,16 @@ Outros achados da Tab. 5-29 (p. 96) e do §5.7.4.4 (p. 94):
   (reforça CLAUDE.md §3.1 e a razão do agente/`autXML`).
 - Também na Tab. 5-29: `640` interessado sem permissão para a NF-e; `653`/`654` NF-e cancelada/denegada, arquivo indisponível;
   `217` NF-e inexistente; `236`, `614`–`619` chave inválida; `252` ambiente divergente; `489`/`490` CNPJ/CPF inválido.
+
+### Item 7 (e 6) no MOC 7.0 — assinatura e leiaute do evento (2026-10-27)
+- **Tab. 4-2 "Padrões de Assinatura Digital" (p. 54–55):** "XML Digital Signature, utilizando o formato Enveloped";
+  certificado ICP-Brasil, cadeia "EndCertOnly (Incluir na assinatura apenas o certificado do usuário final)";
+  "RSA (http://www.w3.org/2000/09/xmldsig#rsa-sha1)"; "SHA-1 (http://www.w3.org/2000/09/xmldsig#sha1)";
+  transformações "Enveloped" e "C14N (http://www.w3.org/TR/2001/REC-xml-c14n-20010315)".
+- **Leiaute de entrada do `NFeRecepcaoEvento` (p. 100):** `Id` "formado por “ID” + tpEvento + Chave da NF-e + nSeqEvento"
+  (54 posições); `cOrgao` "91=Ambiente Nacional"; `dhEvento` "AAAA-MM-DDThh:mm:ssTZD"; `nSeqEvento` "Informar o valor “1”".
+- **Tab. 5-41 (p. 113), manifestação do destinatário:** `descEvento` ∈ "Confirmacao da Operacao", "Ciencia da Operacao",
+  "Desconhecimento da Operacao", "Operacao nao Realizada" (sem acento).
+- **Decisão E2-S11 (autor, 2026-10-27):** `AlgoritmoAssinatura {RSA_SHA1, RSA_SHA256}` com padrão `RSA_SHA1`.
+  ⚠ MOC de 2020: conferir no smoke E2-S12 se alguma NT posterior passou a exigir SHA-256.
 

@@ -165,17 +165,18 @@ public sealed interface Desfecho
 
     record Ok()                                  implements Desfecho {}
     record Vazio()                               implements Desfecho {} // 137: nada novo
-    record LimiteAtingido(Duration retryApos)    implements Desfecho {} // 656: NÃO avança ponteiro (632: a confirmar)
-    record IndisponivelTemporario(Duration r)    implements Desfecho {} // timeout/5xx/429
-    record IndisponivelDefinitivo(String motivo) implements Desfecho {} // schema incompatível
+    record LimiteAtingido(Duration retryApos)    implements Desfecho {} // 656: NÃO avança ponteiro
+    record IndisponivelTemporario(Duration r)    implements Desfecho {} // 108, timeout/5xx/429, cStat desconhecido
+    record IndisponivelDefinitivo(String motivo) implements Desfecho {} // 589, 632 (consChNFe), schema incompatível
     record ErroAutenticacao(String motivo)       implements Desfecho {} // certificado
     record ServicoFora(String motivo)            implements Desfecho {} // 109: paralisado
 }
 ```
 
-> **Mapeamento de `cStat` em revisão** (ver `docs/AUDITORIA-1.5.md` e `CLAUDE.md` §3.2): `632` está em
-> conflito entre as versões dos docs, `108` provavelmente significa *serviço paralisado momentaneamente*
-> (não "em operação") e `589` precisa virar erro de consistência. Tudo **[VALIDAR]** no MOC antes de mudar os testes.
+> **Mapeamento de `cStat`** (decisão E2-S02, 2026-10-26; fonte MOC 7.0, Tab. 5-20 e 5-29): `137 → Vazio`,
+> `138 → Ok`, `108 → IndisponivelTemporario`, `109 → ServicoFora`, `656 → LimiteAtingido(1h)`,
+> `632` (fora de prazo, só `consChNFe`) e `589` (cursor inconsistente) → `IndisponivelDefinitivo`; desconhecido →
+> `IndisponivelTemporario(5 min)` + alerta. Só `137`/`138` avançam o cursor (teste de propriedade no `CStatMapper`).
 
 ### 5.4 Cursor (opaco para o core)
 

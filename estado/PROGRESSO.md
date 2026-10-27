@@ -274,3 +274,5 @@
 - 2026-10-27 08:21 · E2-S10: DESENVOLVER ok
 - 2026-10-27 08:23 · E2-S10: CarregadorPfx + CertificadoCarregado (falha vista: 'error: cannot find symbol' CarregadorPfx/CertificadoCarregado em CarregadorPfxTest.java:17 e CertificadoCarregadoTest.java:14); suíte verde · próximo: erros tipados (CertificadoInvalidoException)
 - 2026-10-27 08:23 · E2-S10: DESENVOLVER ok
+- 2026-10-27 08:26 · E2-S10: erros tipados do CarregadorPfx (falha vista: 'CarregadorPfxTest.java:53: error: cannot find symbol' MotivoCertificadoInvalido/CertificadoInvalidoException); suíte verde · próximo: pfx legado RC2/3DES
+- 2026-10-27 08:24 · E2-S10: DESENVOLVER ok

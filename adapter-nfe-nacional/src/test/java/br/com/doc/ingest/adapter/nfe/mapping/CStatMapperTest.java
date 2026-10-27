@@ -30,23 +30,19 @@ class CStatMapperTest {
 
     private final CStatMapper mapper = new CStatMapper();
 
-    @Nested
-    @DisplayName("Casos de sucesso (Ok / Vazio)")
-    class CasosSucesso {
-
-        @Test
-        @DisplayName("cStat 138 deve mapear para Ok (documento localizado)")
-        void cStat138_DeveMapearParaOk() {
-            Desfecho resultado = mapper.mapear("138");
-            assertThat(resultado).isInstanceOf(Desfecho.Ok.class);
-        }
-
-        @Test
-        @DisplayName("cStat 137 deve mapear para Vazio (nenhum documento)")
-        void cStat137_DeveMapearParaVazio() {
-            Desfecho resultado = mapper.mapear("137");
-            assertThat(resultado).isInstanceOf(Desfecho.Vazio.class);
-        }
+    @ParameterizedTest(name = "cStat {0} -> {1}")
+    @DisplayName("Tabela MOC 7.0: cada cStat mapeado vira o tipo de Desfecho decidido (E2-S02)")
+    @CsvSource({
+            "138, Ok",
+            "137, Vazio",
+            "656, LimiteAtingido",
+            "632, IndisponivelDefinitivo",
+            "589, IndisponivelDefinitivo",
+            "108, IndisponivelTemporario",
+            "109, ServicoFora"
+    })
+    void tabelaDeCodigosMapeados(String cStat, String tipoEsperado) {
+        assertThat(mapper.mapear(cStat).getClass().getSimpleName()).isEqualTo(tipoEsperado);
     }
 
     @Nested
@@ -54,13 +50,11 @@ class CStatMapperTest {
     class CasosLimite {
 
         @Test
-        @DisplayName("cStat 656 deve mapear para LimiteAtingido (consumo indevido)")
-        void cStat656_DeveMapearParaLimiteAtingido() {
+        @DisplayName("cStat 656 vira LimiteAtingido de exatamente 1h (consumo indevido)")
+        void cStat656ViraLimiteAtingidoDeUmaHora() {
             Desfecho resultado = mapper.mapear("656");
             assertThat(resultado).isInstanceOf(Desfecho.LimiteAtingido.class);
-            assertThat(((Desfecho.LimiteAtingido) resultado).retryApos())
-                    .isNotNull()
-                    .isGreaterThan(Duration.ZERO);
+            assertThat(((Desfecho.LimiteAtingido) resultado).retryApos()).isEqualTo(Duration.ofHours(1));
         }
 
         @Test
@@ -91,13 +85,6 @@ class CStatMapperTest {
     @Nested
     @DisplayName("Casos de indisponibilidade")
     class CasosIndisponibilidade {
-
-        @Test
-        @DisplayName("cStat 109 deve mapear para ServicoFora (servico paralisado)")
-        void cStat109_DeveMapearParaServicoFora() {
-            Desfecho resultado = mapper.mapear("109");
-            assertThat(resultado).isInstanceOf(Desfecho.ServicoFora.class);
-        }
 
         @Test
         @DisplayName("cStat 109 vira ServicoFora com motivo citando 'sem previsao'")

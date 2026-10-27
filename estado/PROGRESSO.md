@@ -284,3 +284,5 @@
 - 2026-10-27 08:30 · E2-S10: DESENVOLVER ok
 - 2026-10-27 08:32 · E2-S10: concorrência (50 virtual threads) + propriedade jqwik do cache; passaram já com o lock único, falha vista por mutação ('acessoConcorrenteCarregaUmaVezSo() FAILED' sem synchronized; 'tamanhoNuncaPassaDaCapacidadeENuncaDevolveEntradaExpirada FAILED' e 'expiraAposTtl() FAILED' com TTL inclusivo); cache passou a sincronizar por chave (CompletableFuture por fingerprint, carga fora do lock) + teste falhaNaCargaNaoFicaNoCache; suíte verde · próximo: seção Verificação do plano (revisor)
 - 2026-10-27 08:33 · E2-S10: DESENVOLVER ok
+- 2026-10-27 08:40 · E2-S10: VERIFICAR ok — suíte inteira verde (./gradlew test), ArquiteturaDominioTest verde, nenhum pfx/p12/jks versionado, nenhuma senha em log/mensagem, invariantes 3/4/13/14 com testes dedicados; nenhum teste novo necessário · próximo: revisão
+- 2026-10-27 08:33 · E2-S10: VERIFICAR ok

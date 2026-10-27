@@ -20,6 +20,26 @@
 - **Recomendação:** (c), validado no smoke E2-S12. Não bloqueia a E2-S10.
 - Resposta:
 
+### [DECISAO] E2-S11 — 2026-10-27 — padrão da assinatura XML-DSig do evento de manifestação
+- **O que é preciso:** a E2-S11 monta e assina o evento 210210 (Ciência). `docs/FONTES-OFICIAIS.md` item 7 deixou
+  explicitamente "a decisão do algoritmo para a E2-S11, após conferência do autor"; só há fontes secundárias.
+  Mudaria o XML gerado (e um erro só aparece na SEFAZ, como rejeição 297/298).
+- **D1 — algoritmo:** (a) `rsa-sha1` + digest `sha1` (o que a NF-e usa historicamente, de memória); (b) `rsa-sha256` + digest
+  `sha256` (resumo da SEF-SC, não confirmado); (c) **parâmetro** `AlgoritmoAssinatura {RSA_SHA1, RSA_SHA256}` no assinador,
+  com o padrão escolhido por você. Prós de (c): troca em um lugar e o teste cobre os dois; contra: um enum a mais.
+- **D2 — confirmar o resto do padrão** (de memória, fontes só secundárias): transforms `enveloped-signature` + C14N
+  inclusivo `xml-c14n-20010315` (sem comentários), `Reference URI="#ID..."`, `KeyInfo/X509Data` só com o certificado do
+  titular; `Id` do evento = `"ID" + tpEvento(6) + chNFe(44) + nSeqEvento(2 dígitos)`; `cOrgao=91` (AN), `versao="1.00"`,
+  `verEvento="1.00"`, `descEvento="Ciencia da Operacao"` (sem acento), `dhEvento` com fuso (`AAAA-MM-DDThh:mm:ss-03:00`).
+- **Roteiro:** abra o PDF do MOC 7.0 que você já tem, seção do "Padrão de Assinatura Digital" (cap. 4, perto do
+  `nfeRecepcaoEvento`) e o leiaute do evento (`infEvento`); confira D1 e D2; registre a página em FONTES-OFICIAIS item 7
+  (num PR `docs/`) e responda abaixo.
+- **Recomendação:** D1 (c) com padrão = o que o MOC disser (provável `RSA_SHA1`); D2 como acima, com as constantes isoladas
+  numa classe marcada [VALIDAR item 6/7] e conferidas no smoke E2-S12. Observação: o **envio** do evento (SOAP
+  `RecepcaoEvento` + mapeamento do `retEvento`) ficou fora da E2-S11, porque o transporte da E2-S06 ainda não está na base;
+  sugiro uma subetapa nova `E2-S11b` (AUTO+, deps E2-S07, E2-S11) no ROADMAP.
+- Resposta:
+
 ## Resolvidos
 
 - **E1-S01 / E1-S02** — PRs #1 e #2 mergeados pelo autor em 2026-10-21 (testes verdes no PC dele).

@@ -289,3 +289,5 @@
 - 2026-10-27 08:34 · E2-S10: REVISAR — APROVADO PARA PR (4 achados menores no parecer); PR em planos/E2-S10-pr.md · próximo: abrir PR / revisão do autor
 - 2026-10-27 08:35 · E2-S10: REVISAR ok
 - 2026-10-27 08:35 · E2-S10: PR aberto para revisão
+- 2026-10-27 08:36 · E2-S11: PLANEJAR — plano em planos/E2-S11.md (9 passos; montagem 210210 + XML-DSig, envio SOAP fora); bloqueado por [DECISAO] E2-S11 em PARA-VOCE (algoritmo SHA-1×SHA-256, Id/C14N) · próximo: aguardar resposta do autor
+- 2026-10-27 08:37 · E2-S11: PLANEJAR ok

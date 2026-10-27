@@ -253,3 +253,5 @@
 - 2026-10-27 08:07 · E2-S03: DESENVOLVER ok
 - 2026-10-27 08:25 · E2-S03: passo 4 (cStat589ViraIndisponivelDefinitivoCursorInconsistente) — falha vista: "Expecting actual: IndisponivelTemporario[retryApos=PT5M] to be an instance of: Desfecho.IndisponivelDefinitivo"; novo case 589 → IndisponivelDefinitivo("Cursor inconsistente: NSU > maxNSU") (A3); suíte verde · próximo: passo 5 (cStat656ViraLimiteAtingidoDeUmaHora + tabela @CsvSource)
 - 2026-10-27 08:08 · E2-S03: DESENVOLVER ok
+- 2026-10-27 08:30 · E2-S03: passo 5 (cStat656ViraLimiteAtingidoDeUmaHora + tabela @CsvSource dos 7 cStat) — passou de primeira (caracterização: código já usava 1h); testes redundantes de 138/137/109/656 substituídos pela tabela; suíte verde · próximo: passo 6 (fallbackLogaSoOCStatBruto)
+- 2026-10-27 08:09 · E2-S03: DESENVOLVER ok

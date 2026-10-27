@@ -46,3 +46,9 @@
 **Opções:** (a) seguir os valores usuais do protocolo (de memória), isolados em uma única classe de constantes marcada [VALIDAR item 9], sem `cUFAutor`, sem nenhuma URL embutida no código (endpoint vem do construtor), timeouts e teto de resposta (16 MiB) configuráveis; (b) parar a subetapa até o autor validar o WSDL.
 **Escolha:** (a). Os testes só falam com WireMock (inv. 14); um valor errado aparece no smoke (E2-S12) e se corrige em um lugar só. Parar travaria a E2-S07 sem ganho.
 **Como desfazer:** editar `ContratoDistDfe` (constantes) e os padrões de `TransporteHttpJdk`; incluir `cUFAutor` em `DistDfeInt` com `propOrder`.
+
+### DA-8 · 2026-10-27 · E2-S03
+- **Contexto:** a decisão E2-S02 pede "log de alerta com o cStat bruto" no fallback, mas o `adapter-nfe-nacional` não tem dependência de log.
+- **Opções:** (a) `slf4j-api` no adapter + `logback-classic` só em teste (ADR-028); (b) porta/callback de observação injetada no mapper; (c) não logar agora.
+- **Escolha:** (a) — segue o ADR-028, é o mínimo, e o teste captura o WARN com `ListAppender`. Mensagem com o código truncado (≤ 16 chars) e sem `<`, para não vazar XML (inv. 13).
+- **Como desfazer:** remover as duas linhas do `adapter-nfe-nacional/build.gradle.kts`, o `Logger` do `CStatMapper` e o teste `fallbackLogaSoOCStatBruto`.

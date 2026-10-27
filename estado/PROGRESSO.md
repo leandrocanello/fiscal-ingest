@@ -243,3 +243,5 @@
 - 2026-10-27 08:03 · E2-S06: REVISAR — APROVAR PARA PR (inv. 3/4/5/13/14 cobertas; 5 achados não bloqueantes: timeout do corpo, Locale.ROOT no ultNSU, limiteBytes sem validação) · próximo: PR
 - 2026-10-27 08:02 · E2-S06: REVISAR ok
 - 2026-10-27 08:02 · E2-S06: PR aberto para revisão
+- 2026-10-27 08:03 · E2-S03: plano criado (8 passos: 108/109/632/589/656 + fallback com log, propriedades jqwik; DA-8 slf4j; DUVIDA docs protegidos) · próximo: desenvolver passo 1 (cStat108NaoEhSucesso)
+- 2026-10-27 08:04 · E2-S03: PLANEJAR ok

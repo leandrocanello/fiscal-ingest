@@ -4,6 +4,14 @@
 > abaixo de cada item, em "Resposta:". Depois ajuste o status no ROADMAP (ex.: `[h]` → `[x]`).
 > Itens resolvidos podem ser movidos para o fim, em "Resolvidos".
 
+### [DUVIDA] E2-S03 — 2026-10-27 — atualizar docs protegidos com o mapeamento de cStat decidido
+- **O que é preciso:** a E2-S03 aplica no código a decisão E2-S02, mas `CLAUDE.md` §3.2 ("`632` → a confirmar"; `108`/`109` juntos)
+  e `docs/ARCHITECTURE.md` §5.3 (l.168 e nota l.176–178) seguem desatualizados, e o agente não pode editá-los.
+- **Opções:** (a) você atualiza os dois num PR `docs/` depois do merge da E2-S03; (b) deixar para a revisão geral de docs.
+- **Recomendação:** (a) — texto sugerido: `108 → IndisponivelTemporario`, `109 → ServicoFora`, `632 (só consChNFe, fora de prazo)
+  → IndisponivelDefinitivo`, `589 → IndisponivelDefinitivo (cursor inconsistente)`, desconhecido → `IndisponivelTemporario(5 min)` + alerta; fonte MOC 7.0.
+- Resposta:
+
 ## Resolvidos
 
 - **E1-S01 / E1-S02** — PRs #1 e #2 mergeados pelo autor em 2026-10-21 (testes verdes no PC dele).

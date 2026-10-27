@@ -240,3 +240,6 @@
 - 2026-10-27 08:00 · E1-S06: mergeado por você ✔
 - 2026-10-27 08:01 · E2-S06: verificação ok — contrato do transporte (200/4xx/5xx/timeout/conexão/limite) já coberto com WireMock em localhost, git diff main...HEAD vazio em domain/, suíte inteira verde, nenhum teste novo necessário (sem commit: nada mudou no repositório) · próximo: revisão
 - 2026-10-27 08:01 · E2-S06: VERIFICAR ok
+- 2026-10-27 08:03 · E2-S06: REVISAR — APROVAR PARA PR (inv. 3/4/5/13/14 cobertas; 5 achados não bloqueantes: timeout do corpo, Locale.ROOT no ultNSU, limiteBytes sem validação) · próximo: PR
+- 2026-10-27 08:02 · E2-S06: REVISAR ok
+- 2026-10-27 08:02 · E2-S06: PR aberto para revisão

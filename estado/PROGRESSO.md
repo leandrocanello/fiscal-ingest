@@ -257,3 +257,5 @@
 - 2026-10-27 08:09 · E2-S03: DESENVOLVER ok
 - 2026-10-27 08:40 · E2-S03: passo 6 (fallbackLogaSoOCStatBruto + nulo/vazio + entrada longa com XML) — falha vista: "Expected size: 1 but was: 0 in: []" (nenhum WARN); fallback agora loga WARN com cStat sanitizado (só [A-Za-z0-9], ≤ 16 chars); slf4j-api + logback (teste) no adapter (DA-8); suíte verde · próximo: passo 7 (propriedades jqwik soCodigosDeSucessoViramOkOuVazio / codigosDesconhecidosViramFallback)
 - 2026-10-27 08:11 · E2-S03: DESENVOLVER ok
+- 2026-10-27 08:50 · E2-S03: passo 7 (propriedades jqwik soCodigosDeSucessoViramOkOuVazio + codigosDesconhecidosViramFallback) — passaram de primeira (caracterização); mutação temporária 108→Ok fez falhar: "so 137/138 viram Ok ou Vazio; nenhum outro cStat pode avancar o cursor FAILED" (revertida); suíte verde · próximo: passo 8 (Javadoc CStatMapper/teste/Desfecho)
+- 2026-10-27 08:13 · E2-S03: DESENVOLVER ok

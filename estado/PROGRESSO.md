@@ -304,3 +304,5 @@
 - 2026-10-27 08:43 · E3-S01: DESENVOLVER ok
 - 2026-10-27 08:44 · E3-S01: EsquemaRestricoesTest (5 testes) — passaram de primeira, pois a V1 já trazia UNIQUE/CHECKs; sem falha prévia observável · próximo: AppendOnlyTest (V2 triggers)
 - 2026-10-27 08:44 · E3-S01: DESENVOLVER ok
+- 2026-10-27 08:45 · E3-S01: AppendOnlyTest + V2 triggers append-only (falha inicial: AssertionError AppendOnlyTest.java:42, update não recusado); suíte verde · próximo: PostgresConfig/FabricaJdbi
+- 2026-10-27 08:45 · E3-S01: DESENVOLVER ok

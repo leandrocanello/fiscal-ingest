@@ -52,3 +52,9 @@
 - **Opções:** (a) `slf4j-api` no adapter + `logback-classic` só em teste (ADR-028); (b) porta/callback de observação injetada no mapper; (c) não logar agora.
 - **Escolha:** (a) — segue o ADR-028, é o mínimo, e o teste captura o WARN com `ListAppender`. Mensagem com o código truncado (≤ 16 chars) e sem `<`, para não vazar XML (inv. 13).
 - **Como desfazer:** remover as duas linhas do `adapter-nfe-nacional/build.gradle.kts`, o `Logger` do `CStatMapper` e o teste `fallbackLogaSoOCStatBruto`.
+
+### DA-9 · 2026-10-27 · E2-S10
+- **Contexto:** o plano da E2-S10 precisa gerar `.pfx` sintéticos (moderno e legado), carregar o legado e fazer cache de `SSLContext`; os docs citam BouncyCastle (§3.5) e "LRU/TTL" (§7.4), mas não fixam lib nem forma.
+- **Opções:** (a) `bcpkix` só em `testImplementation` para gerar os pfx; `bcprov` em `implementation` **só se** o JDK 21 recusar o pfx legado (o teste decide), sem provider global; cache LRU+TTL próprio com `Clock` injetado; carregador exige exatamente uma chave privada no pfx (mais de uma = `AMBIGUO`); (b) Caffeine para o cache; (c) gerar pfx com `keytool` via processo externo.
+- **Escolha:** (a) — sem dependência nova em produção se não for preciso; cache pequeno e testável com relógio manual; pfx com duas chaves não tem titular claro.
+- **Como desfazer:** trocar `CacheSslContext` por Caffeine; remover `bcpkix`/`bcprov` do `adapter-nfe-nacional/build.gradle.kts`; aceitar o primeiro alias em `CarregadorPfx`.

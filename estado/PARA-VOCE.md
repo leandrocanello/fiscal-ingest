@@ -12,6 +12,14 @@
   → IndisponivelDefinitivo`, `589 → IndisponivelDefinitivo (cursor inconsistente)`, desconhecido → `IndisponivelTemporario(5 min)` + alerta; fonte MOC 7.0.
 - Resposta:
 
+### [DUVIDA] E2-S10 — 2026-10-27 — truststore ICP-Brasil para o mTLS com o AN
+- **O que é preciso:** o servidor do AN usa certificado ICP-Brasil, que não está no `cacerts` do JDK. A E2-S10 deixa o
+  `KeyStore` de confiança **injetado** (testes usam o do WireMock); falta decidir de onde vem o real.
+- **Opções:** (a) arquivo de ACs ICP-Brasil (baixado do ITI) versionado em `adapter-nfe-nacional/src/main/resources` (é público, não é segredo);
+  (b) caminho configurável por variável de ambiente; (c) as duas: (a) como padrão e (b) para sobrescrever.
+- **Recomendação:** (c), validado no smoke E2-S12. Não bloqueia a E2-S10.
+- Resposta:
+
 ## Resolvidos
 
 - **E1-S01 / E1-S02** — PRs #1 e #2 mergeados pelo autor em 2026-10-21 (testes verdes no PC dele).

@@ -266,3 +266,5 @@
 - 2026-10-27 08:15 · E2-S03: REVISAR ok — APROVAR PARA PR (invariantes 1/4/13 com teste; obs.: 632→Definitivo afeta o CNPJ inteiro em consChNFe) · próximo: abrir PR
 - 2026-10-27 08:15 · E2-S03: REVISAR ok
 - 2026-10-27 08:16 · E2-S03: PR aberto para revisão
+- 2026-10-27 08:17 · E2-S10: plano criado (8 passos; DA-9; DUVIDA truststore ICP-Brasil, não bloqueia) · próximo: desenvolver
+- 2026-10-27 08:18 · E2-S10: PLANEJAR ok

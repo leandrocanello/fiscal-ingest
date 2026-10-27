@@ -15,4 +15,7 @@ dependencies {
 
     // Testes - WireMock para simular a SEFAZ
     testImplementation("org.wiremock:wiremock:3.9.1")
+
+    // Testes - BouncyCastle só para gerar .pfx sintéticos (moderno e legado) em memória (DA-9)
+    testImplementation("org.bouncycastle:bcpkix-jdk18on:1.79")
 }

@@ -22,4 +22,16 @@ abstract class PostgresTestBase {
         ds.setPassword(POSTGRES.getPassword());
         return ds;
     }
+
+    /** DataSource apontando para um schema próprio (criado se faltar), isolando testes de migração. */
+    static DataSource dataSourceNoSchema(String schema) {
+        try (var c = dataSource().getConnection(); var st = c.createStatement()) {
+            st.execute("create schema if not exists " + schema);
+        } catch (java.sql.SQLException e) {
+            throw new IllegalStateException(e);
+        }
+        PGSimpleDataSource ds = (PGSimpleDataSource) dataSource();
+        ds.setCurrentSchema(schema);
+        return ds;
+    }
 }

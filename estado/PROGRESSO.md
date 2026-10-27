@@ -308,3 +308,5 @@
 - 2026-10-27 08:45 · E3-S01: DESENVOLVER ok
 - 2026-10-27 08:46 · E3-S01: PostgresConfig (toString mascarado) + FabricaJdbi; falha inicial: 'cannot find symbol' (PostgresConfig/FabricaJdbi), suíte inteira verde · próximo: JdbiNsuLedgerTest
 - 2026-10-27 08:46 · E3-S01: DESENVOLVER ok
+- 2026-10-27 08:47 · E3-S01: JdbiNsuLedger (ON CONFLICT DO NOTHING) com JdbiNsuLedgerTest; falha inicial: 'cannot find symbol JdbiNsuLedger', depois suíte verde · próximo: JdbiNsuLedgerPropriedadesTest
+- 2026-10-27 08:47 · E3-S01: DESENVOLVER ok

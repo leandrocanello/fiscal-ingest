@@ -245,3 +245,5 @@
 - 2026-10-27 08:02 · E2-S06: PR aberto para revisão
 - 2026-10-27 08:03 · E2-S03: plano criado (8 passos: 108/109/632/589/656 + fallback com log, propriedades jqwik; DA-8 slf4j; DUVIDA docs protegidos) · próximo: desenvolver passo 1 (cStat108NaoEhSucesso)
 - 2026-10-27 08:04 · E2-S03: PLANEJAR ok
+- 2026-10-27 08:10 · E2-S03: passo 1 (cStat108NaoEhSucesso) — falha vista: "Expecting actual: Ok[] to be an instance of: Desfecho.IndisponivelTemporario but was instance of: Desfecho.Ok"; 108 → IndisponivelTemporario(5 min), 2 testes antigos 108→Ok removidos (A1, MOC 7.0 Tab. 5-20 K03); suíte verde; commit 09a354f · próximo: passo 2 (cStat109ViraServicoForaComMotivoSemPrevisao)
+- 2026-10-27 08:05 · E2-S03: DESENVOLVER ok

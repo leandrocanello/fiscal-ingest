@@ -344,3 +344,6 @@
 - 2026-10-28 13:09 · E2-S11: DESENVOLVER ok
 - 2026-10-28 14:00 · E2-S11: testes adulteração (descEvento alterado → valida=false) e determinismo (DigestValue/SignatureValue iguais, SHA1 e SHA256); passaram de primeira — caracterização, sem falha vista nem ajuste no AssinadorXml; suíte verde · próximo: AssinaturaInvalidaException sem vazar segredo
 - 2026-10-28 13:10 · E2-S11: DESENVOLVER ok
+  - falha vista (E2-S11 passo 8): `AssinadorXmlTest.java:203: error: cannot find symbol` (AssinaturaInvalidaException inexistente)
+- 2026-10-28 14:15 · E2-S11: `AssinaturaInvalidaException` (mensagem fixa, sem causa) para chave incompatível (EC) e Id ausente; teste confere mensagem/toString sem senha, CN/CNPJ do titular nem chave em Base64; suíte verde · próximo: EventoManifestacao (montar+assinar+serializar bytes UTF-8)
+- 2026-10-28 13:11 · E2-S11: DESENVOLVER ok

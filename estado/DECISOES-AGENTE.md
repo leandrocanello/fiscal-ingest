@@ -76,3 +76,20 @@
 - **Opções:** criar outro enum de ambiente × reusar `TipoAmbiente`; tornar `RelogioManual` público × `Clock.fixed`.
 - **Escolha:** reusar `TipoAmbiente` (evita dois mapeamentos de `tpAmb`); `Clock.fixed` no teste (relógio não precisa andar).
 - **Como desfazer:** mover `TipoAmbiente` para pacote comum ou trocar a assinatura de `montar`.
+
+### DA-13 · 2026-10-28 · E2-S07
+- **Contexto:** a §8.1 pede `raw/pull/{tenant}/{cnpj_consultado}/{aaaa}/{mm}/{dd}/{tentativa_id}.envelope.xml.gz`, mas o adapter não conhece tenant nem `tentativa_id` (`ContextoConsulta` = fonte + CNPJ; `estado_coleta` não tem tenant). A §6.3 também pede cada docZip no blob store, sem layout próprio para o pull.
+- **Opções:** (a) chaves montadas numa só classe `ChavesBlobPull`, sem tenant, com sha256 na chave: `raw/pull/{fonte}/{ambiente}/{cnpj}/{aaaa}/{mm}/{dd}/{sha256}.envelope.xml` e `raw/pull/{fonte}/{ambiente}/{cnpj}/nsu/{nsu15}-{sha256}.xml`; data em UTC pelo `Clock`; sem gzip agora; (b) mudar `ContextoConsulta` para levar tenant/tentativa já na E2-S07.
+- **Escolha:** (a) — chave determinística com sha256 (inv. 7), sem crescer o domínio; o pull é por CNPJ consultado, não por tenant. Item [DUVIDA] em PARA-VOCE sobre o prefixo de tenant.
+- **Como desfazer:** alterar só `ChavesBlobPull` (e o teste dele); objetos antigos continuam legíveis pelo `BlobRef` gravado.
+
+### DA-14 · 2026-10-28 · E2-S07
+- **Contexto:** os docs mapeiam `cStat` (E2-S02) e dizem "timeout, 5xx, 429 → `IndisponivelTemporario`" (javadoc do `Desfecho`) e "rejeição de certificado → `ErroAutenticacao`" (§3.2), mas não fixam o resto: 4xx, resposta malformada, SOAP Fault, docZip corrompido, `ultNSU` da resposta menor que o cursor, formato do `Cursor`.
+- **Opções / Escolha:** `Cursor.token` = `ultNSU` decimal sem zeros (`""` = 0); timeout/conexão/resposta grande/5xx/408/429/SOAP Fault/XML malformado/DOCTYPE → `IndisponivelTemporario(5 min)`; 401/403 → `ErroAutenticacao`; outro 4xx → `IndisponivelDefinitivo`; **docZip corrompido ou falha do `BlobStore` → o lote inteiro vira `IndisponivelTemporario`, sem `Documento` e sem avançar** (o envelope bruto já ficou guardado; nada se perde); `ultNSU` da resposta < cursor → `IndisponivelDefinitivo("cursor inconsistente")`. Em todo desfecho que não seja `Ok`/`Vazio`, `proximoCursor` = cursor de entrada. Alternativa descartada: pular o docZip ruim marcando GAP (perderia o NSU até a E2-S09 existir).
+- **Como desfazer:** tudo em `TradutorRespostaDistDfe` (uma classe, testes unitários por linha da tabela).
+
+### DA-15 · 2026-10-28 · E2-S07
+- **Contexto:** a §6.3/§8 grava `blob_envelope_ref` em `ledger_tentativa`, mas `BuscarLoteResultado` não tem onde levar a referência do envelope bruto; e os testes do adapter real precisam do `BlobStoreEmMemoria`, que mora em `adapter-fake` (DA-4).
+- **Opções:** (a) novo componente `Optional<BlobRef> envelope` em `BuscarLoteResultado`, mantendo o construtor antigo de 5 argumentos (envelope vazio), e `testImplementation(project(":adapter-fake"))` no adapter real; (b) deixar a referência para a E3 (o envelope ficaria órfão).
+- **Escolha:** (a) — só `BlobRef` (sem bytes, inv. 3); nenhum chamador existente muda.
+- **Como desfazer:** remover o componente e o construtor extra; tirar a dependência de teste.

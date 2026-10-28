@@ -355,3 +355,5 @@
 - 2026-10-28 13:16 · E2-S11: REVISAR — APROVAR PARA PR (suíte verde, 264 testes; 4 achados não bloqueantes no parecer) · próximo: PR + alinhar nome E2-S11b×E2-S13 no ROADMAP
 - 2026-10-28 13:16 · E2-S11: REVISAR ok
 - 2026-10-28 13:16 · E2-S11: PR aberto para revisão
+- 2026-10-28 13:20 · E2-S07: plano criado (10 passos, opus; DA-13/14/15; 2 DUVIDA não bloqueantes em PARA-VOCE: extrator E2-S05 ausente da main e prefixo de tenant no raw/pull) · próximo: DESENVOLVER passo 1 (ChavesBlobPull)
+- 2026-10-28 13:19 · E2-S07: PLANEJAR ok

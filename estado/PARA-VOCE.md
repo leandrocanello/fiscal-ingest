@@ -58,3 +58,15 @@
   `RecepcaoEvento` + mapeamento do `retEvento`) ficou fora da E2-S11, porque o transporte da E2-S06 ainda não está na base;
   sugiro uma subetapa nova `E2-S11b` (AUTO+, deps E2-S07, E2-S11) no ROADMAP.
 - Resposta (2026-10-27, autor): D1 (c) `AlgoritmoAssinatura {RSA_SHA1, RSA_SHA256}` com padrão **RSA_SHA1** — MOC 7.0 Tab. 4-2, p. 54–55 (rsa-sha1, digest sha1, enveloped + C14N `REC-xml-c14n-20010315`, EndCertOnly). D2 como proposto — confirmado no MOC 7.0 p. 100 (`Id` = "ID" + tpEvento + chave + nSeqEvento, 54 posições; `cOrgao` 91 = AN; `dhEvento` com TZD; `nSeqEvento` = 1); `descEvento` "Ciencia da Operacao" (Tab. 5-41, p. 113). Constantes isoladas com [VALIDAR item 6/7] para o smoke. Envio do evento: nova subetapa E2-S13.
+
+### [DUVIDA] E2-S07 — 2026-10-28 — `ExtratorMetadados` (E2-S05) não está na `main`
+- **O que é preciso:** os commits `79550f6`, `420e705` e `34558b3` (extrator de metadados de resNFe/procNFe/eventos) não estão no histórico da `main`, embora a E2-S05 esteja `[x]`. Na `main` há só `DocZipDecoder`/`ClassificadorSchema`.
+- **Opções:** (a) recuperar o extrator numa subetapa curta (cherry-pick revisado) antes da E3-S07; (b) deixar o processor (E3-S07) extrair os metadados.
+- **Recomendação:** (a). Não bloqueia a E2-S07: lá o `Documento.chave` fica vazio e a chave é extraída depois.
+- Resposta:
+
+### [DUVIDA] E2-S07 — 2026-10-28 — prefixo de tenant nas chaves `raw/pull/`
+- **O que é preciso:** a §8.1 põe `{tenant}` em `raw/pull/...`, mas a coleta é por `(fonte, cnpj_consultado, ambiente)` e o adapter não conhece tenant (DA-13). Um mesmo CNPJ consultado pode servir mais de um tenant?
+- **Opções:** (a) pull sem tenant (`raw/pull/{fonte}/{ambiente}/{cnpj}/...`), tenant só a partir do catálogo (`doc/{tenant}/...`); (b) levar tenant ao `ContextoConsulta` e ao estado de coleta.
+- **Recomendação:** (a) agora (já aplicado na E2-S07, fácil de mudar) e ajustar a §8.1 num PR `docs/`.
+- Resposta:

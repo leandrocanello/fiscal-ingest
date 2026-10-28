@@ -366,3 +366,6 @@
 - 2026-10-28 · E2-S07 falha vista (passo 3): `BuscarLoteResultadoTest.java:32: error: constructor BuscarLoteResultado in record BuscarLoteResultado cannot be applied to given types;` (+ `cannot find symbol` em `envelope()`)
 - 2026-10-28 13:55 · E2-S07: passo 3 feito — `Optional<BlobRef> envelope` em `BuscarLoteResultado` com construtor antigo de 5 args (DA-15); 3 testes, suíte verde, chamadores intactos · próximo: `LeitorRespostaDistDfeTest` (parse seguro do retDistDFeInt)
 - 2026-10-28 13:24 · E2-S07: DESENVOLVER ok
+- 2026-10-28 · E2-S07 falha vista (passo 4): `LeitorRespostaDistDfeTest.java:3: error: package br.com.doc.ingest.adapter.nfe.soap.LeitorRespostaDistDfe does not exist` (+ `cannot find symbol` em `Valida`/`Invalida`)
+- 2026-10-28 14:20 · E2-S07: passo 4 feito — `LeitorRespostaDistDfe` (DOM sem DOCTYPE/entidades, ErrorHandler silencioso, JAXB no nó `retDistDFeInt` em qualquer nível do Body; Fault/não-XML/sem ret → `Invalida` com motivo fixo); 10 testes, suíte verde · próximo: `TradutorRespostaDistDfeTest` (DA-14)
+- 2026-10-28 13:26 · E2-S07: DESENVOLVER ok

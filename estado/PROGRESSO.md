@@ -337,3 +337,5 @@
   - falha vista (E2-S11 passo 4): `MontadorEventoCienciaTest.java:35: error: cannot find symbol` (MontadorEvento inexistente)
 - 2026-10-28 13:20 · E2-S11: `MontadorEvento` (evento/infEvento 210210, dhEvento do Clock em -03:00, DOM seguro; DA-12) em TDD; suíte verde · próximo: `FabricaDocumentoSeguro` (teste XXE)
 - 2026-10-28 13:06 · E2-S11: DESENVOLVER ok
+- 2026-10-28 13:30 · E2-S11: `FabricaDocumentoSeguro` + `XmlInseguroOuInvalidoException` (sem causa; sem eco no stderr), `MontadorEvento` passa a usá-la; falha vista: `FabricaDocumentoSeguroTest.java:28: error: cannot find symbol` (FabricaDocumentoSeguro/XmlInseguroOuInvalidoException); 5 testes XXE/DTD/malformado verdes, suíte verde · próximo: `AssinadorXml` (XML-DSig enveloped)
+- 2026-10-28 13:07 · E2-S11: DESENVOLVER ok

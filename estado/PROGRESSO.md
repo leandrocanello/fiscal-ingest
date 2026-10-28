@@ -352,3 +352,6 @@
 - 2026-10-28 13:13 · E2-S11: DESENVOLVER ok
 - 2026-10-28 13:14 · E2-S11: verificação — propriedades jqwik (IdEvento, AssinadorXml), suíte inteira verde · próximo: E2-S11b (envio RecepcaoEvento)
 - 2026-10-28 13:14 · E2-S11: VERIFICAR ok
+- 2026-10-28 13:16 · E2-S11: REVISAR — APROVAR PARA PR (suíte verde, 264 testes; 4 achados não bloqueantes no parecer) · próximo: PR + alinhar nome E2-S11b×E2-S13 no ROADMAP
+- 2026-10-28 13:16 · E2-S11: REVISAR ok
+- 2026-10-28 13:16 · E2-S11: PR aberto para revisão

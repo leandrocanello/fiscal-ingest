@@ -326,3 +326,6 @@
 - 2026-10-28 13:00 · E2-S10: mergeado por você ✔
 - 2026-10-28 13:00 · E3-S01: mergeado por você ✔
 - 2026-10-28 13:00 · E2-S11: rebase para main após merge de E2-S10
+  - falha vista (E2-S11 passo 1): `TipoManifestacaoTest.java:14-18: error: cannot find symbol` (TipoManifestacao inexistente)
+- 2026-10-28 13:10 · E2-S11: `TipoManifestacao` no domínio (4 tipos, exigeJustificativa, sem tpEvento); suíte verde · próximo: `ContratoEvento` (210210)
+- 2026-10-28 13:01 · E2-S11: DESENVOLVER ok

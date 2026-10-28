@@ -350,3 +350,5 @@
   - falha vista (E2-S11 passo 9): `EventoManifestacaoTest.java:47: error: cannot find symbol` (EventoManifestacao inexistente)
 - 2026-10-28 14:30 · E2-S11: `EventoManifestacao` (montar+assinar+serializar UTF-8, sem declaração XML, sem indent); reparse seguro valida a assinatura; suíte verde; Desenvolvimento concluído · próximo: Verificação (jqwik IdEvento/Assinador, git ls-files de chaves)
 - 2026-10-28 13:13 · E2-S11: DESENVOLVER ok
+- 2026-10-28 13:14 · E2-S11: verificação — propriedades jqwik (IdEvento, AssinadorXml), suíte inteira verde · próximo: E2-S11b (envio RecepcaoEvento)
+- 2026-10-28 13:14 · E2-S11: VERIFICAR ok

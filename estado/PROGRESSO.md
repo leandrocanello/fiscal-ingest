@@ -331,3 +331,6 @@
 - 2026-10-28 13:01 · E2-S11: DESENVOLVER ok
 - 2026-10-28 13:02 · E2-S11: ContratoEvento (210210/descEvento/cOrgao 91/versões) em TDD; falha inicial: `ContratoEventoTest.java:18: error: cannot find symbol` (ContratoEvento inexistente); suíte verde · próximo: IdEvento
 - 2026-10-28 13:02 · E2-S11: DESENVOLVER ok
+  - falha vista (E2-S11 passo 3): `IdEventoTest.java:21: error: cannot find symbol` (IdEvento inexistente)
+- 2026-10-28 13:15 · E2-S11: `IdEvento` (ID+tpEvento+chave44+seq2, valida chave e seq 1..99) em TDD; suíte verde · próximo: `MontadorEvento` (infEvento 210210)
+- 2026-10-28 13:04 · E2-S11: DESENVOLVER ok

@@ -36,10 +36,11 @@ import org.bouncycastle.pkcs.jcajce.JcaPKCS12SafeBagBuilder;
 /**
  * Gera .pfx sintéticos em memória (par RSA 2048 + certificado autoassinado) para os testes do carregador.
  * Nunca grava em disco nem usa certificado real (inv. 13). Não registra o provider BouncyCastle globalmente.
+ * Público para os testes de assinatura do pacote {@code evento}.
  */
-final class GeradorPfxDeTeste {
+public final class GeradorPfxDeTeste {
 
-    static final String CN = "EMPRESA TESTE:00000000000191";
+    public static final String CN = "EMPRESA TESTE:00000000000191";
     private static final String ALIAS = "titular";
     private static final SecureRandom ALEATORIO = new SecureRandom();
 
@@ -47,7 +48,7 @@ final class GeradorPfxDeTeste {
     }
 
     /** PKCS#12 no formato padrão do JDK 21 (PBES2/AES + HmacSHA256). */
-    static byte[] moderno(char[] senha, Instant validoDe, Instant validoAte) {
+    public static byte[] moderno(char[] senha, Instant validoDe, Instant validoAte) {
         try {
             KeyPair par = novoPar();
             X509Certificate cert = autoassinado(par, validoDe, validoAte);

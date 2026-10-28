@@ -156,6 +156,32 @@ class AssinadorXmlTest {
     }
 
     @Test
+    @DisplayName("alterar o descEvento depois de assinar invalida a assinatura")
+    void adulterarDetEventoInvalidaAssinatura() throws Exception {
+        Document doc = eventoAssinado(AlgoritmoAssinatura.PADRAO);
+        assertThat(valida(doc)).isTrue();
+
+        Node descEvento = doc.getElementsByTagNameNS(ContratoEvento.NS_NFE, "descEvento").item(0);
+        descEvento.setTextContent(descEvento.getTextContent() + " adulterada");
+
+        assertThat(valida(doc)).isFalse();
+    }
+
+    @ParameterizedTest
+    @CsvSource({"RSA_SHA1", "RSA_SHA256"})
+    @DisplayName("assinar duas vezes o mesmo conteúdo com o mesmo relógio dá o mesmo digest e a mesma assinatura")
+    void assinarDuasVezesOMesmoConteudoComMesmoRelogioDaMesmoDigest(AlgoritmoAssinatura algoritmo) {
+        Element primeira = signature(eventoAssinado(algoritmo));
+        Element segunda = signature(eventoAssinado(algoritmo));
+
+        assertThat(unico(segunda, "DigestValue").getTextContent())
+                .isNotBlank()
+                .isEqualTo(unico(primeira, "DigestValue").getTextContent());
+        assertThat(unico(segunda, "SignatureValue").getTextContent())
+                .isEqualTo(unico(primeira, "SignatureValue").getTextContent());
+    }
+
+    @Test
     @DisplayName("padrão é RSA_SHA1 (MOC 7.0 Tab. 4-2, decisão E2-S11 D1)")
     void padraoEhRsaSha1() {
         assertThat(AlgoritmoAssinatura.PADRAO).isEqualTo(AlgoritmoAssinatura.RSA_SHA1);

@@ -347,3 +347,6 @@
   - falha vista (E2-S11 passo 8): `AssinadorXmlTest.java:203: error: cannot find symbol` (AssinaturaInvalidaException inexistente)
 - 2026-10-28 14:15 · E2-S11: `AssinaturaInvalidaException` (mensagem fixa, sem causa) para chave incompatível (EC) e Id ausente; teste confere mensagem/toString sem senha, CN/CNPJ do titular nem chave em Base64; suíte verde · próximo: EventoManifestacao (montar+assinar+serializar bytes UTF-8)
 - 2026-10-28 13:11 · E2-S11: DESENVOLVER ok
+  - falha vista (E2-S11 passo 9): `EventoManifestacaoTest.java:47: error: cannot find symbol` (EventoManifestacao inexistente)
+- 2026-10-28 14:30 · E2-S11: `EventoManifestacao` (montar+assinar+serializar UTF-8, sem declaração XML, sem indent); reparse seguro valida a assinatura; suíte verde; Desenvolvimento concluído · próximo: Verificação (jqwik IdEvento/Assinador, git ls-files de chaves)
+- 2026-10-28 13:13 · E2-S11: DESENVOLVER ok

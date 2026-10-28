@@ -360,3 +360,6 @@
 - 2026-10-28 · E2-S07 falha vista (passo 1): `ChavesBlobPullTest.java:29: error: cannot find symbol` (ChavesBlobPull inexistente)
 - 2026-10-28 · E2-S07: passo 1 feito — `ChavesBlobPull` (DA-13) + adapter-fake em testImplementation (DA-15); 5 testes, suíte verde · próximo: `CursorNsuTest`/`CursorNsu`
 - 2026-10-28 13:21 · E2-S07: DESENVOLVER ok
+- 2026-10-28 · E2-S07 falha vista (passo 2): `CursorNsuTest.java:19: error: cannot find symbol` (CursorNsu inexistente)
+- 2026-10-28 13:40 · E2-S07: passo 2 feito — `CursorNsu` (Cursor ↔ ultNSU, DA-14; token inválido → IAE sem ecoar o token); 11 testes, suíte verde · próximo: `BuscarLoteResultadoTest` (envelope no domain)
+- 2026-10-28 13:22 · E2-S07: DESENVOLVER ok

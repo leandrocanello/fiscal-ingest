@@ -21,20 +21,20 @@
 - [x] E2-S00 | AUTO     | deps: E1-S01,E1-S02 | remover CXF (javax) do adapter: HTTP + JAXB + Santuario (auditoria A9)
 - [x] E2-S01 | RASCUNHO | deps: -      | docs/FONTES-OFICIAIS.md: rascunho com links do MOC/NTs para cada [VALIDAR] do CLAUDE.md §21
 - [x] E2-S02 | DECISAO  | deps: E2-S01 | mapeamento de cStat (108/632/589) a partir das fontes oficiais (auditoria A1–A3)
-- [r] E2-S03 | AUTO+    | deps: E2-S02 | aplicar o mapeamento decidido no CStatMapper (testes primeiro)
+- [x] E2-S03 | AUTO+    | deps: E2-S02 | aplicar o mapeamento decidido no CStatMapper (testes primeiro)
 - [x] E2-S04 | AUTO     | deps: E1-S01 | porta BlobStore no domain + implementação em memória
 - [x] E2-S05 | AUTO     | deps: E1-S01 | decode de docZip (base64+gzip) + classificador de schema + extração de metadados
-- [r] E2-S06 | AUTO     | deps: E2-S05 | interface de transporte SOAP + montagem do envelope distDFeInt
+- [x] E2-S06 | AUTO     | deps: E2-S05 | interface de transporte SOAP + montagem do envelope distDFeInt
 - [ ] E2-S07 | AUTO+    | deps: E2-S04,E2-S06,E2-S03 | buscarLote com WireMock (137/138/656/108/109/timeout/5xx/malformado)
 - [ ] E2-S08 | AUTO     | deps: E2-S07 | suíte de contrato do SourceAdapter (fake + nfe-nacional)
 - [ ] E2-S09 | AUTO     | deps: E2-S07 | buscarUm (consNSU) + consChNFe
-- [r] E2-S10 | AUTO+    | deps: E1-S01 | Credencial = bytes do .pfx + senha; carregador (inclui legado) + SSLContext por certificado + cache
+- [x] E2-S10 | AUTO+    | deps: E1-S01 | Credencial = bytes do .pfx + senha; carregador (inclui legado) + SSLContext por certificado + cache
 - [~] E2-S11 | AUTO+    | deps: E2-S10,E2-S01 | manifestar: evento 210210 + XML-DSig (com chave de teste gerada no teste)
 - [ ] E2-S13 | AUTO+    | deps: E2-S07,E2-S11 | enviar o evento de manifestação (RecepcaoEvento SOAP) + mapear o retEvento
 - [ ] E2-S12 | HUMANO   | deps: E2-S09,E2-S13 | smoke em homologação: distNSU, consChNFe, ciência, autXML
 
 ## Etapa 3 — Persistência e catálogo (Fase 3)
-- [r] E3-S01 | AUTO     | deps: E1-S03 | JDBI + Flyway (ADR-025) + esquema base (tenant, empresa, estado_coleta, ledger_*)
+- [x] E3-S01 | AUTO     | deps: E1-S03 | JDBI + Flyway (ADR-025) + esquema base (tenant, empresa, estado_coleta, ledger_*)
 - [ ] E3-S02 | AUTO+    | deps: E3-S01 | CAS do cursor + testes de caos (dois fetchers, um avança)
 - [ ] E3-S03 | AUTO+    | deps: E3-S01 | RLS por tenant + teste "A não lê B"
 - [ ] E3-S04 | AUTO     | deps: E3-S01 | outbox transacional + relay (fila no Postgres)

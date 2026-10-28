@@ -363,3 +363,6 @@
 - 2026-10-28 · E2-S07 falha vista (passo 2): `CursorNsuTest.java:19: error: cannot find symbol` (CursorNsu inexistente)
 - 2026-10-28 13:40 · E2-S07: passo 2 feito — `CursorNsu` (Cursor ↔ ultNSU, DA-14; token inválido → IAE sem ecoar o token); 11 testes, suíte verde · próximo: `BuscarLoteResultadoTest` (envelope no domain)
 - 2026-10-28 13:22 · E2-S07: DESENVOLVER ok
+- 2026-10-28 · E2-S07 falha vista (passo 3): `BuscarLoteResultadoTest.java:32: error: constructor BuscarLoteResultado in record BuscarLoteResultado cannot be applied to given types;` (+ `cannot find symbol` em `envelope()`)
+- 2026-10-28 13:55 · E2-S07: passo 3 feito — `Optional<BlobRef> envelope` em `BuscarLoteResultado` com construtor antigo de 5 args (DA-15); 3 testes, suíte verde, chamadores intactos · próximo: `LeitorRespostaDistDfeTest` (parse seguro do retDistDFeInt)
+- 2026-10-28 13:24 · E2-S07: DESENVOLVER ok

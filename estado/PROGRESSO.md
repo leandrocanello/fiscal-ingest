@@ -339,3 +339,6 @@
 - 2026-10-28 13:06 · E2-S11: DESENVOLVER ok
 - 2026-10-28 13:30 · E2-S11: `FabricaDocumentoSeguro` + `XmlInseguroOuInvalidoException` (sem causa; sem eco no stderr), `MontadorEvento` passa a usá-la; falha vista: `FabricaDocumentoSeguroTest.java:28: error: cannot find symbol` (FabricaDocumentoSeguro/XmlInseguroOuInvalidoException); 5 testes XXE/DTD/malformado verdes, suíte verde · próximo: `AssinadorXml` (XML-DSig enveloped)
 - 2026-10-28 13:07 · E2-S11: DESENVOLVER ok
+  - falha vista (E2-S11 passo 6): `AssinadorXmlTest.java:53: error: cannot find symbol` (AlgoritmoAssinatura/AssinadorXml inexistentes)
+- 2026-10-28 13:45 · E2-S11: `AssinadorXml` + `AlgoritmoAssinatura {RSA_SHA1 (padrão), RSA_SHA256}` (enveloped, C14N, Reference #Id, KeyInfo só cert. do titular) em TDD; 8 testes novos; `GeradorPfxDeTeste` virou público p/ o pacote evento; suíte verde · próximo: adulteração invalida + determinismo
+- 2026-10-28 13:09 · E2-S11: DESENVOLVER ok

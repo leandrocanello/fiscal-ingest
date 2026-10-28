@@ -70,3 +70,9 @@
 - **Opções:** imagem `postgres:17-alpine` × 16; append-only só por convenção no código × **trigger** que rejeita `UPDATE`/`DELETE` em `ledger_nsu`/`ledger_tentativa`.
 - **Escolha:** `postgres:17-alpine` fixada num único lugar dos testes; trigger `BEFORE UPDATE OR DELETE ... RAISE EXCEPTION` nas tabelas append-only (defesa em profundidade, teste dedicado); Testcontainers na versão mais nova compatível com Docker 29 (2.0.x).
 - **Como desfazer:** trocar a tag da imagem; nova migration `DROP TRIGGER`.
+
+### DA-12 · 2026-10-28 · E2-S11
+- **Contexto:** o plano pede `MontadorEvento.montar(Ambiente, ...)` com "`Ambiente` local ao adapter se ainda não existir" e `RelogioManual` no teste; o adapter já tem `soap.TipoAmbiente` (com `codigoTpAmb()`) e `RelogioManual` é package-private em `cert`.
+- **Opções:** criar outro enum de ambiente × reusar `TipoAmbiente`; tornar `RelogioManual` público × `Clock.fixed`.
+- **Escolha:** reusar `TipoAmbiente` (evita dois mapeamentos de `tpAmb`); `Clock.fixed` no teste (relógio não precisa andar).
+- **Como desfazer:** mover `TipoAmbiente` para pacote comum ou trocar a assinatura de `montar`.

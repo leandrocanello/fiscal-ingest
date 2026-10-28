@@ -334,3 +334,6 @@
   - falha vista (E2-S11 passo 3): `IdEventoTest.java:21: error: cannot find symbol` (IdEvento inexistente)
 - 2026-10-28 13:15 · E2-S11: `IdEvento` (ID+tpEvento+chave44+seq2, valida chave e seq 1..99) em TDD; suíte verde · próximo: `MontadorEvento` (infEvento 210210)
 - 2026-10-28 13:04 · E2-S11: DESENVOLVER ok
+  - falha vista (E2-S11 passo 4): `MontadorEventoCienciaTest.java:35: error: cannot find symbol` (MontadorEvento inexistente)
+- 2026-10-28 13:20 · E2-S11: `MontadorEvento` (evento/infEvento 210210, dhEvento do Clock em -03:00, DOM seguro; DA-12) em TDD; suíte verde · próximo: `FabricaDocumentoSeguro` (teste XXE)
+- 2026-10-28 13:06 · E2-S11: DESENVOLVER ok

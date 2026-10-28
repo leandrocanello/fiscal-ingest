@@ -369,3 +369,6 @@
 - 2026-10-28 · E2-S07 falha vista (passo 4): `LeitorRespostaDistDfeTest.java:3: error: package br.com.doc.ingest.adapter.nfe.soap.LeitorRespostaDistDfe does not exist` (+ `cannot find symbol` em `Valida`/`Invalida`)
 - 2026-10-28 14:20 · E2-S07: passo 4 feito — `LeitorRespostaDistDfe` (DOM sem DOCTYPE/entidades, ErrorHandler silencioso, JAXB no nó `retDistDFeInt` em qualquer nível do Body; Fault/não-XML/sem ret → `Invalida` com motivo fixo); 10 testes, suíte verde · próximo: `TradutorRespostaDistDfeTest` (DA-14)
 - 2026-10-28 13:26 · E2-S07: DESENVOLVER ok
+- 2026-10-28 · E2-S07 falha vista (passo 5): `TradutorRespostaDistDfeTest.java:28: error: cannot find symbol` (classe `TradutorRespostaDistDfe` inexistente)
+- 2026-10-28 14:45 · E2-S07: passo 5 feito — `TradutorRespostaDistDfe` (transporte/HTTP/leitura → Desfecho, DA-14; 3xx temporário, DA-16); 20 testes, suíte verde · próximo: `NfeNacionalAdapterTest.lote138ComDocZips`
+- 2026-10-28 13:28 · E2-S07: DESENVOLVER ok

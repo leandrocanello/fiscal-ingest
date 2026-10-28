@@ -93,3 +93,9 @@
 - **Opções:** (a) novo componente `Optional<BlobRef> envelope` em `BuscarLoteResultado`, mantendo o construtor antigo de 5 argumentos (envelope vazio), e `testImplementation(project(":adapter-fake"))` no adapter real; (b) deixar a referência para a E3 (o envelope ficaria órfão).
 - **Escolha:** (a) — só `BlobRef` (sem bytes, inv. 3); nenhum chamador existente muda.
 - **Como desfazer:** remover o componente e o construtor extra; tirar a dependência de teste.
+
+### DA-16 · 2026-10-28 · E2-S07
+- **Contexto:** a DA-14 não cobre HTTP 3xx (o `HttpClient` não segue redirecionamento) nem fixa a API do tradutor.
+- **Opções:** 3xx → `IndisponivelDefinitivo` (endpoint mal configurado) × `IndisponivelTemporario` (seguro: não avança e retenta).
+- **Escolha:** 3xx → `IndisponivelTemporario(5 min)`. API: `deTransporte(ResultadoTransporte) → Optional<Desfecho>` (vazio = 2xx, ler o corpo) e `deLeitura(LeitorRespostaDistDfe.Resultado) → Desfecho`; classe em `adapter.nfe.mapping`.
+- **Como desfazer:** um `if` em `TradutorRespostaDistDfe.deStatus` + o teste `http3xxEhTemporario`.

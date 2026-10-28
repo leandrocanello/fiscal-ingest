@@ -99,3 +99,9 @@
 - **Opções:** 3xx → `IndisponivelDefinitivo` (endpoint mal configurado) × `IndisponivelTemporario` (seguro: não avança e retenta).
 - **Escolha:** 3xx → `IndisponivelTemporario(5 min)`. API: `deTransporte(ResultadoTransporte) → Optional<Desfecho>` (vazio = 2xx, ler o corpo) e `deLeitura(LeitorRespostaDistDfe.Resultado) → Desfecho`; classe em `adapter.nfe.mapping`.
 - **Como desfazer:** um `if` em `TradutorRespostaDistDfe.deStatus` + o teste `http3xxEhTemporario`.
+
+### DA-17 · 2026-10-28 · E2-S07
+- **Contexto:** o plano não fixa `Documento.modelo` nem o que fazer, no passo 6, com desfechos fora do 138.
+- **Opções:** `modelo` "55" fixo × extraído do XML; desfecho não tratado → `IllegalStateException` × já ligar o tradutor.
+- **Escolha:** `modelo = "55"` (distribuição NF-e só entrega modelo 55; extração do XML fica para E3-S07); exceção explícita (nada avança) até os passos 8–9 ligarem o `TradutorRespostaDistDfe`, para os testes deles falharem antes.
+- **Como desfazer:** constante `MODELO_NFE` e os `throw` em `NfeNacionalAdapter.buscarLote`.

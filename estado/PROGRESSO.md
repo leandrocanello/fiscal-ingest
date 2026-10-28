@@ -372,3 +372,6 @@
 - 2026-10-28 · E2-S07 falha vista (passo 5): `TradutorRespostaDistDfeTest.java:28: error: cannot find symbol` (classe `TradutorRespostaDistDfe` inexistente)
 - 2026-10-28 14:45 · E2-S07: passo 5 feito — `TradutorRespostaDistDfe` (transporte/HTTP/leitura → Desfecho, DA-14; 3xx temporário, DA-16); 20 testes, suíte verde · próximo: `NfeNacionalAdapterTest.lote138ComDocZips`
 - 2026-10-28 13:28 · E2-S07: DESENVOLVER ok
+- 2026-10-28 · E2-S07 falha vista (passo 6): `NfeNacionalAdapterTest.java:60: error: cannot find symbol` (classe `NfeNacionalAdapter` inexistente)
+- 2026-10-28 15:10 · E2-S07: passo 6 feito — `NfeNacionalAdapter` (138: envelope gravado, docZips decodificados e gravados, id determinístico, cursor = ultNSU, temMais = ult<max; demais desfechos ainda lançam `IllegalStateException` até os passos 8–9) + `FornecedorTransporte`; 2 testes WireMock, suíte verde · próximo: `envelopeGravadoAntesDoParse` / `docZipDesconhecidoGuardadoByteAByte` / `reconsultaMesmoLoteEhIdempotente`
+- 2026-10-28 13:30 · E2-S07: DESENVOLVER ok

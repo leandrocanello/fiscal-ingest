@@ -6,9 +6,6 @@ import br.com.doc.ingest.domain.model.Cnpj;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import javax.xml.XMLConstants;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import java.time.Clock;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -40,7 +37,7 @@ public final class MontadorEvento {
         Objects.requireNonNull(autor, "autor");
         IdEvento id = new IdEvento(tipo, chave, seq);
 
-        Document doc = novoDocumento();
+        Document doc = FabricaDocumentoSeguro.novoDocumento();
         Element evento = doc.createElementNS(ContratoEvento.NS_NFE, "evento");
         evento.setAttribute("versao", ContratoEvento.VERSAO);
         doc.appendChild(evento);
@@ -69,21 +66,5 @@ public final class MontadorEvento {
         }
         pai.appendChild(e);
         return e;
-    }
-
-    private static Document novoDocumento() {
-        try {
-            DocumentBuilderFactory f = DocumentBuilderFactory.newInstance();
-            f.setNamespaceAware(true);
-            f.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
-            f.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
-            f.setFeature("http://xml.org/sax/features/external-general-entities", false);
-            f.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
-            f.setXIncludeAware(false);
-            f.setExpandEntityReferences(false);
-            return f.newDocumentBuilder().newDocument();
-        } catch (ParserConfigurationException e) {
-            throw new IllegalStateException("Falha ao configurar DOM seguro", e);
-        }
     }
 }

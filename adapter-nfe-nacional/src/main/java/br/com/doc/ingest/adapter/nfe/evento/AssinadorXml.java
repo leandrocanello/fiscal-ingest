@@ -56,7 +56,7 @@ public final class AssinadorXml {
             fabrica.newXMLSignature(signedInfo, keyInfo).sign(contexto);
         } catch (Exception e) {
             // a causa não é propagada para não arriscar vazar material de chave (inv. 13)
-            throw new IllegalStateException("Falha ao assinar o evento: " + e.getClass().getSimpleName());
+            throw new AssinaturaInvalidaException("falha ao assinar o evento (" + e.getClass().getSimpleName() + ")");
         }
     }
 
@@ -68,6 +68,6 @@ public final class AssinadorXml {
                 return e;
             }
         }
-        throw new IllegalArgumentException("infEvento com o Id informado não encontrado");
+        throw new AssinaturaInvalidaException("infEvento com o Id informado não encontrado");
     }
 }

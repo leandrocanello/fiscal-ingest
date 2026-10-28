@@ -20,6 +20,8 @@ import org.w3c.dom.NodeList;
 import javax.xml.crypto.dsig.XMLSignature;
 import javax.xml.crypto.dsig.XMLSignatureFactory;
 import javax.xml.crypto.dsig.dom.DOMValidateContext;
+import java.security.KeyPairGenerator;
+import java.security.PrivateKey;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.ZoneId;
@@ -30,6 +32,7 @@ import java.util.Base64;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
 
 @DisplayName("AssinadorXml — XML-DSig enveloped do infEvento")
 class AssinadorXmlTest {
@@ -39,12 +42,13 @@ class AssinadorXmlTest {
     private static final Cnpj AUTOR = new Cnpj("98765432000110");
     private static final Instant AGORA = Instant.parse("2026-10-28T13:04:05Z");
     private static final String ID = new IdEvento(TipoManifestacao.CIENCIA, CHAVE, 1).valor();
+    private static final String SENHA = "senha-de-teste";
 
     private static CertificadoCarregado certificado;
 
     @BeforeAll
     static void gerarCertificado() {
-        char[] senha = "senha-de-teste".toCharArray();
+        char[] senha = SENHA.toCharArray();
         byte[] pfx = GeradorPfxDeTeste.moderno(senha.clone(), AGORA.minus(1, ChronoUnit.DAYS),
                 AGORA.plus(365, ChronoUnit.DAYS));
         certificado = new CarregadorPfx().carregar(new Credencial(pfx, senha));
@@ -179,6 +183,37 @@ class AssinadorXmlTest {
                 .isEqualTo(unico(primeira, "DigestValue").getTextContent());
         assertThat(unico(segunda, "SignatureValue").getTextContent())
                 .isEqualTo(unico(primeira, "SignatureValue").getTextContent());
+    }
+
+    @Test
+    @DisplayName("falha ao assinar não expõe chave, titular nem senha (inv. 13)")
+    void falhaNaoExpoeChaveNemSenha() throws Exception {
+        PrivateKey chaveIncompativel = KeyPairGenerator.getInstance("EC").generateKeyPair().getPrivate();
+        CertificadoCarregado incompativel = new CertificadoCarregado(chaveIncompativel, certificado.cadeia(),
+                certificado.fingerprint(), certificado.validoDe(), certificado.validoAte());
+
+        Throwable chaveErrada = catchThrowable(() -> new AssinadorXml(AlgoritmoAssinatura.PADRAO)
+                .assinar(eventoMontado(), ID, incompativel));
+        Throwable idAusente = catchThrowable(() -> new AssinadorXml(AlgoritmoAssinatura.PADRAO)
+                .assinar(eventoMontado(), "ID-inexistente", certificado));
+
+        for (Throwable falha : List.of(chaveErrada, idAusente)) {
+            assertThat(falha).isInstanceOf(AssinaturaInvalidaException.class);
+            assertThat(falha.getCause()).isNull();
+            assertThat(falha.getSuppressed()).isEmpty();
+            String texto = falha.getMessage() + "|" + falha;
+            assertThat(texto)
+                    .doesNotContain(SENHA)
+                    .doesNotContain(GeradorPfxDeTeste.CN)
+                    .doesNotContain("00000000000191")
+                    .doesNotContain(Base64.getEncoder().encodeToString(certificado.chavePrivada().getEncoded()))
+                    .doesNotContain(Base64.getEncoder().encodeToString(chaveIncompativel.getEncoded()));
+        }
+    }
+
+    private static Document eventoMontado() {
+        return new MontadorEvento(Clock.fixed(AGORA, ZoneOffset.UTC), ZoneId.of("America/Sao_Paulo"))
+                .montar(TipoAmbiente.HOMOLOGACAO, AUTOR, CHAVE, TipoManifestacao.CIENCIA, 1);
     }
 
     @Test

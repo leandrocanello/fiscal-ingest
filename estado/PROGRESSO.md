@@ -329,3 +329,5 @@
   - falha vista (E2-S11 passo 1): `TipoManifestacaoTest.java:14-18: error: cannot find symbol` (TipoManifestacao inexistente)
 - 2026-10-28 13:10 · E2-S11: `TipoManifestacao` no domínio (4 tipos, exigeJustificativa, sem tpEvento); suíte verde · próximo: `ContratoEvento` (210210)
 - 2026-10-28 13:01 · E2-S11: DESENVOLVER ok
+- 2026-10-28 13:02 · E2-S11: ContratoEvento (210210/descEvento/cOrgao 91/versões) em TDD; falha inicial: `ContratoEventoTest.java:18: error: cannot find symbol` (ContratoEvento inexistente); suíte verde · próximo: IdEvento
+- 2026-10-28 13:02 · E2-S11: DESENVOLVER ok

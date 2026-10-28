@@ -357,3 +357,6 @@
 - 2026-10-28 13:16 · E2-S11: PR aberto para revisão
 - 2026-10-28 13:20 · E2-S07: plano criado (10 passos, opus; DA-13/14/15; 2 DUVIDA não bloqueantes em PARA-VOCE: extrator E2-S05 ausente da main e prefixo de tenant no raw/pull) · próximo: DESENVOLVER passo 1 (ChavesBlobPull)
 - 2026-10-28 13:19 · E2-S07: PLANEJAR ok
+- 2026-10-28 · E2-S07 falha vista (passo 1): `ChavesBlobPullTest.java:29: error: cannot find symbol` (ChavesBlobPull inexistente)
+- 2026-10-28 · E2-S07: passo 1 feito — `ChavesBlobPull` (DA-13) + adapter-fake em testImplementation (DA-15); 5 testes, suíte verde · próximo: `CursorNsuTest`/`CursorNsu`
+- 2026-10-28 13:21 · E2-S07: DESENVOLVER ok

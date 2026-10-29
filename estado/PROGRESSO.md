@@ -406,3 +406,5 @@
 - 2026-10-29 08:19 · E2-S08: DESENVOLVER ok
 - 2026-10-29 08:20 · E2-S08: montadores de resposta distDFe extraídos para RespostasDistDfeDeTeste (refactor puro, suíte verde; sem teste novo) · próximo: NfeNacionalAdapterContratoTest
 - 2026-10-29 08:20 · E2-S08: DESENVOLVER ok
+- 2026-10-29 08:21 · E2-S08: NfeNacionalAdapterContratoTest (WireMock) roda toda a suíte de contrato; verde de primeira, sem mudança no adapter (teste não viu falhar: casos já cobertos por DA-14) · próximo: Verificação/revisão
+- 2026-10-29 08:22 · E2-S08: DESENVOLVER ok

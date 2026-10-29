@@ -419,3 +419,5 @@
 - 2026-10-29 08:28 · E2-S09: DESENVOLVER ok
 - 2026-10-29 08:28 · E2-S09: ChaveAcessoNfe (falhou: cannot find symbol ChaveAcessoNfe) · próximo: refactor consultar()
 - 2026-10-29 08:29 · E2-S09: DESENVOLVER ok
+- 2026-10-29 08:29 · E2-S09: refactor consultar/gravarDocZip no buscarLote (suíte verde, sem teste novo: refactor puro) · próximo: buscarUm por consNSU
+- 2026-10-29 08:29 · E2-S09: DESENVOLVER ok

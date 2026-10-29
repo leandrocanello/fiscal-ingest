@@ -381,3 +381,6 @@
 - 2026-10-29 · E2-S07 passo 8 (falha vista): 5 testes novos `FAILED` com `java.lang.IllegalStateException: desfecho ainda não suportado` (vazio137AvancaParaUltNsuSemDocumentos, limiteAtingidoNaoAvanca, paralisado108, paralisado109, cStatDesconhecido)
 - 2026-10-29 · E2-S07: passo 8 feito — adapter usa `TradutorRespostaDistDfe.deLeitura`; 137 → cursor = ultNSU sem docs; 656/108/109/desconhecido → cursor e ultNsu de entrada, envelope gravado; suíte verde (281 testes) · próximo: falhas pelo WireMock (timeout/500/403/malformado/docZip corrompido/ultNSU<cursor/BlobStore falhando)
 - 2026-10-29 08:03 · E2-S07: DESENVOLVER ok
+- 2026-10-29 · E2-S07 passo 9 (falhas WireMock) — falha vista antes: `desfecho de transporte ainda não suportado` (timeout/500/403); `expected IndisponivelDefinitivo[cursor inconsistente] but was Ok[]`/`Vazio[]`; `resposta inválida ainda não suportada`; `DocZipInvalidoException: docZip NSU 12: gzip corrompido`; `IllegalStateException: blob store fora do ar`.
+- 2026-10-29 · E2-S07: buscarLote não avança em falha (timeout, 5xx/Fault, 403, malformado, docZip corrompido, ultNSU<cursor em 138/137, BlobStore falhando no envelope/docZip) · próximo: autenticar liga o mTLS (FornecedorTransporteMtls)
+- 2026-10-29 08:05 · E2-S07: DESENVOLVER ok

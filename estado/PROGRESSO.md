@@ -421,3 +421,5 @@
 - 2026-10-29 08:29 · E2-S09: DESENVOLVER ok
 - 2026-10-29 08:29 · E2-S09: refactor consultar/gravarDocZip no buscarLote (suíte verde, sem teste novo: refactor puro) · próximo: buscarUm por consNSU
 - 2026-10-29 08:29 · E2-S09: DESENVOLVER ok
+- 2026-10-29 08:31 · E2-S09: buscarUm por consNSU (falha vista: 3 testes — descritor, buscarUm138, mesma chave; depois suíte verde) · próximo: desfechos do consNSU
+- 2026-10-29 08:31 · E2-S09: DESENVOLVER ok

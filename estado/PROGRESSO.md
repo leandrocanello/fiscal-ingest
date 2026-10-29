@@ -375,3 +375,6 @@
 - 2026-10-28 · E2-S07 falha vista (passo 6): `NfeNacionalAdapterTest.java:60: error: cannot find symbol` (classe `NfeNacionalAdapter` inexistente)
 - 2026-10-28 15:10 · E2-S07: passo 6 feito — `NfeNacionalAdapter` (138: envelope gravado, docZips decodificados e gravados, id determinístico, cursor = ultNSU, temMais = ult<max; demais desfechos ainda lançam `IllegalStateException` até os passos 8–9) + `FornecedorTransporte`; 2 testes WireMock, suíte verde · próximo: `envelopeGravadoAntesDoParse` / `docZipDesconhecidoGuardadoByteAByte` / `reconsultaMesmoLoteEhIdempotente`
 - 2026-10-28 13:30 · E2-S07: DESENVOLVER ok
+- 2026-10-29 · E2-S07 passo 7: os 3 testes passaram de primeira (o adapter do passo 6 já grava envelope → docZips). Prova de sensibilidade por mutação temporária (envelope gravado depois do parse): `envelopeGravadoAntesDoParse FAILED · AssertionFailedError at NfeNacionalAdapterTest.java:219`; mutação revertida.
+- 2026-10-29 · E2-S07: passo 7 feito — testes de inv. 5/7 (ordem envelope→docZips com BlobStore espião, schema desconhecido guardado byte a byte, reconsulta idempotente); sem mudança no código de produção; suíte verde · próximo: cStat pelo WireMock (137/656/108/109/desconhecido) ligando `TradutorRespostaDistDfe`
+- 2026-10-29 08:01 · E2-S07: DESENVOLVER ok

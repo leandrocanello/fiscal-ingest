@@ -25,11 +25,11 @@
 - [x] E2-S04 | AUTO     | deps: E1-S01 | porta BlobStore no domain + implementação em memória
 - [x] E2-S05 | AUTO     | deps: E1-S01 | decode de docZip (base64+gzip) + classificador de schema + extração de metadados
 - [x] E2-S06 | AUTO     | deps: E2-S05 | interface de transporte SOAP + montagem do envelope distDFeInt
-- [r] E2-S07 | AUTO+    | deps: E2-S04,E2-S06,E2-S03 | buscarLote com WireMock (137/138/656/108/109/timeout/5xx/malformado)
-- [r] E2-S08 | AUTO     | deps: E2-S07 | suíte de contrato do SourceAdapter (fake + nfe-nacional)
-- [r] E2-S09 | AUTO     | deps: E2-S07 | buscarUm (consNSU) + consChNFe
+- [x] E2-S07 | AUTO+    | deps: E2-S04,E2-S06,E2-S03 | buscarLote com WireMock (137/138/656/108/109/timeout/5xx/malformado)
+- [x] E2-S08 | AUTO     | deps: E2-S07 | suíte de contrato do SourceAdapter (fake + nfe-nacional)
+- [x] E2-S09 | AUTO     | deps: E2-S07 | buscarUm (consNSU) + consChNFe
 - [x] E2-S10 | AUTO+    | deps: E1-S01 | Credencial = bytes do .pfx + senha; carregador (inclui legado) + SSLContext por certificado + cache
-- [r] E2-S11 | AUTO+    | deps: E2-S10,E2-S01 | manifestar: evento 210210 + XML-DSig (com chave de teste gerada no teste)
+- [x] E2-S11 | AUTO+    | deps: E2-S10,E2-S01 | manifestar: evento 210210 + XML-DSig (com chave de teste gerada no teste)
 - [~] E2-S14 | AUTO     | deps: -      | recuperar na main o código perdido: fim da E2-S05 (XXE, extrator) + E2-S08/E2-S09 (mergeados na branch empilhada)
 - [ ] E2-S15 | AUTO+    | deps: E2-S14 | Documento.blobRef → Optional<BlobRef> no domain; nfe e fake gravam o mesmo formato; tirar o gancho lerBlob do contrato
 - [ ] E2-S16 | AUTO     | deps: E2-S14 | cStat do consChNFe no CStatMapper (217/236/614–619/640/641/653/654 → definitivo; 593 → ErroAutenticacao; 252 → definitivo), testes primeiro

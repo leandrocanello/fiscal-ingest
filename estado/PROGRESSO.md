@@ -404,3 +404,5 @@
 - 2026-10-29 08:18 · E2-S08: DESENVOLVER ok
 - 2026-10-29 08:19 · E2-S08: buscarUmCoerenteComCapacidades no contrato (visto falhar trocando a asserção para Nsu(9); revertida); fake passou sem mudança · próximo: extrair RespostasDistDfeDeTeste
 - 2026-10-29 08:19 · E2-S08: DESENVOLVER ok
+- 2026-10-29 08:20 · E2-S08: montadores de resposta distDFe extraídos para RespostasDistDfeDeTeste (refactor puro, suíte verde; sem teste novo) · próximo: NfeNacionalAdapterContratoTest
+- 2026-10-29 08:20 · E2-S08: DESENVOLVER ok

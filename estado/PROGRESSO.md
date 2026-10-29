@@ -384,3 +384,6 @@
 - 2026-10-29 · E2-S07 passo 9 (falhas WireMock) — falha vista antes: `desfecho de transporte ainda não suportado` (timeout/500/403); `expected IndisponivelDefinitivo[cursor inconsistente] but was Ok[]`/`Vazio[]`; `resposta inválida ainda não suportada`; `DocZipInvalidoException: docZip NSU 12: gzip corrompido`; `IllegalStateException: blob store fora do ar`.
 - 2026-10-29 · E2-S07: buscarLote não avança em falha (timeout, 5xx/Fault, 403, malformado, docZip corrompido, ultNSU<cursor em 138/137, BlobStore falhando no envelope/docZip) · próximo: autenticar liga o mTLS (FornecedorTransporteMtls)
 - 2026-10-29 08:05 · E2-S07: DESENVOLVER ok
+- 2026-10-29 · E2-S07 falha vista (passo autenticar/mTLS): `buscarLote antes de autenticar ... FAILED — java.lang.IllegalStateException at NfeNacionalAdapterTest.java:489`; `FornecedorTransporteMtlsTest > autenticarComPfxSinteticoUsaCacheSslContext() FAILED`; `pfxInvalidoEhCertificadoInvalidoSemSenhaNaMensagem() FAILED`; `173 tests completed, 3 failed`
+- 2026-10-29 · E2-S07: buscarLote sem autenticar → ErroAutenticacao sem avançar; FornecedorTransporteMtls sobre CacheSslContext; testes de descritor/buscarUm; suíte verde · próximo: seção Verificação (propriedade jqwik NfeNacionalAdapterPropriedadesTest)
+- 2026-10-29 08:07 · E2-S07: DESENVOLVER ok

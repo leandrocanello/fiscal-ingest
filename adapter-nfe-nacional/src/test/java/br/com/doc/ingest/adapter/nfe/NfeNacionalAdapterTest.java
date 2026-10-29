@@ -780,4 +780,25 @@ class NfeNacionalAdapterTest {
         assertSemDocumento(adapterCom(new BlobStoreQueFalha(blobs, 1)).buscarPorChave(ctx, chave), TEMPORARIO);
         assertSemDocumento(adapterCom(new BlobStoreQueFalha(blobs, 2)).buscarPorChave(ctx, chave), TEMPORARIO);
     }
+
+    @Test
+    @DisplayName("buscarUm não muda o próximo buscarLote: o distNSU seguinte continua em ultNSU=3 (inv. 1)")
+    void buscarUmNaoMudaOProximoBuscarLote() {
+        var ctx = new ContextoConsulta(FONTE, CNPJ);
+        responder(resposta("138", 3, 3, docZip(3, "procNFe_v4.00.xsd", XML_PROC)));
+        BuscarLoteResultado primeiro = adapter.buscarLote(ctx, new Cursor("3"));
+
+        responder(resposta("138", 1, 1, docZip(1, "procNFe_v4.00.xsd", XML_PROC)));
+        BuscarUmResultado um = adapter.buscarUm(FONTE, CNPJ, new Nsu(1));
+        assertThat(um.desfecho()).isEqualTo(new Desfecho.Ok());
+
+        responder(resposta("137", 3, 3, ""));
+        adapter.buscarLote(ctx, primeiro.proximoCursor());
+
+        var requisicoes = servidor.findAll(com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor(urlEqualTo(CAMINHO)));
+        assertThat(requisicoes).hasSize(3);
+        assertThat(requisicoes.get(0).getBodyAsString()).contains("<ultNSU>000000000000003</ultNSU>");
+        assertThat(requisicoes.get(1).getBodyAsString()).contains("<consNSU>").doesNotContain("ultNSU");
+        assertThat(requisicoes.get(2).getBodyAsString()).contains("<ultNSU>000000000000003</ultNSU>");
+    }
 }

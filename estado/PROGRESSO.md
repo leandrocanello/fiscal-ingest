@@ -415,3 +415,5 @@
 - 2026-10-29 08:24 · E2-S08: PR aberto para revisão
 - 2026-10-29 08:27 · E2-S09: PLANEJAR — plano em planos/E2-S09.md (8 passos; consNSU + consChNFe sem mexer no domain); DA-20, DA-21; DECISAO não bloqueante sobre cStat do consChNFe em PARA-VOCE · próximo: DESENVOLVER passo 1 (envelopes)
 - 2026-10-29 08:26 · E2-S09: PLANEJAR ok
+- 2026-10-29 08:27 · E2-S09: envelopes consNSU/consChNFe (falha inicial: métodos inexistentes em EnvelopeDistDfe; suíte verde) · próximo: ChaveAcessoNfe
+- 2026-10-29 08:28 · E2-S09: DESENVOLVER ok

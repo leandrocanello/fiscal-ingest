@@ -153,6 +153,45 @@ class FakeSourceAdapterTest {
         }
     }
 
+    @Nested
+    @DisplayName("desfecho programado")
+    class DesfechoProgramado {
+
+        @Test
+        @DisplayName("desfecho programado nao avanca e pode ser removido")
+        void desfechoProgramadoNaoAvanca() {
+            FakeSourceAdapter adapter = new FakeSourceAdapter(fonte);
+            adapter.preCarregar(cnpj, List.of(documento(nsu(1), "RESUMO"), documento(nsu(2), "RESUMO")));
+            ContextoConsulta ctx = new ContextoConsulta(fonte, cnpj);
+            Cursor entrada = new Cursor("1");
+            Desfecho falha = new Desfecho.IndisponivelTemporario(java.time.Duration.ofMinutes(5));
+
+            adapter.programarDesfecho(cnpj, falha);
+            BuscarLoteResultado r = adapter.buscarLote(ctx, entrada);
+            assertThat(r.desfecho()).isEqualTo(falha);
+            assertThat(r.documentos()).isEmpty();
+            assertThat(r.proximoCursor()).isEqualTo(entrada);
+            assertThat(r.ultNsu()).isEqualTo(nsu(1));
+            assertThat(r.temMais()).isFalse();
+
+            adapter.programarDesfecho(cnpj, null);
+            BuscarLoteResultado normal = adapter.buscarLote(ctx, entrada);
+            assertThat(normal.desfecho()).isInstanceOf(Desfecho.Ok.class);
+            assertThat(normal.documentos()).hasSize(1);
+        }
+
+        @Test
+        @DisplayName("programar Ok ou Vazio e rejeitado")
+        void programarOkOuVazioEhRejeitado() {
+            FakeSourceAdapter adapter = new FakeSourceAdapter(fonte);
+
+            assertThatThrownBy(() -> adapter.programarDesfecho(cnpj, new Desfecho.Ok()))
+                    .isInstanceOf(IllegalArgumentException.class);
+            assertThatThrownBy(() -> adapter.programarDesfecho(cnpj, new Desfecho.Vazio()))
+                    .isInstanceOf(IllegalArgumentException.class);
+        }
+    }
+
     // --- Helpers ---
 
     private static Nsu nsu(long valor) {

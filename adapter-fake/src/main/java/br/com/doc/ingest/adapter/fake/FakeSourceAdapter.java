@@ -29,6 +29,8 @@ public class FakeSourceAdapter implements SourceAdapter {
     private final FonteId fonteId;
     private final Map<Cnpj, List<Documento>> documentosPorCnpj = new ConcurrentHashMap<>();
 
+    private final Map<Cnpj, Desfecho> desfechosProgramados = new ConcurrentHashMap<>();
+
     public FakeSourceAdapter(FonteId fonteId) {
         this.fonteId = fonteId;
     }
@@ -38,6 +40,21 @@ public class FakeSourceAdapter implements SourceAdapter {
      */
     public void preCarregar(Cnpj cnpj, List<Documento> documentos) {
         documentosPorCnpj.put(cnpj, new ArrayList<>(documentos));
+    }
+
+    /**
+     * Programa um desfecho de falha para o CNPJ: buscarLote devolve-o sem documentos e sem avancar o cursor.
+     * {@code null} remove a programacao. {@code Ok} e {@code Vazio} nao sao falhas e sao rejeitados.
+     */
+    public void programarDesfecho(Cnpj cnpj, Desfecho desfecho) {
+        if (desfecho == null) {
+            desfechosProgramados.remove(cnpj);
+            return;
+        }
+        if (desfecho instanceof Desfecho.Ok || desfecho instanceof Desfecho.Vazio) {
+            throw new IllegalArgumentException("so desfechos de falha podem ser programados: " + desfecho);
+        }
+        desfechosProgramados.put(cnpj, desfecho);
     }
 
     @Override
@@ -56,6 +73,10 @@ public class FakeSourceAdapter implements SourceAdapter {
     @Override
     public BuscarLoteResultado buscarLote(ContextoConsulta contexto, Cursor cursor) {
         long entrada = nsuDoCursor(cursor);
+        Desfecho programado = desfechosProgramados.get(contexto.cnpj());
+        if (programado != null) {
+            return new BuscarLoteResultado(List.of(), cursor, new Nsu(entrada), false, programado);
+        }
         List<Documento> novos = documentosPorCnpj.getOrDefault(contexto.cnpj(), List.of()).stream()
                 .filter(d -> d.nsu().valor() > entrada)
                 .toList();

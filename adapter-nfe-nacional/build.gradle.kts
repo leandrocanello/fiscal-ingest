@@ -16,6 +16,9 @@ dependencies {
     // Log (ADR-028; DA-8) - so a API aqui; o binding fica com os app-*
     implementation("org.slf4j:slf4j-api:2.0.16")
 
+    // Testes - BlobStoreEmMemoria do adapter-fake nos testes do adapter real (DA-15)
+    testImplementation(project(":adapter-fake"))
+
     // Testes - WireMock para simular a SEFAZ
     testImplementation("org.wiremock:wiremock:3.9.1")
 

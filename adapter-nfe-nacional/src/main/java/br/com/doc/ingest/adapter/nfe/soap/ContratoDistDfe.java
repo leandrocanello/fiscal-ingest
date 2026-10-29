@@ -7,6 +7,7 @@ package br.com.doc.ingest.adapter.nfe.soap;
 public final class ContratoDistDfe {
 
     public static final String NS_SOAP12 = "http://www.w3.org/2003/05/soap-envelope";
+    public static final String NS_NFE = "http://www.portalfiscal.inf.br/nfe";
     public static final String NS_WSDL = "http://www.portalfiscal.inf.br/nfe/wsdl/NFeDistribuicaoDFe";
     public static final String OPERACAO = "nfeDistDFeInteresse";
     public static final String ACTION = NS_WSDL + "/" + OPERACAO;

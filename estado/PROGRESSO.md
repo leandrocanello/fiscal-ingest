@@ -408,3 +408,5 @@
 - 2026-10-29 08:20 · E2-S08: DESENVOLVER ok
 - 2026-10-29 08:21 · E2-S08: NfeNacionalAdapterContratoTest (WireMock) roda toda a suíte de contrato; verde de primeira, sem mudança no adapter (teste não viu falhar: casos já cobertos por DA-14) · próximo: Verificação/revisão
 - 2026-10-29 08:22 · E2-S08: DESENVOLVER ok
+- 2026-10-29 08:22 · E2-S08 (verificar): contrato rodou idêntico nos 2 adapters (8/8 verdes cada), inv. 4 por grep, domain intocado, ArchUnit verde, suíte inteira verde; sem código novo · próximo: revisão
+- 2026-10-29 08:22 · E2-S08: VERIFICAR ok

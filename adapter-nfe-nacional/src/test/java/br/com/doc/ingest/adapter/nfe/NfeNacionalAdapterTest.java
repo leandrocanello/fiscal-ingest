@@ -666,4 +666,39 @@ class NfeNacionalAdapterTest {
         assertSemDocumento(adapterCom(new BlobStoreQueFalha(blobs, 1)).buscarUm(FONTE, CNPJ, new Nsu(42)), TEMPORARIO);
         assertSemDocumento(adapterCom(new BlobStoreQueFalha(blobs, 2)).buscarUm(FONTE, CNPJ, new Nsu(42)), TEMPORARIO);
     }
+
+    // ---- buscarPorChave (consChNFe) ----
+
+    private static final String CHAVE = "35261011111111000191550010000000011000000015";
+
+    @Test
+    @DisplayName("buscarPorChave 138: devolve o procNFe com a chave pedida e consChNFe sem distNSU")
+    void buscarPorChave138DevolveProcNFe() {
+        responder(resposta("138", 42, 42, docZip(42, "procNFe_v4.00.xsd", XML_PROC)));
+
+        BuscarUmResultado r = adapter.buscarPorChave(new ContextoConsulta(FONTE, CNPJ), new ChaveAcessoNfe(CHAVE));
+
+        assertThat(r.desfecho()).isEqualTo(new Desfecho.Ok());
+        Documento doc = r.documento().orElseThrow();
+        assertThat(doc.chave()).contains(CHAVE);
+        assertThat(doc.nsu()).isEqualTo(new Nsu(42));
+        String sha = Sha256.hex(XML_PROC.getBytes(StandardCharsets.UTF_8));
+        String chaveBlob = ChavesBlobPull.documento(FONTE, TipoAmbiente.PRODUCAO, CNPJ, new Nsu(42), sha);
+        assertThat(doc.blobRef()).contains(chaveBlob);
+        assertThat(blobs.ler(new BlobRef(chaveBlob, sha))).contains(XML_PROC.getBytes(StandardCharsets.UTF_8));
+    }
+
+    @Test
+    @DisplayName("consChNFe nunca envia distNSU/ultNSU (inv. 1)")
+    void consChNFeNuncaEnviaDistNsu() {
+        responder(resposta("138", 42, 42, docZip(42, "procNFe_v4.00.xsd", XML_PROC)));
+
+        adapter.buscarPorChave(new ContextoConsulta(FONTE, CNPJ), new ChaveAcessoNfe(CHAVE));
+
+        var requisicoes = servidor.findAll(com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor(urlEqualTo(CAMINHO)));
+        assertThat(requisicoes).hasSize(1);
+        assertThat(requisicoes.get(0).getBodyAsString())
+                .contains("<consChNFe><chNFe>" + CHAVE + "</chNFe></consChNFe>")
+                .doesNotContain("distNSU").doesNotContain("ultNSU");
+    }
 }

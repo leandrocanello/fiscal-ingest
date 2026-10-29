@@ -210,7 +210,12 @@ public final class NfeNacionalAdapter implements SourceAdapter {
     public BuscarUmResultado buscarPorChave(ContextoConsulta contexto, ChaveAcessoNfe chave) {
         Objects.requireNonNull(chave, "chave");
         Cnpj cnpj = contexto.cnpj();
-        return consultarPontual(cnpj, EnvelopeDistDfe.soap12ConsChNFe(ambiente, cnpj, chave.valor()), Optional.empty());
+        BuscarUmResultado r = consultarPontual(
+                cnpj, EnvelopeDistDfe.soap12ConsChNFe(ambiente, cnpj, chave.valor()), Optional.empty());
+        // a chave pedida identifica o documento devolvido
+        return new BuscarUmResultado(r.documento().map(d -> new Documento(d.id(), d.fonte(), d.cnpjDestinatario(),
+                d.modelo(), d.nsu(), d.recebidoEm(), d.tipoConteudo(), Optional.of(chave.valor()), d.blobRef())),
+                r.desfecho());
     }
 
     private BuscarUmResultado consultarPontual(Cnpj cnpj, byte[] envelopeSoap, Optional<Nsu> nsuPedido) {

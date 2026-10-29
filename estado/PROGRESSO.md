@@ -387,3 +387,5 @@
 - 2026-10-29 · E2-S07 falha vista (passo autenticar/mTLS): `buscarLote antes de autenticar ... FAILED — java.lang.IllegalStateException at NfeNacionalAdapterTest.java:489`; `FornecedorTransporteMtlsTest > autenticarComPfxSinteticoUsaCacheSslContext() FAILED`; `pfxInvalidoEhCertificadoInvalidoSemSenhaNaMensagem() FAILED`; `173 tests completed, 3 failed`
 - 2026-10-29 · E2-S07: buscarLote sem autenticar → ErroAutenticacao sem avançar; FornecedorTransporteMtls sobre CacheSslContext; testes de descritor/buscarUm; suíte verde · próximo: seção Verificação (propriedade jqwik NfeNacionalAdapterPropriedadesTest)
 - 2026-10-29 08:07 · E2-S07: DESENVOLVER ok
+- 2026-10-29 08:09 · E2-S07 verificação: jqwik do buscarLote (cursor nunca retrocede, doc sempre com blob) + caos n-ésima gravação; suíte verde · próximo: revisão
+- 2026-10-29 08:09 · E2-S07: VERIFICAR ok

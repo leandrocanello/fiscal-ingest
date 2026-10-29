@@ -59,12 +59,6 @@
   sugiro uma subetapa nova `E2-S11b` (AUTO+, deps E2-S07, E2-S11) no ROADMAP.
 - Resposta (2026-10-27, autor): D1 (c) `AlgoritmoAssinatura {RSA_SHA1, RSA_SHA256}` com padrão **RSA_SHA1** — MOC 7.0 Tab. 4-2, p. 54–55 (rsa-sha1, digest sha1, enveloped + C14N `REC-xml-c14n-20010315`, EndCertOnly). D2 como proposto — confirmado no MOC 7.0 p. 100 (`Id` = "ID" + tpEvento + chave + nSeqEvento, 54 posições; `cOrgao` 91 = AN; `dhEvento` com TZD; `nSeqEvento` = 1); `descEvento` "Ciencia da Operacao" (Tab. 5-41, p. 113). Constantes isoladas com [VALIDAR item 6/7] para o smoke. Envio do evento: nova subetapa E2-S13.
 
-### [DUVIDA] E2-S07 — 2026-10-28 — `ExtratorMetadados` (E2-S05) não está na `main`
-- **O que é preciso:** os commits `79550f6`, `420e705` e `34558b3` (extrator de metadados de resNFe/procNFe/eventos) não estão no histórico da `main`, embora a E2-S05 esteja `[x]`. Na `main` há só `DocZipDecoder`/`ClassificadorSchema`.
-- **Opções:** (a) recuperar o extrator numa subetapa curta (cherry-pick revisado) antes da E3-S07; (b) deixar o processor (E3-S07) extrair os metadados.
-- **Recomendação:** (a). Não bloqueia a E2-S07: lá o `Documento.chave` fica vazio e a chave é extraída depois.
-- Resposta:
-
 ### [DUVIDA] E2-S07 — 2026-10-28 — prefixo de tenant nas chaves `raw/pull/`
 - **O que é preciso:** a §8.1 põe `{tenant}` em `raw/pull/...`, mas a coleta é por `(fonte, cnpj_consultado, ambiente)` e o adapter não conhece tenant (DA-13). Um mesmo CNPJ consultado pode servir mais de um tenant?
 - **Opções:** (a) pull sem tenant (`raw/pull/{fonte}/{ambiente}/{cnpj}/...`), tenant só a partir do catálogo (`doc/{tenant}/...`); (b) levar tenant ao `ContextoConsulta` e ao estado de coleta.
@@ -82,3 +76,9 @@
 - **Opções:** (a) `217`, `236`, `614`–`619`, `640`, `641`, `653`, `654` → `IndisponivelDefinitivo` (para aquela consulta, sem bloquear o CNPJ), `252`/`593` → `ErroAutenticacao`/`IndisponivelDefinitivo` (configuração); (b) manter o fallback e só alertar; (c) (a), mas confirmando antes os textos numa NT mais nova que o MOC de 2020.
 - **Recomendação:** (a), em uma subetapa curta depois da E2-S09 (uma linha por código no `CStatMapper`, com teste). A E2-S09 segue com o fallback.
 - Resposta:
+
+### [DUVIDA] E2-S07 — 2026-10-28 — `ExtratorMetadados` (E2-S05) não está na `main`
+- **O que é preciso:** os commits `79550f6`, `420e705` e `34558b3` (extrator de metadados de resNFe/procNFe/eventos) não estão no histórico da `main`, embora a E2-S05 esteja `[x]`. Na `main` há só `DocZipDecoder`/`ClassificadorSchema`.
+- **Opções:** (a) recuperar o extrator numa subetapa curta (cherry-pick revisado) antes da E3-S07; (b) deixar o processor (E3-S07) extrair os metadados.
+- **Recomendação:** (a). Não bloqueia a E2-S07: lá o `Documento.chave` fica vazio e a chave é extraída depois.
+- Resposta (2026-10-29, Claude/autor): confirmado — 6 commits da E2-S05 nunca chegaram à `main` (PR #13 mergeado antes deles), e o mesmo aconteceu com E2-S08/E2-S09 (PRs #25/#26 entraram em `auto/E2-S07`). Tudo recuperado na branch `auto/E2-S14`; a subetapa E2-S14 só verifica e abre o PR.

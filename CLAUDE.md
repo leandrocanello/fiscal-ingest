@@ -500,10 +500,14 @@ Observações:
 
 ### 8.1 Object store (MinIO/S3)
 ```
-raw/pull/{tenant}/{cnpj_consultado}/{aaaa}/{mm}/{dd}/{tentativa_id}.envelope.xml.gz
+raw/pull/{fonte}/{ambiente}/{cnpj_consultado}/{aaaa}/{mm}/{dd}/{sha256}.envelope.xml   # sem tenant (ver abaixo)
 raw/push/{tenant}/{aaaa}/{mm}/{dd}/{sha256}.bin                        # exatamente como chegou
 doc/{tenant}/{modelo}/{aaaa}/{mm}/{chave}/{tipo}-{sha256}.xml.gz      # cada arquivo normalizado
 ```
+- **O bruto da coleta não tem tenant** (decisão do autor, 2026-10-29): a coleta é por `(fonte, cnpj_consultado, ambiente)`,
+  como o `estado_coleta`, porque o NSU é por CNPJ na SEFAZ; um CNPJ que serve a dois tenants é coletado **uma vez só**
+  (duas coletas disputariam o NSU → `656`). O tenant entra no catálogo (`doc/{tenant}/...`), que controla acesso,
+  consentimento e expurgo; o bruto de um CNPJ só é expurgado quando nenhum tenant ativo o usa.
 - SHA-256 em todo objeto, gravado no Postgres. Imutável (versionamento/WORM quando possível). Criptografia em repouso.
 - Gravar a mesma chave com o mesmo hash não faz nada.
 - **Tiering:** por ora, objetos individuais e **regra de ciclo de vida** da própria storage. Pacotes ZIP mensais

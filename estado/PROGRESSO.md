@@ -429,3 +429,5 @@
 - 2026-10-29 08:33 · E2-S09: DESENVOLVER ok
 - 2026-10-29 08:36 · E2-S09: desfechos do consChNFe (sem falha inicial: pipeline comum já cobria; suíte verde) · próximo: buscarUmNaoMudaOProximoBuscarLote
 - 2026-10-29 08:34 · E2-S09: DESENVOLVER ok
+- 2026-10-29 08:35 · E2-S09: teste buscarUmNaoMudaOProximoBuscarLote (inv. 1; passou de primeira, pois o comportamento já valia desde o buscarUm — teste de caracterização, sem falha prévia) · próximo: verificação (propriedade jqwik, caos)
+- 2026-10-29 08:36 · E2-S09: DESENVOLVER ok

@@ -19,8 +19,8 @@ import java.util.concurrent.ConcurrentHashMap;
  *   <li>autenticar: no-op (nao faz nada)</li>
  * </ul>
  *
- * <p>{@code ultNsu} do lote = maior NSU dos documentos pre-carregados. Limitacao: como o fake
- * nao recebe o NSU atual (so o {@link Cursor} opaco), devolve {@code Nsu(0)} quando o lote e vazio.
+ * <p>Cursor do fake = {@code ultNsu} decimal ({@code ""} = 0, DA-19): so devolve NSU maior que o cursor;
+ * {@code Vazio} devolve o cursor e o NSU de entrada.
  *
  * <p>Este adapter NAO deve ser usado em producao. Serve apenas para testes do core.
  */
@@ -55,25 +55,36 @@ public class FakeSourceAdapter implements SourceAdapter {
 
     @Override
     public BuscarLoteResultado buscarLote(ContextoConsulta contexto, Cursor cursor) {
-        List<Documento> documentos = documentosPorCnpj.getOrDefault(contexto.cnpj(), List.of());
+        long entrada = nsuDoCursor(cursor);
+        List<Documento> novos = documentosPorCnpj.getOrDefault(contexto.cnpj(), List.of()).stream()
+                .filter(d -> d.nsu().valor() > entrada)
+                .toList();
 
-        if (documentos.isEmpty()) {
-            return new BuscarLoteResultado(
-                    List.of(),
-                    cursor,
-                    new Nsu(0),
-                    false,
-                    new Desfecho.Vazio()
-            );
+        if (novos.isEmpty()) {
+            return new BuscarLoteResultado(List.of(), cursor, new Nsu(entrada), false, new Desfecho.Vazio());
         }
 
+        Nsu ultNsu = novos.stream().map(Documento::nsu).max(Comparator.naturalOrder()).orElseThrow();
         return new BuscarLoteResultado(
-                List.copyOf(documentos),
-                cursor,
-                documentos.stream().map(Documento::nsu).max(Comparator.naturalOrder()).orElseThrow(),
+                novos,
+                new Cursor(Long.toString(ultNsu.valor())),
+                ultNsu,
                 false,
                 new Desfecho.Ok()
         );
+    }
+
+    /** Cursor do fake = ultNsu decimal; "" equivale a 0 (DA-19). */
+    private static long nsuDoCursor(Cursor cursor) {
+        String token = cursor.token();
+        if (token.isEmpty()) {
+            return 0;
+        }
+        try {
+            return Long.parseLong(token);
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("cursor do fake deve ser decimal: " + token, e);
+        }
     }
 
     @Override

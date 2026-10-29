@@ -12,6 +12,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 /**
  * Testes do FakeSourceAdapter - adapter em memoria para testar o core sem SEFAZ.
@@ -114,6 +115,41 @@ class FakeSourceAdapterTest {
 
             assertThat(resultado.desfecho()).isInstanceOf(Desfecho.Vazio.class);
             assertThat(resultado.documento()).isEmpty();
+        }
+    }
+
+    @Nested
+    @DisplayName("cursor (DA-19)")
+    class CursorDoFake {
+
+        @Test
+        @DisplayName("retomada pelo proximoCursor so traz NSU maior")
+        void retomadaPeloProximoCursorSoTrazNsuMaior() {
+            FakeSourceAdapter adapter = new FakeSourceAdapter(fonte);
+            adapter.preCarregar(cnpj, List.of(
+                    documento(nsu(1), "RESUMO"), documento(nsu(2), "RESUMO"), documento(nsu(3), "RESUMO")));
+            ContextoConsulta ctx = new ContextoConsulta(fonte, cnpj);
+
+            BuscarLoteResultado primeiro = adapter.buscarLote(ctx, Cursor.inicial());
+            assertThat(primeiro.desfecho()).isInstanceOf(Desfecho.Ok.class);
+            assertThat(primeiro.documentos()).hasSize(3);
+            assertThat(primeiro.proximoCursor()).isEqualTo(new Cursor("3"));
+
+            BuscarLoteResultado segundo = adapter.buscarLote(ctx, primeiro.proximoCursor());
+            assertThat(segundo.desfecho()).isInstanceOf(Desfecho.Vazio.class);
+            assertThat(segundo.documentos()).isEmpty();
+            assertThat(segundo.ultNsu()).isEqualTo(nsu(3));
+            assertThat(segundo.proximoCursor()).isEqualTo(new Cursor("3"));
+        }
+
+        @Test
+        @DisplayName("cursor nao numerico e rejeitado")
+        void cursorNaoNumericoEhRejeitado() {
+            FakeSourceAdapter adapter = new FakeSourceAdapter(fonte);
+            ContextoConsulta ctx = new ContextoConsulta(fonte, cnpj);
+
+            assertThatThrownBy(() -> adapter.buscarLote(ctx, new Cursor("abc")))
+                    .isInstanceOf(IllegalArgumentException.class);
         }
     }
 

@@ -417,3 +417,5 @@
 - 2026-10-29 08:26 · E2-S09: PLANEJAR ok
 - 2026-10-29 08:27 · E2-S09: envelopes consNSU/consChNFe (falha inicial: métodos inexistentes em EnvelopeDistDfe; suíte verde) · próximo: ChaveAcessoNfe
 - 2026-10-29 08:28 · E2-S09: DESENVOLVER ok
+- 2026-10-29 08:28 · E2-S09: ChaveAcessoNfe (falhou: cannot find symbol ChaveAcessoNfe) · próximo: refactor consultar()
+- 2026-10-29 08:29 · E2-S09: DESENVOLVER ok

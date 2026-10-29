@@ -52,6 +52,7 @@ public final class NfeNacionalAdapter implements SourceAdapter {
 
     private static final String MODELO_NFE = "55";
     private static final Desfecho TEMPORARIO = new Desfecho.IndisponivelTemporario(Duration.ofMinutes(5));
+    private static final Desfecho SEM_CREDENCIAL = new Desfecho.ErroAutenticacao("adapter não autenticado");
     private static final Desfecho CURSOR_INCONSISTENTE = new Desfecho.IndisponivelDefinitivo("cursor inconsistente");
 
     private final FonteId fonte;
@@ -80,6 +81,7 @@ public final class NfeNacionalAdapter implements SourceAdapter {
         return new AdapterDescriptor(fonte, new Capacidades(true, false, false, false));
     }
 
+    /** Guarda só o transporte (com o SSLContext); a {@link Credencial} não fica retida no adapter. */
     @Override
     public void autenticar(Credencial credencial) {
         this.transporte = fornecedor.para(credencial);
@@ -87,12 +89,12 @@ public final class NfeNacionalAdapter implements SourceAdapter {
 
     @Override
     public BuscarLoteResultado buscarLote(ContextoConsulta contexto, Cursor cursor) {
+        Nsu entrada = CursorNsu.nsu(cursor);
         TransporteSoap atual = transporte;
         if (atual == null) {
-            throw new IllegalStateException("buscarLote antes de autenticar");
+            return semAvanco(cursor, entrada, SEM_CREDENCIAL, Optional.empty());
         }
         Cnpj cnpj = contexto.cnpj();
-        Nsu entrada = CursorNsu.nsu(cursor);
         Instant agora = relogio.instant();
 
         ResultadoTransporte resultado = atual.enviar(endpoint, ContratoDistDfe.ACTION,

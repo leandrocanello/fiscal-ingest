@@ -11,6 +11,8 @@ import br.com.doc.ingest.adapter.nfe.soap.ContratoDistDfe;
 import br.com.doc.ingest.adapter.nfe.soap.TipoAmbiente;
 import br.com.doc.ingest.adapter.nfe.transporte.TransporteHttpJdk;
 import br.com.doc.ingest.domain.adapter.BuscarLoteResultado;
+import br.com.doc.ingest.domain.adapter.BuscarUmResultado;
+import br.com.doc.ingest.domain.adapter.Capacidades;
 import br.com.doc.ingest.domain.adapter.ContextoConsulta;
 import br.com.doc.ingest.domain.adapter.Credencial;
 import br.com.doc.ingest.domain.adapter.Cursor;
@@ -474,5 +476,38 @@ class NfeNacionalAdapterTest {
         assertThat(r.desfecho()).isEqualTo(TEMPORARIO);
         assertSemAvanco(r, "10");
         assertThat(r.envelope()).isEmpty();
+    }
+
+    @Test
+    @DisplayName("buscarLote antes de autenticar: ErroAutenticacao, sem chamada HTTP e sem avançar")
+    void buscarLoteAntesDeAutenticarEhErroAutenticacao() {
+        URI endpoint = URI.create("http://localhost:" + servidor.port() + CAMINHO);
+        NfeNacionalAdapter semCredencial = new NfeNacionalAdapter(FONTE, TipoAmbiente.PRODUCAO, endpoint, blobs,
+                Clock.fixed(AGORA, ZoneOffset.UTC),
+                credencial -> new TransporteHttpJdk(HttpClient.newHttpClient(), Duration.ofSeconds(5), 1024));
+
+        BuscarLoteResultado r = semCredencial.buscarLote(new ContextoConsulta(FONTE, CNPJ), new Cursor("10"));
+
+        assertThat(r.desfecho()).isInstanceOf(Desfecho.ErroAutenticacao.class);
+        assertSemAvanco(r, "10");
+        assertThat(r.envelope()).isEmpty();
+        assertThat(servidor.getAllServeEvents()).isEmpty();
+    }
+
+    @Test
+    @DisplayName("descritor: só lote suportado")
+    void descritorSoComLote() {
+        assertThat(adapter.descritor().fonteId()).isEqualTo(FONTE);
+        assertThat(adapter.descritor().capacidades()).isEqualTo(new Capacidades(true, false, false, false));
+    }
+
+    @Test
+    @DisplayName("buscarUm: consNSU ainda não suportado (E2-S09)")
+    void buscarUmAindaNaoSuportado() {
+        BuscarUmResultado r = adapter.buscarUm(FONTE, CNPJ, new Nsu(1));
+
+        assertThat(r).isEqualTo(new BuscarUmResultado(Optional.empty(),
+                new Desfecho.IndisponivelDefinitivo("consNSU ainda não suportado")));
+        assertThat(servidor.getAllServeEvents()).isEmpty();
     }
 }

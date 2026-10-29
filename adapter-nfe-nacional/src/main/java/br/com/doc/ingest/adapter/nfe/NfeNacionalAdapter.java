@@ -33,6 +33,7 @@ import br.com.doc.ingest.domain.model.Nsu;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.time.Clock;
+import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -50,6 +51,8 @@ import java.util.UUID;
 public final class NfeNacionalAdapter implements SourceAdapter {
 
     private static final String MODELO_NFE = "55";
+    private static final Desfecho TEMPORARIO = new Desfecho.IndisponivelTemporario(Duration.ofMinutes(5));
+    private static final Desfecho CURSOR_INCONSISTENTE = new Desfecho.IndisponivelDefinitivo("cursor inconsistente");
 
     private final FonteId fonte;
     private final TipoAmbiente ambiente;
@@ -94,47 +97,76 @@ public final class NfeNacionalAdapter implements SourceAdapter {
 
         ResultadoTransporte resultado = atual.enviar(endpoint, ContratoDistDfe.ACTION,
                 EnvelopeDistDfe.soap12DistNsu(ambiente, cnpj, entrada));
-        if (!(resultado instanceof ResultadoTransporte.RespostaHttp http) || http.status() != 200) {
-            throw new IllegalStateException("desfecho de transporte ainda não suportado");
+        if (!(resultado instanceof ResultadoTransporte.RespostaHttp http)) {
+            return semAvanco(cursor, entrada, tradutor.deTransporte(resultado).orElseThrow(), Optional.empty());
         }
 
+        // inv. 5: todo corpo HTTP é guardado antes de qualquer interpretação
         byte[] corpo = http.corpo();
         String shaEnvelope = Sha256.hex(corpo);
-        BlobRef envelope = blobs.gravar(
-                ChavesBlobPull.envelope(fonte, ambiente, cnpj, agora, shaEnvelope), corpo, shaEnvelope);
+        BlobRef envelope;
+        try {
+            envelope = blobs.gravar(
+                    ChavesBlobPull.envelope(fonte, ambiente, cnpj, agora, shaEnvelope), corpo, shaEnvelope);
+        } catch (RuntimeException e) {
+            return semAvanco(cursor, entrada, TEMPORARIO, Optional.empty());
+        }
+        Optional<BlobRef> refEnvelope = Optional.of(envelope);
+
+        Optional<Desfecho> deHttp = tradutor.deTransporte(http);
+        if (deHttp.isPresent()) {
+            return semAvanco(cursor, entrada, deHttp.get(), refEnvelope);
+        }
 
         LeitorRespostaDistDfe.Resultado leitura = LeitorRespostaDistDfe.ler(corpo);
-        if (!(leitura instanceof LeitorRespostaDistDfe.Valida valida)) {
-            throw new IllegalStateException("resposta inválida ainda não suportada");
+        Desfecho desfecho = tradutor.deLeitura(leitura);
+        if (!(leitura instanceof LeitorRespostaDistDfe.Valida valida)
+                || !(desfecho instanceof Desfecho.Ok || desfecho instanceof Desfecho.Vazio)) {
+            // inv. 1: só Ok/Vazio mudam o cursor; o ultNSU da resposta é ignorado
+            return semAvanco(cursor, entrada, desfecho, refEnvelope);
         }
         RetDistDfeInt ret = valida.retorno();
-        Desfecho desfecho = tradutor.deLeitura(leitura);
-        if (desfecho instanceof Desfecho.Vazio) {
-            Nsu ultNsu = nsuDe(ret.getUltNSU());
-            return new BuscarLoteResultado(List.of(), CursorNsu.de(ultNsu), ultNsu, false, desfecho,
-                    Optional.of(envelope));
+
+        Nsu ultNsu;
+        Nsu maxNsu;
+        try {
+            ultNsu = nsuDe(ret.getUltNSU());
+            maxNsu = nsuDe(ret.getMaxNSU());
+        } catch (RuntimeException e) {
+            return semAvanco(cursor, entrada, TEMPORARIO, refEnvelope);
         }
-        if (!(desfecho instanceof Desfecho.Ok)) {
-            // inv. 1: só Ok/Vazio mudam o cursor; o ultNSU da resposta é ignorado
-            return new BuscarLoteResultado(List.of(), cursor, entrada, false, desfecho, Optional.of(envelope));
+        if (ultNsu.ehMenorQue(entrada)) {
+            return semAvanco(cursor, entrada, CURSOR_INCONSISTENTE, refEnvelope);
+        }
+        if (desfecho instanceof Desfecho.Vazio) {
+            return new BuscarLoteResultado(List.of(), CursorNsu.de(ultNsu), ultNsu, false, desfecho, refEnvelope);
         }
 
+        // DA-14: docZip corrompido ou falha do BlobStore derrubam o lote inteiro (o envelope já está guardado)
         List<Documento> documentos = new ArrayList<>();
         List<DocZip> docZips = ret.getDocumentos() != null ? ret.getDocumentos() : List.of();
-        for (DocZip docZip : docZips) {
-            DocZipDecodificado decodificado = decoder.decodificar(docZip);
-            String sha = Sha256.hex(decodificado.xml());
-            BlobRef ref = blobs.gravar(ChavesBlobPull.documento(fonte, ambiente, cnpj, decodificado.nsu(), sha),
-                    decodificado.xml(), sha);
-            documentos.add(new Documento(idDe(cnpj, decodificado.nsu()), fonte, cnpj, MODELO_NFE,
-                    decodificado.nsu(), agora, decodificado.tipo().name(), Optional.empty(),
-                    Optional.of(ref.chave())));
+        try {
+            for (DocZip docZip : docZips) {
+                DocZipDecodificado decodificado = decoder.decodificar(docZip);
+                String sha = Sha256.hex(decodificado.xml());
+                BlobRef ref = blobs.gravar(ChavesBlobPull.documento(fonte, ambiente, cnpj, decodificado.nsu(), sha),
+                        decodificado.xml(), sha);
+                documentos.add(new Documento(idDe(cnpj, decodificado.nsu()), fonte, cnpj, MODELO_NFE,
+                        decodificado.nsu(), agora, decodificado.tipo().name(), Optional.empty(),
+                        Optional.of(ref.chave())));
+            }
+        } catch (RuntimeException e) {
+            return semAvanco(cursor, entrada, TEMPORARIO, refEnvelope);
         }
 
-        Nsu ultNsu = nsuDe(ret.getUltNSU());
-        Nsu maxNsu = nsuDe(ret.getMaxNSU());
         return new BuscarLoteResultado(List.copyOf(documentos), CursorNsu.de(ultNsu), ultNsu,
-                ultNsu.ehMenorQue(maxNsu), desfecho, Optional.of(envelope));
+                ultNsu.ehMenorQue(maxNsu), desfecho, refEnvelope);
+    }
+
+    /** Nenhum documento, cursor e ultNSU de entrada (inv. 1 e 5). */
+    private static BuscarLoteResultado semAvanco(Cursor cursor, Nsu entrada, Desfecho desfecho,
+                                                 Optional<BlobRef> envelope) {
+        return new BuscarLoteResultado(List.of(), cursor, entrada, false, desfecho, envelope);
     }
 
     @Override

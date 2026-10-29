@@ -71,10 +71,14 @@ class NfeNacionalAdapterTest {
     }
 
     private NfeNacionalAdapter adapterCom(BlobStore store) {
+        return adapterCom(store, Duration.ofSeconds(5));
+    }
+
+    private NfeNacionalAdapter adapterCom(BlobStore store, Duration timeout) {
         URI endpoint = URI.create("http://localhost:" + servidor.port() + CAMINHO);
         NfeNacionalAdapter novo = new NfeNacionalAdapter(FONTE, TipoAmbiente.PRODUCAO, endpoint, store,
                 Clock.fixed(AGORA, ZoneOffset.UTC),
-                credencial -> new TransporteHttpJdk(HttpClient.newHttpClient(), Duration.ofSeconds(5), 1024 * 1024));
+                credencial -> new TransporteHttpJdk(HttpClient.newHttpClient(), timeout, 1024 * 1024));
         novo.autenticar(new Credencial(new byte[] {1}, new char[0]));
         return novo;
     }
@@ -321,5 +325,154 @@ class NfeNacionalAdapterTest {
 
         assertThat(r.desfecho()).isEqualTo(new Desfecho.IndisponivelTemporario(Duration.ofMinutes(5)));
         assertNaoAvancou(r, "10");
+    }
+
+    private static final Desfecho TEMPORARIO = new Desfecho.IndisponivelTemporario(Duration.ofMinutes(5));
+
+    private void responderStatus(int status, String corpo) {
+        servidor.stubFor(post(urlEqualTo(CAMINHO)).willReturn(aResponse().withStatus(status)
+                .withHeader("Content-Type", "application/soap+xml; charset=utf-8").withBody(corpo)));
+    }
+
+    private void assertSemAvanco(BuscarLoteResultado r, String cursorEntrada) {
+        assertThat(r.documentos()).isEmpty();
+        assertThat(r.proximoCursor()).isEqualTo(new Cursor(cursorEntrada));
+        assertThat(r.ultNsu()).isEqualTo(new Nsu(Long.parseLong(cursorEntrada)));
+        assertThat(r.temMais()).isFalse();
+    }
+
+    @Test
+    @DisplayName("timeout: IndisponivelTemporario, sem envelope e sem avançar")
+    void timeout() {
+        servidor.stubFor(post(urlEqualTo(CAMINHO)).willReturn(aResponse().withStatus(200)
+                .withFixedDelay(2_000).withBody(resposta("138", 1, 1, docZip(1, "resNFe_v1.01.xsd", XML_RES)))));
+        NfeNacionalAdapter lento = adapterCom(blobs, Duration.ofMillis(200));
+
+        BuscarLoteResultado r = lento.buscarLote(new ContextoConsulta(FONTE, CNPJ), new Cursor("10"));
+
+        assertThat(r.desfecho()).isEqualTo(TEMPORARIO);
+        assertSemAvanco(r, "10");
+        assertThat(r.envelope()).isEmpty();
+    }
+
+    @Test
+    @DisplayName("HTTP 500 com SOAP Fault: IndisponivelTemporario, envelope gravado, sem avançar")
+    void erro500ComSoapFault() {
+        responderStatus(500, "<soap:Envelope xmlns:soap=\"" + ContratoDistDfe.NS_SOAP12 + "\"><soap:Body>"
+                + "<soap:Fault><soap:Code><soap:Value>soap:Receiver</soap:Value></soap:Code>"
+                + "<soap:Reason><soap:Text xml:lang=\"pt\">falha interna</soap:Text></soap:Reason></soap:Fault>"
+                + "</soap:Body></soap:Envelope>");
+
+        BuscarLoteResultado r = adapter.buscarLote(new ContextoConsulta(FONTE, CNPJ), new Cursor("10"));
+
+        assertThat(r.desfecho()).isEqualTo(TEMPORARIO);
+        assertNaoAvancou(r, "10");
+    }
+
+    @Test
+    @DisplayName("HTTP 403: ErroAutenticacao, envelope gravado, sem avançar")
+    void erro403() {
+        responderStatus(403, "proibido");
+
+        BuscarLoteResultado r = adapter.buscarLote(new ContextoConsulta(FONTE, CNPJ), new Cursor("10"));
+
+        assertThat(r.desfecho()).isInstanceOf(Desfecho.ErroAutenticacao.class);
+        assertNaoAvancou(r, "10");
+    }
+
+    @Test
+    @DisplayName("corpo malformado: IndisponivelTemporario sem vazar conteúdo, envelope gravado")
+    void corpoMalformado() {
+        responder("<soap:Envelope SEGREDO-XYZ <<< nada disso é XML");
+
+        BuscarLoteResultado r = adapter.buscarLote(new ContextoConsulta(FONTE, CNPJ), new Cursor("10"));
+
+        assertThat(r.desfecho()).isEqualTo(TEMPORARIO);
+        assertThat(r.toString()).doesNotContain("SEGREDO-XYZ");
+        assertNaoAvancou(r, "10");
+    }
+
+    @Test
+    @DisplayName("docZip corrompido num lote de 3: lote inteiro IndisponivelTemporario, nenhum documento")
+    void docZipCorrompido() {
+        String corrompido = "<docZip NSU=\"000000000000012\" schema=\"procNFe_v4.00.xsd\">@@@nao-eh-base64@@@</docZip>";
+        responder(resposta("138", 13, 13,
+                docZip(11, "resNFe_v1.01.xsd", XML_RES) + corrompido + docZip(13, "procEventoNFe_v1.00.xsd", XML_EVT)));
+
+        BuscarLoteResultado r = adapter.buscarLote(new ContextoConsulta(FONTE, CNPJ), new Cursor("10"));
+
+        assertThat(r.desfecho()).isEqualTo(TEMPORARIO);
+        assertNaoAvancou(r, "10");
+    }
+
+    @Test
+    @DisplayName("inv. 1: ultNSU da resposta menor que o cursor é cursor inconsistente")
+    void ultNsuMenorQueCursorEhCursorInconsistente() {
+        responder(resposta("138", 5, 5, docZip(5, "resNFe_v1.01.xsd", XML_RES)));
+
+        BuscarLoteResultado r = adapter.buscarLote(new ContextoConsulta(FONTE, CNPJ), new Cursor("10"));
+
+        assertThat(r.desfecho()).isEqualTo(new Desfecho.IndisponivelDefinitivo("cursor inconsistente"));
+        assertNaoAvancou(r, "10");
+    }
+
+    @Test
+    @DisplayName("inv. 1: 137 com ultNSU menor que o cursor também é cursor inconsistente")
+    void vazioComUltNsuMenorQueCursorEhCursorInconsistente() {
+        BuscarLoteResultado r = buscarComCursor("137", 5, 5, "10");
+
+        assertThat(r.desfecho()).isEqualTo(new Desfecho.IndisponivelDefinitivo("cursor inconsistente"));
+        assertNaoAvancou(r, "10");
+    }
+
+    /** BlobStore que lança na n-ésima gravação (caos). */
+    private static final class BlobStoreQueFalha implements BlobStore {
+        private final BlobStore alvo;
+        private final int falharNa;
+        private int gravacoes;
+
+        BlobStoreQueFalha(BlobStore alvo, int falharNa) {
+            this.alvo = alvo;
+            this.falharNa = falharNa;
+        }
+
+        @Override
+        public BlobRef gravar(String chave, byte[] conteudo, String sha256) {
+            if (++gravacoes == falharNa) {
+                throw new IllegalStateException("blob store fora do ar");
+            }
+            return alvo.gravar(chave, conteudo, sha256);
+        }
+
+        @Override
+        public Optional<byte[]> ler(BlobRef ref) {
+            return alvo.ler(ref);
+        }
+    }
+
+    @Test
+    @DisplayName("inv. 5 (caos): BlobStore falhando no 1º docZip não devolve documento nem avança")
+    void falhaDoBlobStoreNaoDevolveDocumentoNemAvanca() {
+        responder(resposta("138", 13, 13,
+                docZip(11, "resNFe_v1.01.xsd", XML_RES) + docZip(12, "procNFe_v4.00.xsd", XML_PROC)));
+
+        BuscarLoteResultado r = adapterCom(new BlobStoreQueFalha(blobs, 2))
+                .buscarLote(new ContextoConsulta(FONTE, CNPJ), new Cursor("10"));
+
+        assertThat(r.desfecho()).isEqualTo(TEMPORARIO);
+        assertNaoAvancou(r, "10");
+    }
+
+    @Test
+    @DisplayName("inv. 5 (caos): BlobStore falhando no envelope não lê o corpo nem avança")
+    void falhaDoBlobStoreNoEnvelopeNaoAvanca() {
+        responder(resposta("138", 13, 13, docZip(11, "resNFe_v1.01.xsd", XML_RES)));
+
+        BuscarLoteResultado r = adapterCom(new BlobStoreQueFalha(blobs, 1))
+                .buscarLote(new ContextoConsulta(FONTE, CNPJ), new Cursor("10"));
+
+        assertThat(r.desfecho()).isEqualTo(TEMPORARIO);
+        assertSemAvanco(r, "10");
+        assertThat(r.envelope()).isEmpty();
     }
 }

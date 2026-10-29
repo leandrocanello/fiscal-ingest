@@ -400,3 +400,5 @@
 - 2026-10-29 08:15 · E2-S08: DESENVOLVER ok
 - 2026-10-29 08:16 · E2-S08: suíte abstrata SourceAdapterContrato (testFixtures) + FakeSourceAdapterContratoTest com 2 casos verdes; falha inicial = classe/plugin inexistentes (erro de compilação), sem asserção que falhe por comportamento · próximo: casos blob/retomada/vazio/falha
 - 2026-10-29 08:16 · E2-S08: DESENVOLVER ok
+- 2026-10-29 08:17 · E2-S08: 5 casos no contrato (blob legível, retomada, vazio, falha, nulos) + gancho lerBlob (nfe grava só a chave no blobRef, fake grava chave@sha); já passaram de primeira no fake, sem falha prévia observável · próximo: buscarUmCoerenteComCapacidades
+- 2026-10-29 08:18 · E2-S08: DESENVOLVER ok

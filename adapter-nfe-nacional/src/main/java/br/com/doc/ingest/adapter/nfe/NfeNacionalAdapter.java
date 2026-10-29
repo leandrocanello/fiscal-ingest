@@ -78,7 +78,7 @@ public final class NfeNacionalAdapter implements SourceAdapter {
 
     @Override
     public AdapterDescriptor descritor() {
-        return new AdapterDescriptor(fonte, new Capacidades(true, false, false, false));
+        return new AdapterDescriptor(fonte, new Capacidades(true, true, false, false));
     }
 
     /** Guarda só o transporte (com o SSLContext); a {@link Credencial} não fica retida no adapter. */
@@ -97,37 +97,15 @@ public final class NfeNacionalAdapter implements SourceAdapter {
         Cnpj cnpj = contexto.cnpj();
         Instant agora = relogio.instant();
 
-        ResultadoTransporte resultado = atual.enviar(endpoint, ContratoDistDfe.ACTION,
+        Consulta consulta = consultar(atual, cnpj, agora,
                 EnvelopeDistDfe.soap12DistNsu(ambiente, cnpj, entrada));
-        if (!(resultado instanceof ResultadoTransporte.RespostaHttp http)) {
-            return semAvanco(cursor, entrada, tradutor.deTransporte(resultado).orElseThrow(), Optional.empty());
-        }
-
-        // inv. 5: todo corpo HTTP é guardado antes de qualquer interpretação
-        byte[] corpo = http.corpo();
-        String shaEnvelope = Sha256.hex(corpo);
-        BlobRef envelope;
-        try {
-            envelope = blobs.gravar(
-                    ChavesBlobPull.envelope(fonte, ambiente, cnpj, agora, shaEnvelope), corpo, shaEnvelope);
-        } catch (RuntimeException e) {
-            return semAvanco(cursor, entrada, TEMPORARIO, Optional.empty());
-        }
-        Optional<BlobRef> refEnvelope = Optional.of(envelope);
-
-        Optional<Desfecho> deHttp = tradutor.deTransporte(http);
-        if (deHttp.isPresent()) {
-            return semAvanco(cursor, entrada, deHttp.get(), refEnvelope);
-        }
-
-        LeitorRespostaDistDfe.Resultado leitura = LeitorRespostaDistDfe.ler(corpo);
-        Desfecho desfecho = tradutor.deLeitura(leitura);
-        if (!(leitura instanceof LeitorRespostaDistDfe.Valida valida)
-                || !(desfecho instanceof Desfecho.Ok || desfecho instanceof Desfecho.Vazio)) {
-            // inv. 1: só Ok/Vazio mudam o cursor; o ultNSU da resposta é ignorado
+        Desfecho desfecho = consulta.desfecho();
+        Optional<BlobRef> refEnvelope = consulta.envelope();
+        // inv. 1: só Ok/Vazio mudam o cursor; o ultNSU da resposta é ignorado nos demais casos
+        if (consulta.retorno().isEmpty()) {
             return semAvanco(cursor, entrada, desfecho, refEnvelope);
         }
-        RetDistDfeInt ret = valida.retorno();
+        RetDistDfeInt ret = consulta.retorno().get();
 
         Nsu ultNsu;
         Nsu maxNsu;
@@ -149,13 +127,7 @@ public final class NfeNacionalAdapter implements SourceAdapter {
         List<DocZip> docZips = ret.getDocumentos() != null ? ret.getDocumentos() : List.of();
         try {
             for (DocZip docZip : docZips) {
-                DocZipDecodificado decodificado = decoder.decodificar(docZip);
-                String sha = Sha256.hex(decodificado.xml());
-                BlobRef ref = blobs.gravar(ChavesBlobPull.documento(fonte, ambiente, cnpj, decodificado.nsu(), sha),
-                        decodificado.xml(), sha);
-                documentos.add(new Documento(idDe(cnpj, decodificado.nsu()), fonte, cnpj, MODELO_NFE,
-                        decodificado.nsu(), agora, decodificado.tipo().name(), Optional.empty(),
-                        Optional.of(ref.chave())));
+                documentos.add(gravarDocZip(cnpj, docZip, agora));
             }
         } catch (RuntimeException e) {
             return semAvanco(cursor, entrada, TEMPORARIO, refEnvelope);
@@ -165,15 +137,111 @@ public final class NfeNacionalAdapter implements SourceAdapter {
                 ultNsu.ehMenorQue(maxNsu), desfecho, refEnvelope);
     }
 
+    /**
+     * Resultado interno de uma consulta ao distDFe. {@code retorno} só vem preenchido quando a leitura foi
+     * válida e o desfecho é {@code Ok} ou {@code Vazio}.
+     */
+    private record Consulta(Desfecho desfecho, Optional<BlobRef> envelope, Optional<RetDistDfeInt> retorno) {
+    }
+
+    /** Envia, grava o envelope antes de interpretar (inv. 5), traduz transporte/HTTP e lê o retDistDFeInt. */
+    private Consulta consultar(TransporteSoap atual, Cnpj cnpj, Instant agora, byte[] envelopeSoap) {
+        ResultadoTransporte resultado = atual.enviar(endpoint, ContratoDistDfe.ACTION, envelopeSoap);
+        if (!(resultado instanceof ResultadoTransporte.RespostaHttp http)) {
+            return new Consulta(tradutor.deTransporte(resultado).orElseThrow(), Optional.empty(), Optional.empty());
+        }
+
+        // inv. 5: todo corpo HTTP é guardado antes de qualquer interpretação
+        byte[] corpo = http.corpo();
+        String shaEnvelope = Sha256.hex(corpo);
+        BlobRef envelope;
+        try {
+            envelope = blobs.gravar(
+                    ChavesBlobPull.envelope(fonte, ambiente, cnpj, agora, shaEnvelope), corpo, shaEnvelope);
+        } catch (RuntimeException e) {
+            return new Consulta(TEMPORARIO, Optional.empty(), Optional.empty());
+        }
+        Optional<BlobRef> refEnvelope = Optional.of(envelope);
+
+        Optional<Desfecho> deHttp = tradutor.deTransporte(http);
+        if (deHttp.isPresent()) {
+            return new Consulta(deHttp.get(), refEnvelope, Optional.empty());
+        }
+
+        LeitorRespostaDistDfe.Resultado leitura = LeitorRespostaDistDfe.ler(corpo);
+        Desfecho desfecho = tradutor.deLeitura(leitura);
+        if (!(leitura instanceof LeitorRespostaDistDfe.Valida valida)
+                || !(desfecho instanceof Desfecho.Ok || desfecho instanceof Desfecho.Vazio)) {
+            return new Consulta(desfecho, refEnvelope, Optional.empty());
+        }
+        return new Consulta(desfecho, refEnvelope, Optional.of(valida.retorno()));
+    }
+
+    /** Decodifica o docZip e grava o XML (chave com sha256, inv. 7); devolve só metadado + chave do blob. */
+    private Documento gravarDocZip(Cnpj cnpj, DocZip docZip, Instant agora) {
+        return gravarDecodificado(cnpj, decoder.decodificar(docZip), agora);
+    }
+
+    private Documento gravarDecodificado(Cnpj cnpj, DocZipDecodificado decodificado, Instant agora) {
+        String sha = Sha256.hex(decodificado.xml());
+        BlobRef ref = blobs.gravar(ChavesBlobPull.documento(fonte, ambiente, cnpj, decodificado.nsu(), sha),
+                decodificado.xml(), sha);
+        return new Documento(idDe(cnpj, decodificado.nsu()), fonte, cnpj, MODELO_NFE,
+                decodificado.nsu(), agora, decodificado.tipo().name(), Optional.empty(),
+                Optional.of(ref.chave()));
+    }
+
     /** Nenhum documento, cursor e ultNSU de entrada (inv. 1 e 5). */
     private static BuscarLoteResultado semAvanco(Cursor cursor, Nsu entrada, Desfecho desfecho,
                                                  Optional<BlobRef> envelope) {
         return new BuscarLoteResultado(List.of(), cursor, entrada, false, desfecho, envelope);
     }
 
+    /** consNSU (gap-fill): não recebe nem devolve cursor, então não mexe no estado do lote (inv. 1). */
     @Override
-    public BuscarUmResultado buscarUm(FonteId fonte, Cnpj cnpj, Nsu nsu) {
-        return new BuscarUmResultado(Optional.empty(), new Desfecho.IndisponivelDefinitivo("consNSU ainda não suportado"));
+    public BuscarUmResultado buscarUm(FonteId fonteConsultada, Cnpj cnpj, Nsu nsu) {
+        if (!this.fonte.equals(fonteConsultada)) {
+            throw new IllegalArgumentException("fonte diferente da deste adapter");
+        }
+        return consultarPontual(cnpj, EnvelopeDistDfe.soap12ConsNsu(ambiente, cnpj, nsu), Optional.of(nsu));
+    }
+
+    /** consChNFe: devolve o documento da chave pedida (fora da porta do domínio, DA-20). */
+    public BuscarUmResultado buscarPorChave(ContextoConsulta contexto, ChaveAcessoNfe chave) {
+        Objects.requireNonNull(chave, "chave");
+        Cnpj cnpj = contexto.cnpj();
+        BuscarUmResultado r = consultarPontual(
+                cnpj, EnvelopeDistDfe.soap12ConsChNFe(ambiente, cnpj, chave.valor()), Optional.empty());
+        // a chave pedida identifica o documento devolvido
+        return new BuscarUmResultado(r.documento().map(d -> new Documento(d.id(), d.fonte(), d.cnpjDestinatario(),
+                d.modelo(), d.nsu(), d.recebidoEm(), d.tipoConteudo(), Optional.of(chave.valor()), d.blobRef())),
+                r.desfecho());
+    }
+
+    private BuscarUmResultado consultarPontual(Cnpj cnpj, byte[] envelopeSoap, Optional<Nsu> nsuPedido) {
+        TransporteSoap atual = transporte;
+        if (atual == null) {
+            return new BuscarUmResultado(Optional.empty(), SEM_CREDENCIAL);
+        }
+        Instant agora = relogio.instant();
+        Consulta consulta = consultar(atual, cnpj, agora, envelopeSoap);
+        if (consulta.retorno().isEmpty() || consulta.desfecho() instanceof Desfecho.Vazio) {
+            return new BuscarUmResultado(Optional.empty(), consulta.desfecho());
+        }
+        // DA-21: um pontual 138 traz exatamente 1 docZip (e, no consNSU, do NSU pedido)
+        List<DocZip> docZips = consulta.retorno().get().getDocumentos();
+        if (docZips == null || docZips.size() != 1) {
+            return new BuscarUmResultado(Optional.empty(), TEMPORARIO);
+        }
+        try {
+            DocZipDecodificado decodificado = decoder.decodificar(docZips.get(0));
+            if (nsuPedido.isPresent() && !nsuPedido.get().equals(decodificado.nsu())) {
+                return new BuscarUmResultado(Optional.empty(), TEMPORARIO);
+            }
+            return new BuscarUmResultado(Optional.of(gravarDecodificado(cnpj, decodificado, agora)), consulta.desfecho());
+        } catch (RuntimeException e) {
+            return new BuscarUmResultado(Optional.empty(), TEMPORARIO);
+        }
     }
 
     private static Nsu nsuDe(String valor) {

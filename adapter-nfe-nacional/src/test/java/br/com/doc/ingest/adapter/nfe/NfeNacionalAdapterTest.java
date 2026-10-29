@@ -463,19 +463,310 @@ class NfeNacionalAdapterTest {
     }
 
     @Test
-    @DisplayName("descritor: só lote suportado")
-    void descritorSoComLote() {
+    @DisplayName("descritor: lote e pontual suportados")
+    void descritorComLoteEPontual() {
         assertThat(adapter.descritor().fonteId()).isEqualTo(FONTE);
-        assertThat(adapter.descritor().capacidades()).isEqualTo(new Capacidades(true, false, false, false));
+        assertThat(adapter.descritor().capacidades()).isEqualTo(new Capacidades(true, true, false, false));
     }
 
     @Test
-    @DisplayName("buscarUm: consNSU ainda não suportado (E2-S09)")
-    void buscarUmAindaNaoSuportado() {
-        BuscarUmResultado r = adapter.buscarUm(FONTE, CNPJ, new Nsu(1));
+    @DisplayName("buscarUm 138: devolve o documento do NSU, blob com a chave do lote e consNSU sem distNSU")
+    void buscarUm138DevolveODocumentoDoNsu() {
+        responder(resposta("138", 42, 42, docZip(42, "procNFe_v4.00.xsd", XML_PROC)));
 
-        assertThat(r).isEqualTo(new BuscarUmResultado(Optional.empty(),
-                new Desfecho.IndisponivelDefinitivo("consNSU ainda não suportado")));
+        BuscarUmResultado r = adapter.buscarUm(FONTE, CNPJ, new Nsu(42));
+
+        assertThat(r.desfecho()).isEqualTo(new Desfecho.Ok());
+        Documento doc = r.documento().orElseThrow();
+        assertThat(doc.nsu()).isEqualTo(new Nsu(42));
+        assertThat(doc.tipoConteudo()).isEqualTo("PROC_NFE");
+        assertThat(doc.id()).isEqualTo(idEsperado(42));
+        String sha = Sha256.hex(XML_PROC.getBytes(StandardCharsets.UTF_8));
+        String chave = ChavesBlobPull.documento(FONTE, TipoAmbiente.PRODUCAO, CNPJ, new Nsu(42), sha);
+        assertThat(doc.blobRef()).contains(chave);
+        assertThat(blobs.ler(new BlobRef(chave, sha))).contains(XML_PROC.getBytes(StandardCharsets.UTF_8));
+
+        var requisicoes = servidor.findAll(com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor(urlEqualTo(CAMINHO)));
+        assertThat(requisicoes).hasSize(1);
+        String corpo = requisicoes.get(0).getBodyAsString();
+        assertThat(corpo).contains("<consNSU><NSU>000000000000042</NSU></consNSU>")
+                .doesNotContain("distNSU").doesNotContain("ultNSU");
+    }
+
+    @Test
+    @DisplayName("buscarUm usa a mesma chave de blob do buscarLote (inv. 7)")
+    void buscarUmUsaAMesmaChaveDoLote() {
+        responder(resposta("138", 42, 42, docZip(42, "procNFe_v4.00.xsd", XML_PROC)));
+
+        BuscarLoteResultado lote = adapter.buscarLote(new ContextoConsulta(FONTE, CNPJ), new Cursor("41"));
+        BuscarUmResultado um = adapter.buscarUm(FONTE, CNPJ, new Nsu(42));
+
+        assertThat(um.desfecho()).isEqualTo(new Desfecho.Ok());
+        assertThat(um.documento().orElseThrow().blobRef()).isEqualTo(lote.documentos().get(0).blobRef());
+        assertThat(um.documento().orElseThrow().id()).isEqualTo(lote.documentos().get(0).id());
+    }
+
+    // ---- buscarUm: desfechos do consNSU ----
+
+    private BuscarUmResultado umComCStat(String cStat) {
+        responder(resposta(cStat, 42, 42, ""));
+        return adapter.buscarUm(FONTE, CNPJ, new Nsu(42));
+    }
+
+    private void assertSemDocumento(BuscarUmResultado r, Desfecho esperado) {
+        assertThat(r.documento()).isEmpty();
+        assertThat(r.desfecho()).isEqualTo(esperado);
+    }
+
+    @Test
+    @DisplayName("consNSU 137: Vazio sem documento")
+    void umVazio137() {
+        assertSemDocumento(umComCStat("137"), new Desfecho.Vazio());
+    }
+
+    @Test
+    @DisplayName("consNSU 589: IndisponivelDefinitivo")
+    void um589() {
+        BuscarUmResultado r = umComCStat("589");
+        assertThat(r.documento()).isEmpty();
+        assertThat(r.desfecho()).isInstanceOf(Desfecho.IndisponivelDefinitivo.class);
+    }
+
+    @Test
+    @DisplayName("consNSU 656: LimiteAtingido")
+    void um656() {
+        assertSemDocumento(umComCStat("656"), new Desfecho.LimiteAtingido(Duration.ofHours(1)));
+    }
+
+    @Test
+    @DisplayName("consNSU 108: IndisponivelTemporario")
+    void um108() {
+        assertSemDocumento(umComCStat("108"), TEMPORARIO);
+    }
+
+    @Test
+    @DisplayName("consNSU 109: ServicoFora")
+    void um109() {
+        BuscarUmResultado r = umComCStat("109");
+        assertThat(r.documento()).isEmpty();
+        assertThat(r.desfecho()).isInstanceOf(Desfecho.ServicoFora.class);
+    }
+
+    @Test
+    @DisplayName("consNSU: timeout, 500, 403, malformado e docZip corrompido, sem documento (DA-14)")
+    void umFalhasDeTransporteELeitura() {
+        servidor.stubFor(post(urlEqualTo(CAMINHO)).willReturn(aResponse().withStatus(200)
+                .withFixedDelay(2_000).withBody(resposta("138", 42, 42, docZip(42, "resNFe_v1.01.xsd", XML_RES)))));
+        assertSemDocumento(adapterCom(blobs, Duration.ofMillis(200)).buscarUm(FONTE, CNPJ, new Nsu(42)), TEMPORARIO);
+
+        responderStatus(500, "<soap:Envelope xmlns:soap=\"" + ContratoDistDfe.NS_SOAP12 + "\"><soap:Body/></soap:Envelope>");
+        assertSemDocumento(adapter.buscarUm(FONTE, CNPJ, new Nsu(42)), TEMPORARIO);
+
+        responderStatus(403, "proibido");
+        BuscarUmResultado r403 = adapter.buscarUm(FONTE, CNPJ, new Nsu(42));
+        assertThat(r403.documento()).isEmpty();
+        assertThat(r403.desfecho()).isInstanceOf(Desfecho.ErroAutenticacao.class);
+
+        responder("<soap:Envelope SEGREDO-XYZ <<< nada disso é XML");
+        BuscarUmResultado malformado = adapter.buscarUm(FONTE, CNPJ, new Nsu(42));
+        assertSemDocumento(malformado, TEMPORARIO);
+        assertThat(malformado.toString()).doesNotContain("SEGREDO-XYZ");
+
+        responder(resposta("138", 42, 42,
+                "<docZip NSU=\"000000000000042\" schema=\"procNFe_v4.00.xsd\">@@@nao-eh-base64@@@</docZip>"));
+        assertSemDocumento(adapter.buscarUm(FONTE, CNPJ, new Nsu(42)), TEMPORARIO);
+    }
+
+    @Test
+    @DisplayName("DA-21: 138 sem docZip, com NSU diferente do pedido ou com mais de um docZip")
+    void umRegrasDaDa21() {
+        responder(resposta("138", 42, 42, ""));
+        assertSemDocumento(adapter.buscarUm(FONTE, CNPJ, new Nsu(42)), TEMPORARIO);
+
+        responder(resposta("138", 43, 43, docZip(43, "procNFe_v4.00.xsd", XML_PROC)));
+        assertSemDocumento(adapter.buscarUm(FONTE, CNPJ, new Nsu(42)), TEMPORARIO);
+
+        responder(resposta("138", 43, 43,
+                docZip(42, "procNFe_v4.00.xsd", XML_PROC) + docZip(43, "resNFe_v1.01.xsd", XML_RES)));
+        assertSemDocumento(adapter.buscarUm(FONTE, CNPJ, new Nsu(42)), TEMPORARIO);
+    }
+
+    @Test
+    @DisplayName("buscarUm antes de autenticar: ErroAutenticacao sem chamada HTTP")
+    void buscarUmAntesDeAutenticarEhErroAutenticacao() {
+        URI endpoint = URI.create("http://localhost:" + servidor.port() + CAMINHO);
+        NfeNacionalAdapter semCredencial = new NfeNacionalAdapter(FONTE, TipoAmbiente.PRODUCAO, endpoint, blobs,
+                Clock.fixed(AGORA, ZoneOffset.UTC),
+                credencial -> new TransporteHttpJdk(HttpClient.newHttpClient(), Duration.ofSeconds(5), 1024));
+
+        BuscarUmResultado r = semCredencial.buscarUm(FONTE, CNPJ, new Nsu(42));
+
+        assertThat(r.documento()).isEmpty();
+        assertThat(r.desfecho()).isInstanceOf(Desfecho.ErroAutenticacao.class);
         assertThat(servidor.getAllServeEvents()).isEmpty();
+    }
+
+    @Test
+    @DisplayName("buscarUm com fonte diferente da do adapter é IllegalArgumentException")
+    void buscarUmComOutraFonte() {
+        org.assertj.core.api.Assertions.assertThatThrownBy(
+                        () -> adapter.buscarUm(new FonteId("OUTRA"), CNPJ, new Nsu(42)))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    @DisplayName("inv. 5: buscarUm grava o envelope antes do docZip")
+    void buscarUmGravaEnvelopeAntesDoParse() {
+        responder(resposta("138", 42, 42, docZip(42, "procNFe_v4.00.xsd", XML_PROC)));
+        var espiao = new BlobStoreEspiao(blobs);
+
+        adapterCom(espiao).buscarUm(FONTE, CNPJ, new Nsu(42));
+
+        assertThat(espiao.chavesGravadas).hasSize(2);
+        assertThat(espiao.chavesGravadas.get(0)).contains("envelope");
+    }
+
+    @Test
+    @DisplayName("inv. 5 (caos): falha do BlobStore no envelope ou no docZip não devolve documento")
+    void falhaDoBlobStoreNoBuscarUmNaoDevolveDocumento() {
+        responder(resposta("138", 42, 42, docZip(42, "procNFe_v4.00.xsd", XML_PROC)));
+
+        assertSemDocumento(adapterCom(new BlobStoreQueFalha(blobs, 1)).buscarUm(FONTE, CNPJ, new Nsu(42)), TEMPORARIO);
+        assertSemDocumento(adapterCom(new BlobStoreQueFalha(blobs, 2)).buscarUm(FONTE, CNPJ, new Nsu(42)), TEMPORARIO);
+    }
+
+    // ---- buscarPorChave (consChNFe) ----
+
+    private static final String CHAVE = "35261011111111000191550010000000011000000015";
+
+    @Test
+    @DisplayName("buscarPorChave 138: devolve o procNFe com a chave pedida e consChNFe sem distNSU")
+    void buscarPorChave138DevolveProcNFe() {
+        responder(resposta("138", 42, 42, docZip(42, "procNFe_v4.00.xsd", XML_PROC)));
+
+        BuscarUmResultado r = adapter.buscarPorChave(new ContextoConsulta(FONTE, CNPJ), new ChaveAcessoNfe(CHAVE));
+
+        assertThat(r.desfecho()).isEqualTo(new Desfecho.Ok());
+        Documento doc = r.documento().orElseThrow();
+        assertThat(doc.chave()).contains(CHAVE);
+        assertThat(doc.nsu()).isEqualTo(new Nsu(42));
+        String sha = Sha256.hex(XML_PROC.getBytes(StandardCharsets.UTF_8));
+        String chaveBlob = ChavesBlobPull.documento(FONTE, TipoAmbiente.PRODUCAO, CNPJ, new Nsu(42), sha);
+        assertThat(doc.blobRef()).contains(chaveBlob);
+        assertThat(blobs.ler(new BlobRef(chaveBlob, sha))).contains(XML_PROC.getBytes(StandardCharsets.UTF_8));
+    }
+
+    @Test
+    @DisplayName("consChNFe nunca envia distNSU/ultNSU (inv. 1)")
+    void consChNFeNuncaEnviaDistNsu() {
+        responder(resposta("138", 42, 42, docZip(42, "procNFe_v4.00.xsd", XML_PROC)));
+
+        adapter.buscarPorChave(new ContextoConsulta(FONTE, CNPJ), new ChaveAcessoNfe(CHAVE));
+
+        var requisicoes = servidor.findAll(com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor(urlEqualTo(CAMINHO)));
+        assertThat(requisicoes).hasSize(1);
+        assertThat(requisicoes.get(0).getBodyAsString())
+                .contains("<consChNFe><chNFe>" + CHAVE + "</chNFe></consChNFe>")
+                .doesNotContain("distNSU").doesNotContain("ultNSU");
+    }
+
+    private BuscarUmResultado chaveComCStat(String cStat) {
+        responder(resposta(cStat, 42, 42, ""));
+        return adapter.buscarPorChave(new ContextoConsulta(FONTE, CNPJ), new ChaveAcessoNfe(CHAVE));
+    }
+
+    @Test
+    @DisplayName("consChNFe 632: IndisponivelDefinitivo (fora de prazo), não LimiteAtingido")
+    void chave632() {
+        BuscarUmResultado r = chaveComCStat("632");
+        assertThat(r.documento()).isEmpty();
+        assertThat(r.desfecho()).isInstanceOf(Desfecho.IndisponivelDefinitivo.class);
+    }
+
+    @Test
+    @DisplayName("consChNFe 137 e 656")
+    void chave137e656() {
+        assertSemDocumento(chaveComCStat("137"), new Desfecho.Vazio());
+        assertSemDocumento(chaveComCStat("656"), new Desfecho.LimiteAtingido(Duration.ofHours(1)));
+    }
+
+    @Test
+    @DisplayName("consChNFe: 138 sem docZip ou com mais de um é IndisponivelTemporario (DA-21)")
+    void chaveRegrasDaDa21() {
+        assertSemDocumento(chaveComCStat("138"), TEMPORARIO);
+
+        responder(resposta("138", 43, 43,
+                docZip(42, "procNFe_v4.00.xsd", XML_PROC) + docZip(43, "resNFe_v1.01.xsd", XML_RES)));
+        assertSemDocumento(adapter.buscarPorChave(new ContextoConsulta(FONTE, CNPJ), new ChaveAcessoNfe(CHAVE)), TEMPORARIO);
+    }
+
+    @Test
+    @DisplayName("consChNFe: timeout, 5xx e malformado sem documento e sem vazar conteúdo (DA-14)")
+    void chaveFalhasDeTransporte() {
+        var ctx = new ContextoConsulta(FONTE, CNPJ);
+        var chave = new ChaveAcessoNfe(CHAVE);
+        servidor.stubFor(post(urlEqualTo(CAMINHO)).willReturn(aResponse().withStatus(200)
+                .withFixedDelay(2_000).withBody(resposta("138", 42, 42, docZip(42, "resNFe_v1.01.xsd", XML_RES)))));
+        assertSemDocumento(adapterCom(blobs, Duration.ofMillis(200)).buscarPorChave(ctx, chave), TEMPORARIO);
+
+        responderStatus(500, "<soap:Envelope xmlns:soap=\"" + ContratoDistDfe.NS_SOAP12 + "\"><soap:Body/></soap:Envelope>");
+        assertSemDocumento(adapter.buscarPorChave(ctx, chave), TEMPORARIO);
+
+        responder("<soap:Envelope SEGREDO-XYZ <<< nada disso é XML");
+        BuscarUmResultado malformado = adapter.buscarPorChave(ctx, chave);
+        assertSemDocumento(malformado, TEMPORARIO);
+        assertThat(malformado.toString()).doesNotContain("SEGREDO-XYZ");
+    }
+
+    @Test
+    @DisplayName("buscarPorChave antes de autenticar: ErroAutenticacao sem chamada HTTP")
+    void buscarPorChaveAntesDeAutenticar() {
+        URI endpoint = URI.create("http://localhost:" + servidor.port() + CAMINHO);
+        NfeNacionalAdapter semCredencial = new NfeNacionalAdapter(FONTE, TipoAmbiente.PRODUCAO, endpoint, blobs,
+                Clock.fixed(AGORA, ZoneOffset.UTC),
+                credencial -> new TransporteHttpJdk(HttpClient.newHttpClient(), Duration.ofSeconds(5), 1024));
+
+        BuscarUmResultado r = semCredencial.buscarPorChave(new ContextoConsulta(FONTE, CNPJ), new ChaveAcessoNfe(CHAVE));
+
+        assertThat(r.documento()).isEmpty();
+        assertThat(r.desfecho()).isInstanceOf(Desfecho.ErroAutenticacao.class);
+        assertThat(servidor.getAllServeEvents()).isEmpty();
+    }
+
+    @Test
+    @DisplayName("inv. 5: buscarPorChave grava o envelope antes do docZip e falha de blob não devolve documento")
+    void buscarPorChaveGravaEnvelopePrimeiro() {
+        responder(resposta("138", 42, 42, docZip(42, "procNFe_v4.00.xsd", XML_PROC)));
+        var espiao = new BlobStoreEspiao(blobs);
+        var ctx = new ContextoConsulta(FONTE, CNPJ);
+        var chave = new ChaveAcessoNfe(CHAVE);
+
+        adapterCom(espiao).buscarPorChave(ctx, chave);
+        assertThat(espiao.chavesGravadas).hasSize(2);
+        assertThat(espiao.chavesGravadas.get(0)).contains("envelope");
+
+        assertSemDocumento(adapterCom(new BlobStoreQueFalha(blobs, 1)).buscarPorChave(ctx, chave), TEMPORARIO);
+        assertSemDocumento(adapterCom(new BlobStoreQueFalha(blobs, 2)).buscarPorChave(ctx, chave), TEMPORARIO);
+    }
+
+    @Test
+    @DisplayName("buscarUm não muda o próximo buscarLote: o distNSU seguinte continua em ultNSU=3 (inv. 1)")
+    void buscarUmNaoMudaOProximoBuscarLote() {
+        var ctx = new ContextoConsulta(FONTE, CNPJ);
+        responder(resposta("138", 3, 3, docZip(3, "procNFe_v4.00.xsd", XML_PROC)));
+        BuscarLoteResultado primeiro = adapter.buscarLote(ctx, new Cursor("3"));
+
+        responder(resposta("138", 1, 1, docZip(1, "procNFe_v4.00.xsd", XML_PROC)));
+        BuscarUmResultado um = adapter.buscarUm(FONTE, CNPJ, new Nsu(1));
+        assertThat(um.desfecho()).isEqualTo(new Desfecho.Ok());
+
+        responder(resposta("137", 3, 3, ""));
+        adapter.buscarLote(ctx, primeiro.proximoCursor());
+
+        var requisicoes = servidor.findAll(com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor(urlEqualTo(CAMINHO)));
+        assertThat(requisicoes).hasSize(3);
+        assertThat(requisicoes.get(0).getBodyAsString()).contains("<ultNSU>000000000000003</ultNSU>");
+        assertThat(requisicoes.get(1).getBodyAsString()).contains("<consNSU>").doesNotContain("ultNSU");
+        assertThat(requisicoes.get(2).getBodyAsString()).contains("<ultNSU>000000000000003</ultNSU>");
     }
 }

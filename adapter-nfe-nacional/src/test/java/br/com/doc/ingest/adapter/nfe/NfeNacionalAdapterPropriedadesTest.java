@@ -140,4 +140,57 @@ class NfeNacionalAdapterPropriedadesTest {
         assertThat(r.ultNsu().valor()).isEqualTo(10);
         assertThat(r.desfecho()).isInstanceOf(Desfecho.IndisponivelTemporario.class);
     }
+
+    private static String respostaComNsus(String cStat, java.util.List<Long> nsus) {
+        StringBuilder lote = new StringBuilder();
+        for (long n : nsus) {
+            lote.append("<docZip NSU=\"").append(String.format("%015d", n))
+                    .append("\" schema=\"resNFe_v1.01.xsd\">").append(gzipBase64(XML + "<!--" + n + "-->")).append("</docZip>");
+        }
+        return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><soap:Envelope xmlns:soap=\"" + ContratoDistDfe.NS_SOAP12
+                + "\"><soap:Body><retDistDFeInt versao=\"1.01\" xmlns=\"" + NFE_NS + "\"><tpAmb>1</tpAmb>"
+                + "<cStat>" + cStat + "</cStat><xMotivo>x</xMotivo><ultNSU>000000000000000</ultNSU>"
+                + "<maxNSU>000000000000000</maxNSU>"
+                + (nsus.isEmpty() ? "" : "<loteDistDFeInt>" + lote + "</loteDistDFeInt>")
+                + "</retDistDFeInt></soap:Body></soap:Envelope>";
+    }
+
+    @Provide
+    Arbitrary<String> cStatsPontuais() {
+        return Arbitraries.of("137", "138", "589", "632", "656", "108", "109", "999");
+    }
+
+    @Property(tries = 200)
+    void buscarUmSoDevolveDocumentoNoOkComNsuPedidoEBlobGravado(
+            @ForAll("cStatsPontuais") String cStat,
+            @ForAll @LongRange(min = 1, max = 1000) long pedido,
+            @ForAll @net.jqwik.api.constraints.Size(max = 3) java.util.List<@LongRange(min = 1, max = 1000) Long> nsus) {
+        var blobs = new BlobStoreEmMemoria();
+        var gravadas = new java.util.ArrayList<String>();
+        BlobStore espiao = new BlobStore() {
+            @Override
+            public BlobRef gravar(String chave, byte[] conteudo, String sha256) {
+                gravadas.add(chave);
+                return blobs.gravar(chave, conteudo, sha256);
+            }
+
+            @Override
+            public Optional<byte[]> ler(BlobRef ref) {
+                return blobs.ler(ref);
+            }
+        };
+        var r = adapter(espiao, respostaComNsus(cStat, nsus)).buscarUm(FONTE, CNPJ, new br.com.doc.ingest.domain.model.Nsu(pedido));
+
+        // houve corpo => envelope gravado, e sempre primeiro (inv. 5)
+        assertThat(gravadas).isNotEmpty();
+        assertThat(gravadas.get(0)).contains("envelope");
+        if (r.documento().isPresent()) {
+            assertThat(r.desfecho()).isInstanceOf(Desfecho.Ok.class);
+            var d = r.documento().get();
+            assertThat(d.nsu().valor()).isEqualTo(pedido);
+            String chave = d.blobRef().orElseThrow();
+            String sha = chave.substring(chave.lastIndexOf('-') + 1, chave.length() - ".xml".length());
+            assertThat(blobs.ler(new BlobRef(chave, sha))).isPresent();
+        }
+    }
 }

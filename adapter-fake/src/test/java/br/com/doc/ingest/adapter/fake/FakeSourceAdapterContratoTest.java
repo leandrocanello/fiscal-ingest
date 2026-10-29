@@ -51,6 +51,12 @@ class FakeSourceAdapterContratoTest extends SourceAdapterContrato {
     }
 
     @Override
+    protected Optional<byte[]> lerBlob(Documento documento) {
+        String[] partes = documento.blobRef().orElseThrow().split("@");
+        return blobs.ler(new BlobRef(partes[0], partes[1]));
+    }
+
+    @Override
     protected void prepararLote(int n) {
         List<Documento> docs = new ArrayList<>();
         for (int i = 1; i <= n; i++) {

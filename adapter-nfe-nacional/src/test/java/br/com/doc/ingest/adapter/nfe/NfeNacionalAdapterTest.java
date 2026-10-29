@@ -701,4 +701,83 @@ class NfeNacionalAdapterTest {
                 .contains("<consChNFe><chNFe>" + CHAVE + "</chNFe></consChNFe>")
                 .doesNotContain("distNSU").doesNotContain("ultNSU");
     }
+
+    private BuscarUmResultado chaveComCStat(String cStat) {
+        responder(resposta(cStat, 42, 42, ""));
+        return adapter.buscarPorChave(new ContextoConsulta(FONTE, CNPJ), new ChaveAcessoNfe(CHAVE));
+    }
+
+    @Test
+    @DisplayName("consChNFe 632: IndisponivelDefinitivo (fora de prazo), não LimiteAtingido")
+    void chave632() {
+        BuscarUmResultado r = chaveComCStat("632");
+        assertThat(r.documento()).isEmpty();
+        assertThat(r.desfecho()).isInstanceOf(Desfecho.IndisponivelDefinitivo.class);
+    }
+
+    @Test
+    @DisplayName("consChNFe 137 e 656")
+    void chave137e656() {
+        assertSemDocumento(chaveComCStat("137"), new Desfecho.Vazio());
+        assertSemDocumento(chaveComCStat("656"), new Desfecho.LimiteAtingido(Duration.ofHours(1)));
+    }
+
+    @Test
+    @DisplayName("consChNFe: 138 sem docZip ou com mais de um é IndisponivelTemporario (DA-21)")
+    void chaveRegrasDaDa21() {
+        assertSemDocumento(chaveComCStat("138"), TEMPORARIO);
+
+        responder(resposta("138", 43, 43,
+                docZip(42, "procNFe_v4.00.xsd", XML_PROC) + docZip(43, "resNFe_v1.01.xsd", XML_RES)));
+        assertSemDocumento(adapter.buscarPorChave(new ContextoConsulta(FONTE, CNPJ), new ChaveAcessoNfe(CHAVE)), TEMPORARIO);
+    }
+
+    @Test
+    @DisplayName("consChNFe: timeout, 5xx e malformado sem documento e sem vazar conteúdo (DA-14)")
+    void chaveFalhasDeTransporte() {
+        var ctx = new ContextoConsulta(FONTE, CNPJ);
+        var chave = new ChaveAcessoNfe(CHAVE);
+        servidor.stubFor(post(urlEqualTo(CAMINHO)).willReturn(aResponse().withStatus(200)
+                .withFixedDelay(2_000).withBody(resposta("138", 42, 42, docZip(42, "resNFe_v1.01.xsd", XML_RES)))));
+        assertSemDocumento(adapterCom(blobs, Duration.ofMillis(200)).buscarPorChave(ctx, chave), TEMPORARIO);
+
+        responderStatus(500, "<soap:Envelope xmlns:soap=\"" + ContratoDistDfe.NS_SOAP12 + "\"><soap:Body/></soap:Envelope>");
+        assertSemDocumento(adapter.buscarPorChave(ctx, chave), TEMPORARIO);
+
+        responder("<soap:Envelope SEGREDO-XYZ <<< nada disso é XML");
+        BuscarUmResultado malformado = adapter.buscarPorChave(ctx, chave);
+        assertSemDocumento(malformado, TEMPORARIO);
+        assertThat(malformado.toString()).doesNotContain("SEGREDO-XYZ");
+    }
+
+    @Test
+    @DisplayName("buscarPorChave antes de autenticar: ErroAutenticacao sem chamada HTTP")
+    void buscarPorChaveAntesDeAutenticar() {
+        URI endpoint = URI.create("http://localhost:" + servidor.port() + CAMINHO);
+        NfeNacionalAdapter semCredencial = new NfeNacionalAdapter(FONTE, TipoAmbiente.PRODUCAO, endpoint, blobs,
+                Clock.fixed(AGORA, ZoneOffset.UTC),
+                credencial -> new TransporteHttpJdk(HttpClient.newHttpClient(), Duration.ofSeconds(5), 1024));
+
+        BuscarUmResultado r = semCredencial.buscarPorChave(new ContextoConsulta(FONTE, CNPJ), new ChaveAcessoNfe(CHAVE));
+
+        assertThat(r.documento()).isEmpty();
+        assertThat(r.desfecho()).isInstanceOf(Desfecho.ErroAutenticacao.class);
+        assertThat(servidor.getAllServeEvents()).isEmpty();
+    }
+
+    @Test
+    @DisplayName("inv. 5: buscarPorChave grava o envelope antes do docZip e falha de blob não devolve documento")
+    void buscarPorChaveGravaEnvelopePrimeiro() {
+        responder(resposta("138", 42, 42, docZip(42, "procNFe_v4.00.xsd", XML_PROC)));
+        var espiao = new BlobStoreEspiao(blobs);
+        var ctx = new ContextoConsulta(FONTE, CNPJ);
+        var chave = new ChaveAcessoNfe(CHAVE);
+
+        adapterCom(espiao).buscarPorChave(ctx, chave);
+        assertThat(espiao.chavesGravadas).hasSize(2);
+        assertThat(espiao.chavesGravadas.get(0)).contains("envelope");
+
+        assertSemDocumento(adapterCom(new BlobStoreQueFalha(blobs, 1)).buscarPorChave(ctx, chave), TEMPORARIO);
+        assertSemDocumento(adapterCom(new BlobStoreQueFalha(blobs, 2)).buscarPorChave(ctx, chave), TEMPORARIO);
+    }
 }

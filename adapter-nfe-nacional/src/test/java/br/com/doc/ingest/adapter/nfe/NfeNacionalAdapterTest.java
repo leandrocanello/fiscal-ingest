@@ -255,4 +255,71 @@ class NfeNacionalAdapterTest {
         assertThat(segunda.envelope()).isEqualTo(primeira.envelope());
         assertThat(segunda.documentos()).isEqualTo(primeira.documentos());
     }
+
+    private BuscarLoteResultado buscarComCursor(String cStat, int ultNsu, int maxNsu, String cursor) {
+        responder(resposta(cStat, ultNsu, maxNsu, ""));
+        return adapter.buscarLote(new ContextoConsulta(FONTE, CNPJ), new Cursor(cursor));
+    }
+
+    private void assertEnvelopeGravado(BuscarLoteResultado r) {
+        assertThat(r.envelope()).isPresent();
+        assertThat(blobs.ler(r.envelope().orElseThrow())).isPresent();
+    }
+
+    private void assertNaoAvancou(BuscarLoteResultado r, String cursorEntrada) {
+        assertThat(r.documentos()).isEmpty();
+        assertThat(r.proximoCursor()).isEqualTo(new Cursor(cursorEntrada));
+        assertThat(r.ultNsu()).isEqualTo(new Nsu(Long.parseLong(cursorEntrada)));
+        assertThat(r.temMais()).isFalse();
+        assertEnvelopeGravado(r);
+    }
+
+    @Test
+    @DisplayName("137: Vazio, cursor no ultNSU da resposta, sem documentos e sem temMais")
+    void vazio137AvancaParaUltNsuSemDocumentos() {
+        BuscarLoteResultado r = buscarComCursor("137", 12, 12, "10");
+
+        assertThat(r.desfecho()).isEqualTo(new Desfecho.Vazio());
+        assertThat(r.documentos()).isEmpty();
+        assertThat(r.proximoCursor()).isEqualTo(new Cursor("12"));
+        assertThat(r.ultNsu()).isEqualTo(new Nsu(12));
+        assertThat(r.temMais()).isFalse();
+        assertEnvelopeGravado(r);
+    }
+
+    @Test
+    @DisplayName("inv. 1: 656 com ultNSU maior na resposta não avança o cursor")
+    void limiteAtingidoNaoAvanca() {
+        BuscarLoteResultado r = buscarComCursor("656", 50, 80, "10");
+
+        assertThat(r.desfecho()).isEqualTo(new Desfecho.LimiteAtingido(Duration.ofHours(1)));
+        assertNaoAvancou(r, "10");
+    }
+
+    @Test
+    @DisplayName("108: IndisponivelTemporario sem avançar")
+    void paralisado108() {
+        BuscarLoteResultado r = buscarComCursor("108", 20, 20, "10");
+
+        assertThat(r.desfecho()).isEqualTo(new Desfecho.IndisponivelTemporario(Duration.ofMinutes(5)));
+        assertNaoAvancou(r, "10");
+    }
+
+    @Test
+    @DisplayName("109: ServicoFora sem avançar")
+    void paralisado109() {
+        BuscarLoteResultado r = buscarComCursor("109", 20, 20, "10");
+
+        assertThat(r.desfecho()).isInstanceOf(Desfecho.ServicoFora.class);
+        assertNaoAvancou(r, "10");
+    }
+
+    @Test
+    @DisplayName("cStat desconhecido: IndisponivelTemporario(5 min) sem avançar")
+    void cStatDesconhecido() {
+        BuscarLoteResultado r = buscarComCursor("999", 20, 20, "10");
+
+        assertThat(r.desfecho()).isEqualTo(new Desfecho.IndisponivelTemporario(Duration.ofMinutes(5)));
+        assertNaoAvancou(r, "10");
+    }
 }

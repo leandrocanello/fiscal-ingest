@@ -3,6 +3,7 @@ package br.com.doc.ingest.adapter.nfe;
 import br.com.doc.ingest.adapter.nfe.doczip.DocZipDecodificado;
 import br.com.doc.ingest.adapter.nfe.doczip.DocZipDecoder;
 import br.com.doc.ingest.adapter.nfe.mapping.CStatMapper;
+import br.com.doc.ingest.adapter.nfe.mapping.TradutorRespostaDistDfe;
 import br.com.doc.ingest.adapter.nfe.soap.ContratoDistDfe;
 import br.com.doc.ingest.adapter.nfe.soap.DocZip;
 import br.com.doc.ingest.adapter.nfe.soap.EnvelopeDistDfe;
@@ -56,7 +57,7 @@ public final class NfeNacionalAdapter implements SourceAdapter {
     private final BlobStore blobs;
     private final Clock relogio;
     private final FornecedorTransporte fornecedor;
-    private final CStatMapper mapper = new CStatMapper();
+    private final TradutorRespostaDistDfe tradutor = new TradutorRespostaDistDfe(new CStatMapper());
     private final DocZipDecoder decoder = new DocZipDecoder();
 
     private volatile TransporteSoap transporte;
@@ -102,13 +103,20 @@ public final class NfeNacionalAdapter implements SourceAdapter {
         BlobRef envelope = blobs.gravar(
                 ChavesBlobPull.envelope(fonte, ambiente, cnpj, agora, shaEnvelope), corpo, shaEnvelope);
 
-        if (!(LeitorRespostaDistDfe.ler(corpo) instanceof LeitorRespostaDistDfe.Valida valida)) {
+        LeitorRespostaDistDfe.Resultado leitura = LeitorRespostaDistDfe.ler(corpo);
+        if (!(leitura instanceof LeitorRespostaDistDfe.Valida valida)) {
             throw new IllegalStateException("resposta inválida ainda não suportada");
         }
         RetDistDfeInt ret = valida.retorno();
-        Desfecho desfecho = mapper.mapear(ret.getCStat());
+        Desfecho desfecho = tradutor.deLeitura(leitura);
+        if (desfecho instanceof Desfecho.Vazio) {
+            Nsu ultNsu = nsuDe(ret.getUltNSU());
+            return new BuscarLoteResultado(List.of(), CursorNsu.de(ultNsu), ultNsu, false, desfecho,
+                    Optional.of(envelope));
+        }
         if (!(desfecho instanceof Desfecho.Ok)) {
-            throw new IllegalStateException("desfecho ainda não suportado");
+            // inv. 1: só Ok/Vazio mudam o cursor; o ultNSU da resposta é ignorado
+            return new BuscarLoteResultado(List.of(), cursor, entrada, false, desfecho, Optional.of(envelope));
         }
 
         List<Documento> documentos = new ArrayList<>();
@@ -123,8 +131,8 @@ public final class NfeNacionalAdapter implements SourceAdapter {
                     Optional.of(ref.chave())));
         }
 
-        Nsu ultNsu = new Nsu(Long.parseLong(ret.getUltNSU().strip()));
-        Nsu maxNsu = new Nsu(Long.parseLong(ret.getMaxNSU().strip()));
+        Nsu ultNsu = nsuDe(ret.getUltNSU());
+        Nsu maxNsu = nsuDe(ret.getMaxNSU());
         return new BuscarLoteResultado(List.copyOf(documentos), CursorNsu.de(ultNsu), ultNsu,
                 ultNsu.ehMenorQue(maxNsu), desfecho, Optional.of(envelope));
     }
@@ -132,6 +140,10 @@ public final class NfeNacionalAdapter implements SourceAdapter {
     @Override
     public BuscarUmResultado buscarUm(FonteId fonte, Cnpj cnpj, Nsu nsu) {
         return new BuscarUmResultado(Optional.empty(), new Desfecho.IndisponivelDefinitivo("consNSU ainda não suportado"));
+    }
+
+    private static Nsu nsuDe(String valor) {
+        return new Nsu(Long.parseLong(valor.strip()));
     }
 
     /** Id determinístico: o mesmo NSU da mesma fonte/ambiente/CNPJ sempre dá o mesmo documento. */

@@ -425,3 +425,5 @@
 - 2026-10-29 08:31 · E2-S09: DESENVOLVER ok
 - 2026-10-29 08:32 · E2-S09: desfechos do consNSU (sem falha inicial: pipeline do passo anterior já cobria; suíte verde) · próximo: consChNFe por chave
 - 2026-10-29 08:32 · E2-S09: DESENVOLVER ok
+- 2026-10-29 08:33 · E2-S09: buscarPorChave (consChNFe) com chave pedida no Documento; falha inicial: assertThat(doc.chave()).contains(CHAVE) (chave vazia) · próximo: desfechos do consChNFe
+- 2026-10-29 08:33 · E2-S09: DESENVOLVER ok

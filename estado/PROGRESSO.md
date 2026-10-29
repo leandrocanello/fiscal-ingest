@@ -396,3 +396,5 @@
 - 2026-10-29 08:12 · E2-S08: PLANEJAR ok
 - 2026-10-29 08:14 · E2-S08: cursor do fake avança por NSU (falha vista: AssertionError em cursorNaoNumericoEhRejeitado e retomada...) · próximo: programarDesfecho
 - 2026-10-29 08:14 · E2-S08: DESENVOLVER ok
+- 2026-10-29 08:15 · E2-S08: fake.programarDesfecho (falhou: cannot find symbol programarDesfecho; suíte verde) · próximo: FakeSourceAdapterContratoTest + SourceAdapterContrato
+- 2026-10-29 08:15 · E2-S08: DESENVOLVER ok

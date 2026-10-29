@@ -117,3 +117,15 @@
 - **Opções:** (a) o fake passa a ter cursor de verdade: token = `ultNsu` decimal (`""` = 0, como na DA-14), devolve só NSU > cursor, `Vazio` mantém o cursor e o NSU de entrada, e ganha `programarDesfecho(cnpj, Desfecho)` (falha sem documentos e sem avançar); (b) a suíte de contrato pula os cenários que o fake não suporta.
 - **Escolha:** (a). O fake é o dublê do core nas Fases 3–4, então precisa obedecer à mesma regra de não-retrocesso. Os testes atuais do fake continuam válidos.
 - **Como desfazer:** reverter `FakeSourceAdapter.buscarLote` e remover `programarDesfecho` (+ testes).
+
+### DA-20 · 2026-10-29 · E2-S09
+- **Contexto:** a porta do domínio só tem `buscarUm(FonteId, Cnpj, Nsu)` (`ConsultaPontualPort`). A ARCHITECTURE §5.5 sugere `buscarUm(ctx, ReferenciaDocumento)`, mas o consChNFe ainda não tem nenhum chamador no core, e o domínio não tem tipo de chave de acesso.
+- **Opções:** (a) o consChNFe vira um método público do `NfeNacionalAdapter` (`buscarPorChave(ContextoConsulta, ChaveAcessoNfe)`), com o record `ChaveAcessoNfe` no adapter (só confere os 44 dígitos), e o domínio fica intocado; (b) já trocar a porta para `ReferenciaDocumento` (mexe no `RecuperarGapUseCase`, no fake e nos testes do domain).
+- **Escolha:** (a). É pequeno, não muda o domínio e deixa a porta para quando o core precisar dela (processor ou gap-recovery por chave).
+- **Como desfazer:** subir `ChaveAcessoNfe` para o domain e criar a porta; o `buscarPorChave` passa a implementar essa porta.
+
+### DA-21 · 2026-10-29 · E2-S09
+- **Contexto:** os docs não dizem o que fazer quando o consNSU ou o consChNFe responde `138` com 0 docZips, com mais de um docZip ou (no consNSU) com um docZip de NSU diferente do pedido.
+- **Opções:** tratar como `Ok` sem documento; `IndisponivelTemporario(5 min)`; `IndisponivelDefinitivo`.
+- **Escolha:** `IndisponivelTemporario(5 min)`, sem documento. É uma resposta inconsistente. O envelope já foi gravado, então nada se perde e dá para diagnosticar. Não vira `Ok`, para o gap não ser dado como recuperado.
+- **Como desfazer:** um `if` no `buscarUm`/`buscarPorChave` e os testes da DA-21.

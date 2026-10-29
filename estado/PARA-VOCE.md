@@ -76,3 +76,9 @@
 - **Opções:** (a) `Documento.blobRef` passa a ser `Optional<BlobRef>` (mexe no domain; subetapa própria); (b) fixar convenção "só a chave" e o `BlobStore.ler` aceitar só a chave; (c) deixar como está até a E3 (processor).
 - **Recomendação:** (a), antes da E3-S07; aí o gancho `lerBlob` some do contrato.
 - Resposta:
+
+### [DECISAO] E2-S09 — 2026-10-29 — cStat específicos do consChNFe (não bloqueia)
+- **O que é preciso:** a Tab. 5-29 do MOC 7.0 (p. 96) lista rejeições do consChNFe que hoje caem no fallback decidido (`IndisponivelTemporario(5 min)` + alerta): `217` NF-e inexistente, `236`/`614`–`619` chave inválida, `252` ambiente divergente, `593` raiz do CNPJ difere do certificado, `640` interessado sem permissão, `641` NF-e indisponível para o emitente, `653`/`654` cancelada/denegada. Se o scheduler retentar a cada 5 min, gasta o limite de ~20/h dos pontuais.
+- **Opções:** (a) `217`, `236`, `614`–`619`, `640`, `641`, `653`, `654` → `IndisponivelDefinitivo` (para aquela consulta, sem bloquear o CNPJ), `252`/`593` → `ErroAutenticacao`/`IndisponivelDefinitivo` (configuração); (b) manter o fallback e só alertar; (c) (a), mas confirmando antes os textos numa NT mais nova que o MOC de 2020.
+- **Recomendação:** (a), em uma subetapa curta depois da E2-S09 (uma linha por código no `CStatMapper`, com teste). A E2-S09 segue com o fallback.
+- Resposta:

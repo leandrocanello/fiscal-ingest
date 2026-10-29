@@ -402,3 +402,5 @@
 - 2026-10-29 08:16 · E2-S08: DESENVOLVER ok
 - 2026-10-29 08:17 · E2-S08: 5 casos no contrato (blob legível, retomada, vazio, falha, nulos) + gancho lerBlob (nfe grava só a chave no blobRef, fake grava chave@sha); já passaram de primeira no fake, sem falha prévia observável · próximo: buscarUmCoerenteComCapacidades
 - 2026-10-29 08:18 · E2-S08: DESENVOLVER ok
+- 2026-10-29 08:19 · E2-S08: buscarUmCoerenteComCapacidades no contrato (visto falhar trocando a asserção para Nsu(9); revertida); fake passou sem mudança · próximo: extrair RespostasDistDfeDeTeste
+- 2026-10-29 08:19 · E2-S08: DESENVOLVER ok

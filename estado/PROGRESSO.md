@@ -394,3 +394,5 @@
 - 2026-10-29 08:10 · E2-S07: PR aberto para revisão
 - 2026-10-29 08:12 · E2-S08: plano escrito (7 passos; suíte em testFixtures do adapter-fake, DA-18; fake com cursor real e desfecho programável, DA-19) · próximo: desenvolver passo 1
 - 2026-10-29 08:12 · E2-S08: PLANEJAR ok
+- 2026-10-29 08:14 · E2-S08: cursor do fake avança por NSU (falha vista: AssertionError em cursorNaoNumericoEhRejeitado e retomada...) · próximo: programarDesfecho
+- 2026-10-29 08:14 · E2-S08: DESENVOLVER ok

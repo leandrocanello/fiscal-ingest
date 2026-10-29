@@ -378,3 +378,6 @@
 - 2026-10-29 · E2-S07 passo 7: os 3 testes passaram de primeira (o adapter do passo 6 já grava envelope → docZips). Prova de sensibilidade por mutação temporária (envelope gravado depois do parse): `envelopeGravadoAntesDoParse FAILED · AssertionFailedError at NfeNacionalAdapterTest.java:219`; mutação revertida.
 - 2026-10-29 · E2-S07: passo 7 feito — testes de inv. 5/7 (ordem envelope→docZips com BlobStore espião, schema desconhecido guardado byte a byte, reconsulta idempotente); sem mudança no código de produção; suíte verde · próximo: cStat pelo WireMock (137/656/108/109/desconhecido) ligando `TradutorRespostaDistDfe`
 - 2026-10-29 08:01 · E2-S07: DESENVOLVER ok
+- 2026-10-29 · E2-S07 passo 8 (falha vista): 5 testes novos `FAILED` com `java.lang.IllegalStateException: desfecho ainda não suportado` (vazio137AvancaParaUltNsuSemDocumentos, limiteAtingidoNaoAvanca, paralisado108, paralisado109, cStatDesconhecido)
+- 2026-10-29 · E2-S07: passo 8 feito — adapter usa `TradutorRespostaDistDfe.deLeitura`; 137 → cursor = ultNSU sem docs; 656/108/109/desconhecido → cursor e ultNsu de entrada, envelope gravado; suíte verde (281 testes) · próximo: falhas pelo WireMock (timeout/500/403/malformado/docZip corrompido/ultNSU<cursor/BlobStore falhando)
+- 2026-10-29 08:03 · E2-S07: DESENVOLVER ok

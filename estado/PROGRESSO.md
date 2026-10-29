@@ -398,3 +398,5 @@
 - 2026-10-29 08:14 · E2-S08: DESENVOLVER ok
 - 2026-10-29 08:15 · E2-S08: fake.programarDesfecho (falhou: cannot find symbol programarDesfecho; suíte verde) · próximo: FakeSourceAdapterContratoTest + SourceAdapterContrato
 - 2026-10-29 08:15 · E2-S08: DESENVOLVER ok
+- 2026-10-29 08:16 · E2-S08: suíte abstrata SourceAdapterContrato (testFixtures) + FakeSourceAdapterContratoTest com 2 casos verdes; falha inicial = classe/plugin inexistentes (erro de compilação), sem asserção que falhe por comportamento · próximo: casos blob/retomada/vazio/falha
+- 2026-10-29 08:16 · E2-S08: DESENVOLVER ok

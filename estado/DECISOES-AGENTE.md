@@ -105,3 +105,15 @@
 - **Opções:** `modelo` "55" fixo × extraído do XML; desfecho não tratado → `IllegalStateException` × já ligar o tradutor.
 - **Escolha:** `modelo = "55"` (distribuição NF-e só entrega modelo 55; extração do XML fica para E3-S07); exceção explícita (nada avança) até os passos 8–9 ligarem o `TradutorRespostaDistDfe`, para os testes deles falharem antes.
 - **Como desfazer:** constante `MODELO_NFE` e os `throw` em `NfeNacionalAdapter.buscarLote`.
+
+### DA-18 · 2026-10-29 · E2-S08
+- **Contexto:** a §15 item 3 pede uma suíte abstrata de contrato do `SourceAdapter` rodando contra o fake e o `NfeNacionalAdapter`, mas não diz em que módulo ela fica. Ela precisa de JUnit e AssertJ, e o domain é puro (só JDK, ArchUnit).
+- **Opções:** (a) `java-test-fixtures` no `adapter-fake` (`src/testFixtures`), consumida com `testImplementation(testFixtures(project(":adapter-fake")))`; (b) `java-test-fixtures` no domain; (c) módulo novo `adapter-contrato`.
+- **Escolha:** (a). Segue a DA-4 (os fakes de teste moram no `adapter-fake`), não toca o domain e não cria módulo novo.
+- **Como desfazer:** mover `SourceAdapterContrato` para o módulo escolhido e trocar a dependência de teste nos dois adapters.
+
+### DA-19 · 2026-10-29 · E2-S08
+- **Contexto:** o `FakeSourceAdapter` devolve o cursor de entrada mesmo com `Ok` (relê sempre os mesmos documentos), devolve `ultNsu = 0` quando vazio e não tem como simular falha. Assim ele não passaria num contrato que valha também para o adapter real.
+- **Opções:** (a) o fake passa a ter cursor de verdade: token = `ultNsu` decimal (`""` = 0, como na DA-14), devolve só NSU > cursor, `Vazio` mantém o cursor e o NSU de entrada, e ganha `programarDesfecho(cnpj, Desfecho)` (falha sem documentos e sem avançar); (b) a suíte de contrato pula os cenários que o fake não suporta.
+- **Escolha:** (a). O fake é o dublê do core nas Fases 3–4, então precisa obedecer à mesma regra de não-retrocesso. Os testes atuais do fake continuam válidos.
+- **Como desfazer:** reverter `FakeSourceAdapter.buscarLote` e remover `programarDesfecho` (+ testes).

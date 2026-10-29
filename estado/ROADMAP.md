@@ -26,7 +26,7 @@
 - [x] E2-S05 | AUTO     | deps: E1-S01 | decode de docZip (base64+gzip) + classificador de schema + extração de metadados
 - [x] E2-S06 | AUTO     | deps: E2-S05 | interface de transporte SOAP + montagem do envelope distDFeInt
 - [r] E2-S07 | AUTO+    | deps: E2-S04,E2-S06,E2-S03 | buscarLote com WireMock (137/138/656/108/109/timeout/5xx/malformado)
-- [ ] E2-S08 | AUTO     | deps: E2-S07 | suíte de contrato do SourceAdapter (fake + nfe-nacional)
+- [~] E2-S08 | AUTO     | deps: E2-S07 | suíte de contrato do SourceAdapter (fake + nfe-nacional)
 - [ ] E2-S09 | AUTO     | deps: E2-S07 | buscarUm (consNSU) + consChNFe
 - [x] E2-S10 | AUTO+    | deps: E1-S01 | Credencial = bytes do .pfx + senha; carregador (inclui legado) + SSLContext por certificado + cache
 - [r] E2-S11 | AUTO+    | deps: E2-S10,E2-S01 | manifestar: evento 210210 + XML-DSig (com chave de teste gerada no teste)

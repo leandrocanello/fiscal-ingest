@@ -392,3 +392,5 @@
 - 2026-10-29 08:10 · E2-S07: revisão — APROVAR PARA PR (invariantes 1/3/4/5/7/13/14 com teste; 4 achados de qualidade não bloqueantes) · próximo: autor revisa o PR
 - 2026-10-29 08:10 · E2-S07: REVISAR ok
 - 2026-10-29 08:10 · E2-S07: PR aberto para revisão
+- 2026-10-29 08:12 · E2-S08: plano escrito (7 passos; suíte em testFixtures do adapter-fake, DA-18; fake com cursor real e desfecho programável, DA-19) · próximo: desenvolver passo 1
+- 2026-10-29 08:12 · E2-S08: PLANEJAR ok

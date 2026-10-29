@@ -495,19 +495,46 @@ class NfeNacionalAdapterTest {
     }
 
     @Test
-    @DisplayName("descritor: só lote suportado")
-    void descritorSoComLote() {
+    @DisplayName("descritor: lote e pontual suportados")
+    void descritorComLoteEPontual() {
         assertThat(adapter.descritor().fonteId()).isEqualTo(FONTE);
-        assertThat(adapter.descritor().capacidades()).isEqualTo(new Capacidades(true, false, false, false));
+        assertThat(adapter.descritor().capacidades()).isEqualTo(new Capacidades(true, true, false, false));
     }
 
     @Test
-    @DisplayName("buscarUm: consNSU ainda não suportado (E2-S09)")
-    void buscarUmAindaNaoSuportado() {
-        BuscarUmResultado r = adapter.buscarUm(FONTE, CNPJ, new Nsu(1));
+    @DisplayName("buscarUm 138: devolve o documento do NSU, blob com a chave do lote e consNSU sem distNSU")
+    void buscarUm138DevolveODocumentoDoNsu() {
+        responder(resposta("138", 42, 42, docZip(42, "procNFe_v4.00.xsd", XML_PROC)));
 
-        assertThat(r).isEqualTo(new BuscarUmResultado(Optional.empty(),
-                new Desfecho.IndisponivelDefinitivo("consNSU ainda não suportado")));
-        assertThat(servidor.getAllServeEvents()).isEmpty();
+        BuscarUmResultado r = adapter.buscarUm(FONTE, CNPJ, new Nsu(42));
+
+        assertThat(r.desfecho()).isEqualTo(new Desfecho.Ok());
+        Documento doc = r.documento().orElseThrow();
+        assertThat(doc.nsu()).isEqualTo(new Nsu(42));
+        assertThat(doc.tipoConteudo()).isEqualTo("PROC_NFE");
+        assertThat(doc.id()).isEqualTo(idEsperado(42));
+        String sha = Sha256.hex(XML_PROC.getBytes(StandardCharsets.UTF_8));
+        String chave = ChavesBlobPull.documento(FONTE, TipoAmbiente.PRODUCAO, CNPJ, new Nsu(42), sha);
+        assertThat(doc.blobRef()).contains(chave);
+        assertThat(blobs.ler(new BlobRef(chave, sha))).contains(XML_PROC.getBytes(StandardCharsets.UTF_8));
+
+        var requisicoes = servidor.findAll(com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor(urlEqualTo(CAMINHO)));
+        assertThat(requisicoes).hasSize(1);
+        String corpo = requisicoes.get(0).getBodyAsString();
+        assertThat(corpo).contains("<consNSU><NSU>000000000000042</NSU></consNSU>")
+                .doesNotContain("distNSU").doesNotContain("ultNSU");
+    }
+
+    @Test
+    @DisplayName("buscarUm usa a mesma chave de blob do buscarLote (inv. 7)")
+    void buscarUmUsaAMesmaChaveDoLote() {
+        responder(resposta("138", 42, 42, docZip(42, "procNFe_v4.00.xsd", XML_PROC)));
+
+        BuscarLoteResultado lote = adapter.buscarLote(new ContextoConsulta(FONTE, CNPJ), new Cursor("41"));
+        BuscarUmResultado um = adapter.buscarUm(FONTE, CNPJ, new Nsu(42));
+
+        assertThat(um.desfecho()).isEqualTo(new Desfecho.Ok());
+        assertThat(um.documento().orElseThrow().blobRef()).isEqualTo(lote.documentos().get(0).blobRef());
+        assertThat(um.documento().orElseThrow().id()).isEqualTo(lote.documentos().get(0).id());
     }
 }

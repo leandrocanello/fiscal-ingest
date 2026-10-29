@@ -78,7 +78,7 @@ public final class NfeNacionalAdapter implements SourceAdapter {
 
     @Override
     public AdapterDescriptor descritor() {
-        return new AdapterDescriptor(fonte, new Capacidades(true, false, false, false));
+        return new AdapterDescriptor(fonte, new Capacidades(true, true, false, false));
     }
 
     /** Guarda só o transporte (com o SSLContext); a {@link Credencial} não fica retida no adapter. */
@@ -179,7 +179,10 @@ public final class NfeNacionalAdapter implements SourceAdapter {
 
     /** Decodifica o docZip e grava o XML (chave com sha256, inv. 7); devolve só metadado + chave do blob. */
     private Documento gravarDocZip(Cnpj cnpj, DocZip docZip, Instant agora) {
-        DocZipDecodificado decodificado = decoder.decodificar(docZip);
+        return gravarDecodificado(cnpj, decoder.decodificar(docZip), agora);
+    }
+
+    private Documento gravarDecodificado(Cnpj cnpj, DocZipDecodificado decodificado, Instant agora) {
         String sha = Sha256.hex(decodificado.xml());
         BlobRef ref = blobs.gravar(ChavesBlobPull.documento(fonte, ambiente, cnpj, decodificado.nsu(), sha),
                 decodificado.xml(), sha);
@@ -194,9 +197,46 @@ public final class NfeNacionalAdapter implements SourceAdapter {
         return new BuscarLoteResultado(List.of(), cursor, entrada, false, desfecho, envelope);
     }
 
+    /** consNSU (gap-fill): não recebe nem devolve cursor, então não mexe no estado do lote (inv. 1). */
     @Override
-    public BuscarUmResultado buscarUm(FonteId fonte, Cnpj cnpj, Nsu nsu) {
-        return new BuscarUmResultado(Optional.empty(), new Desfecho.IndisponivelDefinitivo("consNSU ainda não suportado"));
+    public BuscarUmResultado buscarUm(FonteId fonteConsultada, Cnpj cnpj, Nsu nsu) {
+        if (!this.fonte.equals(fonteConsultada)) {
+            throw new IllegalArgumentException("fonte diferente da deste adapter");
+        }
+        return consultarPontual(cnpj, EnvelopeDistDfe.soap12ConsNsu(ambiente, cnpj, nsu), Optional.of(nsu));
+    }
+
+    /** consChNFe: devolve o documento da chave pedida (fora da porta do domínio, DA-20). */
+    public BuscarUmResultado buscarPorChave(ContextoConsulta contexto, ChaveAcessoNfe chave) {
+        Objects.requireNonNull(chave, "chave");
+        Cnpj cnpj = contexto.cnpj();
+        return consultarPontual(cnpj, EnvelopeDistDfe.soap12ConsChNFe(ambiente, cnpj, chave.valor()), Optional.empty());
+    }
+
+    private BuscarUmResultado consultarPontual(Cnpj cnpj, byte[] envelopeSoap, Optional<Nsu> nsuPedido) {
+        TransporteSoap atual = transporte;
+        if (atual == null) {
+            return new BuscarUmResultado(Optional.empty(), SEM_CREDENCIAL);
+        }
+        Instant agora = relogio.instant();
+        Consulta consulta = consultar(atual, cnpj, agora, envelopeSoap);
+        if (consulta.retorno().isEmpty() || consulta.desfecho() instanceof Desfecho.Vazio) {
+            return new BuscarUmResultado(Optional.empty(), consulta.desfecho());
+        }
+        // DA-21: um pontual 138 traz exatamente 1 docZip (e, no consNSU, do NSU pedido)
+        List<DocZip> docZips = consulta.retorno().get().getDocumentos();
+        if (docZips == null || docZips.size() != 1) {
+            return new BuscarUmResultado(Optional.empty(), TEMPORARIO);
+        }
+        try {
+            DocZipDecodificado decodificado = decoder.decodificar(docZips.get(0));
+            if (nsuPedido.isPresent() && !nsuPedido.get().equals(decodificado.nsu())) {
+                return new BuscarUmResultado(Optional.empty(), TEMPORARIO);
+            }
+            return new BuscarUmResultado(Optional.of(gravarDecodificado(cnpj, decodificado, agora)), consulta.desfecho());
+        } catch (RuntimeException e) {
+            return new BuscarUmResultado(Optional.empty(), TEMPORARIO);
+        }
     }
 
     private static Nsu nsuDe(String valor) {

@@ -1,12 +1,14 @@
 package br.com.doc.ingest.adapter.contrato;
 
 import br.com.doc.ingest.domain.adapter.BuscarLoteResultado;
+import br.com.doc.ingest.domain.adapter.BuscarUmResultado;
 import br.com.doc.ingest.domain.adapter.ContextoConsulta;
 import br.com.doc.ingest.domain.adapter.Cursor;
 import br.com.doc.ingest.domain.adapter.Desfecho;
 import br.com.doc.ingest.domain.adapter.SourceAdapter;
 import br.com.doc.ingest.domain.blob.BlobStore;
 import br.com.doc.ingest.domain.model.Documento;
+import br.com.doc.ingest.domain.model.Nsu;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -118,6 +120,26 @@ public abstract class SourceAdapterContrato {
         assertThat(r.documentos()).isEmpty();
         assertThat(r.proximoCursor()).isEqualTo(entrada);
         assertThat(r.temMais()).isFalse();
+    }
+
+    @Test
+    @DisplayName("buscarUm é coerente com as capacidades declaradas")
+    void buscarUmCoerenteComCapacidades() {
+        prepararLote(3);
+        Nsu pedido = new Nsu(2);
+
+        BuscarUmResultado r = adapter().buscarUm(contexto().fonte(), contexto().cnpj(), pedido);
+
+        assertThat(r.documento()).isNotNull();
+        assertThat(r.desfecho()).isNotNull();
+        if (!adapter().descritor().capacidades().fazPontual()) {
+            assertThat(r.documento()).isEmpty();
+            assertThat(r.desfecho()).isInstanceOf(Desfecho.IndisponivelDefinitivo.class);
+        } else if (r.documento().isPresent()) {
+            assertThat(r.documento().get().nsu()).isEqualTo(pedido);
+        } else {
+            assertThat(r.desfecho()).isNotInstanceOf(Desfecho.Ok.class);
+        }
     }
 
     @Test

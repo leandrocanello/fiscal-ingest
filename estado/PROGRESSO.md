@@ -433,3 +433,6 @@
 - 2026-10-29 08:36 · E2-S09: DESENVOLVER ok
 - 2026-10-29 · E2-S09: verificação: propriedade do buscarUm adicionada; caos/invariantes já cobertos; suíte verde · próximo: revisão (contrato S08 a conferir no merge)
 - 2026-10-29 08:37 · E2-S09: VERIFICAR ok
+- 2026-10-29 08:38 · E2-S09: REVISAR ok — APROVAR PARA PR (4 achados menores, nenhum nas invariantes); PR em planos/E2-S09-pr.md · próximo: abrir PR; conferir contrato S08 no merge
+- 2026-10-29 08:39 · E2-S09: REVISAR ok
+- 2026-10-29 08:39 · E2-S09: PR aberto para revisão

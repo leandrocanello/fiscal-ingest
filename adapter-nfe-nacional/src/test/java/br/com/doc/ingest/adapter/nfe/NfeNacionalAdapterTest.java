@@ -16,6 +16,7 @@ import br.com.doc.ingest.domain.adapter.Credencial;
 import br.com.doc.ingest.domain.adapter.Cursor;
 import br.com.doc.ingest.domain.adapter.Desfecho;
 import br.com.doc.ingest.domain.blob.BlobRef;
+import br.com.doc.ingest.domain.blob.BlobStore;
 import br.com.doc.ingest.domain.blob.Sha256;
 import br.com.doc.ingest.domain.model.Cnpj;
 import br.com.doc.ingest.domain.model.Documento;
@@ -32,8 +33,10 @@ import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.ZoneOffset;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.zip.GZIPOutputStream;
 import org.junit.jupiter.api.AfterEach;
@@ -64,11 +67,37 @@ class NfeNacionalAdapterTest {
         servidor = new WireMockServer(options().dynamicPort());
         servidor.start();
         blobs = new BlobStoreEmMemoria();
+        adapter = adapterCom(blobs);
+    }
+
+    private NfeNacionalAdapter adapterCom(BlobStore store) {
         URI endpoint = URI.create("http://localhost:" + servidor.port() + CAMINHO);
-        adapter = new NfeNacionalAdapter(FONTE, TipoAmbiente.PRODUCAO, endpoint, blobs,
+        NfeNacionalAdapter novo = new NfeNacionalAdapter(FONTE, TipoAmbiente.PRODUCAO, endpoint, store,
                 Clock.fixed(AGORA, ZoneOffset.UTC),
                 credencial -> new TransporteHttpJdk(HttpClient.newHttpClient(), Duration.ofSeconds(5), 1024 * 1024));
-        adapter.autenticar(new Credencial(new byte[] {1}, new char[0]));
+        novo.autenticar(new Credencial(new byte[] {1}, new char[0]));
+        return novo;
+    }
+
+    /** BlobStore espião: registra a ordem das chaves gravadas e delega ao store em memória. */
+    private static final class BlobStoreEspiao implements BlobStore {
+        private final BlobStore alvo;
+        private final List<String> chavesGravadas = new ArrayList<>();
+
+        BlobStoreEspiao(BlobStore alvo) {
+            this.alvo = alvo;
+        }
+
+        @Override
+        public BlobRef gravar(String chave, byte[] conteudo, String sha256) {
+            chavesGravadas.add(chave);
+            return alvo.gravar(chave, conteudo, sha256);
+        }
+
+        @Override
+        public Optional<byte[]> ler(BlobRef ref) {
+            return alvo.ler(ref);
+        }
     }
 
     @AfterEach
@@ -172,5 +201,58 @@ class NfeNacionalAdapterTest {
         assertThat(r.ultNsu()).isEqualTo(new Nsu(2));
         assertThat(r.proximoCursor()).isEqualTo(new Cursor("2"));
         assertThat(r.documentos()).hasSize(2);
+    }
+
+    @Test
+    @DisplayName("inv. 5: o envelope bruto é gravado antes de qualquer docZip")
+    void envelopeGravadoAntesDoParse() {
+        String corpo = resposta("138", 2, 2,
+                docZip(1, "resNFe_v1.01.xsd", XML_RES) + docZip(2, "procNFe_v4.00.xsd", XML_PROC));
+        responder(corpo);
+        BlobStoreEspiao espiao = new BlobStoreEspiao(blobs);
+
+        BuscarLoteResultado r = adapterCom(espiao).buscarLote(new ContextoConsulta(FONTE, CNPJ), Cursor.inicial());
+
+        String chaveEnvelope = r.envelope().orElseThrow().chave();
+        List<String> chavesDocs = r.documentos().stream().map(d -> d.blobRef().orElseThrow()).toList();
+        assertThat(espiao.chavesGravadas).hasSize(3);
+        assertThat(espiao.chavesGravadas.get(0)).isEqualTo(chaveEnvelope).endsWith(".envelope.xml");
+        assertThat(espiao.chavesGravadas.subList(1, 3)).containsExactlyElementsOf(chavesDocs);
+    }
+
+    @Test
+    @DisplayName("schema desconhecido: documento DESCONHECIDO guardado byte a byte")
+    void docZipDesconhecidoGuardadoByteAByte() {
+        String xmlDesconhecido = "<xyzNFe xmlns=\"" + NFE_NS + "\"><campo>\u00e7\u00e3o sintética</campo></xyzNFe>";
+        responder(resposta("138", 7, 7, docZip(7, "xyzNFe_v9.99.xsd", xmlDesconhecido)));
+
+        BuscarLoteResultado r = adapter.buscarLote(new ContextoConsulta(FONTE, CNPJ), Cursor.inicial());
+
+        assertThat(r.documentos()).singleElement().satisfies(d -> {
+            assertThat(d.tipoConteudo()).isEqualTo("DESCONHECIDO");
+            assertThat(d.nsu()).isEqualTo(new Nsu(7));
+            byte[] esperado = xmlDesconhecido.getBytes(StandardCharsets.UTF_8);
+            String sha = Sha256.hex(esperado);
+            assertThat(d.blobRef()).contains(
+                    ChavesBlobPull.documento(FONTE, TipoAmbiente.PRODUCAO, CNPJ, new Nsu(7), sha));
+            assertThat(blobs.ler(new BlobRef(d.blobRef().orElseThrow(), sha)))
+                    .hasValueSatisfying(b -> assertThat(b).isEqualTo(esperado));
+        });
+    }
+
+    @Test
+    @DisplayName("inv. 7: reconsultar o mesmo lote dá as mesmas chaves, sem conflito de blob")
+    void reconsultaMesmoLoteEhIdempotente() {
+        responder(resposta("138", 3, 3,
+                docZip(1, "resNFe_v1.01.xsd", XML_RES)
+                        + docZip(2, "procNFe_v4.00.xsd", XML_PROC)
+                        + docZip(3, "procEventoNFe_v1.00.xsd", XML_EVT)));
+        ContextoConsulta ctx = new ContextoConsulta(FONTE, CNPJ);
+
+        BuscarLoteResultado primeira = adapter.buscarLote(ctx, Cursor.inicial());
+        BuscarLoteResultado segunda = adapter.buscarLote(ctx, Cursor.inicial());
+
+        assertThat(segunda.envelope()).isEqualTo(primeira.envelope());
+        assertThat(segunda.documentos()).isEqualTo(primeira.documentos());
     }
 }

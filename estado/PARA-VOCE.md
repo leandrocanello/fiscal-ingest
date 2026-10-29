@@ -4,24 +4,6 @@
 > abaixo de cada item, em "Resposta:". Depois ajuste o status no ROADMAP (ex.: `[h]` → `[x]`).
 > Itens resolvidos podem ser movidos para o fim, em "Resolvidos".
 
-### [DUVIDA] E2-S07 — 2026-10-28 — prefixo de tenant nas chaves `raw/pull/`
-- **O que é preciso:** a §8.1 põe `{tenant}` em `raw/pull/...`, mas a coleta é por `(fonte, cnpj_consultado, ambiente)` e o adapter não conhece tenant (DA-13). Um mesmo CNPJ consultado pode servir mais de um tenant?
-- **Opções:** (a) pull sem tenant (`raw/pull/{fonte}/{ambiente}/{cnpj}/...`), tenant só a partir do catálogo (`doc/{tenant}/...`); (b) levar tenant ao `ContextoConsulta` e ao estado de coleta.
-- **Recomendação:** (a) agora (já aplicado na E2-S07, fácil de mudar) e ajustar a §8.1 num PR `docs/`.
-- Resposta:
-
-### [DUVIDA] E2-S08 — 2026-10-29 — formato de `Documento.blobRef` difere entre adapters
-- **O que é preciso:** `Documento.blobRef` é `Optional<String>`. O fake grava `chave@sha256`; o `NfeNacionalAdapter` grava só a chave (sha no nome do arquivo). A suíte de contrato contorna com o gancho `lerBlob` por subclasse, mas o core/processor não saberá montar o `BlobRef` de forma uniforme.
-- **Opções:** (a) `Documento.blobRef` passa a ser `Optional<BlobRef>` (mexe no domain; subetapa própria); (b) fixar convenção "só a chave" e o `BlobStore.ler` aceitar só a chave; (c) deixar como está até a E3 (processor).
-- **Recomendação:** (a), antes da E3-S07; aí o gancho `lerBlob` some do contrato.
-- Resposta:
-
-### [DECISAO] E2-S09 — 2026-10-29 — cStat específicos do consChNFe (não bloqueia)
-- **O que é preciso:** a Tab. 5-29 do MOC 7.0 (p. 96) lista rejeições do consChNFe que hoje caem no fallback decidido (`IndisponivelTemporario(5 min)` + alerta): `217` NF-e inexistente, `236`/`614`–`619` chave inválida, `252` ambiente divergente, `593` raiz do CNPJ difere do certificado, `640` interessado sem permissão, `641` NF-e indisponível para o emitente, `653`/`654` cancelada/denegada. Se o scheduler retentar a cada 5 min, gasta o limite de ~20/h dos pontuais.
-- **Opções:** (a) `217`, `236`, `614`–`619`, `640`, `641`, `653`, `654` → `IndisponivelDefinitivo` (para aquela consulta, sem bloquear o CNPJ), `252`/`593` → `ErroAutenticacao`/`IndisponivelDefinitivo` (configuração); (b) manter o fallback e só alertar; (c) (a), mas confirmando antes os textos numa NT mais nova que o MOC de 2020.
-- **Recomendação:** (a), em uma subetapa curta depois da E2-S09 (uma linha por código no `CStatMapper`, com teste). A E2-S09 segue com o fallback.
-- Resposta:
-
 ## Resolvidos
 
 - **E1-S01 / E1-S02** — PRs #1 e #2 mergeados pelo autor em 2026-10-21 (testes verdes no PC dele).
@@ -82,3 +64,21 @@
 - **Opções:** (a) recuperar o extrator numa subetapa curta (cherry-pick revisado) antes da E3-S07; (b) deixar o processor (E3-S07) extrair os metadados.
 - **Recomendação:** (a). Não bloqueia a E2-S07: lá o `Documento.chave` fica vazio e a chave é extraída depois.
 - Resposta (2026-10-29, Claude/autor): confirmado — 6 commits da E2-S05 nunca chegaram à `main` (PR #13 mergeado antes deles), e o mesmo aconteceu com E2-S08/E2-S09 (PRs #25/#26 entraram em `auto/E2-S07`). Tudo recuperado na branch `auto/E2-S14`; a subetapa E2-S14 só verifica e abre o PR.
+
+### [DUVIDA] E2-S07 — 2026-10-28 — prefixo de tenant nas chaves `raw/pull/`
+- **O que é preciso:** a §8.1 põe `{tenant}` em `raw/pull/...`, mas a coleta é por `(fonte, cnpj_consultado, ambiente)` e o adapter não conhece tenant (DA-13). Um mesmo CNPJ consultado pode servir mais de um tenant?
+- **Opções:** (a) pull sem tenant (`raw/pull/{fonte}/{ambiente}/{cnpj}/...`), tenant só a partir do catálogo (`doc/{tenant}/...`); (b) levar tenant ao `ContextoConsulta` e ao estado de coleta.
+- **Recomendação:** (a) agora (já aplicado na E2-S07, fácil de mudar) e ajustar a §8.1 num PR `docs/`.
+- Resposta (2026-10-29, autor): (a) — bruto da coleta sem tenant (`raw/pull/{fonte}/{ambiente}/{cnpj}/...`), tenant só no catálogo. CLAUDE.md §8.1 corrigido no PR #28.
+
+### [DUVIDA] E2-S08 — 2026-10-29 — formato de `Documento.blobRef` difere entre adapters
+- **O que é preciso:** `Documento.blobRef` é `Optional<String>`. O fake grava `chave@sha256`; o `NfeNacionalAdapter` grava só a chave (sha no nome do arquivo). A suíte de contrato contorna com o gancho `lerBlob` por subclasse, mas o core/processor não saberá montar o `BlobRef` de forma uniforme.
+- **Opções:** (a) `Documento.blobRef` passa a ser `Optional<BlobRef>` (mexe no domain; subetapa própria); (b) fixar convenção "só a chave" e o `BlobStore.ler` aceitar só a chave; (c) deixar como está até a E3 (processor).
+- **Recomendação:** (a), antes da E3-S07; aí o gancho `lerBlob` some do contrato.
+- Resposta (2026-10-29, autor): (a) — `Documento.blobRef` vira `Optional<BlobRef>`; subetapa E2-S15 (antes da E3-S07), e o gancho `lerBlob` sai do contrato.
+
+### [DECISAO] E2-S09 — 2026-10-29 — cStat específicos do consChNFe (não bloqueia)
+- **O que é preciso:** a Tab. 5-29 do MOC 7.0 (p. 96) lista rejeições do consChNFe que hoje caem no fallback decidido (`IndisponivelTemporario(5 min)` + alerta): `217` NF-e inexistente, `236`/`614`–`619` chave inválida, `252` ambiente divergente, `593` raiz do CNPJ difere do certificado, `640` interessado sem permissão, `641` NF-e indisponível para o emitente, `653`/`654` cancelada/denegada. Se o scheduler retentar a cada 5 min, gasta o limite de ~20/h dos pontuais.
+- **Opções:** (a) `217`, `236`, `614`–`619`, `640`, `641`, `653`, `654` → `IndisponivelDefinitivo` (para aquela consulta, sem bloquear o CNPJ), `252`/`593` → `ErroAutenticacao`/`IndisponivelDefinitivo` (configuração); (b) manter o fallback e só alertar; (c) (a), mas confirmando antes os textos numa NT mais nova que o MOC de 2020.
+- **Recomendação:** (a), em uma subetapa curta depois da E2-S09 (uma linha por código no `CStatMapper`, com teste). A E2-S09 segue com o fallback.
+- Resposta (2026-10-29, autor): (a) — `217`, `236`, `614`–`619`, `640`, `641`, `653`, `654` → `IndisponivelDefinitivo` daquela consulta (sem bloquear o CNPJ); `593` (raiz do CNPJ ≠ certificado) → `ErroAutenticacao`; `252` (ambiente divergente) → `IndisponivelDefinitivo` (configuração). Fonte: MOC 7.0 Tab. 5-29, p. 96. Subetapa E2-S16.

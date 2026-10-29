@@ -410,3 +410,6 @@
 - 2026-10-29 08:22 · E2-S08: DESENVOLVER ok
 - 2026-10-29 08:22 · E2-S08 (verificar): contrato rodou idêntico nos 2 adapters (8/8 verdes cada), inv. 4 por grep, domain intocado, ArchUnit verde, suíte inteira verde; sem código novo · próximo: revisão
 - 2026-10-29 08:22 · E2-S08: VERIFICAR ok
+- 2026-10-29 08:23 · E2-S08: REVISAR — APROVAR PARA PR (8/8 contrato nos 2 adapters; achado blobRef divergente → PARA-VOCE) · próximo: PR pelo script
+- 2026-10-29 08:24 · E2-S08: REVISAR ok
+- 2026-10-29 08:24 · E2-S08: PR aberto para revisão

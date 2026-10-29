@@ -70,3 +70,9 @@
 - **Opções:** (a) pull sem tenant (`raw/pull/{fonte}/{ambiente}/{cnpj}/...`), tenant só a partir do catálogo (`doc/{tenant}/...`); (b) levar tenant ao `ContextoConsulta` e ao estado de coleta.
 - **Recomendação:** (a) agora (já aplicado na E2-S07, fácil de mudar) e ajustar a §8.1 num PR `docs/`.
 - Resposta:
+
+### [DUVIDA] E2-S08 — 2026-10-29 — formato de `Documento.blobRef` difere entre adapters
+- **O que é preciso:** `Documento.blobRef` é `Optional<String>`. O fake grava `chave@sha256`; o `NfeNacionalAdapter` grava só a chave (sha no nome do arquivo). A suíte de contrato contorna com o gancho `lerBlob` por subclasse, mas o core/processor não saberá montar o `BlobRef` de forma uniforme.
+- **Opções:** (a) `Documento.blobRef` passa a ser `Optional<BlobRef>` (mexe no domain; subetapa própria); (b) fixar convenção "só a chave" e o `BlobStore.ler` aceitar só a chave; (c) deixar como está até a E3 (processor).
+- **Recomendação:** (a), antes da E3-S07; aí o gancho `lerBlob` some do contrato.
+- Resposta:

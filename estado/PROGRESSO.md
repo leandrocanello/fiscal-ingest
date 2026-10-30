@@ -560,3 +560,6 @@
 - 2026-10-30 13:38 · E3-S04: DESENVOLVER ok
 - 2026-10-30 14:00 · E3-S04: VERIFICAR ok — suíte inteira verde (nenhum teste ignorado), caos/integração/invariantes conferidos, sem alteração de código · próximo: revisão
 - 2026-10-30 13:39 · E3-S04: VERIFICAR ok
+- 2026-10-30 14:10 · E3-S04: REVISAR devolver — relay sem isolamento de mensagem venenosa (trava todas as chaves; §6.5) e teste do plano trocado · próximo: dev corrige 2 passos "Corrigir:"
+- 2026-10-30 13:40 · E3-S04: REVISAR ok
+- 2026-10-30 13:40 · E3-S04: revisor devolveu para correção

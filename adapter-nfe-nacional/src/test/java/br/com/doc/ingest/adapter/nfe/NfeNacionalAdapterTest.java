@@ -82,10 +82,12 @@ class NfeNacionalAdapterTest {
         return novo;
     }
 
-    /** BlobStore espião: registra a ordem das chaves gravadas e delega ao store em memória. */
+    /** BlobStore espião: registra a ordem das chaves gravadas, os refs devolvidos e delega ao store em memória. */
     private static final class BlobStoreEspiao implements BlobStore {
         private final BlobStore alvo;
         private final List<String> chavesGravadas = new ArrayList<>();
+        private final List<BlobRef> refsDevolvidos = new ArrayList<>();
+        private final List<byte[]> conteudosGravados = new ArrayList<>();
 
         BlobStoreEspiao(BlobStore alvo) {
             this.alvo = alvo;
@@ -94,7 +96,10 @@ class NfeNacionalAdapterTest {
         @Override
         public BlobRef gravar(String chave, byte[] conteudo, String sha256) {
             chavesGravadas.add(chave);
-            return alvo.gravar(chave, conteudo, sha256);
+            BlobRef ref = alvo.gravar(chave, conteudo, sha256);
+            refsDevolvidos.add(ref);
+            conteudosGravados.add(conteudo.clone());
+            return ref;
         }
 
         @Override
@@ -150,7 +155,7 @@ class NfeNacionalAdapterTest {
             byte[] esperado = xmls[i].getBytes(StandardCharsets.UTF_8);
             String sha = Sha256.hex(esperado);
             String chave = ChavesBlobPull.documento(FONTE, TipoAmbiente.PRODUCAO, CNPJ, new Nsu(i + 1), sha);
-            assertThat(docs.get(i).blobRef()).contains(chave);
+            assertThat(docs.get(i).blobRef()).contains(new BlobRef(chave, sha));
             assertThat(blobs.ler(new BlobRef(chave, sha))).hasValueSatisfying(b -> assertThat(b).isEqualTo(esperado));
         }
 
@@ -188,10 +193,33 @@ class NfeNacionalAdapterTest {
         BuscarLoteResultado r = adapterCom(espiao).buscarLote(new ContextoConsulta(FONTE, CNPJ), Cursor.inicial());
 
         String chaveEnvelope = r.envelope().orElseThrow().chave();
-        List<String> chavesDocs = r.documentos().stream().map(d -> d.blobRef().orElseThrow()).toList();
+        List<String> chavesDocs = r.documentos().stream().map(d -> d.blobRef().orElseThrow().chave()).toList();
         assertThat(espiao.chavesGravadas).hasSize(3);
         assertThat(espiao.chavesGravadas.get(0)).isEqualTo(chaveEnvelope).endsWith(".envelope.xml");
         assertThat(espiao.chavesGravadas.subList(1, 3)).containsExactlyElementsOf(chavesDocs);
+    }
+
+    @Test
+    @DisplayName("inv. 7: o blobRef de cada documento é o mesmo BlobRef devolvido pelo BlobStore.gravar")
+    void blobRefDoDocumentoEhOMesmoDevolvidoPeloBlobStore() {
+        String[] xmls = {XML_RES, XML_PROC, XML_EVT};
+        responder(resposta("138", 3, 3,
+                docZip(1, "resNFe_v1.01.xsd", xmls[0])
+                        + docZip(2, "procNFe_v4.00.xsd", xmls[1])
+                        + docZip(3, "procEventoNFe_v1.00.xsd", xmls[2])));
+        BlobStoreEspiao espiao = new BlobStoreEspiao(blobs);
+
+        BuscarLoteResultado r = adapterCom(espiao).buscarLote(new ContextoConsulta(FONTE, CNPJ), Cursor.inicial());
+
+        assertThat(r.documentos()).hasSize(3);
+        assertThat(espiao.refsDevolvidos).hasSize(4);
+        for (int i = 0; i < 3; i++) {
+            BlobRef devolvido = espiao.refsDevolvidos.get(i + 1);
+            byte[] descompactado = xmls[i].getBytes(StandardCharsets.UTF_8);
+            assertThat(r.documentos().get(i).blobRef()).contains(devolvido);
+            assertThat(espiao.conteudosGravados.get(i + 1)).isEqualTo(descompactado);
+            assertThat(devolvido.sha256()).isEqualTo(Sha256.hex(descompactado));
+        }
     }
 
     @Test
@@ -207,9 +235,9 @@ class NfeNacionalAdapterTest {
             assertThat(d.nsu()).isEqualTo(new Nsu(7));
             byte[] esperado = xmlDesconhecido.getBytes(StandardCharsets.UTF_8);
             String sha = Sha256.hex(esperado);
-            assertThat(d.blobRef()).contains(
-                    ChavesBlobPull.documento(FONTE, TipoAmbiente.PRODUCAO, CNPJ, new Nsu(7), sha));
-            assertThat(blobs.ler(new BlobRef(d.blobRef().orElseThrow(), sha)))
+            assertThat(d.blobRef()).contains(new BlobRef(
+                    ChavesBlobPull.documento(FONTE, TipoAmbiente.PRODUCAO, CNPJ, new Nsu(7), sha), sha));
+            assertThat(blobs.ler(d.blobRef().orElseThrow()))
                     .hasValueSatisfying(b -> assertThat(b).isEqualTo(esperado));
         });
     }
@@ -483,7 +511,7 @@ class NfeNacionalAdapterTest {
         assertThat(doc.id()).isEqualTo(idEsperado(42));
         String sha = Sha256.hex(XML_PROC.getBytes(StandardCharsets.UTF_8));
         String chave = ChavesBlobPull.documento(FONTE, TipoAmbiente.PRODUCAO, CNPJ, new Nsu(42), sha);
-        assertThat(doc.blobRef()).contains(chave);
+        assertThat(doc.blobRef()).contains(new BlobRef(chave, sha));
         assertThat(blobs.ler(new BlobRef(chave, sha))).contains(XML_PROC.getBytes(StandardCharsets.UTF_8));
 
         var requisicoes = servidor.findAll(com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor(urlEqualTo(CAMINHO)));
@@ -494,16 +522,22 @@ class NfeNacionalAdapterTest {
     }
 
     @Test
-    @DisplayName("buscarUm usa a mesma chave de blob do buscarLote (inv. 7)")
-    void buscarUmUsaAMesmaChaveDoLote() {
+    @DisplayName("inv. 7: buscarUm e buscarPorChave do mesmo docZip devolvem o mesmo BlobRef do buscarLote")
+    void buscarUmEBuscarPorChaveDevolvemOMesmoBlobRefDoLote() {
         responder(resposta("138", 42, 42, docZip(42, "procNFe_v4.00.xsd", XML_PROC)));
 
         BuscarLoteResultado lote = adapter.buscarLote(new ContextoConsulta(FONTE, CNPJ), new Cursor("41"));
         BuscarUmResultado um = adapter.buscarUm(FONTE, CNPJ, new Nsu(42));
+        BuscarUmResultado porChave = adapter.buscarPorChave(new ContextoConsulta(FONTE, CNPJ), new ChaveAcessoNfe(CHAVE));
 
+        Documento doLote = lote.documentos().get(0);
+        BlobRef refDoLote = doLote.blobRef().orElseThrow();
         assertThat(um.desfecho()).isEqualTo(new Desfecho.Ok());
-        assertThat(um.documento().orElseThrow().blobRef()).isEqualTo(lote.documentos().get(0).blobRef());
-        assertThat(um.documento().orElseThrow().id()).isEqualTo(lote.documentos().get(0).id());
+        assertThat(porChave.desfecho()).isEqualTo(new Desfecho.Ok());
+        assertThat(um.documento().orElseThrow().blobRef()).contains(refDoLote);
+        assertThat(porChave.documento().orElseThrow().blobRef()).contains(refDoLote);
+        assertThat(um.documento().orElseThrow().id()).isEqualTo(doLote.id());
+        assertThat(porChave.documento().orElseThrow().id()).isEqualTo(doLote.id());
     }
 
     // ---- buscarUm: desfechos do consNSU ----
@@ -652,7 +686,7 @@ class NfeNacionalAdapterTest {
         assertThat(doc.nsu()).isEqualTo(new Nsu(42));
         String sha = Sha256.hex(XML_PROC.getBytes(StandardCharsets.UTF_8));
         String chaveBlob = ChavesBlobPull.documento(FONTE, TipoAmbiente.PRODUCAO, CNPJ, new Nsu(42), sha);
-        assertThat(doc.blobRef()).contains(chaveBlob);
+        assertThat(doc.blobRef()).contains(new BlobRef(chaveBlob, sha));
         assertThat(blobs.ler(new BlobRef(chaveBlob, sha))).contains(XML_PROC.getBytes(StandardCharsets.UTF_8));
     }
 

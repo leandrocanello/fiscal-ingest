@@ -6,7 +6,9 @@ import br.com.doc.ingest.domain.adapter.ContextoConsulta;
 import br.com.doc.ingest.domain.adapter.Cursor;
 import br.com.doc.ingest.domain.adapter.Desfecho;
 import br.com.doc.ingest.domain.adapter.SourceAdapter;
+import br.com.doc.ingest.domain.blob.BlobRef;
 import br.com.doc.ingest.domain.blob.BlobStore;
+import br.com.doc.ingest.domain.blob.Sha256;
 import br.com.doc.ingest.domain.model.Documento;
 import br.com.doc.ingest.domain.model.Nsu;
 import org.junit.jupiter.api.DisplayName;
@@ -30,9 +32,6 @@ public abstract class SourceAdapterContrato {
     protected abstract ContextoConsulta contexto();
 
     protected abstract BlobStore blobs();
-
-    /** Lê os bytes do blob referenciado pelo documento (a forma do {@code blobRef} varia por adapter). */
-    protected abstract Optional<byte[]> lerBlob(Documento documento);
 
     /** Prepara a fonte para devolver {@code n} documentos (NSU 1..n) a partir do cursor inicial. */
     protected abstract void prepararLote(int n);
@@ -77,8 +76,24 @@ public abstract class SourceAdapterContrato {
 
         assertThat(r.documentos()).isNotEmpty().allSatisfy(d -> {
             assertThat(d.blobRef()).isPresent();
-            assertThat(lerBlob(d)).isPresent().get().asInstanceOf(
+            assertThat(blobs().ler(d.blobRef().orElseThrow())).isPresent().get().asInstanceOf(
                     org.assertj.core.api.InstanceOfAssertFactories.BYTE_ARRAY).isNotEmpty();
+        });
+    }
+
+    @Test
+    @DisplayName("blobRef confere com o sha256 dos bytes gravados (inv. 7)")
+    void blobRefConfereComOHashDosBytes() {
+        prepararLote(3);
+
+        BuscarLoteResultado r = adapter().buscarLote(contexto(), Cursor.inicial());
+
+        assertThat(r.documentos()).isNotEmpty().allSatisfy(d -> {
+            BlobRef ref = d.blobRef().orElseThrow();
+            Optional<byte[]> bytes = blobs().ler(ref);
+            assertThat(bytes).as("blob de %s", ref.chave()).isPresent();
+            assertThat(bytes.get()).isNotEmpty();
+            assertThat(Sha256.hex(bytes.get())).isEqualTo(ref.sha256());
         });
     }
 

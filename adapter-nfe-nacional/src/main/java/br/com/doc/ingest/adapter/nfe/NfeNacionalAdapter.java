@@ -177,7 +177,7 @@ public final class NfeNacionalAdapter implements SourceAdapter {
         return new Consulta(desfecho, refEnvelope, Optional.of(valida.retorno()));
     }
 
-    /** Decodifica o docZip e grava o XML (chave com sha256, inv. 7); devolve só metadado + chave do blob. */
+    /** Decodifica o docZip e grava o XML (chave com sha256, inv. 7); devolve só metadado + BlobRef. */
     private Documento gravarDocZip(Cnpj cnpj, DocZip docZip, Instant agora) {
         return gravarDecodificado(cnpj, decoder.decodificar(docZip), agora);
     }
@@ -188,7 +188,7 @@ public final class NfeNacionalAdapter implements SourceAdapter {
                 decodificado.xml(), sha);
         return new Documento(idDe(cnpj, decodificado.nsu()), fonte, cnpj, MODELO_NFE,
                 decodificado.nsu(), agora, decodificado.tipo().name(), Optional.empty(),
-                Optional.of(ref.chave()));
+                Optional.of(ref));
     }
 
     /** Nenhum documento, cursor e ultNSU de entrada (inv. 1 e 5). */

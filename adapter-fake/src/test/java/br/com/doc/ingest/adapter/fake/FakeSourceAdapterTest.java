@@ -1,6 +1,7 @@
 package br.com.doc.ingest.adapter.fake;
 
 import br.com.doc.ingest.domain.adapter.*;
+import br.com.doc.ingest.domain.blob.BlobRef;
 import br.com.doc.ingest.domain.model.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -104,6 +105,23 @@ class FakeSourceAdapterTest {
             assertThat(resultado.desfecho()).isInstanceOf(Desfecho.Ok.class);
             assertThat(resultado.documento()).isPresent();
             assertThat(resultado.documento().get().nsu()).isEqualTo(nsu(5));
+        }
+
+        @Test
+        @DisplayName("buscarUm devolve o mesmo BlobRef do buscarLote")
+        void buscarUmDevolveOMesmoBlobRefDoLote() {
+            FakeSourceAdapter adapter = new FakeSourceAdapter(fonte);
+            BlobRef ref = new BlobRef("fake/7.xml", "a".repeat(64));
+            Documento doc = new Documento(UUID.randomUUID(), fonte, cnpj, "55", nsu(7), Instant.EPOCH,
+                    "COMPLETO", Optional.empty(), Optional.of(ref));
+            adapter.preCarregar(cnpj, List.of(doc));
+
+            Optional<BlobRef> doLote = adapter.buscarLote(new ContextoConsulta(fonte, cnpj), Cursor.inicial())
+                    .documentos().get(0).blobRef();
+            Optional<BlobRef> doUm = adapter.buscarUm(fonte, cnpj, nsu(7)).documento().orElseThrow().blobRef();
+
+            assertThat(doLote).contains(ref);
+            assertThat(doUm).isEqualTo(doLote);
         }
 
         @Test

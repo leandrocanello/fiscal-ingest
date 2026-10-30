@@ -522,16 +522,22 @@ class NfeNacionalAdapterTest {
     }
 
     @Test
-    @DisplayName("buscarUm usa a mesma chave de blob do buscarLote (inv. 7)")
-    void buscarUmUsaAMesmaChaveDoLote() {
+    @DisplayName("inv. 7: buscarUm e buscarPorChave do mesmo docZip devolvem o mesmo BlobRef do buscarLote")
+    void buscarUmEBuscarPorChaveDevolvemOMesmoBlobRefDoLote() {
         responder(resposta("138", 42, 42, docZip(42, "procNFe_v4.00.xsd", XML_PROC)));
 
         BuscarLoteResultado lote = adapter.buscarLote(new ContextoConsulta(FONTE, CNPJ), new Cursor("41"));
         BuscarUmResultado um = adapter.buscarUm(FONTE, CNPJ, new Nsu(42));
+        BuscarUmResultado porChave = adapter.buscarPorChave(new ContextoConsulta(FONTE, CNPJ), new ChaveAcessoNfe(CHAVE));
 
+        Documento doLote = lote.documentos().get(0);
+        BlobRef refDoLote = doLote.blobRef().orElseThrow();
         assertThat(um.desfecho()).isEqualTo(new Desfecho.Ok());
-        assertThat(um.documento().orElseThrow().blobRef()).isEqualTo(lote.documentos().get(0).blobRef());
-        assertThat(um.documento().orElseThrow().id()).isEqualTo(lote.documentos().get(0).id());
+        assertThat(porChave.desfecho()).isEqualTo(new Desfecho.Ok());
+        assertThat(um.documento().orElseThrow().blobRef()).contains(refDoLote);
+        assertThat(porChave.documento().orElseThrow().blobRef()).contains(refDoLote);
+        assertThat(um.documento().orElseThrow().id()).isEqualTo(doLote.id());
+        assertThat(porChave.documento().orElseThrow().id()).isEqualTo(doLote.id());
     }
 
     // ---- buscarUm: desfechos do consNSU ----

@@ -48,6 +48,9 @@ public final class RelayOutbox {
                             select id, topico, chave, versao_schema, chave_idempotencia, cast(payload as text) as payload
                             from outbox o
                             where o.publicado_em is null
+                              and not exists (select 1 from outbox o2
+                                              where o2.topico = o.topico and o2.chave = o.chave
+                                                and o2.id < o.id and o2.publicado_em is null)
                             order by o.id
                             limit 1
                             for update skip locked

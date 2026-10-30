@@ -99,4 +99,29 @@ class RelayOutboxTest extends PostgresTestBase {
         assertThat(publicadas).containsExactly("a", "b", "c");
         assertThat(pendentes()).isZero();
     }
+
+    private void insereNaChave(String chave, String idempotencia) {
+        jdbi.useHandle(h -> OutboxSql.inserir(h,
+                new MensagemOutbox("docs.coletados", chave, 1, idempotencia, "{}"), RELOGIO.instant()));
+    }
+
+    @Test
+    void mensagemPosteriorDaMesmaChaveEsperaAAnterior() {
+        insereNaChave("A", "a1");
+        insereNaChave("A", "a2");
+        insereNaChave("B", "b1");
+
+        // a1 está em poder de outro relay (travada, ainda não marcada): a2 não pode passar na frente
+        try (var outro = jdbi.open()) {
+            outro.begin();
+            outro.createQuery("select id from outbox where chave_idempotencia = 'a1' for update")
+                    .mapTo(Long.class).one();
+
+            int n = new RelayOutbox(jdbi, RELOGIO, gravador(), 10).publicarPendentes();
+
+            assertThat(n).isEqualTo(1);
+            assertThat(publicadas).containsExactly("b1");
+            outro.rollback();
+        }
+    }
 }

@@ -82,3 +82,32 @@
 - **Opções:** (a) `217`, `236`, `614`–`619`, `640`, `641`, `653`, `654` → `IndisponivelDefinitivo` (para aquela consulta, sem bloquear o CNPJ), `252`/`593` → `ErroAutenticacao`/`IndisponivelDefinitivo` (configuração); (b) manter o fallback e só alertar; (c) (a), mas confirmando antes os textos numa NT mais nova que o MOC de 2020.
 - **Recomendação:** (a), em uma subetapa curta depois da E2-S09 (uma linha por código no `CStatMapper`, com teste). A E2-S09 segue com o fallback.
 - Resposta (2026-10-29, autor): (a) — `217`, `236`, `614`–`619`, `640`, `641`, `653`, `654` → `IndisponivelDefinitivo` daquela consulta (sem bloquear o CNPJ); `593` (raiz do CNPJ ≠ certificado) → `ErroAutenticacao`; `252` (ambiente divergente) → `IndisponivelDefinitivo` (configuração). Fonte: MOC 7.0 Tab. 5-29, p. 96. Subetapa E2-S16.
+
+### [DECISAO] E2-S13 — 2026-10-30 — envio do evento: contrato do RecepcaoEvento, mapeamento do retEvento e assinatura da porta `manifestar`
+- **O que é preciso:** a E2-S13 envia o evento de Ciência (já montado e assinado na E2-S11) ao `NFeRecepcaoEvento` do AN e
+  traduz a resposta para `Desfecho`. Os docs não registram o contrato SOAP do serviço nem os cStat da resposta
+  (`docs/FONTES-OFICIAIS.md` só tem a distribuição e o leiaute de entrada, p. 100). Um erro aqui vira rejeição na SEFAZ ou,
+  pior, retentativa que gasta limite. O plano fica parado até a resposta.
+- **D1 — cStat → `Desfecho`** (de memória; conferir na tabela de validações do `NFeRecepcaoEvento` no MOC 7.0, logo depois da p. 100):
+  - lote (`retEnvEvento`): `128` lote processado → olhar o `retEvento`; `108` → `IndisponivelTemporario`; `109` → `ServicoFora`;
+    `656` → `LimiteAtingido(1h)`; demais rejeições do lote (schema etc.) → `IndisponivelDefinitivo`.
+  - evento (`retEvento/infEvento`): `135` registrado e vinculado → `Ok`; `136` registrado, não vinculado → `Ok`;
+    `573` duplicidade de evento → **`Ok`** (a ciência já existe; torna o envio idempotente); `650`/`655` (nota cancelada/denegada,
+    ou ciência após manifestação conclusiva), `596` (fora de prazo), chave inexistente/inválida → `IndisponivelDefinitivo`
+    (não retentar); `297`/`298` (assinatura) → `IndisponivelDefinitivo` + alerta (é bug nosso); autor ≠ certificado → `ErroAutenticacao`.
+  - desconhecido → `IndisponivelTemporario(5 min)` + alerta com o código bruto (mesma regra da distribuição, E2-S02).
+  - Opções: (a) como acima; (b) `573` → `IndisponivelDefinitivo` (trata duplicidade como erro); (c) (a) com os códigos ajustados ao MOC.
+- **D2 — contrato SOAP** (constantes isoladas em `ContratoRecepcaoEvento`, como o `ContratoDistDfe`, marcadas [VALIDAR item 9]):
+  namespace do WSDL `http://www.portalfiscal.inf.br/nfe/wsdl/NFeRecepcaoEvento4`, operação `nfeRecepcaoEvento`,
+  `envEvento versao="1.00"`, `idLote` numérico até 15 dígitos, um evento por lote. A URL **não** entra no código (é injetada,
+  como hoje). Opções: (a) estes valores; (b) os que o MOC trouxer.
+- **D3 — porta e certificado:** (a) `SourceAdapter.manifestar(ContextoConsulta ctx, String chaveAcesso, TipoManifestacao tipo)
+  → Optional<ManifestarResultado>` como **método default** que devolve `Optional.empty()` (o fake e a suíte de contrato não quebram);
+  `ManifestarResultado(Desfecho desfecho, Optional<BlobRef> envelope)` (como o `BuscarLoteResultado`); `nSeqEvento` = 1 fixo;
+  o adapter guarda em memória o `CertificadoCarregado` aberto no `autenticar` (o `SSLContext` já guarda a mesma chave privada).
+  (b) `manifestar` recebe a `Credencial` a cada chamada (abre o .pfx toda vez; não guarda chave). A docs/ARCHITECTURE.md §5.5 cita
+  `ReferenciaDocumento`, que não existe; com (a), a §5.5–5.6 precisa de um PR `docs/` seu depois do merge.
+- **Roteiro:** abra o MOC 7.0 no capítulo do `NFeRecepcaoEvento` (perto da p. 100): confira a tabela de cStat do retorno (D1) e o
+  WSDL/leiaute do `envEvento` (D2); anote as páginas em FONTES-OFICIAIS (item 6/9) num PR `docs/`; responda abaixo D1, D2, D3.
+- **Recomendação:** D1 (c) partindo de (a), com `573 → Ok`; D2 (a), conferido no smoke E2-S12; D3 (a).
+- Resposta:

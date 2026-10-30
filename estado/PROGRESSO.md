@@ -485,3 +485,5 @@
 - 2026-10-30 08:25 · E2-S16 (revisar): APROVADO PARA PR; 4 achados menores (mapper compartilhado com distNSU, javadoc, §3.2 do CLAUDE.md, case 236) · próximo: PR/merge pelo autor
 - 2026-10-30 08:25 · E2-S16: REVISAR ok
 - 2026-10-30 08:25 · E2-S16: PR aberto para revisão
+- 2026-10-30 08:29 · E2-S13 (planejar): plano criado (8 passos TDD, WireMock); parado em [!] aguardando PARA-VOCE [DECISAO] E2-S13 (D1 cStat do retEvento, D2 contrato SOAP, D3 porta/certificado) · próximo: resposta do autor, depois desenvolver
+- 2026-10-30 08:29 · E2-S13: PLANEJAR ok

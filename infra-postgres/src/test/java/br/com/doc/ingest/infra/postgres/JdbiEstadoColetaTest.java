@@ -164,6 +164,28 @@ class JdbiEstadoColetaTest extends PostgresTestBase {
     }
 
     @Test
+    void reconfirmarNsuJaRegistradoMantemPrimeiroStatus() {
+        repositorio.criarSeAusente(CHAVE);
+        var ledger = new JdbiNsuLedger(jdbi, CHAVE.ambiente(), RELOGIO);
+        ledger.registrar(CHAVE.fonte(), CHAVE.cnpj(), new EntradaLedger(new Nsu(1), StatusNsu.RESUMO));
+        ledger.registrar(CHAVE.fonte(), CHAVE.cnpj(), new EntradaLedger(new Nsu(2), StatusNsu.EVENTO));
+        var lida = repositorio.carregar(CHAVE).orElseThrow();
+
+        var resultado = repositorio.confirmarLote(new ConfirmacaoLote(lida, new Cursor("3"), new Nsu(3), List.of(
+                new EntradaLedger(new Nsu(1), StatusNsu.BAIXADO),
+                new EntradaLedger(new Nsu(2), StatusNsu.DESCARTADO),
+                new EntradaLedger(new Nsu(3), StatusNsu.BAIXADO))));
+
+        assertThat(resultado).isEqualTo(new ResultadoCas.Aplicado(1));
+        assertThat(repositorio.carregar(CHAVE))
+                .contains(new PosicaoColeta(CHAVE, new Cursor("3"), new Nsu(3), 1));
+        assertThat(ledgerDe(CHAVE)).containsExactly(
+                new EntradaLedger(new Nsu(1), StatusNsu.RESUMO),
+                new EntradaLedger(new Nsu(2), StatusNsu.EVENTO),
+                new EntradaLedger(new Nsu(3), StatusNsu.BAIXADO));
+    }
+
+    @Test
     void confirmarChaveInexistenteLancaIllegalStateESemEfeito() {
         var fantasma = new PosicaoColeta(CHAVE, Cursor.inicial(), new Nsu(0), 0);
 

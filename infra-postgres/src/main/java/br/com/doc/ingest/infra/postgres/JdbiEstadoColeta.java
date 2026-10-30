@@ -6,6 +6,7 @@ import br.com.doc.ingest.domain.coleta.ConfirmacaoLote;
 import br.com.doc.ingest.domain.coleta.EstadoColetaRepositorio;
 import br.com.doc.ingest.domain.coleta.PosicaoColeta;
 import br.com.doc.ingest.domain.coleta.ResultadoCas;
+import br.com.doc.ingest.domain.ledger.EntradaLedger;
 import br.com.doc.ingest.domain.model.Nsu;
 import org.jdbi.v3.core.Jdbi;
 
@@ -60,7 +61,32 @@ public final class JdbiEstadoColeta implements EstadoColetaRepositorio {
 
     @Override
     public ResultadoCas confirmarLote(ConfirmacaoLote confirmacao) {
-        // CAS + ledger na mesma transação: próximo passo da E3-S02.
-        throw new UnsupportedOperationException("confirmarLote ainda não implementado");
+        var lida = confirmacao.lida();
+        var chave = lida.chave();
+        var agora = clock.instant();
+        return jdbi.inTransaction(h -> {
+            for (EntradaLedger entrada : confirmacao.entradas()) {
+                LedgerSql.inserir(h, chave.fonte(), chave.cnpj(), chave.ambiente(), entrada, agora);
+            }
+            int afetadas = h.createUpdate("""
+                            update estado_coleta
+                            set cursor_token = :cursor, ult_nsu = :novo, versao = versao + 1, atualizado_em = :atualizadoEm
+                            where fonte = :fonte and cnpj_consultado = :cnpj and ambiente = :ambiente
+                              and versao = :versao and ult_nsu <= :novo
+                            """)
+                    .bind("cursor", confirmacao.novoCursor().token())
+                    .bind("novo", confirmacao.novoUltNsu().valor())
+                    .bind("atualizadoEm", Timestamp.from(agora))
+                    .bind("fonte", chave.fonte().id())
+                    .bind("cnpj", chave.cnpj().valor())
+                    .bind("ambiente", chave.ambiente().name())
+                    .bind("versao", lida.versao())
+                    .execute();
+            if (afetadas != 1) {
+                // Conflito/retrocesso com diagnóstico: próximo passo da E3-S02. A exceção desfaz o ledger.
+                throw new IllegalStateException("CAS do cursor não aplicado");
+            }
+            return new ResultadoCas.Aplicado(lida.versao() + 1);
+        });
     }
 }

@@ -2,7 +2,11 @@ package br.com.doc.ingest.infra.postgres;
 
 import br.com.doc.ingest.domain.adapter.Cursor;
 import br.com.doc.ingest.domain.coleta.ChaveColeta;
+import br.com.doc.ingest.domain.coleta.ConfirmacaoLote;
 import br.com.doc.ingest.domain.coleta.PosicaoColeta;
+import br.com.doc.ingest.domain.coleta.ResultadoCas;
+import br.com.doc.ingest.domain.ledger.EntradaLedger;
+import br.com.doc.ingest.domain.ledger.StatusNsu;
 import br.com.doc.ingest.domain.model.Ambiente;
 import br.com.doc.ingest.domain.model.Cnpj;
 import br.com.doc.ingest.domain.model.FonteId;
@@ -14,6 +18,7 @@ import org.junit.jupiter.api.Test;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.ZoneOffset;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -74,5 +79,49 @@ class JdbiEstadoColetaTest extends PostgresTestBase {
         assertThat(repositorio.carregar(homologacao))
                 .contains(new PosicaoColeta(homologacao, Cursor.inicial(), new Nsu(0), 0));
         assertThat(repositorio.carregar(CHAVE).orElseThrow().ultNsu()).isEqualTo(new Nsu(7));
+    }
+
+    @Test
+    void confirmarNaVersaoLidaAvancaCursorIncrementaVersaoERegistraLedger() {
+        var depois = Clock.fixed(Instant.parse("2026-01-01T01:00:00Z"), ZoneOffset.UTC);
+        var confirmador = new JdbiEstadoColeta(jdbi, depois);
+        repositorio.criarSeAusente(CHAVE);
+        var lida = repositorio.carregar(CHAVE).orElseThrow();
+        var entradas = List.of(
+                new EntradaLedger(new Nsu(1), StatusNsu.RESUMO),
+                new EntradaLedger(new Nsu(2), StatusNsu.EVENTO),
+                new EntradaLedger(new Nsu(3), StatusNsu.BAIXADO));
+
+        var resultado = confirmador.confirmarLote(
+                new ConfirmacaoLote(lida, new Cursor("3"), new Nsu(3), entradas));
+
+        assertThat(resultado).isEqualTo(new ResultadoCas.Aplicado(1));
+        assertThat(repositorio.carregar(CHAVE))
+                .contains(new PosicaoColeta(CHAVE, new Cursor("3"), new Nsu(3), 1));
+        assertThat(ledgerDe(CHAVE)).containsExactlyElementsOf(entradas);
+        assertThat(atualizadoEm()).isEqualTo(depois.instant());
+    }
+
+    @Test
+    void confirmarSemEntradasAvancaSoOCursor() {
+        repositorio.criarSeAusente(CHAVE);
+        var lida = repositorio.carregar(CHAVE).orElseThrow();
+
+        var resultado = repositorio.confirmarLote(
+                new ConfirmacaoLote(lida, new Cursor("9"), new Nsu(9), List.of()));
+
+        assertThat(resultado).isEqualTo(new ResultadoCas.Aplicado(1));
+        assertThat(repositorio.carregar(CHAVE))
+                .contains(new PosicaoColeta(CHAVE, new Cursor("9"), new Nsu(9), 1));
+        assertThat(ledgerDe(CHAVE)).isEmpty();
+    }
+
+    private List<EntradaLedger> ledgerDe(ChaveColeta chave) {
+        return new JdbiNsuLedger(jdbi, chave.ambiente(), RELOGIO).listarEntradas(chave.fonte(), chave.cnpj());
+    }
+
+    private Instant atualizadoEm() {
+        return jdbi.withHandle(h -> h.createQuery("select atualizado_em from estado_coleta")
+                .mapTo(java.sql.Timestamp.class).one()).toInstant();
     }
 }

@@ -508,3 +508,5 @@
 - 2026-10-30 08:46 · E3-S02: DESENVOLVER ok
 - 2026-10-30 08:55 · E3-S02 (dev, passo 9): `EstadoColetaCasPropriedadesTest` (3 propriedades jqwik, 15 tentativas) verde sem mudança em produção; mutação "conflito sem rollback" falha: "ledgerContemExatamenteAsEntradasDosAplicados FAILED / AssertionFailedError at EstadoColetaCasPropriedadesTest.java:107"; mutação "CAS sem ult_nsu <= :novo" falha: "ultNsuNuncaDecresce FAILED / PSQLException" (trigger V3); suíte inteira verde · próximo: Verificação (revisor)
 - 2026-10-30 08:48 · E3-S02: DESENVOLVER ok
+- 2026-10-30 09:05 · E3-S02: VERIFICAR ok — suíte inteira verde (--rerun-tasks, 0 skips; caos 51+1, propriedades 3, NaoRetrocesso 3, JdbiEstadoColeta 11, arquitetura ok); invariantes 1/2/5/6 com teste dedicado; nenhum teste novo necessário, nada a commitar no código · próximo: revisor
+- 2026-10-30 08:50 · E3-S02: VERIFICAR ok

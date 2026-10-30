@@ -552,3 +552,5 @@
 - 2026-10-30 13:29 · E3-S04: DESENVOLVER ok
 - 2026-10-30 13:31 · E3-S04: RelayOutbox + RelayOutboxTest (4 testes; teste e classe escritos juntos, sem rodada vermelha separada) · próximo: relay preserva ordem por chave
 - 2026-10-30 13:31 · E3-S04: DESENVOLVER ok
+- 2026-10-30 · E3-S04: relay preserva ordem por chave (falha vista: a2 saía antes de a1 travada; agora só b1) · próximo: CaosRelayTest
+- 2026-10-30 13:32 · E3-S04: DESENVOLVER ok

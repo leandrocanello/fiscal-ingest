@@ -478,3 +478,5 @@
 - 2026-10-30 08:22 · E2-S16: passo 5 (MAPEADOS com os 14 códigos) já estava no código desde 6bf0ef1; propriedades verdes, sem commit novo · próximo: teste ponta a ponta WireMock (217/641/653/593)
 - 2026-10-30 08:22 · E2-S16: passo concluído sem alteração de código (aceito)
 - 2026-10-30 08:23 · E2-S16: DESENVOLVER ok
+- 2026-10-30 08:40 · E2-S16: teste WireMock de buscarPorChave (217/641/653 → IndisponivelDefinitivo; 593 → ErroAutenticacao) passou sem código novo; suíte inteira verde · próximo: seção Verificação / revisão
+- 2026-10-30 08:24 · E2-S16: DESENVOLVER ok

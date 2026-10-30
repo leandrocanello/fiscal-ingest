@@ -469,3 +469,5 @@
 - 2026-10-30 08:16 · E2-S16: PLANEJAR ok
 - 2026-10-30 · E2-S16: 12 cStat do consChNFe (217/236/614–619/640/641/653/654) → IndisponivelDefinitivo; falha inicial: 'cStat 217 -> IndisponivelDefinitivo FAILED'; MAPEADOS da propriedade ampliado junto · próximo: 252 e 593
 - 2026-10-30 08:18 · E2-S16: DESENVOLVER ok
+- 2026-10-30 08:19 · E2-S16: cStat 252 → IndisponivelDefinitivo (falhou 2 testes antes; suíte verde) · próximo: 593 → ErroAutenticacao
+- 2026-10-30 08:20 · E2-S16: DESENVOLVER ok

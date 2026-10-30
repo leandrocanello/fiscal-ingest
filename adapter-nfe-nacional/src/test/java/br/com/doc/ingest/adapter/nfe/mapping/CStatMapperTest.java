@@ -65,7 +65,8 @@ class CStatMapperTest {
             "640, IndisponivelDefinitivo",
             "641, IndisponivelDefinitivo",
             "653, IndisponivelDefinitivo",
-            "654, IndisponivelDefinitivo"
+            "654, IndisponivelDefinitivo",
+            "252, IndisponivelDefinitivo"
     })
     void tabelaDeCodigosMapeados(String cStat, String tipoEsperado) {
         assertThat(mapper.mapear(cStat).getClass().getSimpleName()).isEqualTo(tipoEsperado);
@@ -105,6 +106,20 @@ class CStatMapperTest {
             assertThat(resultado).isInstanceOf(Desfecho.IndisponivelDefinitivo.class);
             assertThat(((Desfecho.IndisponivelDefinitivo) resultado).motivo())
                     .containsIgnoringCase("cursor inconsistente");
+        }
+    }
+
+    @Nested
+    @DisplayName("Rejeicoes de configuracao (consChNFe)")
+    class CasosConfiguracao {
+
+        @Test
+        @DisplayName("cStat 252 vira IndisponivelDefinitivo citando ambiente divergente (MOC 7.0 Tab. 5-29)")
+        void cStat252ViraIndisponivelDefinitivoAmbienteDivergente() {
+            Desfecho resultado = mapper.mapear("252");
+            assertThat(resultado).isInstanceOf(Desfecho.IndisponivelDefinitivo.class);
+            assertThat(((Desfecho.IndisponivelDefinitivo) resultado).motivo())
+                    .containsIgnoringCase("ambiente");
         }
     }
 

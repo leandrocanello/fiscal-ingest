@@ -26,6 +26,7 @@ import java.time.Duration;
  *   <li><b>109</b> - servico paralisado sem previsao (Tab. 5-20 K03) -> {@link Desfecho.ServicoFora}</li>
  *   <li><b>217, 236, 614-619, 640, 641, 653, 654</b> - rejeicoes do consChNFe (Tab. 5-29, decisao
  *       2026-10-29) -> {@link Desfecho.IndisponivelDefinitivo}</li>
+ *   <li><b>252</b> - ambiente divergente (Tab. 5-29) -> {@link Desfecho.IndisponivelDefinitivo}</li>
  * </ul>
  *
  * <p>So 137/138 viram {@code Ok}/{@code Vazio}: nenhum outro cStat pode avancar o cursor (inv. 1).
@@ -84,6 +85,9 @@ public class CStatMapper {
             case "641" -> new Desfecho.IndisponivelDefinitivo("NF-e indisponível para o emitente (cStat 641)");
             case "653", "654" -> new Desfecho.IndisponivelDefinitivo(
                     "NF-e cancelada/denegada, arquivo indisponível (cStat " + cStat + ")");
+            // Ambiente divergente (Tab. 5-29): erro de configuracao, retentar nao resolve.
+            case "252" -> new Desfecho.IndisponivelDefinitivo(
+                    "Ambiente informado diverge do ambiente do web service (cStat 252): verificar configuração");
 
             // Servico paralisado momentaneamente (MOC 7.0 Tab. 5-20 K03) - tentar de novo
             case "108" -> new Desfecho.IndisponivelTemporario(RETRY_TEMP);

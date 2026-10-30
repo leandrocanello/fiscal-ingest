@@ -533,3 +533,5 @@
 - 2026-10-30 13:14 · E3-S03: DESENVOLVER ok
 - 2026-10-30 13:20 · E3-S03: passo 7 (IsolamentoTenantPropriedadesTest) — falha vista com RLS de empresa desligado temporariamente: `cadaTenantVeExatamenteAsSuas FAILED` (expected: [] but was: [1L]); `somaDasVisoesIgualAoTotal FAILED` (expected: 1L but was: 2L); `nenhumaLinhaDeOutroTenant FAILED`; sabotagem removida, suíte inteira verde · próximo: Verificação/revisão da E3-S03
 - 2026-10-30 13:16 · E3-S03: DESENVOLVER ok
+- 2026-10-30 13:17 · E3-S03 (verificar): suíte inteira verde (infra-postgres 18 classes, 0 skipped), RLS testado como fiscal_app_teste · próximo: revisão
+- 2026-10-30 13:17 · E3-S03: VERIFICAR ok

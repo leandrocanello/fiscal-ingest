@@ -490,3 +490,5 @@
 - 2026-10-30 08:29 · E2-S13: plano aguarda decisão (passo [!]) → [h]
 - 2026-10-30 08:30 · E3-S02 (planejar): plano criado (9 passos TDD: porta no domínio, V3 com trigger de não-retrocesso, JdbiEstadoColeta com CAS+ledger na mesma TX, caos 2 fetchers e queda no meio, propriedade jqwik); DA-23 · próximo: desenvolver (opus)
 - 2026-10-30 08:31 · E3-S02: PLANEJAR ok
+- 2026-10-30 08:40 · E3-S02 (dev, passo 1): `ConfirmacaoLoteTest` falhou antes (`ConfirmacaoLoteTest.java:26: error: cannot find symbol` — ChaveColeta/PosicaoColeta inexistentes); criado pacote `domain.coleta` (ChaveColeta, PosicaoColeta, ConfirmacaoLote, ResultadoCas sealed, porta EstadoColetaRepositorio); suíte inteira verde · próximo: passo 2 (V3 + trigger de não-retrocesso, `NaoRetrocessoNoBancoTest`)
+- 2026-10-30 08:33 · E3-S02: DESENVOLVER ok

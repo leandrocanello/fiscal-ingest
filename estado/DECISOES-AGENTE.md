@@ -153,3 +153,9 @@
 - **Opções:** payload (a) `jsonb` montado fora do domínio × (b) `bytea`; transação (a) `ConfirmacaoLote` ganha `mensagens` × (b) porta `UnidadeDeTrabalho`; relay (a) uma transação por mensagem com `SKIP LOCKED` + `not exists` de anterior pendente da mesma chave × (b) relay único sem garantia de ordem; consumo (a) tabela `outbox_consumo(consumidor, chave_idempotencia)` na transação do efeito × (b) cada consumidor se vira.
 - **Escolha:** (a) em todos. `jsonb` recusa XML/lixo no banco (defesa da inv. 3) e o domínio segue sem lib JSON; limite de 64 KiB no `MensagemOutbox`. Trigger só deixa `publicado_em` ir de nulo para valor; sem `DELETE`. Migrations V6/V7 (pulam V4/V5 da E3-S03; Flyway aceita lacuna) e `grant` a `fiscal_app` condicional à existência do papel.
 - **Como desfazer:** migration nova trocando a coluna/trigger; remover o componente `mensagens` do `ConfirmacaoLote` (o construtor de 4 argumentos já é o caminho antigo); renumerar as migrations antes da primeira instalação real.
+
+### DA-26 · 2026-10-30 · E3-S04
+Contexto: mensagem "venenosa" (falha persistente do Publicador) na menor pendente travava o relay inteiro.
+Opções: (a) excluir a chave `(topico, chave)` que falhou do resto da rodada e relançar a 1ª falha ao fim; (b) devolver resultado com falhas.
+Escolha: (a) — contrato de `publicarPendentes` preservado (lança), mas as outras chaves saem antes. Exclusão via `bindArray` no claim.
+Como desfazer: reverter o commit `fix(E3-S04)` do relay.

@@ -563,3 +563,5 @@
 - 2026-10-30 14:10 · E3-S04: REVISAR devolver — relay sem isolamento de mensagem venenosa (trava todas as chaves; §6.5) e teste do plano trocado · próximo: dev corrige 2 passos "Corrigir:"
 - 2026-10-30 13:40 · E3-S04: REVISAR ok
 - 2026-10-30 13:40 · E3-S04: revisor devolveu para correção
+- 2026-10-30 13:42 · E3-S04: relay isola falha por chave (teste falhou antes: b1 não saía; suíte verde) · próximo: revisão
+- 2026-10-30 13:43 · E3-S04: DESENVOLVER ok

@@ -465,3 +465,5 @@
 - 2026-10-30 08:14 · E2-S15: REVISAR — APROVAR PARA PR (suíte verde, invariantes 3/5/7 cobertas; 3 achados menores de qualidade) · PR em planos/E2-S15-pr.md · próximo: abrir PR / E2-S16
 - 2026-10-30 08:14 · E2-S15: REVISAR ok
 - 2026-10-30 08:15 · E2-S15: PR aberto para revisão
+- 2026-10-30 08:15 · E2-S16: PLANEJAR — plano em planos/E2-S16.md (6 passos; decisão já tomada pelo autor em PARA-VOCE E2-S09) · próximo: DESENVOLVER E2-S16
+- 2026-10-30 08:16 · E2-S16: PLANEJAR ok

@@ -111,3 +111,28 @@
   WSDL/leiaute do `envEvento` (D2); anote as páginas em FONTES-OFICIAIS (item 6/9) num PR `docs/`; responda abaixo D1, D2, D3.
 - **Recomendação:** D1 (c) partindo de (a), com `573 → Ok`; D2 (a), conferido no smoke E2-S12; D3 (a).
 - Resposta:
+
+### [DECISAO] E3-S05 — 2026-10-30 — cliente S3 e imagem de teste do `BlobStore` MinIO
+- **O que é preciso:** a E3-S05 cria o módulo `infra-blob-minio` (implementação real da porta `BlobStore`). Os docs dizem
+  "MinIO/S3" e "Testcontainers MinIO" (ARCHITECTURE §7), mas **não escolhem a biblioteca cliente** nem como garantir a
+  imutabilidade (inv. 7) com dois fetchers gravando a mesma chave. O plano fica parado até a resposta.
+- **D1 — biblioteca cliente:**
+  - (a) **AWS SDK for Java v2** (`software.amazon.awssdk:s3`, Apache-2.0) com `forcePathStyle` e endpoint configurável.
+    Pró: neutro de fornecedor (MinIO, S3, Garage, Ceph…), suporta escrita condicional `If-None-Match: *` e
+    `ChecksumSHA256` (o servidor confere o hash). Contra: dependência grande (netty/http-client; dá para usar o
+    `url-connection-client` e excluir o netty).
+  - (b) **MinIO Java SDK** (`io.minio:minio`, Apache-2.0). Pró: leve, API simples. Contra: amarra ao MinIO; o projeto
+    MinIO comunitário entrou em modo de manutenção/sem imagens oficiais novas no fim de 2025 **[VALIDAR]**.
+  - (c) HTTP cru (`java.net.http`) + assinatura SigV4 própria. Pró: zero dependência (como o SOAP). Contra: reinventa
+    SigV4 — contraria §2.3 e é fonte de bug.
+- **D2 — imagem do servidor nos testes:** (a) `minio/minio` com **tag fixa** (última `RELEASE.*` disponível, registrada
+  num lugar só, como o Postgres na DA-11); (b) outro S3 compatível (ex.: Garage/SeaweedFS) se a imagem do MinIO sumir.
+  O código não muda entre (a) e (b) se D1 = (a).
+- **D3 — imutabilidade concorrente:** (a) `PUT` com `If-None-Match: *` (escrita condicional; quem perde recebe 412, lê o
+  sha256 gravado e devolve o mesmo `BlobRef` ou lança `BlobConflitanteException`); (b) `HEAD` antes do `PUT` (tem janela
+  de corrida: dois fetchers podem gravar conteúdos diferentes na mesma chave). Como a chave já contém o sha256 (DA-13),
+  conflito real é quase impossível, mas a inv. 7 pede a garantia.
+- **Roteiro:** confira na página do MinIO/Docker Hub se `minio/minio` ainda publica tags e qual a última; responda D1–D3
+  abaixo. Se escolher D1 (b), avise se aceita depender do MinIO em produção.
+- **Recomendação:** D1 (a) com `url-connection-client` · D2 (a) com tag fixa · D3 (a).
+- Resposta:

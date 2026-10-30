@@ -1,8 +1,8 @@
 {
   "data": "2026-10-30",
   "diff_hoje": 785,
-  "chamadas_hoje": 58,
-  "revertidas_hoje": 0,
+  "chamadas_hoje": 59,
+  "revertidas_hoje": 1,
   "base": {
     "E1-S04": "main",
     "E1-S05": "main",
@@ -25,7 +25,8 @@
     "E2-S13": "main",
     "E3-S02": "main",
     "E3-S03": "main",
-    "E3-S04": "main"
+    "E3-S04": "main",
+    "E3-S05": "main"
   },
   "falhas": {
     "E1-S04": 0,
@@ -50,6 +51,7 @@
     "E2-S13": 0,
     "E3-S02": 0,
     "E3-S03": 0,
-    "E3-S04": 0
+    "E3-S04": 0,
+    "E3-S05": 1
   }
 }

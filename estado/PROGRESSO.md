@@ -462,3 +462,6 @@
 - 2026-10-30 08:12 · E2-S15: DESENVOLVER ok
 - 2026-10-30 08:13 · E2-S15 (verificar): contrato, greps, jqwik e suíte inteira verdes; sem defeito novo · próximo: revisão
 - 2026-10-30 08:14 · E2-S15: VERIFICAR ok
+- 2026-10-30 08:14 · E2-S15: REVISAR — APROVAR PARA PR (suíte verde, invariantes 3/5/7 cobertas; 3 achados menores de qualidade) · PR em planos/E2-S15-pr.md · próximo: abrir PR / E2-S16
+- 2026-10-30 08:14 · E2-S15: REVISAR ok
+- 2026-10-30 08:15 · E2-S15: PR aberto para revisão

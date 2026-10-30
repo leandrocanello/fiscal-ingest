@@ -228,6 +228,16 @@ class CStatMapperTest {
                 assertThat(warns()).hasSize(1);
             }
 
+            @ParameterizedTest(name = "cStat [{0}]")
+            @ValueSource(strings = {"217", "236", "614", "615", "616", "617", "618", "619", "640", "641",
+                    "653", "654", "252", "593"})
+            @DisplayName("codigos do consChNFe mapeados explicitamente nao caem no fallback nem logam WARN")
+            void codigosDoConsChNFeNaoLogam(String cStat) {
+                mapper.mapear(cStat);
+
+                assertThat(warns()).isEmpty();
+            }
+
             @Test
             @DisplayName("cStat longo com XML e logado truncado (<= 16 chars) e sem '<'")
             void fallbackTruncaESanitizaEntradaLonga() {

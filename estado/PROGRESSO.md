@@ -519,3 +519,5 @@
 - 2026-10-30 13:00 · E3-S02: mergeado por você ✔
 - 2026-10-30 13:02 · E3-S03: plano escrito (7 passos; RLS em tenant/empresa, papel fiscal_app, TransacaoPorTenant; DA-24) · próximo: desenvolver E3-S03 (opus)
 - 2026-10-30 13:02 · E3-S03: PLANEJAR ok
+- 2026-10-30 13:10 · E3-S03: passo 1 (papel fiscal_app, V4, dataSourceComoApp) — falha vista: `PapelAppTest > papelFiscalAppExisteSemSuperuserNemBypassRls() FAILED` (IllegalStateException: pg_roles sem fiscal_app); `MigracoesTest > aplicaAteV4ECriaOPapelDaAplicacao() FAILED`; `aplicarEmDoisSchemasNaoFalhaPorqueOPapelJaExiste() FAILED`; suíte inteira verde após V4; commit f7782ac · próximo: passo 2 (grants mínimos, ledger sem UPDATE/DELETE/TRUNCATE)
+- 2026-10-30 13:04 · E3-S03: DESENVOLVER ok

@@ -27,6 +27,8 @@ import java.time.Duration;
  *   <li><b>217, 236, 614-619, 640, 641, 653, 654</b> - rejeicoes do consChNFe (Tab. 5-29, decisao
  *       2026-10-29) -> {@link Desfecho.IndisponivelDefinitivo}</li>
  *   <li><b>252</b> - ambiente divergente (Tab. 5-29) -> {@link Desfecho.IndisponivelDefinitivo}</li>
+ *   <li><b>593</b> - raiz do CNPJ consultado difere da do certificado (Tab. 5-29)
+ *       -> {@link Desfecho.ErroAutenticacao}</li>
  * </ul>
  *
  * <p>So 137/138 viram {@code Ok}/{@code Vazio}: nenhum outro cStat pode avancar o cursor (inv. 1).
@@ -88,6 +90,10 @@ public class CStatMapper {
             // Ambiente divergente (Tab. 5-29): erro de configuracao, retentar nao resolve.
             case "252" -> new Desfecho.IndisponivelDefinitivo(
                     "Ambiente informado diverge do ambiente do web service (cStat 252): verificar configuração");
+
+            // Tab. 5-29: raiz do CNPJ consultado difere da raiz do certificado -> problema de credencial.
+            case "593" -> new Desfecho.ErroAutenticacao(
+                    "Raiz do CNPJ consultado difere da do certificado (cStat 593)");
 
             // Servico paralisado momentaneamente (MOC 7.0 Tab. 5-20 K03) - tentar de novo
             case "108" -> new Desfecho.IndisponivelTemporario(RETRY_TEMP);

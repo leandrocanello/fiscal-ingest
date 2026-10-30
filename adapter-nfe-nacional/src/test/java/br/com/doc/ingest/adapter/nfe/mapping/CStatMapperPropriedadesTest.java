@@ -24,7 +24,7 @@ class CStatMapperPropriedadesTest {
 
     private static final Set<String> SUCESSO = Set.of("137", "138");
     private static final Set<String> MAPEADOS = Set.of("137", "138", "656", "632", "589", "108", "109",
-            "217", "236", "614", "615", "616", "617", "618", "619", "640", "641", "653", "654", "252");
+            "217", "236", "614", "615", "616", "617", "618", "619", "640", "641", "653", "654", "252", "593");
 
     private final CStatMapper mapper = new CStatMapper();
 

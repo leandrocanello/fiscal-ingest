@@ -121,6 +121,15 @@ class CStatMapperTest {
             assertThat(((Desfecho.IndisponivelDefinitivo) resultado).motivo())
                     .containsIgnoringCase("ambiente");
         }
+
+        @Test
+        @DisplayName("cStat 593 vira ErroAutenticacao citando raiz do CNPJ diferente da do certificado")
+        void cStat593ViraErroAutenticacaoRaizDivergente() {
+            Desfecho resultado = mapper.mapear("593");
+            assertThat(resultado).isInstanceOf(Desfecho.ErroAutenticacao.class);
+            assertThat(((Desfecho.ErroAutenticacao) resultado).motivo())
+                    .containsIgnoringCase("raiz do CNPJ consultado difere da do certificado");
+        }
     }
 
     @Nested

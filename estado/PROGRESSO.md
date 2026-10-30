@@ -569,3 +569,4 @@
 - 2026-10-30 13:44 · E3-S04: REVISAR ok
 - 2026-10-30 13:44 · E3-S04: PR aberto para revisão
 - 2026-10-30 13:45 · E3-S05: revertido — chamada terminou com ERRO
+- 2026-10-30 13:45 · E3-S05: revertido — limite de uso no meio da chamada

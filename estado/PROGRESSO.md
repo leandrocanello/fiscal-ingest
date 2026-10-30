@@ -500,3 +500,5 @@
 - 2026-10-30 08:37 · E3-S02: DESENVOLVER ok
 - 2026-10-30 08:39 · E3-S02 (dev, passo 5): `JdbiEstadoColetaTest` falhou antes (`confirmarComVersaoVelha...` e `confirmarComUltNsuMenor...`: "java.lang.IllegalStateException at JdbiEstadoColetaTest.java:127/144"); UPDATE com 0 linhas → diagnóstico (versao/ult_nsu) + exceção interna que desfaz o ledger e devolve ConflitoDeVersao/RetrocessoRecusado; chave inexistente → IllegalStateException; suíte inteira verde · próximo: passo 6 (reconfirmar NSU já registrado mantém primeiro status)
 - 2026-10-30 08:39 · E3-S02: DESENVOLVER ok
+- 2026-10-30 08:42 · E3-S02 (dev, passo 6): `reconfirmarNsuJaRegistradoMantemPrimeiroStatus` passou de primeira (caracterização; ON CONFLICT DO NOTHING já garante); mutação 'do update set status' faz falhar: "UnableToExecuteStatementException at JdbiEstadoColetaTest.java:174" (trigger append-only V2); suíte inteira verde · próximo: passo 7 (CaosDoisFetchersTest)
+- 2026-10-30 08:41 · E3-S02: DESENVOLVER ok

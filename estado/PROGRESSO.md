@@ -482,3 +482,6 @@
 - 2026-10-30 08:24 · E2-S16: DESENVOLVER ok
 - 2026-10-30 12:00 · E2-S16 (verificar): conferidos os 14 cStat na tabela, nas propriedades (MAPEADOS), no log do fallback e no WireMock; suíte inteira verde, sem código novo · próximo: revisão
 - 2026-10-30 08:24 · E2-S16: VERIFICAR ok
+- 2026-10-30 08:25 · E2-S16 (revisar): APROVADO PARA PR; 4 achados menores (mapper compartilhado com distNSU, javadoc, §3.2 do CLAUDE.md, case 236) · próximo: PR/merge pelo autor
+- 2026-10-30 08:25 · E2-S16: REVISAR ok
+- 2026-10-30 08:25 · E2-S16: PR aberto para revisão

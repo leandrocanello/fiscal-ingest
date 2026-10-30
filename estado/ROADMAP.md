@@ -32,7 +32,7 @@
 - [x] E2-S11 | AUTO+    | deps: E2-S10,E2-S01 | manifestar: evento 210210 + XML-DSig (com chave de teste gerada no teste)
 - [r] E2-S14 | AUTO     | deps: -      | recuperar na main o código perdido: fim da E2-S05 (XXE, extrator) + E2-S08/E2-S09 (mergeados na branch empilhada)
 - [r] E2-S15 | AUTO+    | deps: E2-S14 | Documento.blobRef → Optional<BlobRef> no domain; nfe e fake gravam o mesmo formato; tirar o gancho lerBlob do contrato
-- [~] E2-S16 | AUTO     | deps: E2-S14 | cStat do consChNFe no CStatMapper (217/236/614–619/640/641/653/654 → definitivo; 593 → ErroAutenticacao; 252 → definitivo), testes primeiro
+- [r] E2-S16 | AUTO     | deps: E2-S14 | cStat do consChNFe no CStatMapper (217/236/614–619/640/641/653/654 → definitivo; 593 → ErroAutenticacao; 252 → definitivo), testes primeiro
 - [ ] E2-S13 | AUTO+    | deps: E2-S07,E2-S11 | enviar o evento de manifestação (RecepcaoEvento SOAP) + mapear o retEvento
 - [ ] E2-S12 | HUMANO   | deps: E2-S09,E2-S13 | smoke em homologação: distNSU, consChNFe, ciência, autXML
 

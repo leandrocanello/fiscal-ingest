@@ -521,3 +521,5 @@
 - 2026-10-30 13:02 · E3-S03: PLANEJAR ok
 - 2026-10-30 13:10 · E3-S03: passo 1 (papel fiscal_app, V4, dataSourceComoApp) — falha vista: `PapelAppTest > papelFiscalAppExisteSemSuperuserNemBypassRls() FAILED` (IllegalStateException: pg_roles sem fiscal_app); `MigracoesTest > aplicaAteV4ECriaOPapelDaAplicacao() FAILED`; `aplicarEmDoisSchemasNaoFalhaPorqueOPapelJaExiste() FAILED`; suíte inteira verde após V4; commit f7782ac · próximo: passo 2 (grants mínimos, ledger sem UPDATE/DELETE/TRUNCATE)
 - 2026-10-30 13:04 · E3-S03: DESENVOLVER ok
+- 2026-10-30 13:06 · E3-S03: passo 2 (grants mínimos na V4) — falha vista: `ledgerRecusaUpdateDeleteETruncateParaOPapelApp()` PSQLException: permission denied for table ledger_tentativa (insert); `confirmarLoteFuncionaComoPapelApp()` permission denied for table estado_coleta (insert); `estadoColetaSemDeleteNemTruncate` já passava (trava de regressão); suíte inteira verde (522) · próximo: passo 3 (V5 RLS em tenant/empresa + RlsTenantTest leitura)
+- 2026-10-30 13:06 · E3-S03: DESENVOLVER ok

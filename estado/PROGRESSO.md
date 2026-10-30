@@ -542,3 +542,5 @@
 - 2026-10-30 13:20 · E3-S04: PLANEJAR ok
 - 2026-10-30 13:22 · E3-S04: MensagemOutbox + Publicador no domínio (falha inicial: cannot find symbol MensagemOutbox; suíte verde) · próximo: ConfirmacaoLote com mensagens
 - 2026-10-30 13:22 · E3-S04: DESENVOLVER ok
+- 2026-10-30 13:40 · E3-S04: ConfirmacaoLote ganhou List<MensagemOutbox> mensagens + construtor de 4 args (falha inicial: "constructor ConfirmacaoLote cannot be applied" / "cannot find symbol"; suíte inteira verde) · próximo: OutboxEsquemaTest + V6__outbox.sql
+- 2026-10-30 13:24 · E3-S04: DESENVOLVER ok

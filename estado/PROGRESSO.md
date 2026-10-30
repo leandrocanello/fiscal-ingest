@@ -540,3 +540,5 @@
 - 2026-10-30 13:18 · E3-S03: PR aberto para revisão
 - 2026-10-30 13:20 · E3-S04: plano criado (9 passos: MensagemOutbox/Publicador, V6 outbox, outbox na TX do CAS, relay SKIP LOCKED com ordem por chave, caos, consumo idempotente V7; DA-25) · próximo: desenvolver
 - 2026-10-30 13:20 · E3-S04: PLANEJAR ok
+- 2026-10-30 13:22 · E3-S04: MensagemOutbox + Publicador no domínio (falha inicial: cannot find symbol MensagemOutbox; suíte verde) · próximo: ConfirmacaoLote com mensagens
+- 2026-10-30 13:22 · E3-S04: DESENVOLVER ok

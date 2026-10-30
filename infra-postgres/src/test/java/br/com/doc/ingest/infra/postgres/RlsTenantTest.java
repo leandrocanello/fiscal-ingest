@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.function.Function;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 /**
  * Row-Level Security por tenant (ADR-013, §13: "o tenant A não lê nada do B").
@@ -92,6 +93,51 @@ class RlsTenantTest extends PostgresTestBase {
         });
 
         assertThat(empresas).isZero();
+    }
+
+    @Test
+    void tenantANaoInsereEmpresaEmB() {
+        assertThatThrownBy(() -> comoTenant(tenantA, h -> inserirEmpresa(h, tenantB, "33333333000101")))
+                .hasMessageContaining("row-level security");
+
+        long total = admin.withHandle(h -> h.createQuery("select count(*) from empresa where cnpj = '33333333000101'")
+                .mapTo(Long.class).one());
+        assertThat(total).isZero();
+    }
+
+    @Test
+    void tenantANaoAtualizaEmpresaDeB() {
+        long alvo = empresasB.get(0);
+
+        int linhas = comoTenant(tenantA, h -> h.createUpdate("update empresa set razao_social = 'Invadida' where id = :id")
+                .bind("id", alvo).execute());
+
+        assertThat(linhas).isZero();
+        String razao = admin.withHandle(h -> h.createQuery("select razao_social from empresa where id = :id")
+                .bind("id", alvo).mapTo(String.class).one());
+        assertThat(razao).isEqualTo("Empresa sintética");
+    }
+
+    @Test
+    void tenantANaoMoveSuaEmpresaParaB() {
+        long propria = empresasA.get(0);
+
+        assertThatThrownBy(() -> comoTenant(tenantA, h -> h.createUpdate("update empresa set tenant_id = :b where id = :id")
+                .bind("b", tenantB).bind("id", propria).execute()))
+                .hasMessageContaining("row-level security");
+
+        long dono = admin.withHandle(h -> h.createQuery("select tenant_id from empresa where id = :id")
+                .bind("id", propria).mapTo(Long.class).one());
+        assertThat(dono).isEqualTo(tenantA);
+    }
+
+    @Test
+    void tenantAInsereEmpresaPropria() {
+        long id = comoTenant(tenantA, h -> inserirEmpresa(h, tenantA, "44444444000101"));
+
+        List<Long> ids = comoTenant(tenantA, h -> h.createQuery("select id from empresa order by id")
+                .mapTo(Long.class).list());
+        assertThat(ids).contains(id).hasSize(empresasA.size() + 1);
     }
 
     private static <R> R comoTenant(long tenantId, Function<Handle, R> leitura) {

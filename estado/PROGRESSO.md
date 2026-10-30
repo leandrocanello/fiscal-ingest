@@ -475,3 +475,6 @@
 - 2026-10-30 08:21 · E2-S16: DESENVOLVER ok
 - 2026-10-30 08:30 · E2-S16: teste LogDoFallback dos 14 códigos (passou sem código novo; suíte verde) · próximo: MAPEADOS no teste de propriedades (já ampliado, só marcar), teste WireMock 217/641/653/593
 - 2026-10-30 08:22 · E2-S16: DESENVOLVER ok
+- 2026-10-30 08:22 · E2-S16: passo 5 (MAPEADOS com os 14 códigos) já estava no código desde 6bf0ef1; propriedades verdes, sem commit novo · próximo: teste ponta a ponta WireMock (217/641/653/593)
+- 2026-10-30 08:22 · E2-S16: passo concluído sem alteração de código (aceito)
+- 2026-10-30 08:23 · E2-S16: DESENVOLVER ok

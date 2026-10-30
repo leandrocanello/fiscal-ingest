@@ -454,3 +454,5 @@
 - 2026-10-30 08:08 · E2-S15: DESENVOLVER ok
 - 2026-10-30 08:10 · E2-S15: passo 4 — contrato blobRefConfereComOHashDosBytes; vermelho por sonda local (fake com sha errado): "FakeSourceAdapterContratoTest > blobRef confere com o sha256 dos bytes gravados (inv. 7) FAILED — AssertionError: Expecting all elements of: [Documento[...]]" (27 tests, 2 failed; sonda revertida); todoDocumentoTemBlobLegivel lê via blobs(); suíte inteira verde (contrato 9/9 no fake e no nfe) · próximo: passo 5 (remover gancho lerBlob)
 - 2026-10-30 08:10 · E2-S15: DESENVOLVER ok
+- 2026-10-30 08:12 · E2-S15: passo 5 — refactor sem vermelho (suíte verde antes e depois): removido lerBlob do SourceAdapterContrato e dos 2 overrides + imports órfãos; contrato 9/9 no fake e no nfe · próximo: passo 6 (FakeSourceAdapterTest.buscarUmDevolveOMesmoBlobRefDoLote)
+- 2026-10-30 08:11 · E2-S15: DESENVOLVER ok

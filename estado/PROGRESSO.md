@@ -531,3 +531,5 @@
 - 2026-10-30 13:12 · E3-S03: DESENVOLVER ok
 - 2026-10-30 13:14 · E3-S03: passo 6 (TodaTabelaComTenantIdTemRlsTest) — falha vista com V6 temporária: `todaTabelaComColunaTenantIdTemRlsForcadaEPolitica() FAILED` (Expecting empty but was: [catalogo_tmp]); `tabelasSemTenantSaoSoAsDeclaradas() FAILED` (fila_tmp não declarada); V6 removida, suíte inteira verde · próximo: passo 7 (IsolamentoTenantPropriedadesTest)
 - 2026-10-30 13:14 · E3-S03: DESENVOLVER ok
+- 2026-10-30 13:20 · E3-S03: passo 7 (IsolamentoTenantPropriedadesTest) — falha vista com RLS de empresa desligado temporariamente: `cadaTenantVeExatamenteAsSuas FAILED` (expected: [] but was: [1L]); `somaDasVisoesIgualAoTotal FAILED` (expected: 1L but was: 2L); `nenhumaLinhaDeOutroTenant FAILED`; sabotagem removida, suíte inteira verde · próximo: Verificação/revisão da E3-S03
+- 2026-10-30 13:16 · E3-S03: DESENVOLVER ok

@@ -496,3 +496,5 @@
 - 2026-10-30 08:34 · E3-S02: DESENVOLVER ok
 - 2026-10-30 08:58 · E3-S02 (dev, passo 3): `JdbiEstadoColetaTest` falhou antes (`JdbiEstadoColetaTest.java:30: error: cannot find symbol` — JdbiEstadoColeta inexistente); criado `JdbiEstadoColeta` com criarSeAusente/carregar (confirmarLote lança UnsupportedOperationException até o passo 4); suíte inteira verde · próximo: passo 4 (confirmarLote com CAS + ledger na mesma transação)
 - 2026-10-30 08:35 · E3-S02: DESENVOLVER ok
+- 2026-10-30 09:05 · E3-S02 (dev, passo 4): `JdbiEstadoColetaTest` falhou antes (`confirmarNaVersaoLida...` e `confirmarSemEntradas...`: "java.lang.UnsupportedOperationException at JdbiEstadoColetaTest.java:95/110"); confirmarLote com ledger + CAS em jdbi.inTransaction, insert do ledger extraído para LedgerSql; suíte inteira verde · próximo: passo 5 (conflito/retrocesso devolvem ConflitoDeVersao/RetrocessoRecusado com rollback)
+- 2026-10-30 08:37 · E3-S02: DESENVOLVER ok

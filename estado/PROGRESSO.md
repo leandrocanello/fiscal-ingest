@@ -502,3 +502,5 @@
 - 2026-10-30 08:39 · E3-S02: DESENVOLVER ok
 - 2026-10-30 08:42 · E3-S02 (dev, passo 6): `reconfirmarNsuJaRegistradoMantemPrimeiroStatus` passou de primeira (caracterização; ON CONFLICT DO NOTHING já garante); mutação 'do update set status' faz falhar: "UnableToExecuteStatementException at JdbiEstadoColetaTest.java:174" (trigger append-only V2); suíte inteira verde · próximo: passo 7 (CaosDoisFetchersTest)
 - 2026-10-30 08:41 · E3-S02: DESENVOLVER ok
+- 2026-10-30 08:46 · E3-S02 (dev, passo 7): `CaosDoisFetchersTest` (2 fetchers ×50 + 8 fetchers ×5 rodadas) verde sem mudança em produção; mutação sem `versao = :v` no CAS falha: "doisFetchersNaMesmaVersaoSoUmAvanca() > repetition 1 of 50 FAILED / java.lang.AssertionError at CaosDoisFetchersTest.java:67"; suíte inteira verde · próximo: passo 8 (CaosFalhaNoMeioTest)
+- 2026-10-30 08:43 · E3-S02: DESENVOLVER ok

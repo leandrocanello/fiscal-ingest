@@ -565,3 +565,6 @@
 - 2026-10-30 13:40 · E3-S04: revisor devolveu para correção
 - 2026-10-30 13:42 · E3-S04: relay isola falha por chave (teste falhou antes: b1 não saía; suíte verde) · próximo: revisão
 - 2026-10-30 13:43 · E3-S04: DESENVOLVER ok
+- 2026-10-30 13:44 · E3-S04: revisão pós-correção — APROVAR PARA PR (relay isola falha por chave; suíte verde, infra-postgres 129) · próximo: PR E3-S04 / merge decide numeração V4–V7
+- 2026-10-30 13:44 · E3-S04: REVISAR ok
+- 2026-10-30 13:44 · E3-S04: PR aberto para revisão

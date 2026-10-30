@@ -467,3 +467,5 @@
 - 2026-10-30 08:15 · E2-S15: PR aberto para revisão
 - 2026-10-30 08:15 · E2-S16: PLANEJAR — plano em planos/E2-S16.md (6 passos; decisão já tomada pelo autor em PARA-VOCE E2-S09) · próximo: DESENVOLVER E2-S16
 - 2026-10-30 08:16 · E2-S16: PLANEJAR ok
+- 2026-10-30 · E2-S16: 12 cStat do consChNFe (217/236/614–619/640/641/653/654) → IndisponivelDefinitivo; falha inicial: 'cStat 217 -> IndisponivelDefinitivo FAILED'; MAPEADOS da propriedade ampliado junto · próximo: 252 e 593
+- 2026-10-30 08:18 · E2-S16: DESENVOLVER ok

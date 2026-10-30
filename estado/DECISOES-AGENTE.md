@@ -135,3 +135,9 @@
 **Opções:** (a) `Optional<BlobRef>` já, com os dois adapters devolvendo o `BlobRef` do `BlobStore.gravar` e o contrato lendo via `blobs().ler(ref)`; (b) manter a string e o gancho `lerBlob`.
 **Escolha:** (a) — feito na E2-S15; **fecha a DA-5** e a parte `blobRef` do achado A8 (o resto do A8 segue para a E3).
 **Como desfazer:** reverter os commits `(E2-S15)` da branch auto/E2-S15.
+
+### DA-23 · 2026-10-30 · E3-S02
+- **Contexto:** o §6.3 (passo 4) pede ledger + CAS do cursor na mesma transação, mas o domínio não tem porta para o estado da coleta nem unidade de trabalho; os docs não dizem a forma da porta.
+- **Opções:** (a) porta `EstadoColetaRepositorio` com `confirmarLote(ConfirmacaoLote) → ResultadoCas` (sealed: `Aplicado`, `ConflitoDeVersao`, `RetrocessoRecusado`), que grava ledger + cursor numa transação e desfaz tudo em conflito; (b) porta genérica `UnidadeDeTrabalho` envolvendo `NsuLedger` + repositório de cursor; (c) CAS só do cursor, ledger fora da transação.
+- **Escolha:** (a). Menor superfície, não vaza transação para o domínio e casa com o pseudocódigo da §6.7. Pacote novo `domain.coleta`; `NsuLedger` e `AvancarPonteiroUseCase` intocados. Também: trigger no banco (V3) recusando `ult_nsu` menor (defesa em profundidade da inv. 1); `ult_nsu` igual é aceito e sobe a versão (espelha `NAO_AVANCOU`).
+- **Como desfazer:** trocar a porta por (b) movendo o SQL do `JdbiEstadoColeta` para dois repositórios; remover o trigger com uma migration nova.

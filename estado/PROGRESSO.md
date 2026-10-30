@@ -487,3 +487,6 @@
 - 2026-10-30 08:25 · E2-S16: PR aberto para revisão
 - 2026-10-30 08:29 · E2-S13 (planejar): plano criado (8 passos TDD, WireMock); parado em [!] aguardando PARA-VOCE [DECISAO] E2-S13 (D1 cStat do retEvento, D2 contrato SOAP, D3 porta/certificado) · próximo: resposta do autor, depois desenvolver
 - 2026-10-30 08:29 · E2-S13: PLANEJAR ok
+- 2026-10-30 08:29 · E2-S13: plano aguarda decisão (passo [!]) → [h]
+- 2026-10-30 08:30 · E3-S02 (planejar): plano criado (9 passos TDD: porta no domínio, V3 com trigger de não-retrocesso, JdbiEstadoColeta com CAS+ledger na mesma TX, caos 2 fetchers e queda no meio, propriedade jqwik); DA-23 · próximo: desenvolver (opus)
+- 2026-10-30 08:31 · E3-S02: PLANEJAR ok

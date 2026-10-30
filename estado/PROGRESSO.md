@@ -458,3 +458,5 @@
 - 2026-10-30 08:11 · E2-S15: DESENVOLVER ok
 - 2026-10-30 08:14 · E2-S15: passo 6 — FakeSourceAdapterTest.buscarUmDevolveOMesmoBlobRefDoLote; sem vermelho: verde de primeira, como previsto (fake devolve o Documento pré-carregado); suíte inteira verde · próximo: passo 7 (docs AUDITORIA A8 + DA fechando DA-5)
 - 2026-10-30 08:12 · E2-S15: DESENVOLVER ok
+- 2026-10-30 08:16 · E2-S15: passo 7 — docs: A8 da AUDITORIA-1.5 anotado (blobRef resolvido; modelo/tipoConteudo/cnpjDestinatario → E3) + DA-22 fechando a DA-5; sem teste (docs), suíte verde · próximo: Verificação do plano (revisor)
+- 2026-10-30 08:12 · E2-S15: DESENVOLVER ok

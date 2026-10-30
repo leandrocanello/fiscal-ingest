@@ -129,3 +129,9 @@
 - **Opções:** tratar como `Ok` sem documento; `IndisponivelTemporario(5 min)`; `IndisponivelDefinitivo`.
 - **Escolha:** `IndisponivelTemporario(5 min)`, sem documento. É uma resposta inconsistente. O envelope já foi gravado, então nada se perde e dá para diagnosticar. Não vira `Ok`, para o gap não ser dado como recuperado.
 - **Como desfazer:** um `if` no `buscarUm`/`buscarPorChave` e os testes da DA-21.
+
+### DA-22 · 2026-10-30 · E2-S15
+**Contexto:** a DA-5 adiou a troca de `Documento.blobRef` (`Optional<String>`) para a E3; o autor escolheu a opção (a) no PARA-VOCE E2-S08 (2026-10-29).
+**Opções:** (a) `Optional<BlobRef>` já, com os dois adapters devolvendo o `BlobRef` do `BlobStore.gravar` e o contrato lendo via `blobs().ler(ref)`; (b) manter a string e o gancho `lerBlob`.
+**Escolha:** (a) — feito na E2-S15; **fecha a DA-5** e a parte `blobRef` do achado A8 (o resto do A8 segue para a E3).
+**Como desfazer:** reverter os commits `(E2-S15)` da branch auto/E2-S15.

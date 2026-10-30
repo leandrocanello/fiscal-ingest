@@ -448,3 +448,5 @@
 - 2026-10-30 08:04 · E2-S15: PLANEJAR ok
 - 2026-10-30 08:20 · E2-S15: passo 1 — vermelho: `DocumentoTest.java:17: error: incompatible types: inference variable T has incompatible bounds` / `:21: error: invalid method reference` (blobRef era Optional<String>); verde após trocar para Optional<BlobRef> + ajuste mecânico fake/nfe (406 testes, 0 falhas) · commit 442dfe3 · próximo: passo 2 (blobRefDoDocumentoEhOMesmoDevolvidoPeloBlobStore)
 - 2026-10-30 08:06 · E2-S15: DESENVOLVER ok
+- 2026-10-30 08:07 · E2-S15: passo 2 — sem vermelho: coberto pelo passo 1 (teste de regressão do formato; BlobStoreEspiao agora guarda refs/bytes devolvidos); suíte inteira verde · commit 100fc25 · próximo: passo 3 (buscarUmEBuscarPorChaveDevolvemOMesmoBlobRefDoLote)
+- 2026-10-30 08:07 · E2-S15: DESENVOLVER ok

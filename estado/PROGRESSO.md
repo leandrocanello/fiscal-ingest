@@ -513,3 +513,7 @@
 - 2026-10-30 08:51 · E3-S02: revisão concluída — APROVAR PARA PR (suíte verde; 4 achados menores, sem bloqueio) · próximo: abrir PR / E3-S03
 - 2026-10-30 08:51 · E3-S02: REVISAR ok
 - 2026-10-30 08:52 · E3-S02: PR aberto para revisão
+- 2026-10-30 13:00 · E2-S14: mergeado por você ✔
+- 2026-10-30 13:00 · E2-S15: mergeado por você ✔
+- 2026-10-30 13:00 · E2-S16: mergeado por você ✔
+- 2026-10-30 13:00 · E3-S02: mergeado por você ✔

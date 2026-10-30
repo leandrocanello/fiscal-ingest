@@ -529,3 +529,5 @@
 - 2026-10-30 13:10 · E3-S03: DESENVOLVER ok
 - 2026-10-30 13:35 · E3-S03: passo 5 (TransacaoPorTenant) — falha vista (stub sem set_config): `executaComTenantDaSessaoEVeSoOsSeus() FAILED` (:66); `contextoNaoVazaParaATransacaoSeguinteNaMesmaConexao() FAILED` (:76); `tenantIdNaoPositivoEhRecusado() FAILED` (:101); rollback passava trivialmente no stub. Suíte inteira verde · próximo: passo 6 (TodaTabelaComTenantIdTemRlsTest)
 - 2026-10-30 13:12 · E3-S03: DESENVOLVER ok
+- 2026-10-30 13:14 · E3-S03: passo 6 (TodaTabelaComTenantIdTemRlsTest) — falha vista com V6 temporária: `todaTabelaComColunaTenantIdTemRlsForcadaEPolitica() FAILED` (Expecting empty but was: [catalogo_tmp]); `tabelasSemTenantSaoSoAsDeclaradas() FAILED` (fila_tmp não declarada); V6 removida, suíte inteira verde · próximo: passo 7 (IsolamentoTenantPropriedadesTest)
+- 2026-10-30 13:14 · E3-S03: DESENVOLVER ok

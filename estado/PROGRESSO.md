@@ -471,3 +471,5 @@
 - 2026-10-30 08:18 · E2-S16: DESENVOLVER ok
 - 2026-10-30 08:19 · E2-S16: cStat 252 → IndisponivelDefinitivo (falhou 2 testes antes; suíte verde) · próximo: 593 → ErroAutenticacao
 - 2026-10-30 08:20 · E2-S16: DESENVOLVER ok
+- 2026-10-30 08:21 · E2-S16: cStat 593 → ErroAutenticacao (teste falhou no fallback temporário, depois verde; suíte inteira verde) · próximo: teste LogDoFallback dos 14 códigos
+- 2026-10-30 08:21 · E2-S16: DESENVOLVER ok

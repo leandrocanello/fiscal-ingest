@@ -548,3 +548,5 @@
 - 2026-10-30 13:25 · E3-S04: DESENVOLVER ok
 - 2026-10-30 13:40 · E3-S04: outbox gravado na transação do CAS (OutboxSql); falha inicial: 2 testes sem mensagem na outbox; suíte verde · próximo: caos falhaAntesDoCasNaoGravaOutbox
 - 2026-10-30 13:27 · E3-S04: DESENVOLVER ok
+- 2026-10-30 · E3-S04: teste de caos falhaAntesDoCasNaoGravaOutbox (passou de primeira: atomicidade já garantida pelo passo anterior) · próximo: RelayOutboxTest
+- 2026-10-30 13:29 · E3-S04: DESENVOLVER ok

@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 /** Estado de coleta por (fonte, cnpj_consultado, ambiente) com CAS do cursor (E3-S02). */
 class JdbiEstadoColetaTest extends PostgresTestBase {
@@ -113,6 +114,62 @@ class JdbiEstadoColetaTest extends PostgresTestBase {
         assertThat(resultado).isEqualTo(new ResultadoCas.Aplicado(1));
         assertThat(repositorio.carregar(CHAVE))
                 .contains(new PosicaoColeta(CHAVE, new Cursor("9"), new Nsu(9), 1));
+        assertThat(ledgerDe(CHAVE)).isEmpty();
+    }
+
+    @Test
+    void confirmarComVersaoVelhaDevolveConflitoESemEfeito() {
+        repositorio.criarSeAusente(CHAVE);
+        var velha = repositorio.carregar(CHAVE).orElseThrow();
+        var doVencedor = List.of(new EntradaLedger(new Nsu(1), StatusNsu.RESUMO));
+        repositorio.confirmarLote(new ConfirmacaoLote(velha, new Cursor("1"), new Nsu(1), doVencedor));
+
+        var resultado = repositorio.confirmarLote(new ConfirmacaoLote(velha, new Cursor("4"), new Nsu(4), List.of(
+                new EntradaLedger(new Nsu(2), StatusNsu.BAIXADO),
+                new EntradaLedger(new Nsu(4), StatusNsu.EVENTO))));
+
+        assertThat(resultado).isEqualTo(new ResultadoCas.ConflitoDeVersao(1));
+        assertThat(repositorio.carregar(CHAVE))
+                .contains(new PosicaoColeta(CHAVE, new Cursor("1"), new Nsu(1), 1));
+        assertThat(ledgerDe(CHAVE)).containsExactlyElementsOf(doVencedor);
+    }
+
+    @Test
+    void confirmarComUltNsuMenorEhRecusadoSemEfeito() {
+        repositorio.criarSeAusente(CHAVE);
+        repositorio.confirmarLote(new ConfirmacaoLote(
+                repositorio.carregar(CHAVE).orElseThrow(), new Cursor("5"), new Nsu(5), List.of()));
+        var lida = repositorio.carregar(CHAVE).orElseThrow();
+
+        var resultado = repositorio.confirmarLote(new ConfirmacaoLote(lida, new Cursor("3"), new Nsu(3),
+                List.of(new EntradaLedger(new Nsu(3), StatusNsu.BAIXADO))));
+
+        assertThat(resultado).isEqualTo(new ResultadoCas.RetrocessoRecusado(new Nsu(5)));
+        assertThat(repositorio.carregar(CHAVE)).contains(lida);
+        assertThat(ledgerDe(CHAVE)).isEmpty();
+    }
+
+    @Test
+    void confirmarComMesmoUltNsuEhAplicado() {
+        repositorio.criarSeAusente(CHAVE);
+        repositorio.confirmarLote(new ConfirmacaoLote(
+                repositorio.carregar(CHAVE).orElseThrow(), new Cursor("5"), new Nsu(5), List.of()));
+        var lida = repositorio.carregar(CHAVE).orElseThrow();
+
+        var resultado = repositorio.confirmarLote(new ConfirmacaoLote(lida, new Cursor("5"), new Nsu(5), List.of()));
+
+        assertThat(resultado).isEqualTo(new ResultadoCas.Aplicado(2));
+        assertThat(repositorio.carregar(CHAVE))
+                .contains(new PosicaoColeta(CHAVE, new Cursor("5"), new Nsu(5), 2));
+    }
+
+    @Test
+    void confirmarChaveInexistenteLancaIllegalStateESemEfeito() {
+        var fantasma = new PosicaoColeta(CHAVE, Cursor.inicial(), new Nsu(0), 0);
+
+        assertThatThrownBy(() -> repositorio.confirmarLote(new ConfirmacaoLote(fantasma, new Cursor("1"), new Nsu(1),
+                List.of(new EntradaLedger(new Nsu(1), StatusNsu.RESUMO)))))
+                .isInstanceOf(IllegalStateException.class);
         assertThat(ledgerDe(CHAVE)).isEmpty();
     }
 

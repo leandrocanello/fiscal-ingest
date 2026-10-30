@@ -546,3 +546,5 @@
 - 2026-10-30 13:24 · E3-S04: DESENVOLVER ok
 - 2026-10-30 14:00 · E3-S04: V6__outbox.sql + OutboxEsquemaTest (falhou: relation outbox inexistente; agora verde, suíte inteira verde) · próximo: JdbiEstadoColetaOutboxTest
 - 2026-10-30 13:25 · E3-S04: DESENVOLVER ok
+- 2026-10-30 13:40 · E3-S04: outbox gravado na transação do CAS (OutboxSql); falha inicial: 2 testes sem mensagem na outbox; suíte verde · próximo: caos falhaAntesDoCasNaoGravaOutbox
+- 2026-10-30 13:27 · E3-S04: DESENVOLVER ok

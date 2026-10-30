@@ -550,3 +550,5 @@
 - 2026-10-30 13:27 · E3-S04: DESENVOLVER ok
 - 2026-10-30 · E3-S04: teste de caos falhaAntesDoCasNaoGravaOutbox (passou de primeira: atomicidade já garantida pelo passo anterior) · próximo: RelayOutboxTest
 - 2026-10-30 13:29 · E3-S04: DESENVOLVER ok
+- 2026-10-30 13:31 · E3-S04: RelayOutbox + RelayOutboxTest (4 testes; teste e classe escritos juntos, sem rodada vermelha separada) · próximo: relay preserva ordem por chave
+- 2026-10-30 13:31 · E3-S04: DESENVOLVER ok

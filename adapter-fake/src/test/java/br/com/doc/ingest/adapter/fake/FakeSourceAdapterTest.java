@@ -1,6 +1,7 @@
 package br.com.doc.ingest.adapter.fake;
 
 import br.com.doc.ingest.domain.adapter.*;
+import br.com.doc.ingest.domain.blob.BlobRef;
 import br.com.doc.ingest.domain.model.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -12,6 +13,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 /**
  * Testes do FakeSourceAdapter - adapter em memoria para testar o core sem SEFAZ.
@@ -106,6 +108,23 @@ class FakeSourceAdapterTest {
         }
 
         @Test
+        @DisplayName("buscarUm devolve o mesmo BlobRef do buscarLote")
+        void buscarUmDevolveOMesmoBlobRefDoLote() {
+            FakeSourceAdapter adapter = new FakeSourceAdapter(fonte);
+            BlobRef ref = new BlobRef("fake/7.xml", "a".repeat(64));
+            Documento doc = new Documento(UUID.randomUUID(), fonte, cnpj, "55", nsu(7), Instant.EPOCH,
+                    "COMPLETO", Optional.empty(), Optional.of(ref));
+            adapter.preCarregar(cnpj, List.of(doc));
+
+            Optional<BlobRef> doLote = adapter.buscarLote(new ContextoConsulta(fonte, cnpj), Cursor.inicial())
+                    .documentos().get(0).blobRef();
+            Optional<BlobRef> doUm = adapter.buscarUm(fonte, cnpj, nsu(7)).documento().orElseThrow().blobRef();
+
+            assertThat(doLote).contains(ref);
+            assertThat(doUm).isEqualTo(doLote);
+        }
+
+        @Test
         @DisplayName("deve retornar Vazio quando NSU nao existe")
         void deveRetornarVazioQuandoNsuNaoExiste() {
             FakeSourceAdapter adapter = new FakeSourceAdapter(fonte);
@@ -114,6 +133,80 @@ class FakeSourceAdapterTest {
 
             assertThat(resultado.desfecho()).isInstanceOf(Desfecho.Vazio.class);
             assertThat(resultado.documento()).isEmpty();
+        }
+    }
+
+    @Nested
+    @DisplayName("cursor (DA-19)")
+    class CursorDoFake {
+
+        @Test
+        @DisplayName("retomada pelo proximoCursor so traz NSU maior")
+        void retomadaPeloProximoCursorSoTrazNsuMaior() {
+            FakeSourceAdapter adapter = new FakeSourceAdapter(fonte);
+            adapter.preCarregar(cnpj, List.of(
+                    documento(nsu(1), "RESUMO"), documento(nsu(2), "RESUMO"), documento(nsu(3), "RESUMO")));
+            ContextoConsulta ctx = new ContextoConsulta(fonte, cnpj);
+
+            BuscarLoteResultado primeiro = adapter.buscarLote(ctx, Cursor.inicial());
+            assertThat(primeiro.desfecho()).isInstanceOf(Desfecho.Ok.class);
+            assertThat(primeiro.documentos()).hasSize(3);
+            assertThat(primeiro.proximoCursor()).isEqualTo(new Cursor("3"));
+
+            BuscarLoteResultado segundo = adapter.buscarLote(ctx, primeiro.proximoCursor());
+            assertThat(segundo.desfecho()).isInstanceOf(Desfecho.Vazio.class);
+            assertThat(segundo.documentos()).isEmpty();
+            assertThat(segundo.ultNsu()).isEqualTo(nsu(3));
+            assertThat(segundo.proximoCursor()).isEqualTo(new Cursor("3"));
+        }
+
+        @Test
+        @DisplayName("cursor nao numerico e rejeitado")
+        void cursorNaoNumericoEhRejeitado() {
+            FakeSourceAdapter adapter = new FakeSourceAdapter(fonte);
+            ContextoConsulta ctx = new ContextoConsulta(fonte, cnpj);
+
+            assertThatThrownBy(() -> adapter.buscarLote(ctx, new Cursor("abc")))
+                    .isInstanceOf(IllegalArgumentException.class);
+        }
+    }
+
+    @Nested
+    @DisplayName("desfecho programado")
+    class DesfechoProgramado {
+
+        @Test
+        @DisplayName("desfecho programado nao avanca e pode ser removido")
+        void desfechoProgramadoNaoAvanca() {
+            FakeSourceAdapter adapter = new FakeSourceAdapter(fonte);
+            adapter.preCarregar(cnpj, List.of(documento(nsu(1), "RESUMO"), documento(nsu(2), "RESUMO")));
+            ContextoConsulta ctx = new ContextoConsulta(fonte, cnpj);
+            Cursor entrada = new Cursor("1");
+            Desfecho falha = new Desfecho.IndisponivelTemporario(java.time.Duration.ofMinutes(5));
+
+            adapter.programarDesfecho(cnpj, falha);
+            BuscarLoteResultado r = adapter.buscarLote(ctx, entrada);
+            assertThat(r.desfecho()).isEqualTo(falha);
+            assertThat(r.documentos()).isEmpty();
+            assertThat(r.proximoCursor()).isEqualTo(entrada);
+            assertThat(r.ultNsu()).isEqualTo(nsu(1));
+            assertThat(r.temMais()).isFalse();
+
+            adapter.programarDesfecho(cnpj, null);
+            BuscarLoteResultado normal = adapter.buscarLote(ctx, entrada);
+            assertThat(normal.desfecho()).isInstanceOf(Desfecho.Ok.class);
+            assertThat(normal.documentos()).hasSize(1);
+        }
+
+        @Test
+        @DisplayName("programar Ok ou Vazio e rejeitado")
+        void programarOkOuVazioEhRejeitado() {
+            FakeSourceAdapter adapter = new FakeSourceAdapter(fonte);
+
+            assertThatThrownBy(() -> adapter.programarDesfecho(cnpj, new Desfecho.Ok()))
+                    .isInstanceOf(IllegalArgumentException.class);
+            assertThatThrownBy(() -> adapter.programarDesfecho(cnpj, new Desfecho.Vazio()))
+                    .isInstanceOf(IllegalArgumentException.class);
         }
     }
 

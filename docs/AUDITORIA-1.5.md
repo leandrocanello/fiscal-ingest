@@ -27,7 +27,7 @@ Contagem de testes (por anotação) bate com os docs: `domain` 35 `@Test` + 1 pa
 | A5 | `RecuperarGapUseCase` | `Vazio` no consNSU vira `DESCARTADO` no ledger | Médio | Validar o que o AN responde para NSU inexistente; talvez `FORA_PRAZO`/`GAP` |
 | A6 | `Credencial` | Ainda `caminho` + `senha` (v1). CLAUDE.md §9 define bytes do `.pfx` + senha em memória | Médio | Ajustar em E2-S08 |
 | A7 | `ContextoConsulta` | Só `fonte` + `cnpj`; v2 pede `cnpj_consultado` + `certificado_id` + ambiente | Baixo agora | Ajustar em E2 |
-| A8 | `Documento` | `modelo`/`tipoConteudo` como `String`, `blobRef` como `Optional<String>`, campo `cnpjDestinatario` (v2: atribuição pelo conteúdo) | Baixo agora | Tipos fortes quando o catálogo entrar (E3) |
+| A8 | `Documento` | `modelo`/`tipoConteudo` como `String`, `blobRef` como `Optional<String>`, campo `cnpjDestinatario` (v2: atribuição pelo conteúdo) | Baixo agora | Tipos fortes quando o catálogo entrar (E3). `blobRef` → `Optional<BlobRef>` resolvido na E2-S15; `modelo`/`tipoConteudo`/`cnpjDestinatario` seguem para a E3 |
 | A9 | `adapter-nfe-nacional/build.gradle.kts` | **CXF 3.5.5 é baseado em `javax.*`**, enquanto o JAXB do projeto é `jakarta.*` 4.x; CXF não é usado em nenhum arquivo | Médio (conflito de classpath futuro) | Remover CXF (decisão já recomendada: HTTP + JAXB + Santuario) |
 | A10 | `TokenBucket` | Recarga calculada a partir do último consumo: progresso parcial se perde a cada consumo; além disso o modelo da SEFAZ é "bloqueio por CNPJ", não balde | Baixo | Rever quando o scheduler entrar (E4) |
 | A11 | `SourceAdapter` | Não tem `manifestar` (previsto nos docs) | — | E2-S09 |

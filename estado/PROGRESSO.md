@@ -492,3 +492,5 @@
 - 2026-10-30 08:31 · E3-S02: PLANEJAR ok
 - 2026-10-30 08:40 · E3-S02 (dev, passo 1): `ConfirmacaoLoteTest` falhou antes (`ConfirmacaoLoteTest.java:26: error: cannot find symbol` — ChaveColeta/PosicaoColeta inexistentes); criado pacote `domain.coleta` (ChaveColeta, PosicaoColeta, ConfirmacaoLote, ResultadoCas sealed, porta EstadoColetaRepositorio); suíte inteira verde · próximo: passo 2 (V3 + trigger de não-retrocesso, `NaoRetrocessoNoBancoTest`)
 - 2026-10-30 08:33 · E3-S02: DESENVOLVER ok
+- 2026-10-30 08:50 · E3-S02 (dev, passo 2): `NaoRetrocessoNoBancoTest` falhou antes (`updateQueDiminuiUltNsuEhRecusadoPeloBanco` e `colunasDoCursorNaoAceitamNulo`: "Expecting code to raise a throwable."); V3 com NOT NULL/defaults e trigger de não-retrocesso; suíte inteira verde · próximo: passo 3 (`JdbiEstadoColeta` criarSeAusente/carregar)
+- 2026-10-30 08:34 · E3-S02: DESENVOLVER ok

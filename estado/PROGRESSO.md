@@ -444,3 +444,5 @@
 - 2026-10-30 08:02 · E2-S14: revisão — APROVAR PARA PR (cherry-picks idênticos, merge limpo, suíte verde) · próximo: autor revisa e faz o merge do PR
 - 2026-10-30 08:02 · E2-S14: REVISAR ok
 - 2026-10-30 08:02 · E2-S14: PR aberto para revisão
+- 2026-10-30 08:03 · E2-S15: PLANEJAR — plano em planos/E2-S15.md (7 passos; Documento.blobRef → Optional<BlobRef>, contrato sem lerBlob, caso novo de hash inv. 7; decisão já dada pelo autor em PARA-VOCE E2-S08) · próximo: DESENVOLVER passo 1
+- 2026-10-30 08:04 · E2-S15: PLANEJAR ok

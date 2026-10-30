@@ -498,3 +498,5 @@
 - 2026-10-30 08:35 · E3-S02: DESENVOLVER ok
 - 2026-10-30 09:05 · E3-S02 (dev, passo 4): `JdbiEstadoColetaTest` falhou antes (`confirmarNaVersaoLida...` e `confirmarSemEntradas...`: "java.lang.UnsupportedOperationException at JdbiEstadoColetaTest.java:95/110"); confirmarLote com ledger + CAS em jdbi.inTransaction, insert do ledger extraído para LedgerSql; suíte inteira verde · próximo: passo 5 (conflito/retrocesso devolvem ConflitoDeVersao/RetrocessoRecusado com rollback)
 - 2026-10-30 08:37 · E3-S02: DESENVOLVER ok
+- 2026-10-30 08:39 · E3-S02 (dev, passo 5): `JdbiEstadoColetaTest` falhou antes (`confirmarComVersaoVelha...` e `confirmarComUltNsuMenor...`: "java.lang.IllegalStateException at JdbiEstadoColetaTest.java:127/144"); UPDATE com 0 linhas → diagnóstico (versao/ult_nsu) + exceção interna que desfaz o ledger e devolve ConflitoDeVersao/RetrocessoRecusado; chave inexistente → IllegalStateException; suíte inteira verde · próximo: passo 6 (reconfirmar NSU já registrado mantém primeiro status)
+- 2026-10-30 08:39 · E3-S02: DESENVOLVER ok

@@ -525,3 +525,5 @@
 - 2026-10-30 13:06 · E3-S03: DESENVOLVER ok
 - 2026-10-30 13:20 · E3-S03: passo 3 (V5 RLS em tenant/empresa + RlsTenantTest leitura) — falha vista: `semTenantNaSessaoNaoVeNenhumaEmpresaNemTenant() FAILED` (AssertionFailedError :60); `tenantAVeSoAsSuasEmpresas() FAILED`; `tenantANaoLeEmpresaDeBPorId() FAILED`; `tenantAVeSoASiMesmoNaTabelaTenant() FAILED`; `tenantIdVazioNaSessaoNaoQuebraEVeNada() FAILED`; suíte inteira verde após V5 · próximo: passo 4 (RLS bloqueia escrita entre tenants)
 - 2026-10-30 13:08 · E3-S03: DESENVOLVER ok
+- 2026-10-30 13:25 · E3-S03: passo 4 (RlsTenantTest escrita: insert/update/move entre tenants) — passou de primeira (V5 já tinha `with check`); falha vista por mutação (RLS de empresa desligado): `tenantANaoInsereEmpresaEmB() FAILED` (AssertionError :100); `tenantANaoAtualizaEmpresaDeB() FAILED` (:115); `tenantANaoMoveSuaEmpresaParaB() FAILED` (:127). Obs.: `with check (true)` não derruba os testes porque a política `for all` aplica o USING à linha nova (RETURNING/WHERE). Suíte inteira verde · próximo: passo 5 (TransacaoPorTenant)
+- 2026-10-30 13:10 · E3-S03: DESENVOLVER ok

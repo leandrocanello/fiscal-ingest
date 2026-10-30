@@ -52,8 +52,7 @@ class FakeSourceAdapterContratoTest extends SourceAdapterContrato {
 
     @Override
     protected Optional<byte[]> lerBlob(Documento documento) {
-        String[] partes = documento.blobRef().orElseThrow().split("@");
-        return blobs.ler(new BlobRef(partes[0], partes[1]));
+        return blobs.ler(documento.blobRef().orElseThrow());
     }
 
     @Override
@@ -63,7 +62,7 @@ class FakeSourceAdapterContratoTest extends SourceAdapterContrato {
             byte[] bytes = ("<doc>sintetico " + i + "</doc>").getBytes(StandardCharsets.UTF_8);
             BlobRef ref = blobs.gravar("fake/" + i + ".xml", bytes, Sha256.hex(bytes));
             docs.add(new Documento(UUID.randomUUID(), fonte, cnpj, "55", new Nsu(i), Instant.EPOCH,
-                    "procNFe", Optional.empty(), Optional.of(ref.chave() + "@" + ref.sha256())));
+                    "procNFe", Optional.empty(), Optional.of(ref)));
         }
         adapter.preCarregar(cnpj, docs);
     }

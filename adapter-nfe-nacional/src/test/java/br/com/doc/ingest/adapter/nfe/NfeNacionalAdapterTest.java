@@ -150,7 +150,7 @@ class NfeNacionalAdapterTest {
             byte[] esperado = xmls[i].getBytes(StandardCharsets.UTF_8);
             String sha = Sha256.hex(esperado);
             String chave = ChavesBlobPull.documento(FONTE, TipoAmbiente.PRODUCAO, CNPJ, new Nsu(i + 1), sha);
-            assertThat(docs.get(i).blobRef()).contains(chave);
+            assertThat(docs.get(i).blobRef()).contains(new BlobRef(chave, sha));
             assertThat(blobs.ler(new BlobRef(chave, sha))).hasValueSatisfying(b -> assertThat(b).isEqualTo(esperado));
         }
 
@@ -188,7 +188,7 @@ class NfeNacionalAdapterTest {
         BuscarLoteResultado r = adapterCom(espiao).buscarLote(new ContextoConsulta(FONTE, CNPJ), Cursor.inicial());
 
         String chaveEnvelope = r.envelope().orElseThrow().chave();
-        List<String> chavesDocs = r.documentos().stream().map(d -> d.blobRef().orElseThrow()).toList();
+        List<String> chavesDocs = r.documentos().stream().map(d -> d.blobRef().orElseThrow().chave()).toList();
         assertThat(espiao.chavesGravadas).hasSize(3);
         assertThat(espiao.chavesGravadas.get(0)).isEqualTo(chaveEnvelope).endsWith(".envelope.xml");
         assertThat(espiao.chavesGravadas.subList(1, 3)).containsExactlyElementsOf(chavesDocs);
@@ -207,9 +207,9 @@ class NfeNacionalAdapterTest {
             assertThat(d.nsu()).isEqualTo(new Nsu(7));
             byte[] esperado = xmlDesconhecido.getBytes(StandardCharsets.UTF_8);
             String sha = Sha256.hex(esperado);
-            assertThat(d.blobRef()).contains(
-                    ChavesBlobPull.documento(FONTE, TipoAmbiente.PRODUCAO, CNPJ, new Nsu(7), sha));
-            assertThat(blobs.ler(new BlobRef(d.blobRef().orElseThrow(), sha)))
+            assertThat(d.blobRef()).contains(new BlobRef(
+                    ChavesBlobPull.documento(FONTE, TipoAmbiente.PRODUCAO, CNPJ, new Nsu(7), sha), sha));
+            assertThat(blobs.ler(d.blobRef().orElseThrow()))
                     .hasValueSatisfying(b -> assertThat(b).isEqualTo(esperado));
         });
     }
@@ -483,7 +483,7 @@ class NfeNacionalAdapterTest {
         assertThat(doc.id()).isEqualTo(idEsperado(42));
         String sha = Sha256.hex(XML_PROC.getBytes(StandardCharsets.UTF_8));
         String chave = ChavesBlobPull.documento(FONTE, TipoAmbiente.PRODUCAO, CNPJ, new Nsu(42), sha);
-        assertThat(doc.blobRef()).contains(chave);
+        assertThat(doc.blobRef()).contains(new BlobRef(chave, sha));
         assertThat(blobs.ler(new BlobRef(chave, sha))).contains(XML_PROC.getBytes(StandardCharsets.UTF_8));
 
         var requisicoes = servidor.findAll(com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor(urlEqualTo(CAMINHO)));
@@ -652,7 +652,7 @@ class NfeNacionalAdapterTest {
         assertThat(doc.nsu()).isEqualTo(new Nsu(42));
         String sha = Sha256.hex(XML_PROC.getBytes(StandardCharsets.UTF_8));
         String chaveBlob = ChavesBlobPull.documento(FONTE, TipoAmbiente.PRODUCAO, CNPJ, new Nsu(42), sha);
-        assertThat(doc.blobRef()).contains(chaveBlob);
+        assertThat(doc.blobRef()).contains(new BlobRef(chaveBlob, sha));
         assertThat(blobs.ler(new BlobRef(chaveBlob, sha))).contains(XML_PROC.getBytes(StandardCharsets.UTF_8));
     }
 

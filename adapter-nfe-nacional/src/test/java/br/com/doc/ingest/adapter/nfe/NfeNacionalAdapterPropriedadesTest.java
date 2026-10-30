@@ -99,10 +99,8 @@ class NfeNacionalAdapterPropriedadesTest {
             assertThat(r.documentos()).isEmpty();
         }
         for (var d : r.documentos()) {
-            String chave = d.blobRef().orElseThrow();
-            // o sha256 está no final da chave (inv. 7); o blob precisa existir
-            String sha = chave.substring(chave.lastIndexOf('-') + 1, chave.length() - ".xml".length());
-            assertThat(blobs.ler(new BlobRef(chave, sha))).isPresent();
+            // o BlobRef devolvido já leva o sha256 (inv. 7); o blob precisa existir
+            assertThat(blobs.ler(d.blobRef().orElseThrow())).isPresent();
         }
     }
 
@@ -188,9 +186,7 @@ class NfeNacionalAdapterPropriedadesTest {
             assertThat(r.desfecho()).isInstanceOf(Desfecho.Ok.class);
             var d = r.documento().get();
             assertThat(d.nsu().valor()).isEqualTo(pedido);
-            String chave = d.blobRef().orElseThrow();
-            String sha = chave.substring(chave.lastIndexOf('-') + 1, chave.length() - ".xml".length());
-            assertThat(blobs.ler(new BlobRef(chave, sha))).isPresent();
+            assertThat(blobs.ler(d.blobRef().orElseThrow())).isPresent();
         }
     }
 }

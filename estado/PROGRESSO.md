@@ -480,3 +480,5 @@
 - 2026-10-30 08:23 · E2-S16: DESENVOLVER ok
 - 2026-10-30 08:40 · E2-S16: teste WireMock de buscarPorChave (217/641/653 → IndisponivelDefinitivo; 593 → ErroAutenticacao) passou sem código novo; suíte inteira verde · próximo: seção Verificação / revisão
 - 2026-10-30 08:24 · E2-S16: DESENVOLVER ok
+- 2026-10-30 12:00 · E2-S16 (verificar): conferidos os 14 cStat na tabela, nas propriedades (MAPEADOS), no log do fallback e no WireMock; suíte inteira verde, sem código novo · próximo: revisão
+- 2026-10-30 08:24 · E2-S16: VERIFICAR ok

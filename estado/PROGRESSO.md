@@ -506,3 +506,5 @@
 - 2026-10-30 08:43 · E3-S02: DESENVOLVER ok
 - 2026-10-30 08:50 · E3-S02 (dev, passo 8): `CaosFalhaNoMeioTest` (trigger de queda no schema do teste) verde sem mudança em produção; mutação "ledger fora da transação" falha: "falhaAntesDoCasNaoAvancaNemRegistraEReprocessarFunciona() FAILED / java.lang.AssertionError at CaosFalhaNoMeioTest.java:64" (ledger não vazio); obs.: mutar com `jdbi.useHandle` aninhado não falha (Jdbi reaproveita o handle da transação na mesma thread); suíte inteira verde · próximo: passo 9 (EstadoColetaCasPropriedadesTest)
 - 2026-10-30 08:46 · E3-S02: DESENVOLVER ok
+- 2026-10-30 08:55 · E3-S02 (dev, passo 9): `EstadoColetaCasPropriedadesTest` (3 propriedades jqwik, 15 tentativas) verde sem mudança em produção; mutação "conflito sem rollback" falha: "ledgerContemExatamenteAsEntradasDosAplicados FAILED / AssertionFailedError at EstadoColetaCasPropriedadesTest.java:107"; mutação "CAS sem ult_nsu <= :novo" falha: "ultNsuNuncaDecresce FAILED / PSQLException" (trigger V3); suíte inteira verde · próximo: Verificação (revisor)
+- 2026-10-30 08:48 · E3-S02: DESENVOLVER ok

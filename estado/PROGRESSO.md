@@ -441,3 +441,6 @@
 - 2026-10-29 18:30 · E2-S07/E2-S08/E2-S09/E2-S11: [x] à mão (PRs #23–#26 mergeados; o código de S08/S09 que ficou em auto/E2-S07 vai para a main pela E2-S14)
 - 2026-10-30 08:01 · E2-S14: verificação — suíte inteira verde, sem correções · próximo: revisão/merge
 - 2026-10-30 08:01 · E2-S14: VERIFICAR ok
+- 2026-10-30 08:02 · E2-S14: revisão — APROVAR PARA PR (cherry-picks idênticos, merge limpo, suíte verde) · próximo: autor revisa e faz o merge do PR
+- 2026-10-30 08:02 · E2-S14: REVISAR ok
+- 2026-10-30 08:02 · E2-S14: PR aberto para revisão

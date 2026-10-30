@@ -494,3 +494,5 @@
 - 2026-10-30 08:33 · E3-S02: DESENVOLVER ok
 - 2026-10-30 08:50 · E3-S02 (dev, passo 2): `NaoRetrocessoNoBancoTest` falhou antes (`updateQueDiminuiUltNsuEhRecusadoPeloBanco` e `colunasDoCursorNaoAceitamNulo`: "Expecting code to raise a throwable."); V3 com NOT NULL/defaults e trigger de não-retrocesso; suíte inteira verde · próximo: passo 3 (`JdbiEstadoColeta` criarSeAusente/carregar)
 - 2026-10-30 08:34 · E3-S02: DESENVOLVER ok
+- 2026-10-30 08:58 · E3-S02 (dev, passo 3): `JdbiEstadoColetaTest` falhou antes (`JdbiEstadoColetaTest.java:30: error: cannot find symbol` — JdbiEstadoColeta inexistente); criado `JdbiEstadoColeta` com criarSeAusente/carregar (confirmarLote lança UnsupportedOperationException até o passo 4); suíte inteira verde · próximo: passo 4 (confirmarLote com CAS + ledger na mesma transação)
+- 2026-10-30 08:35 · E3-S02: DESENVOLVER ok

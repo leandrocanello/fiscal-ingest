@@ -504,3 +504,5 @@
 - 2026-10-30 08:41 · E3-S02: DESENVOLVER ok
 - 2026-10-30 08:46 · E3-S02 (dev, passo 7): `CaosDoisFetchersTest` (2 fetchers ×50 + 8 fetchers ×5 rodadas) verde sem mudança em produção; mutação sem `versao = :v` no CAS falha: "doisFetchersNaMesmaVersaoSoUmAvanca() > repetition 1 of 50 FAILED / java.lang.AssertionError at CaosDoisFetchersTest.java:67"; suíte inteira verde · próximo: passo 8 (CaosFalhaNoMeioTest)
 - 2026-10-30 08:43 · E3-S02: DESENVOLVER ok
+- 2026-10-30 08:50 · E3-S02 (dev, passo 8): `CaosFalhaNoMeioTest` (trigger de queda no schema do teste) verde sem mudança em produção; mutação "ledger fora da transação" falha: "falhaAntesDoCasNaoAvancaNemRegistraEReprocessarFunciona() FAILED / java.lang.AssertionError at CaosFalhaNoMeioTest.java:64" (ledger não vazio); obs.: mutar com `jdbi.useHandle` aninhado não falha (Jdbi reaproveita o handle da transação na mesma thread); suíte inteira verde · próximo: passo 9 (EstadoColetaCasPropriedadesTest)
+- 2026-10-30 08:46 · E3-S02: DESENVOLVER ok

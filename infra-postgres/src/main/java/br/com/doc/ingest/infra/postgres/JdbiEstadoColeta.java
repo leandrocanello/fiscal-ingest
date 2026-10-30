@@ -70,6 +70,9 @@ public final class JdbiEstadoColeta implements EstadoColetaRepositorio {
                 for (EntradaLedger entrada : confirmacao.entradas()) {
                     LedgerSql.inserir(h, chave.fonte(), chave.cnpj(), chave.ambiente(), entrada, agora);
                 }
+                for (var mensagem : confirmacao.mensagens()) {
+                    OutboxSql.inserir(h, mensagem, agora);
+                }
                 int afetadas = h.createUpdate("""
                                 update estado_coleta
                                 set cursor_token = :cursor, ult_nsu = :novo, versao = versao + 1, atualizado_em = :atualizadoEm

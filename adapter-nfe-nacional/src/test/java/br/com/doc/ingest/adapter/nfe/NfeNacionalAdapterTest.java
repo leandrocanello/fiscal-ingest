@@ -82,10 +82,12 @@ class NfeNacionalAdapterTest {
         return novo;
     }
 
-    /** BlobStore espião: registra a ordem das chaves gravadas e delega ao store em memória. */
+    /** BlobStore espião: registra a ordem das chaves gravadas, os refs devolvidos e delega ao store em memória. */
     private static final class BlobStoreEspiao implements BlobStore {
         private final BlobStore alvo;
         private final List<String> chavesGravadas = new ArrayList<>();
+        private final List<BlobRef> refsDevolvidos = new ArrayList<>();
+        private final List<byte[]> conteudosGravados = new ArrayList<>();
 
         BlobStoreEspiao(BlobStore alvo) {
             this.alvo = alvo;
@@ -94,7 +96,10 @@ class NfeNacionalAdapterTest {
         @Override
         public BlobRef gravar(String chave, byte[] conteudo, String sha256) {
             chavesGravadas.add(chave);
-            return alvo.gravar(chave, conteudo, sha256);
+            BlobRef ref = alvo.gravar(chave, conteudo, sha256);
+            refsDevolvidos.add(ref);
+            conteudosGravados.add(conteudo.clone());
+            return ref;
         }
 
         @Override
@@ -192,6 +197,29 @@ class NfeNacionalAdapterTest {
         assertThat(espiao.chavesGravadas).hasSize(3);
         assertThat(espiao.chavesGravadas.get(0)).isEqualTo(chaveEnvelope).endsWith(".envelope.xml");
         assertThat(espiao.chavesGravadas.subList(1, 3)).containsExactlyElementsOf(chavesDocs);
+    }
+
+    @Test
+    @DisplayName("inv. 7: o blobRef de cada documento é o mesmo BlobRef devolvido pelo BlobStore.gravar")
+    void blobRefDoDocumentoEhOMesmoDevolvidoPeloBlobStore() {
+        String[] xmls = {XML_RES, XML_PROC, XML_EVT};
+        responder(resposta("138", 3, 3,
+                docZip(1, "resNFe_v1.01.xsd", xmls[0])
+                        + docZip(2, "procNFe_v4.00.xsd", xmls[1])
+                        + docZip(3, "procEventoNFe_v1.00.xsd", xmls[2])));
+        BlobStoreEspiao espiao = new BlobStoreEspiao(blobs);
+
+        BuscarLoteResultado r = adapterCom(espiao).buscarLote(new ContextoConsulta(FONTE, CNPJ), Cursor.inicial());
+
+        assertThat(r.documentos()).hasSize(3);
+        assertThat(espiao.refsDevolvidos).hasSize(4);
+        for (int i = 0; i < 3; i++) {
+            BlobRef devolvido = espiao.refsDevolvidos.get(i + 1);
+            byte[] descompactado = xmls[i].getBytes(StandardCharsets.UTF_8);
+            assertThat(r.documentos().get(i).blobRef()).contains(devolvido);
+            assertThat(espiao.conteudosGravados.get(i + 1)).isEqualTo(descompactado);
+            assertThat(devolvido.sha256()).isEqualTo(Sha256.hex(descompactado));
+        }
     }
 
     @Test

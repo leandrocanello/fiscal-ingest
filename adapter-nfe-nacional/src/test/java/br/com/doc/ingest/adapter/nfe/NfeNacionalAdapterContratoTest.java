@@ -18,7 +18,6 @@ import br.com.doc.ingest.domain.adapter.Credencial;
 import br.com.doc.ingest.domain.adapter.SourceAdapter;
 import br.com.doc.ingest.domain.blob.BlobStore;
 import br.com.doc.ingest.domain.model.Cnpj;
-import br.com.doc.ingest.domain.model.Documento;
 import br.com.doc.ingest.domain.model.FonteId;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import java.net.URI;
@@ -27,7 +26,6 @@ import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.ZoneOffset;
-import java.util.Optional;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 
@@ -72,11 +70,6 @@ class NfeNacionalAdapterContratoTest extends SourceAdapterContrato {
     @Override
     protected BlobStore blobs() {
         return blobs;
-    }
-
-    @Override
-    protected Optional<byte[]> lerBlob(Documento documento) {
-        return blobs.ler(documento.blobRef().orElseThrow());
     }
 
     @Override

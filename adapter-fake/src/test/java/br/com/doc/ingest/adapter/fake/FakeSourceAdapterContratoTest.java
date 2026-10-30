@@ -51,11 +51,6 @@ class FakeSourceAdapterContratoTest extends SourceAdapterContrato {
     }
 
     @Override
-    protected Optional<byte[]> lerBlob(Documento documento) {
-        return blobs.ler(documento.blobRef().orElseThrow());
-    }
-
-    @Override
     protected void prepararLote(int n) {
         List<Documento> docs = new ArrayList<>();
         for (int i = 1; i <= n; i++) {

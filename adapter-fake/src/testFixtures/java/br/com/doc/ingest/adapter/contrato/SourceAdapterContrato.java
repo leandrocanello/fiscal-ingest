@@ -33,9 +33,6 @@ public abstract class SourceAdapterContrato {
 
     protected abstract BlobStore blobs();
 
-    /** Lê os bytes do blob referenciado pelo documento (a forma do {@code blobRef} varia por adapter). */
-    protected abstract Optional<byte[]> lerBlob(Documento documento);
-
     /** Prepara a fonte para devolver {@code n} documentos (NSU 1..n) a partir do cursor inicial. */
     protected abstract void prepararLote(int n);
 

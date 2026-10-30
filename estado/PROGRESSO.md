@@ -452,3 +452,5 @@
 - 2026-10-30 08:07 · E2-S15: DESENVOLVER ok
 - 2026-10-30 08:08 · E2-S15: passo 3 — sem vermelho: coberto pelo passo 1 (buscarUmEBuscarPorChaveDevolvemOMesmoBlobRefDoLote substitui buscarUmUsaAMesmaChaveDoLote, agora inclui consChNFe); suíte inteira verde · commit 773f72e · próximo: passo 4 (contrato blobRefConfereComOHashDosBytes)
 - 2026-10-30 08:08 · E2-S15: DESENVOLVER ok
+- 2026-10-30 08:10 · E2-S15: passo 4 — contrato blobRefConfereComOHashDosBytes; vermelho por sonda local (fake com sha errado): "FakeSourceAdapterContratoTest > blobRef confere com o sha256 dos bytes gravados (inv. 7) FAILED — AssertionError: Expecting all elements of: [Documento[...]]" (27 tests, 2 failed; sonda revertida); todoDocumentoTemBlobLegivel lê via blobs(); suíte inteira verde (contrato 9/9 no fake e no nfe) · próximo: passo 5 (remover gancho lerBlob)
+- 2026-10-30 08:10 · E2-S15: DESENVOLVER ok

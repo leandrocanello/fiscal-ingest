@@ -11,6 +11,7 @@ import br.com.doc.ingest.domain.model.Ambiente;
 import br.com.doc.ingest.domain.model.Cnpj;
 import br.com.doc.ingest.domain.model.FonteId;
 import br.com.doc.ingest.domain.model.Nsu;
+import br.com.doc.ingest.domain.outbox.MensagemOutbox;
 import org.jdbi.v3.core.Jdbi;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -70,6 +71,30 @@ class CaosFalhaNoMeioTest extends PostgresTestBase {
         assertThat(ledger()).containsExactlyElementsOf(entradas);
         assertThat(repositorio.carregar(CHAVE)).contains(
                 new PosicaoColeta(CHAVE, new Cursor("4"), new Nsu(4), 1));
+    }
+
+    @Test
+    void falhaAntesDoCasNaoGravaOutbox() {
+        var lida = repositorio.carregar(CHAVE).orElseThrow();
+        var lote = new ConfirmacaoLote(lida, new Cursor("4"), new Nsu(4),
+                List.of(new EntradaLedger(new Nsu(4), StatusNsu.RESUMO)),
+                List.of(new MensagemOutbox("docs.coletados", CHAVE.cnpj().valor(), 1, "lote-4", "{\"nsu\":4}")));
+
+        simularQuedaNoCas();
+        assertThatThrownBy(() -> repositorio.confirmarLote(lote))
+                .hasMessageContaining("queda simulada");
+
+        assertThat(ledger()).isEmpty();
+        assertThat(mensagensNoOutbox()).isZero();
+        assertThat(repositorio.carregar(CHAVE)).contains(lida);
+
+        removerQueda();
+        assertThat(repositorio.confirmarLote(lote)).isEqualTo(new ResultadoCas.Aplicado(1));
+        assertThat(mensagensNoOutbox()).isEqualTo(1);
+    }
+
+    private long mensagensNoOutbox() {
+        return jdbi.withHandle(h -> h.createQuery("select count(*) from outbox").mapTo(Long.class).one());
     }
 
     private void simularQuedaNoCas() {

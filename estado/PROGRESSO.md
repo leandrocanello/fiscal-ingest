@@ -556,3 +556,5 @@
 - 2026-10-30 13:32 · E3-S04: DESENVOLVER ok
 - 2026-10-30 13:34 · E3-S04: CaosRelayTest (relays concorrentes + queda após publicar) verde sem mudança de código; teste novo não falhou porque o claim já estava correto · próximo: RegistroDeConsumo (V7)
 - 2026-10-30 13:34 · E3-S04: DESENVOLVER ok
+- 2026-10-30 13:40 · E3-S04: RegistroDeConsumo + V7 (falha inicial: tabela outbox_consumo ausente, PSQLException) · próximo: verificação/revisão
+- 2026-10-30 13:38 · E3-S04: DESENVOLVER ok

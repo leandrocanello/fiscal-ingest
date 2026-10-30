@@ -535,3 +535,6 @@
 - 2026-10-30 13:16 · E3-S03: DESENVOLVER ok
 - 2026-10-30 13:17 · E3-S03 (verificar): suíte inteira verde (infra-postgres 18 classes, 0 skipped), RLS testado como fiscal_app_teste · próximo: revisão
 - 2026-10-30 13:17 · E3-S03: VERIFICAR ok
+- 2026-10-30 13:18 · E3-S03: revisão concluída — APROVAR PARA PR (suíte verde; 5 achados menores, sem bloqueio; PR em planos/E3-S03-pr.md) · próximo: abrir PR / E3-S04
+- 2026-10-30 13:18 · E3-S03: REVISAR ok
+- 2026-10-30 13:18 · E3-S03: PR aberto para revisão

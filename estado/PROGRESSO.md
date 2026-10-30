@@ -450,3 +450,5 @@
 - 2026-10-30 08:06 · E2-S15: DESENVOLVER ok
 - 2026-10-30 08:07 · E2-S15: passo 2 — sem vermelho: coberto pelo passo 1 (teste de regressão do formato; BlobStoreEspiao agora guarda refs/bytes devolvidos); suíte inteira verde · commit 100fc25 · próximo: passo 3 (buscarUmEBuscarPorChaveDevolvemOMesmoBlobRefDoLote)
 - 2026-10-30 08:07 · E2-S15: DESENVOLVER ok
+- 2026-10-30 08:08 · E2-S15: passo 3 — sem vermelho: coberto pelo passo 1 (buscarUmEBuscarPorChaveDevolvemOMesmoBlobRefDoLote substitui buscarUmUsaAMesmaChaveDoLote, agora inclui consChNFe); suíte inteira verde · commit 773f72e · próximo: passo 4 (contrato blobRefConfereComOHashDosBytes)
+- 2026-10-30 08:08 · E2-S15: DESENVOLVER ok

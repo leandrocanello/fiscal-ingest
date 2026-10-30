@@ -10,3 +10,10 @@ begin
     execute format('grant usage on schema %I to fiscal_app', current_schema());
 end;
 $$;
+
+-- Privilégios mínimos. Ledger só SELECT/INSERT (invariante 6: nem UPDATE/DELETE nem TRUNCATE, que o
+-- trigger da V2 não cobre). estado_coleta muda só por CAS (UPDATE), nunca some. Nada em flyway_schema_history.
+grant select, insert on ledger_nsu, ledger_tentativa to fiscal_app;
+grant select, insert, update on estado_coleta to fiscal_app;
+grant select on tenant to fiscal_app;
+grant select, insert, update on empresa to fiscal_app;

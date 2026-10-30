@@ -23,7 +23,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 class CStatMapperPropriedadesTest {
 
     private static final Set<String> SUCESSO = Set.of("137", "138");
-    private static final Set<String> MAPEADOS = Set.of("137", "138", "656", "632", "589", "108", "109");
+    private static final Set<String> MAPEADOS = Set.of("137", "138", "656", "632", "589", "108", "109",
+            "217", "236", "614", "615", "616", "617", "618", "619", "640", "641", "653", "654");
 
     private final CStatMapper mapper = new CStatMapper();
 
@@ -38,7 +39,7 @@ class CStatMapperPropriedadesTest {
     }
 
     @Property
-    @Label("qualquer cStat fora dos 7 mapeados vira IndisponivelTemporario de 5 min")
+    @Label("qualquer cStat fora dos mapeados vira IndisponivelTemporario de 5 min")
     void codigosDesconhecidosViramFallback(@ForAll("desconhecidos") String cStat) {
         assertThat(mapper.mapear(cStat))
                 .isEqualTo(new Desfecho.IndisponivelTemporario(Duration.ofMinutes(5)));

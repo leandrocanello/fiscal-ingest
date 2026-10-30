@@ -24,6 +24,8 @@ import java.time.Duration;
  *   <li><b>108</b> - servico paralisado momentaneamente (Tab. 5-20 K03)
  *       -> {@link Desfecho.IndisponivelTemporario} de 5 min</li>
  *   <li><b>109</b> - servico paralisado sem previsao (Tab. 5-20 K03) -> {@link Desfecho.ServicoFora}</li>
+ *   <li><b>217, 236, 614-619, 640, 641, 653, 654</b> - rejeicoes do consChNFe (Tab. 5-29, decisao
+ *       2026-10-29) -> {@link Desfecho.IndisponivelDefinitivo}</li>
  * </ul>
  *
  * <p>So 137/138 viram {@code Ok}/{@code Vazio}: nenhum outro cStat pode avancar o cursor (inv. 1).
@@ -71,6 +73,17 @@ public class CStatMapper {
 
             // NSU maior que o maxNSU (MOC 7.0 Tab. 5-29 H06) - erro de consistencia, nunca retentar
             case "589" -> new Desfecho.IndisponivelDefinitivo("Cursor inconsistente: NSU > maxNSU (cStat 589)");
+
+            // Rejeicoes do consChNFe (MOC 7.0 Tab. 5-29; decisao do autor 2026-10-29, E2-S16):
+            // retentar so gastaria o limite (~20/h) das consultas pontuais - nao retentar.
+            case "217" -> new Desfecho.IndisponivelDefinitivo("NF-e inexistente (cStat 217)");
+            case "236" -> new Desfecho.IndisponivelDefinitivo("Chave de acesso inválida (cStat 236)");
+            case "614", "615", "616", "617", "618", "619" ->
+                    new Desfecho.IndisponivelDefinitivo("Chave de acesso inválida (cStat " + cStat + ")");
+            case "640" -> new Desfecho.IndisponivelDefinitivo("Interessado sem permissão (cStat 640)");
+            case "641" -> new Desfecho.IndisponivelDefinitivo("NF-e indisponível para o emitente (cStat 641)");
+            case "653", "654" -> new Desfecho.IndisponivelDefinitivo(
+                    "NF-e cancelada/denegada, arquivo indisponível (cStat " + cStat + ")");
 
             // Servico paralisado momentaneamente (MOC 7.0 Tab. 5-20 K03) - tentar de novo
             case "108" -> new Desfecho.IndisponivelTemporario(RETRY_TEMP);

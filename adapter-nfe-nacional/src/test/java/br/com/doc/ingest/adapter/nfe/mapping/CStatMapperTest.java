@@ -35,6 +35,8 @@ import static org.assertj.core.api.Assertions.assertThat;
  * - 589: NSU maior que o maxNSU (IndisponivelDefinitivo "cursor inconsistente" - Tab. 5-29 H06)
  * - 108: servico paralisado momentaneamente (IndisponivelTemporario - Tab. 5-20 K03)
  * - 109: servico paralisado sem previsao (ServicoFora - Tab. 5-20 K03)
+ * - 217, 236, 614-619, 640, 641, 653, 654: rejeicoes do consChNFe (IndisponivelDefinitivo - Tab. 5-29,
+ *   decisao do autor 2026-10-29, E2-S16)
  * - qualquer outro / nulo / vazio: fallback IndisponivelTemporario de 5 min + WARN sanitizado
  */
 @DisplayName("CStatMapper (cStat -> Desfecho)")
@@ -51,7 +53,19 @@ class CStatMapperTest {
             "632, IndisponivelDefinitivo",
             "589, IndisponivelDefinitivo",
             "108, IndisponivelTemporario",
-            "109, ServicoFora"
+            "109, ServicoFora",
+            "217, IndisponivelDefinitivo",
+            "236, IndisponivelDefinitivo",
+            "614, IndisponivelDefinitivo",
+            "615, IndisponivelDefinitivo",
+            "616, IndisponivelDefinitivo",
+            "617, IndisponivelDefinitivo",
+            "618, IndisponivelDefinitivo",
+            "619, IndisponivelDefinitivo",
+            "640, IndisponivelDefinitivo",
+            "641, IndisponivelDefinitivo",
+            "653, IndisponivelDefinitivo",
+            "654, IndisponivelDefinitivo"
     })
     void tabelaDeCodigosMapeados(String cStat, String tipoEsperado) {
         assertThat(mapper.mapear(cStat).getClass().getSimpleName()).isEqualTo(tipoEsperado);

@@ -684,6 +684,19 @@ class NfeNacionalAdapterTest {
     }
 
     @Test
+    @DisplayName("consChNFe 217, 641 e 653: IndisponivelDefinitivo sem documento; 593: ErroAutenticacao sem documento")
+    void chaveRejeicoesDaTab529() {
+        for (String cStat : new String[] {"217", "641", "653"}) {
+            BuscarUmResultado r = chaveComCStat(cStat);
+            assertThat(r.documento()).as("cStat %s", cStat).isEmpty();
+            assertThat(r.desfecho()).as("cStat %s", cStat).isInstanceOf(Desfecho.IndisponivelDefinitivo.class);
+        }
+        BuscarUmResultado r593 = chaveComCStat("593");
+        assertThat(r593.documento()).isEmpty();
+        assertThat(r593.desfecho()).isInstanceOf(Desfecho.ErroAutenticacao.class);
+    }
+
+    @Test
     @DisplayName("consChNFe 137 e 656")
     void chave137e656() {
         assertSemDocumento(chaveComCStat("137"), new Desfecho.Vazio());

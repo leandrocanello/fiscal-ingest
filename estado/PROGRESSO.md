@@ -523,3 +523,5 @@
 - 2026-10-30 13:04 · E3-S03: DESENVOLVER ok
 - 2026-10-30 13:06 · E3-S03: passo 2 (grants mínimos na V4) — falha vista: `ledgerRecusaUpdateDeleteETruncateParaOPapelApp()` PSQLException: permission denied for table ledger_tentativa (insert); `confirmarLoteFuncionaComoPapelApp()` permission denied for table estado_coleta (insert); `estadoColetaSemDeleteNemTruncate` já passava (trava de regressão); suíte inteira verde (522) · próximo: passo 3 (V5 RLS em tenant/empresa + RlsTenantTest leitura)
 - 2026-10-30 13:06 · E3-S03: DESENVOLVER ok
+- 2026-10-30 13:20 · E3-S03: passo 3 (V5 RLS em tenant/empresa + RlsTenantTest leitura) — falha vista: `semTenantNaSessaoNaoVeNenhumaEmpresaNemTenant() FAILED` (AssertionFailedError :60); `tenantAVeSoAsSuasEmpresas() FAILED`; `tenantANaoLeEmpresaDeBPorId() FAILED`; `tenantAVeSoASiMesmoNaTabelaTenant() FAILED`; `tenantIdVazioNaSessaoNaoQuebraEVeNada() FAILED`; suíte inteira verde após V5 · próximo: passo 4 (RLS bloqueia escrita entre tenants)
+- 2026-10-30 13:08 · E3-S03: DESENVOLVER ok

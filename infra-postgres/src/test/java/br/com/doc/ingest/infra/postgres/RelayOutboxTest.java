@@ -106,6 +106,25 @@ class RelayOutboxTest extends PostgresTestBase {
     }
 
     @Test
+    void falhaPersistenteNumaChaveNaoParaAsOutras() {
+        insereNaChave("A", "a1");
+        insereNaChave("A", "a2");
+        insereNaChave("B", "b1");
+        Publicador venenoso = m -> {
+            if (m.chaveIdempotencia().equals("a1")) {
+                throw new IllegalStateException("payload inesperado");
+            }
+            publicadas.add(m.chaveIdempotencia());
+        };
+        var relay = new RelayOutbox(jdbi, RELOGIO, venenoso, 10);
+
+        assertThatThrownBy(relay::publicarPendentes).isInstanceOf(IllegalStateException.class);
+
+        assertThat(publicadas).containsExactly("b1");
+        assertThat(pendentes()).isEqualTo(2);
+    }
+
+    @Test
     void mensagemPosteriorDaMesmaChaveEsperaAAnterior() {
         insereNaChave("A", "a1");
         insereNaChave("A", "a2");

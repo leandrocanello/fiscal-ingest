@@ -456,3 +456,5 @@
 - 2026-10-30 08:10 · E2-S15: DESENVOLVER ok
 - 2026-10-30 08:12 · E2-S15: passo 5 — refactor sem vermelho (suíte verde antes e depois): removido lerBlob do SourceAdapterContrato e dos 2 overrides + imports órfãos; contrato 9/9 no fake e no nfe · próximo: passo 6 (FakeSourceAdapterTest.buscarUmDevolveOMesmoBlobRefDoLote)
 - 2026-10-30 08:11 · E2-S15: DESENVOLVER ok
+- 2026-10-30 08:14 · E2-S15: passo 6 — FakeSourceAdapterTest.buscarUmDevolveOMesmoBlobRefDoLote; sem vermelho: verde de primeira, como previsto (fake devolve o Documento pré-carregado); suíte inteira verde · próximo: passo 7 (docs AUDITORIA A8 + DA fechando DA-5)
+- 2026-10-30 08:12 · E2-S15: DESENVOLVER ok

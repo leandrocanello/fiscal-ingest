@@ -583,3 +583,5 @@
 - 2026-11-02 17:29 · E3-S06: DESENVOLVER ok
 - 2026-11-02 17:34 · E3-S06: passo 4 (V8, tabelas do catálogo, DA-29); falha vista: "ERROR: relation \"documento\" does not exist" e "MigracoesTest: could not find the following element(s): [documento, arquivo, documento_empresa, proveniencia]"; suíte verde (591 testes) · próximo: passo 5 (V9, RLS e append-only)
 - 2026-11-02 17:34 · E3-S06: DESENVOLVER ok
+- 2026-11-02 17:39 · E3-S06: passo 5 (V9: RLS, append-only e grants do catálogo; CatalogoRlsTest como usuário sem superuser); falha vista: "ERROR: permission denied for table documento", "[documento] Expecting value to be true but was false" e, em CatalogoAppendOnlyTest, "Expecting code to raise a throwable" (`papelDaAplicacaoNaoTemUpdateDeleteNemTruncateEmProveniencia` já passava antes da V9, por não haver grant nenhum; o que o protege é a lista de grants); suíte verde (603 testes) · próximo: passo 6 (porta Catalogo e JdbiCatalogo)
+- 2026-11-02 17:40 · E3-S06: DESENVOLVER ok

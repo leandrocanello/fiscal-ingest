@@ -585,3 +585,5 @@
 - 2026-11-02 17:34 · E3-S06: DESENVOLVER ok
 - 2026-11-02 17:39 · E3-S06: passo 5 (V9: RLS, append-only e grants do catálogo; CatalogoRlsTest como usuário sem superuser); falha vista: "ERROR: permission denied for table documento", "[documento] Expecting value to be true but was false" e, em CatalogoAppendOnlyTest, "Expecting code to raise a throwable" (`papelDaAplicacaoNaoTemUpdateDeleteNemTruncateEmProveniencia` já passava antes da V9, por não haver grant nenhum; o que o protege é a lista de grants); suíte verde (603 testes) · próximo: passo 6 (porta Catalogo e JdbiCatalogo)
 - 2026-11-02 17:40 · E3-S06: DESENVOLVER ok
+- 2026-11-02 17:46 · E3-S06: passo 6 (porta Catalogo, ResultadoRegistro, FichaDocumento, ArquivoFicha e JdbiCatalogo; testes como usuário sem superuser); falha vista: "JdbiCatalogoTest.java:5: error: cannot find symbol / symbol: class Catalogo" e "JdbiCatalogoTest.java:65: error: cannot find symbol / symbol: class JdbiCatalogo"; suíte verde (610 testes) · próximo: passo 7 (registro idempotente com fusão)
+- 2026-11-02 17:46 · E3-S06: DESENVOLVER ok

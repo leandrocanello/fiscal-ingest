@@ -570,3 +570,5 @@
 - 2026-10-30 13:44 · E3-S04: PR aberto para revisão
 - 2026-10-30 13:45 · E3-S05: revertido — chamada terminou com ERRO
 - 2026-10-30 13:45 · E3-S05: revertido — limite de uso no meio da chamada
+- 2026-11-02 17:14 · E3-S05: plano escrito (8 passos; contrato BlobStore em testFixtures + S3BlobStore com If-None-Match) — bloqueado pela [DECISAO] E3-S05 já em PARA-VOCE (sem resposta) · próximo: autor responder D1–D3, depois DESENVOLVER
+- 2026-11-02 17:14 · E3-S05: PLANEJAR ok

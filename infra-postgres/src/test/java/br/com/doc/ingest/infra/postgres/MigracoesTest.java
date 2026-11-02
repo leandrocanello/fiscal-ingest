@@ -23,6 +23,18 @@ class MigracoesTest extends PostgresTestBase {
     }
 
     @Test
+    void criaAsTabelasDoCatalogo() {
+        DataSource ds = dataSourceNoSchema("mig_catalogo");
+
+        Migracoes.aplicar(ds);
+
+        List<String> tabelas = Jdbi.create(ds).withHandle(h -> h.createQuery(
+                        "select table_name from information_schema.tables where table_schema = 'mig_catalogo'")
+                .mapTo(String.class).list());
+        assertThat(tabelas).contains("documento", "arquivo", "documento_empresa", "proveniencia");
+    }
+
+    @Test
     void reaplicarEhNoOp() {
         DataSource ds = dataSourceNoSchema("mig_reaplica");
 

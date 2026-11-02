@@ -572,3 +572,6 @@
 - 2026-10-30 13:45 · E3-S05: revertido — limite de uso no meio da chamada
 - 2026-11-02 17:14 · E3-S05: plano escrito (8 passos; contrato BlobStore em testFixtures + S3BlobStore com If-None-Match) — bloqueado pela [DECISAO] E3-S05 já em PARA-VOCE (sem resposta) · próximo: autor responder D1–D3, depois DESENVOLVER
 - 2026-11-02 17:14 · E3-S05: PLANEJAR ok
+- 2026-11-02 17:14 · E3-S05: plano aguarda decisão (passo [!]) → [h]
+- 2026-11-02 17:18 · E3-S06: plano escrito (10 passos; V8/V9, porta Catalogo, fusão independente da ordem, DA-27) e aviso sobre E3-S03×E3-S04 em PARA-VOCE · próximo: DESENVOLVER
+- 2026-11-02 17:18 · E3-S06: PLANEJAR ok

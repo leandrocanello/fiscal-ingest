@@ -136,3 +136,9 @@
   abaixo. Se escolher D1 (b), avise se aceita depender do MinIO em produção.
 - **Recomendação:** D1 (a) com `url-connection-client` · D2 (a) com tag fixa · D3 (a).
 - Resposta:
+
+### [DUVIDA] E3-S03/E3-S04 — 2026-11-02 — `outbox` quebra o meta-teste de RLS quando as duas forem mescladas (não bloqueia)
+- **O que é preciso:** cada PR passa sozinho, mas juntos não: `TodaTabelaComTenantIdTemRlsTest.tabelasSemTenantSaoSoAsDeclaradas` (E3-S03) só aceita `tenant`, `estado_coleta`, `ledger_nsu`, `ledger_tentativa` e `flyway_schema_history`, e a E3-S04 cria `outbox` e `outbox_consumo` sem `tenant_id`. O teste foi lido, não executado com as duas branches juntas.
+- **Opções:** (a) incluir as duas tabelas em `TABELAS_SEM_TENANT`, com comentário: o outbox é infraestrutura e a coleta nem tem tenant; (b) pôr `tenant_id` no outbox, mas as mensagens da coleta não têm tenant (§8.1).
+- **Recomendação:** (a), no PR que for mesclado por último. Com a E3-S04 sem RLS, confira que o payload continua só com metadados.
+- Resposta:

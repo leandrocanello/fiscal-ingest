@@ -577,3 +577,5 @@
 - 2026-11-02 17:18 · E3-S06: PLANEJAR ok
 - 2026-11-02 17:22 · E3-S06: passo 1 (ChaveAcesso, enums e MetadadosDocumento); falha vista: "MetadadosDocumentoTest.java:19: error: cannot find symbol / symbol: class MetadadosDocumento"; suíte verde (540 testes) · próximo: passo 2 (RegistroArquivo e regras de proveniência)
 - 2026-11-02 17:22 · E3-S06: DESENVOLVER ok
+- 2026-11-02 17:25 · E3-S06: passo 2 (RegistroArquivo, ProvenienciaInformada, VinculoEmpresa e regra ArchUnit sem bytes); falha vista: "RegistroArquivoTest.java:26: error: cannot find symbol / symbol: class ProvenienciaInformada"; suíte verde (561 testes) · próximo: passo 3 (FusaoDocumento)
+- 2026-11-02 17:25 · E3-S06: DESENVOLVER ok

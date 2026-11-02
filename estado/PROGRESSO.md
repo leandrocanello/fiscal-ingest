@@ -581,3 +581,5 @@
 - 2026-11-02 17:25 · E3-S06: DESENVOLVER ok
 - 2026-11-02 17:29 · E3-S06: passo 3 (EstadoDocumento e FusaoDocumento, DA-28); falha vista: "FusaoDocumentoPropriedadesTest.java:76: error: cannot find symbol / symbol: class EstadoDocumento" e "symbol: variable FusaoDocumento"; suíte verde (571 testes) · próximo: passo 4 (V8, tabelas do catálogo)
 - 2026-11-02 17:29 · E3-S06: DESENVOLVER ok
+- 2026-11-02 17:34 · E3-S06: passo 4 (V8, tabelas do catálogo, DA-29); falha vista: "ERROR: relation \"documento\" does not exist" e "MigracoesTest: could not find the following element(s): [documento, arquivo, documento_empresa, proveniencia]"; suíte verde (591 testes) · próximo: passo 5 (V9, RLS e append-only)
+- 2026-11-02 17:34 · E3-S06: DESENVOLVER ok

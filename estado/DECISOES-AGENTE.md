@@ -174,3 +174,9 @@ Como desfazer: reverter o commit `fix(E3-S04)` do relay.
 - **Opções:** (a) `fundir(atual, metadados, situacao, confianca)` + `inicial(metadados, situacao, confianca)` × (b) `novo` como `EstadoDocumento` × (c) `novo` como `RegistroArquivo`, que repete a confiança e pesa nos testes.
 - **Escolha:** (a). `novo` vira dois parâmetros, sem estado contraditório; `inicial` dá ao `JdbiCatalogo` o estado do primeiro registro com a mesma regra.
 - **Como desfazer:** trocar a assinatura; só `JdbiCatalogo` (passo 7) e os testes da fusão a usam.
+
+### DA-29 · 2026-11-02 · E3-S06
+- **Contexto:** a DA-27 não define se `proveniencia.ledger_nsu_id` tem FK (só diz que `recebimento_id` fica sem), nem a precisão de `documento.valor_total`.
+- **Opções:** FK (a) para `ledger_nsu (id)` × (b) sem FK; valor (a) `numeric` sem escala × (b) `numeric(15,2)`.
+- **Escolha:** (a) em ambos. A tabela do ledger já existe e a FK impede proveniência apontando para o nada; `numeric` sem escala guarda o valor como veio, sem arredondar. Consequência: os testes dos próximos passos precisam criar a linha do ledger antes de registrar `DFE_AN`.
+- **Como desfazer:** migration nova com `drop constraint proveniencia_ledger_nsu_id_fkey` e `alter column valor_total type numeric(15,2)`; ou editar a V8 antes da primeira instalação real.

@@ -579,3 +579,5 @@
 - 2026-11-02 17:22 · E3-S06: DESENVOLVER ok
 - 2026-11-02 17:25 · E3-S06: passo 2 (RegistroArquivo, ProvenienciaInformada, VinculoEmpresa e regra ArchUnit sem bytes); falha vista: "RegistroArquivoTest.java:26: error: cannot find symbol / symbol: class ProvenienciaInformada"; suíte verde (561 testes) · próximo: passo 3 (FusaoDocumento)
 - 2026-11-02 17:25 · E3-S06: DESENVOLVER ok
+- 2026-11-02 17:29 · E3-S06: passo 3 (EstadoDocumento e FusaoDocumento, DA-28); falha vista: "FusaoDocumentoPropriedadesTest.java:76: error: cannot find symbol / symbol: class EstadoDocumento" e "symbol: variable FusaoDocumento"; suíte verde (571 testes) · próximo: passo 4 (V8, tabelas do catálogo)
+- 2026-11-02 17:29 · E3-S06: DESENVOLVER ok

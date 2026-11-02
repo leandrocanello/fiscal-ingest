@@ -168,3 +168,9 @@ Como desfazer: reverter o commit `fix(E3-S04)` do relay.
   - **Fusão (função pura, inv. 9 e §4 "armazenado, mas sinalizado"):** confiável = qualquer nível exceto `DECLARADO`. Confiável sobre declarado substitui tudo; declarado sobre confiável não muda o documento (arquivo, vínculo e proveniência são gravados); mesma classe preenche só os vazios e a `situacao` fica na maior de `SO_RESUMO < AUTORIZADA < CANCELADA < DENEGADA`. Assim a ordem de chegada não importa e um push não validado não "cancela" uma nota.
   - **Numeração:** V8/V9, porque E3-S03 ocupa V4/V5 e E3-S04, V6/V7 (DA-25).
 - **Como desfazer:** o estado de `documento` é reconstruível a partir do bruto (§8): trocar `FusaoDocumento` e reprocessar. O esquema muda por migration nova, ou por renumeração antes da primeira instalação real. O `set_config` privado sai quando `TransacaoPorTenant` entrar.
+
+### DA-28 · 2026-11-02 · E3-S06
+- **Contexto:** o plano pede `FusaoDocumento.fundir(atual, novo, confianca)`, sem definir o tipo de `novo`. Um `EstadoDocumento` em `novo` traria um `soDeclarado` redundante, que poderia contradizer a `confianca`.
+- **Opções:** (a) `fundir(atual, metadados, situacao, confianca)` + `inicial(metadados, situacao, confianca)` × (b) `novo` como `EstadoDocumento` × (c) `novo` como `RegistroArquivo`, que repete a confiança e pesa nos testes.
+- **Escolha:** (a). `novo` vira dois parâmetros, sem estado contraditório; `inicial` dá ao `JdbiCatalogo` o estado do primeiro registro com a mesma regra.
+- **Como desfazer:** trocar a assinatura; só `JdbiCatalogo` (passo 7) e os testes da fusão a usam.

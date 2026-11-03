@@ -180,3 +180,12 @@
 - **Roteiro:** responda D1–D4 abaixo; responda junto com o D3 da E3-S07, porque D1 (a) depende dele. Depois troque a E4-S01 de `[h]` para `[~]` no ROADMAP. Se escolher D4 (a), crie também a linha da E4-S01b; o desenvolvedor pula os passos marcados "só se D4 = b". A E4-S01 usa a migration V12 (V10/V11 são da E3-S07).
 - **Recomendação:** D1 (a) · D2 (a) · D3 (a) · D4 (a).
 - Resposta:
+
+### [DUVIDA] E4-S02 — 2026-11-03 — quatro pontos do cofre (não bloqueiam)
+- **O que é preciso:** o plano `planos/E4-S02.md` segue sem esperar resposta, com as escolhas das DA-35 e DA-36. Estes pontos ficam fora dele e pedem a sua decisão.
+- **Q1 — persistência dos metadados.** A tabela `certificado` precisa de `tenant`/`empresa` (E3-S03, ainda sem merge). Sem ela, o cofre desta subetapa só tem repositório em memória e ainda não serve para produção. A E4-S04 também depende disso. (a) Criar a subetapa `E4-S02b | AUTO+ | deps: E4-S02,E3-S03`, com migration, `JdbiRepositorioCertificados` e RLS. (b) Incluir essa parte na E4-S04. **Recomendação:** (a).
+- **Q2 — filial sem certificado próprio.** Pelo MOC, o e-CNPJ da matriz consulta as filiais de mesma raiz (FONTES item 8), mas a §7.4 exige CNPJ do certificado == titular, e o plano segue isso. Falta definir como nasce o `estado_coleta` da filial. (a) O certificado continua da matriz e a E4-S03 cria um estado por filial cadastrada, apontando para ele. (b) A filial vira titular com o certificado da matriz, afrouxando o cofre para "mesma raiz". **Recomendação:** (a), depois de conferir no smoke E2-S12.
+- **Q3 — CNPJ alfanumérico.** `Cnpj` só aceita 14 dígitos. O nome do PDF da NT 2014.002 v1.40 indica CNPJ alfanumérico (FONTES item 8, texto não extraído). Hoje, um certificado assim seria recusado como `SEM_CNPJ`, e o resto do sistema também não o representaria. (a) Abrir uma subetapa transversal para o `Cnpj` antes de produção. (b) Esperar um caso real. **Recomendação:** (a), depois de conferir a NT na fonte primária.
+- **Q4 — KEK em produção (§22, pergunta 2).** A porta aceita Vault ou KMS depois. Perdida a KEK local, nenhum certificado guardado abre: cada cliente precisa reenviar o seu. (a) Só KEK local por ora, por variável de ambiente, com backup fora do servidor documentado no runbook. (b) Definir já um KMS. **Recomendação:** (a), coerente com o self-host (ADR-008).
+- **Para conferir (só você pode):** com um `.pfx` real, na sua máquina e fora do repositório, confirme o OID `2.16.76.1.3.3` e a codificação do valor (DA-36), de preferência no smoke E2-S12.
+- Resposta:

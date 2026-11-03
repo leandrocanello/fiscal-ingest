@@ -610,3 +610,5 @@
 - 2026-11-03 08:38 · E4-S02: PLANEJAR ok
 - 2026-11-03 08:41 · E4-S02: passo 1 feito (domain.cofre: portas e tipos; 7 testes; suíte inteira verde). Falha vista antes de implementar: `CertificadoGuardadoTest.java:25: error: cannot find symbol / symbol: class CertificadoGuardado` · `PedidoGuardaTest.java:18: error: cannot find symbol / symbol: class PedidoGuarda` · próximo: passo 2 (módulo cert-vault e KEK local)
 - 2026-11-03 08:41 · E4-S02: DESENVOLVER ok
+- 2026-11-03 08:50 · E4-S02: passo 2 feito (módulo cert-vault, ProvedorKek, Kek, KekLocal; 8 testes; suíte inteira verde). Falha vista antes de implementar: `KekLocalTest.java:21: error: cannot find symbol / symbol: class Kek` · próximo: passo 3 (EnvelopeCifrado AES-256-GCM)
+- 2026-11-03 08:43 · E4-S02: DESENVOLVER ok

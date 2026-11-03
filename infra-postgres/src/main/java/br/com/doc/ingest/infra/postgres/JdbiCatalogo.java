@@ -6,6 +6,7 @@ import br.com.doc.ingest.domain.catalogo.Catalogo;
 import br.com.doc.ingest.domain.catalogo.Confianca;
 import br.com.doc.ingest.domain.catalogo.Direcao;
 import br.com.doc.ingest.domain.catalogo.EstadoDocumento;
+import br.com.doc.ingest.domain.catalogo.FalhaCatalogoException;
 import br.com.doc.ingest.domain.catalogo.FichaDocumento;
 import br.com.doc.ingest.domain.catalogo.FusaoDocumento;
 import br.com.doc.ingest.domain.catalogo.MetadadosDocumento;
@@ -21,6 +22,7 @@ import br.com.doc.ingest.domain.model.Cnpj;
 import org.jdbi.v3.core.Handle;
 import org.jdbi.v3.core.HandleCallback;
 import org.jdbi.v3.core.Jdbi;
+import org.jdbi.v3.core.JdbiException;
 import org.jdbi.v3.core.statement.Update;
 
 import java.math.BigDecimal;
@@ -93,13 +95,27 @@ public final class JdbiCatalogo implements Catalogo {
     }
 
     private <R> R noTenant(long tenantId, HandleCallback<R, RuntimeException> acao) {
-        return jdbi.inTransaction(h -> {
-            h.createQuery("select set_config('app.tenant_id', :tenant, true)")
-                    .bind("tenant", Long.toString(tenantId))
-                    .mapTo(String.class)
-                    .one();
-            return acao.withHandle(h);
-        });
+        try {
+            return jdbi.inTransaction(h -> {
+                h.createQuery("select set_config('app.tenant_id', :tenant, true)")
+                        .bind("tenant", Long.toString(tenantId))
+                        .mapTo(String.class)
+                        .one();
+                return acao.withHandle(h);
+            });
+        } catch (JdbiException e) {
+            // A causa fica de fora: o texto do JDBI traz os binds, e o do Postgres, a linha (inv. 13).
+            throw new FalhaCatalogoException(sqlState(e));
+        }
+    }
+
+    private static String sqlState(Throwable falha) {
+        for (Throwable t = falha; t != null; t = t.getCause()) {
+            if (t instanceof SQLException sql && sql.getSQLState() != null) {
+                return sql.getSQLState();
+            }
+        }
+        return "desconhecido";
     }
 
     /** Vazio se o documento já existe; quem estava inserindo a mesma chave em paralelo já confirmou. */

@@ -5,6 +5,7 @@ import br.com.doc.ingest.domain.catalogo.ArquivoFicha;
 import br.com.doc.ingest.domain.catalogo.Catalogo;
 import br.com.doc.ingest.domain.catalogo.Confianca;
 import br.com.doc.ingest.domain.catalogo.Direcao;
+import br.com.doc.ingest.domain.catalogo.FalhaCatalogoException;
 import br.com.doc.ingest.domain.catalogo.FichaDocumento;
 import br.com.doc.ingest.domain.catalogo.MetadadosDocumento;
 import br.com.doc.ingest.domain.catalogo.OrigemArquivo;
@@ -21,6 +22,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import javax.sql.DataSource;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.math.BigDecimal;
 import java.time.Clock;
 import java.time.Instant;
@@ -31,6 +34,7 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowableOfType;
 
 /** {@code JdbiCatalogo} contra Postgres real, sempre como usuário sem superuser (a RLS vale). */
 class JdbiCatalogoTest extends PostgresTestBase {
@@ -413,5 +417,72 @@ class JdbiCatalogoTest extends PostgresTestBase {
         assertThat(contar("proveniencia")).isEqualTo(2);
         assertThat(fichaDeA().arquivos().getFirst().proveniencias()).containsExactlyInAnyOrder(
                 upload(Confianca.VALIDADO_ASSINATURA), upload(Confianca.CONFIRMADO_SEFAZ));
+    }
+
+    @Test
+    void falhaNoMeioDesfazTudo() {
+        var vinculo = new VinculoEmpresa(empresaA, Direcao.SAIDA);
+        admin.useHandle(h -> {
+            h.execute("""
+                    create function recusar_proveniencia() returns trigger language plpgsql as $$
+                    begin raise exception 'proveniencia recusada pelo teste'; end $$
+                    """);
+            h.execute("""
+                    create trigger recusa_proveniencia before insert on proveniencia
+                    for each row execute function recusar_proveniencia()
+                    """);
+        });
+
+        var falha = catchThrowableOfType(FalhaCatalogoException.class,
+                () -> catalogo.registrar(registro(tenantA, List.of(vinculo))));
+
+        assertThat(falha).isNotNull();
+        assertThat(contar("documento")).isZero();
+        assertThat(contar("arquivo")).isZero();
+        assertThat(contar("documento_empresa")).isZero();
+        assertThat(contar("proveniencia")).isZero();
+
+        admin.useHandle(h -> h.execute("drop trigger recusa_proveniencia on proveniencia"));
+
+        ResultadoRegistro reprocessado = catalogo.registrar(registro(tenantA, List.of(vinculo)));
+
+        assertThat(reprocessado.documentoCriado()).isTrue();
+        assertThat(contar("documento")).isEqualTo(1);
+        assertThat(contar("arquivo")).isEqualTo(1);
+        assertThat(contar("documento_empresa")).isEqualTo(1);
+        assertThat(contar("proveniencia")).isEqualTo(1);
+    }
+
+    @Test
+    void falhaDeSqlNaoExpoeDestinatario() {
+        admin.useHandle(h -> h.execute("alter table documento add constraint recusa_destinatario "
+                + "check (destinatario_doc <> '" + CPF_DESTINATARIO + "')"));
+
+        var falha = catchThrowableOfType(FalhaCatalogoException.class,
+                () -> catalogo.registrar(registro(tenantA, List.of())));
+
+        assertThat(falha.codigo()).isEqualTo("23514");
+        assertThat(falha.getCause()).isNull();
+        assertThat(falha.getSuppressed()).isEmpty();
+        // a pilha impressa cobre mensagem, causas e suprimidas: é o que iria para um log
+        assertThat(pilhaImpressa(falha))
+                .doesNotContain(CPF_DESTINATARIO, EMITENTE.valor(), CHAVE.valor(), BLOB.chave(), "Failing row");
+    }
+
+    @Test
+    void falhaAoConsultarTambemEhTraduzida() {
+        admin.useHandle(h -> h.execute("revoke select on documento from fiscal_app"));
+
+        var falha = catchThrowableOfType(FalhaCatalogoException.class, () -> catalogo.consultar(tenantA, CHAVE));
+
+        assertThat(falha.codigo()).isEqualTo("42501");
+        assertThat(falha.getCause()).isNull();
+        assertThat(pilhaImpressa(falha)).doesNotContain(CHAVE.valor());
+    }
+
+    private static String pilhaImpressa(Throwable falha) {
+        var saida = new StringWriter();
+        falha.printStackTrace(new PrintWriter(saida));
+        return saida.toString();
     }
 }

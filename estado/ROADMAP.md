@@ -42,7 +42,7 @@
 - [r] E3-S03 | AUTO+    | deps: E3-S01 | RLS por tenant + teste "A não lê B"
 - [r] E3-S04 | AUTO     | deps: E3-S01 | outbox transacional + relay (fila no Postgres)
 - [h] E3-S05 | AUTO     | deps: E2-S04 | BlobStore MinIO (Testcontainers) + sha256 + idempotência
-- [~] E3-S06 | AUTO+    | deps: E3-S01 | catálogo: documento/arquivo/proveniência/documento_empresa
+- [r] E3-S06 | AUTO+    | deps: E3-S01 | catálogo: documento/arquivo/proveniência/documento_empresa
 - [ ] E3-S07 | AUTO+    | deps: E3-S06,E2-S05 | processor de parse + ROTEAMENTO PELO CONTEÚDO + quarentena
 - [ ] E3-S08 | AUTO     | deps: E3-S02..07 | ponta a ponta local: 1 CNPJ empresa + 1 CNPJ escritório (fake)
 

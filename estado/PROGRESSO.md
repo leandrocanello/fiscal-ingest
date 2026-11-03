@@ -597,3 +597,6 @@
 - 2026-11-03 08:18 · E3-S06: DESENVOLVER ok
 - 2026-11-03 08:19 · E3-S06 (verificar): propriedades, integração, caos, RLS/tenant_id e arquitetura conferidos; suíte inteira verde (nenhum código alterado) · próximo: revisão
 - 2026-11-03 08:19 · E3-S06: VERIFICAR ok
+- 2026-11-03 08:23 · E3-S06: revisão com veredito APROVAR PARA PR (7 achados não bloqueantes; testes de domain e infra-postgres reexecutados, verdes; merge com E3-S03/E3-S04 não simulado, barrado pelo hook) · próximo: script abre o PR; autor revisa
+- 2026-11-03 08:24 · E3-S06: REVISAR ok
+- 2026-11-03 08:24 · E3-S06: PR aberto para revisão

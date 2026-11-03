@@ -616,3 +616,5 @@
 - 2026-11-03 08:45 · E4-S02: DESENVOLVER ok
 - 2026-11-03 08:49 · E4-S02: passo 4 feito (testFixtures: GeradorCertificadoDeTeste, RelogioManual, RepositorioCertificadosEmMemoria; 14 casos; suíte inteira verde). Falha vista antes de implementar: `GeradorCertificadoDeTesteTest.java:3: error: package br.com.doc.ingest.certvault.GeradorCertificadoDeTeste does not exist` · `RepositorioCertificadosEmMemoriaTest.java:25: error: cannot find symbol / symbol: class RepositorioCertificadosEmMemoria` · próximo: passo 5 (ExtratorCnpjCertificado)
 - 2026-11-03 08:49 · E4-S02: DESENVOLVER ok
+- 2026-11-03 08:52 · E4-S02: passo 5 feito (ExtratorCnpjCertificado com leitor DER limitado; 23 casos, com 2 propriedades jqwik; suíte inteira verde). Falha vista antes de implementar: `ExtratorCnpjCertificadoTest.java:43: error: cannot find symbol / symbol: variable ExtratorCnpjCertificado` · próximo: passo 6 (ValidadorPfx, abertura)
+- 2026-11-03 08:52 · E4-S02: DESENVOLVER ok

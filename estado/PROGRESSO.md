@@ -614,3 +614,5 @@
 - 2026-11-03 08:43 · E4-S02: DESENVOLVER ok
 - 2026-11-03 08:45 · E4-S02: passo 3 feito (EnvelopeCifrado e ResultadoDecifra; 14 casos + 3 propriedades jqwik; suíte inteira verde). Falha vista antes de implementar: `EnvelopeCifradoTest.java:21: error: cannot find symbol / symbol: class EnvelopeCifrado` · próximo: passo 4 (GeradorCertificadoDeTeste em testFixtures)
 - 2026-11-03 08:45 · E4-S02: DESENVOLVER ok
+- 2026-11-03 08:49 · E4-S02: passo 4 feito (testFixtures: GeradorCertificadoDeTeste, RelogioManual, RepositorioCertificadosEmMemoria; 14 casos; suíte inteira verde). Falha vista antes de implementar: `GeradorCertificadoDeTesteTest.java:3: error: package br.com.doc.ingest.certvault.GeradorCertificadoDeTeste does not exist` · `RepositorioCertificadosEmMemoriaTest.java:25: error: cannot find symbol / symbol: class RepositorioCertificadosEmMemoria` · próximo: passo 5 (ExtratorCnpjCertificado)
+- 2026-11-03 08:49 · E4-S02: DESENVOLVER ok

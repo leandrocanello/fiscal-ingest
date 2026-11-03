@@ -608,3 +608,5 @@
 - 2026-11-03 08:34 · E4-S01: plano aguarda decisão (passo [!]) → [h]
 - 2026-11-03 08:38 · E4-S02: plano escrito sem bloqueio (10 passos, módulo cert-vault); DA-35 e DA-36 registradas; 4 pontos não bloqueantes em PARA-VOCE · próximo: desenvolver o passo 1 (tipos do cofre no domain)
 - 2026-11-03 08:38 · E4-S02: PLANEJAR ok
+- 2026-11-03 08:41 · E4-S02: passo 1 feito (domain.cofre: portas e tipos; 7 testes; suíte inteira verde). Falha vista antes de implementar: `CertificadoGuardadoTest.java:25: error: cannot find symbol / symbol: class CertificadoGuardado` · `PedidoGuardaTest.java:18: error: cannot find symbol / symbol: class PedidoGuarda` · próximo: passo 2 (módulo cert-vault e KEK local)
+- 2026-11-03 08:41 · E4-S02: DESENVOLVER ok

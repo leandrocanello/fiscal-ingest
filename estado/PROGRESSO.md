@@ -612,3 +612,5 @@
 - 2026-11-03 08:41 · E4-S02: DESENVOLVER ok
 - 2026-11-03 08:50 · E4-S02: passo 2 feito (módulo cert-vault, ProvedorKek, Kek, KekLocal; 8 testes; suíte inteira verde). Falha vista antes de implementar: `KekLocalTest.java:21: error: cannot find symbol / symbol: class Kek` · próximo: passo 3 (EnvelopeCifrado AES-256-GCM)
 - 2026-11-03 08:43 · E4-S02: DESENVOLVER ok
+- 2026-11-03 08:45 · E4-S02: passo 3 feito (EnvelopeCifrado e ResultadoDecifra; 14 casos + 3 propriedades jqwik; suíte inteira verde). Falha vista antes de implementar: `EnvelopeCifradoTest.java:21: error: cannot find symbol / symbol: class EnvelopeCifrado` · próximo: passo 4 (GeradorCertificadoDeTeste em testFixtures)
+- 2026-11-03 08:45 · E4-S02: DESENVOLVER ok

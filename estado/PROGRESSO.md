@@ -587,3 +587,5 @@
 - 2026-11-02 17:40 · E3-S06: DESENVOLVER ok
 - 2026-11-02 17:46 · E3-S06: passo 6 (porta Catalogo, ResultadoRegistro, FichaDocumento, ArquivoFicha e JdbiCatalogo; testes como usuário sem superuser); falha vista: "JdbiCatalogoTest.java:5: error: cannot find symbol / symbol: class Catalogo" e "JdbiCatalogoTest.java:65: error: cannot find symbol / symbol: class JdbiCatalogo"; suíte verde (610 testes) · próximo: passo 7 (registro idempotente com fusão)
 - 2026-11-02 17:46 · E3-S06: DESENVOLVER ok
+- 2026-11-03 08:03 · E3-S06: passo 7 (registro idempotente com fusão: `on conflict do nothing` nas quatro tabelas, `for update` no documento, `update` só se o estado mudou); falha vista: "19 tests completed, 10 failed" e "ERROR: duplicate key value violates unique constraint" (30 ocorrências no relatório); suíte verde (620 testes) · próximo: passo 8 (falha no meio desfaz tudo e `FalhaCatalogoException` sem dado pessoal)
+- 2026-11-03 08:03 · E3-S06: DESENVOLVER ok

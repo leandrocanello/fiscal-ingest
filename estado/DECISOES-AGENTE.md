@@ -180,3 +180,9 @@ Como desfazer: reverter o commit `fix(E3-S04)` do relay.
 - **Opções:** FK (a) para `ledger_nsu (id)` × (b) sem FK; valor (a) `numeric` sem escala × (b) `numeric(15,2)`.
 - **Escolha:** (a) em ambos. A tabela do ledger já existe e a FK impede proveniência apontando para o nada; `numeric` sem escala guarda o valor como veio, sem arredondar. Consequência: os testes dos próximos passos precisam criar a linha do ledger antes de registrar `DFE_AN`.
 - **Como desfazer:** migration nova com `drop constraint proveniencia_ledger_nsu_id_fkey` e `alter column valor_total type numeric(15,2)`; ou editar a V8 antes da primeira instalação real.
+
+### DA-30 · 2026-11-03 · E3-S06
+- **Contexto:** o plano pede `FalhaCatalogoException` com só o `SQLState`, sem dizer em que pacote ela fica. Quem chama a porta `Catalogo` (E3-S07 e E5) não deve depender de `infra`.
+- **Opções:** (a) `domain.catalogo`, com um `codigo()` genérico que no Postgres é o SQLState, como a `BlobConflitanteException` em `domain.blob` × (b) `infra.postgres`, com `sqlState()`, obrigando quem captura a depender da infra.
+- **Escolha:** (a). A tradução alcança `registrar` e `consultar`, porque fica no método privado `noTenant`. Sem SQLState na cadeia (raro), o código é `desconhecido`. Acrescentei o teste `falhaAoConsultarTambemEhTraduzida`, que não estava no plano.
+- **Como desfazer:** mover a classe para `infra.postgres` e ajustar o import no `JdbiCatalogo`, no teste e no javadoc da porta.

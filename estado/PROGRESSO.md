@@ -589,3 +589,5 @@
 - 2026-11-02 17:46 · E3-S06: DESENVOLVER ok
 - 2026-11-03 08:03 · E3-S06: passo 7 (registro idempotente com fusão: `on conflict do nothing` nas quatro tabelas, `for update` no documento, `update` só se o estado mudou); falha vista: "19 tests completed, 10 failed" e "ERROR: duplicate key value violates unique constraint" (30 ocorrências no relatório); suíte verde (620 testes) · próximo: passo 8 (falha no meio desfaz tudo e `FalhaCatalogoException` sem dado pessoal)
 - 2026-11-03 08:03 · E3-S06: DESENVOLVER ok
+- 2026-11-03 08:15 · E3-S06: passo 8 (`JdbiCatalogo` traduz `JdbiException` para `FalhaCatalogoException` só com o SQLState e sem causa; rollback testado com reprocessamento); falha vista: "error: cannot find symbol / symbol: class FalhaCatalogoException" e, com a classe criada, "Expecting actual throwable to be an instance of: FalhaCatalogoException but was: UnableToExecuteStatementException [...] violates check constraint \"recusa_destinatario\"" e "22 tests completed, 3 failed"; suíte verde (623 testes) · próximo: passo 9 (`CaosCatalogoTest` com escritores concorrentes)
+- 2026-11-03 08:06 · E3-S06: DESENVOLVER ok

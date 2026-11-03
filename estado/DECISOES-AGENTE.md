@@ -186,3 +186,9 @@ Como desfazer: reverter o commit `fix(E3-S04)` do relay.
 - **Opções:** (a) `domain.catalogo`, com um `codigo()` genérico que no Postgres é o SQLState, como a `BlobConflitanteException` em `domain.blob` × (b) `infra.postgres`, com `sqlState()`, obrigando quem captura a depender da infra.
 - **Escolha:** (a). A tradução alcança `registrar` e `consultar`, porque fica no método privado `noTenant`. Sem SQLState na cadeia (raro), o código é `desconhecido`. Acrescentei o teste `falhaAoConsultarTambemEhTraduzida`, que não estava no plano.
 - **Como desfazer:** mover a classe para `infra.postgres` e ajustar o import no `JdbiCatalogo`, no teste e no javadoc da porta.
+
+### DA-31 · 2026-11-03 · E3-S06
+- **Contexto:** em `CatalogoPropriedadesTest`, as propriedades dividem um schema. Depois de uma falha, o shrinking padrão do jqwik (`BOUNDED`) durou ~10s e, ao que tudo indica, seguiu em segundo plano, disputando o schema com a propriedade seguinte: `deadlock detected` no `truncate` e propriedades sem relação com o defeito reprovadas. Só aparece com teste vermelho. A causa foi inferida da duração e confirmada pelo efeito da troca, não lida no código do jqwik.
+- **Opções:** (a) `ShrinkingMode.FULL` × (b) `ShrinkingMode.OFF`, sem contraexemplo mínimo × (c) um schema por propriedade, mais lento e sem resolver a concorrência do shrinking dentro da mesma propriedade.
+- **Escolha:** (a). Com a mutação "último vence", só `ordemDeChegadaNaoMudaAFicha` reprova, sem deadlock. Não mexi em `EstadoColetaCasPropriedadesTest` nem em `JdbiNsuLedgerPropriedadesTest`, que têm o mesmo desenho (schema compartilhado + `truncate`) e podem sofrer o mesmo efeito quando falharem.
+- **Como desfazer:** tirar `shrinking = ShrinkingMode.FULL` das quatro propriedades e o parágrafo correspondente do javadoc.

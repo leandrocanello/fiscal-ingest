@@ -600,3 +600,5 @@
 - 2026-11-03 08:23 · E3-S06: revisão com veredito APROVAR PARA PR (7 achados não bloqueantes; testes de domain e infra-postgres reexecutados, verdes; merge com E3-S03/E3-S04 não simulado, barrado pelo hook) · próximo: script abre o PR; autor revisa
 - 2026-11-03 08:24 · E3-S06: REVISAR ok
 - 2026-11-03 08:24 · E3-S06: PR aberto para revisão
+- 2026-11-03 08:27 · E3-S07: plano escrito, parado no passo [!] à espera de D1–D3 em PARA-VOCE (roteamento de resumo/evento, escritório no autXML, tenants do CNPJ consultado); DA-32 e DA-33 registradas · próximo: autor responde e troca [h] por [~]
+- 2026-11-03 08:30 · E3-S07: PLANEJAR ok

@@ -192,3 +192,15 @@ Como desfazer: reverter o commit `fix(E3-S04)` do relay.
 - **Opções:** (a) `ShrinkingMode.FULL` × (b) `ShrinkingMode.OFF`, sem contraexemplo mínimo × (c) um schema por propriedade, mais lento e sem resolver a concorrência do shrinking dentro da mesma propriedade.
 - **Escolha:** (a). Com a mutação "último vence", só `ordemDeChegadaNaoMudaAFicha` reprova, sem deadlock. Não mexi em `EstadoColetaCasPropriedadesTest` nem em `JdbiNsuLedgerPropriedadesTest`, que têm o mesmo desenho (schema compartilhado + `truncate`) e podem sofrer o mesmo efeito quando falharem.
 - **Como desfazer:** tirar `shrinking = ShrinkingMode.FULL` das quatro propriedades e o parágrafo correspondente do javadoc.
+
+### DA-32 · 2026-11-03 · E3-S07
+- **Contexto:** o processor lê bytes do blob e precisa do extrator, que está em `adapter-nfe-nacional`. A §9 diz que ele "é borda, não core" e cita a porta `ParserDfe`, mas não diz em que módulo ele fica; a §19 só permite que `adapter-*` dependa de `domain`.
+- **Opções:** (a) `app-worker`, sem Spring por ora, só com portas; `ParserDfe` no domínio (`byte[]` só no parâmetro, como no `BlobStore`) e implementação no adapter × (b) módulo novo `processador`, fora da §19 × (c) dentro do `adapter-nfe-nacional`, que amarraria o processor à NF-e e impediria o reúso pela E5.
+- **Escolha:** (a). A §19 já dá ao `app-worker` o fetch + process. O código de produção do módulo só depende de `domain` (ArchUnit); adapter e infra entram como `testImplementation` até existir composição (E3-S08).
+- **Como desfazer:** mover o pacote para outro módulo e ajustar `settings.gradle.kts`; nenhuma porta muda.
+
+### DA-33 · 2026-11-03 · E3-S07
+- **Contexto:** a E3-S06 deixou para cá o mapeamento para `SituacaoDocumento`. Os códigos não estão em `docs/FONTES-OFICIAIS.md`: a tabela abaixo vem do conhecimento do planejador sobre o leiaute, sem conferência no MOC.
+- **Opções:** (a) tabela isolada, marcada [VALIDAR], e conferência no smoke E2-S12 × (b) bloquear até confirmar a fonte × (c) tudo que não for resumo vira `AUTORIZADA`.
+- **Escolha:** (a), porque a situação é reconstruível a partir do bruto (§8). `SituacaoNfe` no adapter: `cSitNFe` 1 → `SO_RESUMO`, 2 → `DENEGADA`, 3 → `CANCELADA`; protocolo 100/150 → `AUTORIZADA`, 110/205/301/302/303 → `DENEGADA`; eventos 110111/110112 → `CANCELADA`; outro evento ou código desconhecido → `SO_RESUMO`, que nunca sobrepõe situação melhor na fusão (DA-27).
+- **Como desfazer:** trocar a tabela em `SituacaoNfe` e reprocessar a partir do bruto.

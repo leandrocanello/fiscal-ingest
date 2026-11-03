@@ -204,3 +204,9 @@ Como desfazer: reverter o commit `fix(E3-S04)` do relay.
 - **Opções:** (a) tabela isolada, marcada [VALIDAR], e conferência no smoke E2-S12 × (b) bloquear até confirmar a fonte × (c) tudo que não for resumo vira `AUTORIZADA`.
 - **Escolha:** (a), porque a situação é reconstruível a partir do bruto (§8). `SituacaoNfe` no adapter: `cSitNFe` 1 → `SO_RESUMO`, 2 → `DENEGADA`, 3 → `CANCELADA`; protocolo 100/150 → `AUTORIZADA`, 110/205/301/302/303 → `DENEGADA`; eventos 110111/110112 → `CANCELADA`; outro evento ou código desconhecido → `SO_RESUMO`, que nunca sobrepõe situação melhor na fusão (DA-27).
 - **Como desfazer:** trocar a tabela em `SituacaoNfe` e reprocessar a partir do bruto.
+
+### DA-34 · 2026-11-03 · E4-S01
+- **Contexto:** a §6.5/§6.7 pedem claim com lease e CAS como proteção final, mas não dizem se o claim mexe na `versao`, o que acontece com o resultado de um dono cujo lease venceu, nem o que é o "ciclo" do teto por tenant.
+- **Opções:** (a) o claim não muda `versao`; o dono vencido ainda confirma o lote e seu bloqueio sempre vale; teto por chamada de `reivindicar` × (b) o claim incrementa `versao` (fencing), recusando o dono vencido × (c) teto sobre leases vigentes do tenant.
+- **Escolha:** (a). O fetcher vencido já consumiu aquele NSU na SEFAZ: descartar a confirmação (b) deixaria o cursor para trás, e a próxima consulta pediria NSU já consumido (inv. 1). Pelo mesmo motivo, o bloqueio informado pela SEFAZ não depende de dono, e `registrarBloqueio` nunca encurta, para não haver nova consulta dentro da janela. O teto por chamada segue o texto da §6.5 ("por ciclo") e é o mais simples (ADR-021); com vários schedulers ele vale por instância.
+- **Como desfazer:** (b) é uma linha no `update` do claim, mais o teste `donoVencidoAindaConfirmaOLoteQueJaConsumiu`. (c) troca a subconsulta do teto. Nada fica gravado em formato novo.

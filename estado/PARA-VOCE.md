@@ -161,3 +161,22 @@
 - **Recomendação:** D1 (a) · D2 (a) · D3 (a).
 - **Para ver junto (não exige decisão):** o outbox saiu desta subetapa e foi para a E3-S08, porque a E3-S04 não está nesta base. As migrations V10/V11 reforçam o achado 2 do revisor da E3-S06: mescle E3-S03 e E3-S04 **antes** da E3-S06, senão banco já migrado quebra.
 - Resposta:
+
+### [DECISAO] E4-S01 — 2026-11-03 — fairness por tenant numa coleta que não tem tenant
+- **O que é preciso:** o plano `planos/E4-S01.md` está pronto, mas parado no passo `[!]`. A §6.5 pede "teto de claims por tenant", só que `estado_coleta` não tem tenant (sua decisão da §8.1, de 2026-10-29), um CNPJ pode servir a dois tenants e a `empresa` terá RLS forçada (V5 da E3-S03). Os docs não dizem como o scheduler descobre o tenant de cada chave. Claim, lease e `due_at` não dependem disso. A fairness não protege nenhuma invariante: ela é só operacional.
+- **D1 — de onde vem o tenant da chave.**
+  - (a) `empresa`, por `(cnpj, ambiente)`, pela função `tenants_do_cnpj_consultado` da E3-S07 (D3 (a) dela). Pró: um só mecanismo, sem nova fonte de verdade, e a função só expõe ids de tenant. Contra: depende da resposta à E3-S07 e da V11 na base; uma chamada por chave elegível a cada ciclo (medir na E4-S05).
+  - (b) `estado_coleta.certificado_id` → `certificado.tenant_id`. Pró: quem paga é o dono do certificado usado, sem ambiguidade. Contra: espera a E4-S02, a coluna é nula em `AGUARDANDO_CERTIFICADO` e também precisa atravessar a RLS.
+  - (c) Coluna de tenant em `estado_coleta`. Pró: SQL simples. Contra: contraria a §8.1 e não representa o CNPJ compartilhado.
+- **D2 — CNPJ em dois tenants: quem gasta o teto.** A coleta é uma só nos dois casos.
+  - (a) O menor `tenant_id` ativo. Pró: uma linha de SQL, determinístico, e pode mudar a qualquer hora, porque nada fica gravado. Contra: arbitrário, mas o caso é raro e só afeta o ritmo.
+  - (b) Todos os tenants: a chave só sai se todos tiverem folga. Pró: conta exata. Contra: `row_number` não resolve, exige seleção gulosa, e um tenant cheio atrasa o outro.
+- **D3 — chave sem empresa ativa em nenhum tenant.**
+  - (a) Não é reivindicada; o cursor fica intacto e ela volta quando houver empresa. Pró: coerente com a §7.1 (sem consentimento, sem coleta) e não gasta consulta. Contra: enquanto ninguém a usa, documentos podem sair da janela de retenção do AN.
+  - (b) É reivindicada sem contar em teto nenhum. Pró: não corre risco com a retenção. Contra: consulta com certificado sem nenhum tenant que responda por ela.
+- **D4 — ordem de entrega.**
+  - (a) Fatiar: a E4-S01 entrega claim, lease e `due_at` sem esperar nada, e os dois passos de fairness viram uma subetapa nova (sugestão: E4-S01b, deps E4-S01 e E3-S07). Pró: a E3-S08 e a E4-S05 não ficam presas à fila de PRs; até lá vale o `limite` global, sem risco enquanto não há produção. Contra: o critério "fairness" só fecha depois.
+  - (b) Tudo junto: a E4-S01 espera a E3-S03 e a E3-S07 mescladas. Pró: subetapa inteira de uma vez. Contra: fica parada mais tempo.
+- **Roteiro:** responda D1–D4 abaixo; responda junto com o D3 da E3-S07, porque D1 (a) depende dele. Depois troque a E4-S01 de `[h]` para `[~]` no ROADMAP. Se escolher D4 (a), crie também a linha da E4-S01b; o desenvolvedor pula os passos marcados "só se D4 = b". A E4-S01 usa a migration V12 (V10/V11 são da E3-S07).
+- **Recomendação:** D1 (a) · D2 (a) · D3 (a) · D4 (a).
+- Resposta:

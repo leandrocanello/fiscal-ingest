@@ -43,11 +43,11 @@
 - [r] E3-S04 | AUTO     | deps: E3-S01 | outbox transacional + relay (fila no Postgres)
 - [h] E3-S05 | AUTO     | deps: E2-S04 | BlobStore MinIO (Testcontainers) + sha256 + idempotência
 - [r] E3-S06 | AUTO+    | deps: E3-S01 | catálogo: documento/arquivo/proveniência/documento_empresa
-- [~] E3-S07 | AUTO+    | deps: E3-S06,E2-S05 | processor de parse + ROTEAMENTO PELO CONTEÚDO + quarentena
+- [h] E3-S07 | AUTO+    | deps: E3-S06,E2-S05 | processor de parse + ROTEAMENTO PELO CONTEÚDO + quarentena
 - [ ] E3-S08 | AUTO     | deps: E3-S02..07 | ponta a ponta local: 1 CNPJ empresa + 1 CNPJ escritório (fake)
 
 ## Etapa 4 — Scheduler, cofre, consentimento (Fase 4)
-- [ ] E4-S01 | AUTO     | deps: E3-S02 | claim SKIP LOCKED + lease + due_at + fairness por tenant
+- [~] E4-S01 | AUTO     | deps: E3-S02 | claim SKIP LOCKED + lease + due_at + fairness por tenant
 - [ ] E4-S02 | AUTO+    | deps: E2-S10 | CofreDeCertificados local (envelope encryption) — sem segredo em log
 - [ ] E4-S03 | AUTO     | deps: E3-S01 | consentimento por finalidade + máquina de estados de estado_coleta
 - [ ] E4-S04 | AUTO     | deps: E4-S02 | alertas de vencimento + rotação sem perder cursor

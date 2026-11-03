@@ -602,3 +602,6 @@
 - 2026-11-03 08:24 · E3-S06: PR aberto para revisão
 - 2026-11-03 08:27 · E3-S07: plano escrito, parado no passo [!] à espera de D1–D3 em PARA-VOCE (roteamento de resumo/evento, escritório no autXML, tenants do CNPJ consultado); DA-32 e DA-33 registradas · próximo: autor responde e troca [h] por [~]
 - 2026-11-03 08:30 · E3-S07: PLANEJAR ok
+- 2026-11-03 08:30 · E3-S07: plano aguarda decisão (passo [!]) → [h]
+- 2026-11-03 08:40 · E4-S01: plano escrito, parado no passo [!] à espera de D1–D4 em PARA-VOCE (origem do tenant da fairness, CNPJ compartilhado, chave sem empresa, fatiar); DA-34 registrada · próximo: autor responde junto com o D3 da E3-S07 e troca [h] por [~]
+- 2026-11-03 08:34 · E4-S01: PLANEJAR ok

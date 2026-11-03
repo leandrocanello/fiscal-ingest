@@ -595,3 +595,5 @@
 - 2026-11-03 08:10 · E3-S06: DESENVOLVER ok
 - 2026-11-03 08:17 · E3-S06: passo 10 (`CatalogoPropriedadesTest`, 4 propriedades × 15 tentativas, só teste, DA-31); passou de primeira, sem ajuste no `JdbiCatalogo`. Falha vista só por mutação (revertida, fora do commit): fusão "último vence" reprova só `ordemDeChegadaNaoMudaAFicha` ("6 tests completed, 1 failed", "AssertionFailedError: expected: [FichaComparavel[..."); tirar o `on conflict` de `documento`, `arquivo` ou `proveniencia` reprova as 4 ("6 tests completed, 4 failed", rodado antes do `ShrinkingMode.FULL`). Antes do `FULL`, a mutação da fusão também dava "ERROR: deadlock detected" no `truncate`. O hook barrou a restauração de arquivo via git; a reversão usou cópia em pasta temporária e o `git status` confirmou só o teste novo; suíte verde (667 testes) · próximo: seção Verificação do plano
 - 2026-11-03 08:18 · E3-S06: DESENVOLVER ok
+- 2026-11-03 08:19 · E3-S06 (verificar): propriedades, integração, caos, RLS/tenant_id e arquitetura conferidos; suíte inteira verde (nenhum código alterado) · próximo: revisão
+- 2026-11-03 08:19 · E3-S06: VERIFICAR ok

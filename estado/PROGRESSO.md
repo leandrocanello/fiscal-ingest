@@ -618,3 +618,4 @@
 - 2026-11-03 08:49 · E4-S02: DESENVOLVER ok
 - 2026-11-03 08:52 · E4-S02: passo 5 feito (ExtratorCnpjCertificado com leitor DER limitado; 23 casos, com 2 propriedades jqwik; suíte inteira verde). Falha vista antes de implementar: `ExtratorCnpjCertificadoTest.java:43: error: cannot find symbol / symbol: variable ExtratorCnpjCertificado` · próximo: passo 6 (ValidadorPfx, abertura)
 - 2026-11-03 08:52 · E4-S02: DESENVOLVER ok
+- 2026-11-03 22:55 · E2-S13/E3-S05/E3-S07/E4-S01: decisões do autor registradas (recomendações aceitas) → [~]

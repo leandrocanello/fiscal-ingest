@@ -110,7 +110,7 @@
 - **Roteiro:** abra o MOC 7.0 no capítulo do `NFeRecepcaoEvento` (perto da p. 100): confira a tabela de cStat do retorno (D1) e o
   WSDL/leiaute do `envEvento` (D2); anote as páginas em FONTES-OFICIAIS (item 6/9) num PR `docs/`; responda abaixo D1, D2, D3.
 - **Recomendação:** D1 (c) partindo de (a), com `573 → Ok`; D2 (a), conferido no smoke E2-S12; D3 (a).
-- Resposta:
+- Resposta (2026-11-03, autor): conforme a recomendação — D1 (c) partindo de (a), com `573 → Ok` ("sem complexidade desnecessária"); D2 (a), conferido no smoke E2-S12; D3 (a).
 
 ### [DECISAO] E3-S05 — 2026-10-30 — cliente S3 e imagem de teste do `BlobStore` MinIO
 - **O que é preciso:** a E3-S05 cria o módulo `infra-blob-minio` (implementação real da porta `BlobStore`). Os docs dizem
@@ -135,7 +135,7 @@
 - **Roteiro:** confira na página do MinIO/Docker Hub se `minio/minio` ainda publica tags e qual a última; responda D1–D3
   abaixo. Se escolher D1 (b), avise se aceita depender do MinIO em produção.
 - **Recomendação:** D1 (a) com `url-connection-client` · D2 (a) com tag fixa · D3 (a).
-- Resposta:
+- Resposta (2026-11-03, autor): conforme a recomendação — D1 (a) com `url-connection-client`; D2 (a) com tag fixa; D3 (a).
 
 ### [DUVIDA] E3-S03/E3-S04 — 2026-11-02 — `outbox` quebra o meta-teste de RLS quando as duas forem mescladas (não bloqueia)
 - **O que é preciso:** cada PR passa sozinho, mas juntos não: `TodaTabelaComTenantIdTemRlsTest.tabelasSemTenantSaoSoAsDeclaradas` (E3-S03) só aceita `tenant`, `estado_coleta`, `ledger_nsu`, `ledger_tentativa` e `flyway_schema_history`, e a E3-S04 cria `outbox` e `outbox_consumo` sem `tenant_id`. O teste foi lido, não executado com as duas branches juntas.
@@ -160,7 +160,7 @@
 - **Roteiro:** responda D1–D3 abaixo. Se aceitar D1 (a), diga se a exceção à inv. 10 deve constar da §2.2/§7.3 (você atualiza o CLAUDE.md; o agente não edita). Depois troque a E3-S07 de `[h]` para `[~]` no ROADMAP. Vale conferir as premissas do D1 no smoke E2-S12, mas ele não precisa vir antes: o catálogo é reconstruível a partir do bruto.
 - **Recomendação:** D1 (a) · D2 (a) · D3 (a).
 - **Para ver junto (não exige decisão):** o outbox saiu desta subetapa e foi para a E3-S08, porque a E3-S04 não está nesta base. As migrations V10/V11 reforçam o achado 2 do revisor da E3-S06: mescle E3-S03 e E3-S04 **antes** da E3-S06, senão banco já migrado quebra.
-- Resposta:
+- Resposta (2026-11-03, autor): conforme a recomendação — D1 (a), D2 (a), D3 (a). Autor: "é o mais complicado, mas pelas opções descritas não vejo caminho melhor por hora" — registrar como revisável quando o catálogo rodar com dados do smoke.
 
 ### [DECISAO] E4-S01 — 2026-11-03 — fairness por tenant numa coleta que não tem tenant
 - **O que é preciso:** o plano `planos/E4-S01.md` está pronto, mas parado no passo `[!]`. A §6.5 pede "teto de claims por tenant", só que `estado_coleta` não tem tenant (sua decisão da §8.1, de 2026-10-29), um CNPJ pode servir a dois tenants e a `empresa` terá RLS forçada (V5 da E3-S03). Os docs não dizem como o scheduler descobre o tenant de cada chave. Claim, lease e `due_at` não dependem disso. A fairness não protege nenhuma invariante: ela é só operacional.
@@ -179,7 +179,7 @@
   - (b) Tudo junto: a E4-S01 espera a E3-S03 e a E3-S07 mescladas. Pró: subetapa inteira de uma vez. Contra: fica parada mais tempo.
 - **Roteiro:** responda D1–D4 abaixo; responda junto com o D3 da E3-S07, porque D1 (a) depende dele. Depois troque a E4-S01 de `[h]` para `[~]` no ROADMAP. Se escolher D4 (a), crie também a linha da E4-S01b; o desenvolvedor pula os passos marcados "só se D4 = b". A E4-S01 usa a migration V12 (V10/V11 são da E3-S07).
 - **Recomendação:** D1 (a) · D2 (a) · D3 (a) · D4 (a).
-- Resposta:
+- Resposta (2026-11-03, autor): conforme a recomendação — D1 (a), D2 (a), D3 (a), D4 (a).
 
 ### [DUVIDA] E4-S02 — 2026-11-03 — quatro pontos do cofre (não bloqueiam)
 - **O que é preciso:** o plano `planos/E4-S02.md` segue sem esperar resposta, com as escolhas das DA-35 e DA-36. Estes pontos ficam fora dele e pedem a sua decisão.

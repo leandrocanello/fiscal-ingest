@@ -33,7 +33,7 @@
 - [x] E2-S14 | AUTO     | deps: -      | recuperar na main o código perdido: fim da E2-S05 (XXE, extrator) + E2-S08/E2-S09 (mergeados na branch empilhada)
 - [x] E2-S15 | AUTO+    | deps: E2-S14 | Documento.blobRef → Optional<BlobRef> no domain; nfe e fake gravam o mesmo formato; tirar o gancho lerBlob do contrato
 - [x] E2-S16 | AUTO     | deps: E2-S14 | cStat do consChNFe no CStatMapper (217/236/614–619/640/641/653/654 → definitivo; 593 → ErroAutenticacao; 252 → definitivo), testes primeiro
-- [h] E2-S13 | AUTO+    | deps: E2-S07,E2-S11 | enviar o evento de manifestação (RecepcaoEvento SOAP) + mapear o retEvento
+- [~] E2-S13 | AUTO+    | deps: E2-S07,E2-S11 | enviar o evento de manifestação (RecepcaoEvento SOAP) + mapear o retEvento
 - [ ] E2-S12 | HUMANO   | deps: E2-S09,E2-S13 | smoke em homologação: distNSU, consChNFe, ciência, autXML
 
 ## Etapa 3 — Persistência e catálogo (Fase 3)
@@ -41,13 +41,13 @@
 - [x] E3-S02 | AUTO+    | deps: E3-S01 | CAS do cursor + testes de caos (dois fetchers, um avança)
 - [r] E3-S03 | AUTO+    | deps: E3-S01 | RLS por tenant + teste "A não lê B"
 - [r] E3-S04 | AUTO     | deps: E3-S01 | outbox transacional + relay (fila no Postgres)
-- [h] E3-S05 | AUTO     | deps: E2-S04 | BlobStore MinIO (Testcontainers) + sha256 + idempotência
+- [~] E3-S05 | AUTO     | deps: E2-S04 | BlobStore MinIO (Testcontainers) + sha256 + idempotência
 - [r] E3-S06 | AUTO+    | deps: E3-S01 | catálogo: documento/arquivo/proveniência/documento_empresa
-- [h] E3-S07 | AUTO+    | deps: E3-S06,E2-S05 | processor de parse + ROTEAMENTO PELO CONTEÚDO + quarentena
+- [~] E3-S07 | AUTO+    | deps: E3-S06,E2-S05 | processor de parse + ROTEAMENTO PELO CONTEÚDO + quarentena
 - [ ] E3-S08 | AUTO     | deps: E3-S02..07 | ponta a ponta local: 1 CNPJ empresa + 1 CNPJ escritório (fake)
 
 ## Etapa 4 — Scheduler, cofre, consentimento (Fase 4)
-- [h] E4-S01 | AUTO     | deps: E3-S02 | claim SKIP LOCKED + lease + due_at + fairness por tenant
+- [~] E4-S01 | AUTO     | deps: E3-S02 | claim SKIP LOCKED + lease + due_at + fairness por tenant
 - [~] E4-S02 | AUTO+    | deps: E2-S10 | CofreDeCertificados local (envelope encryption) — sem segredo em log
 - [ ] E4-S03 | AUTO     | deps: E3-S01 | consentimento por finalidade + máquina de estados de estado_coleta
 - [ ] E4-S04 | AUTO     | deps: E4-S02 | alertas de vencimento + rotação sem perder cursor

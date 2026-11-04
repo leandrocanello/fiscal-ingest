@@ -245,3 +245,4 @@ Como desfazer: reverter o commit `fix(E3-S04)` do relay.
 - **Opções:** (a) renomear o helper privado, sem tocar em asserção; (b) não mexer e terminar sem rodar os testes do módulo; (c) trocar pelo helper da base, o que muda o usuário de banco do teste.
 - **Escolha:** (a), para `dataSourceComoLoginDeTeste`. O teste continua com o mesmo login e as mesmas asserções, e não fica mais fraco. As 2 falhas de asserção que apareceram depois **não** foram alteradas (PARA-VOCE).
 - **Como desfazer:** reverter as 2 linhas de `CatalogoRlsTest` no commit `feat(domain): DV módulo 11 alfanumérico`.
+- **Situação (2026-11-04):** o commit foi revertido pelo `verificar.sh` às 08:13 e a renomeação **não está no código**. Ela volta junto com a decisão em PARA-VOCE "[DECISAO] E1-S07".

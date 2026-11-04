@@ -628,3 +628,5 @@
 - 2026-11-04 08:06 · E1-S07: PLANEJAR ok
 - 2026-11-04 08:11 · E1-S07: passo 1 (DigitoVerificador.modulo11; commit feat(domain)); falha vista: `DigitoVerificadorTest.java:11: error: cannot find symbol` / `symbol: variable DigitoVerificador`; depois 5/5 verdes. Suíte NÃO verde: 805/807, com 2 falhas que vêm da main (MigracoesTest.aplicaV7ECriaOutboxEConsumo: expected "7" but was "9"; TodaTabelaComTenantIdTemRlsTest.tabelasSemTenantSaoSoAsDeclaradas: outbox, outbox_consumo inesperados), não alteradas (PARA-VOCE); helper do CatalogoRlsTest renomeado para compilar (DA-39) · próximo: decisão do autor sobre as 2 falhas; passo 2 (FixturesFiscais)
 - 2026-11-04 08:13 · E1-S07: revertido — suíte vermelha (ver logs/ultimo-teste.log)
+- 2026-11-04 08:15 · E1-S07: passo 1 marcado [!], sem commit de código; a main (b839918) não compila os testes do infra-postgres (CatalogoRlsTest.java:63), então a suíte fica vermelha com qualquer commit; PARA-VOCE atualizado (3 correções e aviso de que o verificar.sh desfaz o [!]) · próximo: autor decidir "[DECISAO] E1-S07"
+- 2026-11-04 08:15 · E1-S07: revertido — nenhum commit feito e nenhum passo fechado no plano

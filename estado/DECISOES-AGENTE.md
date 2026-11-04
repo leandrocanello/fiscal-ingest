@@ -239,3 +239,9 @@ Como desfazer: reverter o commit `fix(E3-S04)` do relay.
 - **Opções:** (a) DV obrigatório só no que **sai** para a SEFAZ (`ChaveAcessoNfe`, `IdEvento`); no que **entra** (`ChaveAcesso`, `ExtratorMetadados`), só formato, com `ChaveAcesso.temDvValido()` disponível; (b) DV obrigatório em todos os construtores.
 - **Escolha:** (a). Na saída, conferir o DV evita gastar consulta num pedido que seria rejeitado. Na entrada, a SEFAZ já validou o que vem pelo AN, e recusar por um erro nosso de cálculo travaria o documento fora do catálogo. A porta push (Fase 5, inv. 9) usa `temDvValido()` para decidir a confiança ou a rejeição.
 - **Como desfazer:** chamar a checagem de DV no construtor de `ChaveAcesso` e ajustar `ExtratorMetadadosTest.chaveComDvErradoAindaEhExtraida` e as fixtures do catálogo.
+
+### DA-39 · 2026-11-04 · E1-S07
+- **Contexto:** a `main` não compila os testes do `infra-postgres`: o helper `private static dataSourceComoApp` do `CatalogoRlsTest` (E3-S06) conflita com o de `PostgresTestBase` (E3-S03). Sem compilar, a suíte inteira não roda. A regra proíbe alterar teste antigo para "passar", salvo pelo plano, e o plano não cita isso.
+- **Opções:** (a) renomear o helper privado, sem tocar em asserção; (b) não mexer e terminar sem rodar os testes do módulo; (c) trocar pelo helper da base, o que muda o usuário de banco do teste.
+- **Escolha:** (a), para `dataSourceComoLoginDeTeste`. O teste continua com o mesmo login e as mesmas asserções, e não fica mais fraco. As 2 falhas de asserção que apareceram depois **não** foram alteradas (PARA-VOCE).
+- **Como desfazer:** reverter as 2 linhas de `CatalogoRlsTest` no commit `feat(domain): DV módulo 11 alfanumérico`.

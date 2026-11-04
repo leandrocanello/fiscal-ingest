@@ -207,3 +207,13 @@
 - **Para conferir (só você pode):** se há versão da NT Conjunta 2025.001 posterior à v1.00 no portal da NF-e. Se confirmar letras vedadas, basta preencher `LETRAS_VEDADAS`. Para o achado de 2026-11-04: a NT 2014.002 v1.40 cita `OID=2.16.76.1.3.3` (regra A07), o que reforça a constante da DA-36.
 - Resposta:
 
+
+### [DECISAO] E1-S07 — 2026-11-04 — `main` com 2 testes vermelhos no infra-postgres (bloqueia "suíte verde")
+- **O que é preciso:** autorizar a correção de 2 testes antigos. Eles quebraram no merge da E3-S04/E3-S06, não pela E1-S07. A `main` nem compilava esses testes (corrigido só com renomeação, DA-39). Como os testes de `infra-postgres` não rodavam, a falha não aparecia.
+  - `MigracoesTest.aplicaV7ECriaOutboxEConsumo`: espera a última migration `7`, e já existe a `9`.
+  - `TodaTabelaComTenantIdTemRlsTest.tabelasSemTenantSaoSoAsDeclaradas`: `outbox` e `outbox_consumo` não têm `tenant_id` e não estão em `TABELAS_SEM_TENANT`.
+- **Por que não corrigi:** muda asserção de teste antigo, o que a regra só permite pelo plano. O segundo teste é guarda de RLS (§13): incluir tabelas na lista é decisão de segurança.
+- **Opções:** (a) `MigracoesTest` passa a conferir que as tabelas existem, sem fixar a última versão, e as 2 tabelas entram na lista, se você confirmar que o outbox é mesmo sem tenant; (b) dar `tenant_id` e RLS ao outbox.
+- **Recomendação:** (a), como passo do plano da E1-S07 ou numa correção direta na `main`. O `MigracoesTest` vai quebrar de novo com a V13 se continuar fixando a versão.
+- **Efeito até lá:** os passos da E1-S07 terminam com essas 2 falhas; todos os demais testes passam (805 de 807).
+- Resposta:

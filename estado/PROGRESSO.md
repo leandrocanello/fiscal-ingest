@@ -626,3 +626,5 @@
 - 2026-11-04 08:00 · E3-S07: [!] conflito no rebase para main
 - 2026-11-04 08:04 · E1-S07: plano criado (DA-37, DA-38; NT e FAQ da Receita lidas; [DUVIDA] do extrator da E4-S02 em PARA-VOCE) · próximo: desenvolver o passo 1 (DigitoVerificador)
 - 2026-11-04 08:06 · E1-S07: PLANEJAR ok
+- 2026-11-04 08:11 · E1-S07: passo 1 (DigitoVerificador.modulo11; commit feat(domain)); falha vista: `DigitoVerificadorTest.java:11: error: cannot find symbol` / `symbol: variable DigitoVerificador`; depois 5/5 verdes. Suíte NÃO verde: 805/807, com 2 falhas que vêm da main (MigracoesTest.aplicaV7ECriaOutboxEConsumo: expected "7" but was "9"; TodaTabelaComTenantIdTemRlsTest.tabelasSemTenantSaoSoAsDeclaradas: outbox, outbox_consumo inesperados), não alteradas (PARA-VOCE); helper do CatalogoRlsTest renomeado para compilar (DA-39) · próximo: decisão do autor sobre as 2 falhas; passo 2 (FixturesFiscais)
+- 2026-11-04 08:13 · E1-S07: revertido — suíte vermelha (ver logs/ultimo-teste.log)

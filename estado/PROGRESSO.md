@@ -643,3 +643,5 @@
 - 2026-11-04 08:27 · E2-S13: DESENVOLVER ok
 - 2026-11-04 08:29 · E2-S13: passo 6 feito (TradutorRespostaEvento; commit 73134b7 feat(nfe); DA-44; suíte inteira verde, 497 testes). Falha vista antes de implementar: `TradutorRespostaEventoTest.java:30: error: package TradutorRespostaEvento does not exist` / `TradutorRespostaEventoTest.java:33: error: cannot find symbol` / `symbol: class TradutorRespostaEvento` · próximo: passo 7 (ChavesBlobPull.envioEvento + EnvioManifestacao + manifestar no adapter)
 - 2026-11-04 08:29 · E2-S13: DESENVOLVER ok
+- 2026-11-04 08:32 · E2-S13: passo 7 feito (EnvioManifestacao + manifestar no adapter; commit 711a0a6 feat(nfe); DA-45: endpoint de evento em construtor novo; suíte inteira verde, 506 testes). Falha vista antes de implementar: `ChavesBlobPullTest.java:68: error: cannot find symbol` / `symbol: method envioEvento(FonteId,TipoAmbiente,Cnpj,Instant,String)` / `NfeNacionalAdapterManifestarTest.java:97: error: constructor NfeNacionalAdapter in class NfeNacionalAdapter cannot be applied to given types` · próximo: passo 8 (pré-condições do manifestar sem HTTP)
+- 2026-11-04 08:33 · E2-S13: DESENVOLVER ok

@@ -649,3 +649,5 @@
 - 2026-11-04 08:35 · E2-S13: DESENVOLVER ok
 - 2026-11-04 08:38 · E2-S13: passo 9 feito (manifestar ponta a ponta; commit 22b1c46 test(nfe); só testes, nenhum ajuste de produção; DA-47; suíte inteira verde, 547 testes). Os testes novos passaram sem código novo, então a falha foi vista por mutação temporária, já desfeita: tirar o 573 do Ok dá `tabela de D1 ponta a ponta ... > evento 573 FAILED`; logar a chave do retEvento dá `inv. 13: desfechos e logs ... FAILED` / `java.lang.AssertionError at NfeNacionalAdapterManifestarTest.java:481` (na 1ª rodada essa mutação passou batido; o teste foi reforçado com a chave da outra nota) · próximo: seção Verificação (propriedades jqwik CStatEventoMapper e Manifestar)
 - 2026-11-04 08:39 · E2-S13: DESENVOLVER ok
+- 2026-11-04 08:40 · E2-S13: verificação — 2 propriedades jqwik (CStatEventoMapper, manifestar/inv.5), suíte verde, sem certificados versionados · próximo: revisão
+- 2026-11-04 08:40 · E2-S13: VERIFICAR ok

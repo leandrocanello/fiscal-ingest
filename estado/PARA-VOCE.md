@@ -221,4 +221,10 @@
 - **A favor da opção (a):** a §8 do CLAUDE.md define `outbox` sem `tenant_id`. Ela não cita `outbox_consumo` (V7): falta só você confirmar essa tabela.
 - **Como destravar:** corrija as 3 na `main`, ou responda aqui autorizando (a) e inclua no plano um passo inicial com as 3 correções. Depois troque o `[!]` do passo 1 por `[ ]` e o status no ROADMAP de `[h]` ou `[!]` para `[~]`.
 - **Problema no script (`autonomo/`, protegido, só você edita):** o papel manda marcar `[!]` e terminar sem commit, mas o `verificar.sh` trata isso como falha ("nenhum commit feito e nenhum passo fechado") e desfaz o `[!]` do plano. O desvio para `[h]` do `proxima-acao.sh` não chega a rodar. Assim, a E1-S07 deve repetir chamadas até `MAX_FALHAS` (3) e cair em `[BLOQUEIO]`. Sugestão: aceitar chamada sem commit quando o plano ganhou um `- [!]`.
+- **Reconferido em 2026-11-04 (chamada 4 do dia):** sem resposta e `main` ainda em b839918; `:infra-postgres:compileTestJava` falha no mesmo ponto (`CatalogoRlsTest.java:63`). Nada mudou no código. Esta chamada também deve contar como falha no script, rumo ao `[BLOQUEIO]`.
 - Resposta:
+
+### [BLOQUEIO] E1-S07 — 2026-11-04 — 3 falhas seguidas
+Último motivo: nenhum commit feito e nenhum passo fechado no plano
+Logs: `estado/logs/` (arquivos *-E1-S07-*.json). Para destravar: ajuste o plano `estado/planos/E1-S07.md`
+ou responda aqui, e troque o status no ROADMAP de `[!]` para `[~]`.

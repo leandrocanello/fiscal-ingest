@@ -630,3 +630,6 @@
 - 2026-11-04 08:13 · E1-S07: revertido — suíte vermelha (ver logs/ultimo-teste.log)
 - 2026-11-04 08:15 · E1-S07: passo 1 marcado [!], sem commit de código; a main (b839918) não compila os testes do infra-postgres (CatalogoRlsTest.java:63), então a suíte fica vermelha com qualquer commit; PARA-VOCE atualizado (3 correções e aviso de que o verificar.sh desfaz o [!]) · próximo: autor decidir "[DECISAO] E1-S07"
 - 2026-11-04 08:15 · E1-S07: revertido — nenhum commit feito e nenhum passo fechado no plano
+- 2026-11-04 08:16 · E1-S07: passo 1 marcado [!] de novo, sem commit de código; main (b839918) segue sem compilar os testes do infra-postgres (CatalogoRlsTest.java:63) e sem resposta em PARA-VOCE · próximo: autor decidir "[DECISAO] E1-S07"
+- 2026-11-04 08:16 · E1-S07: revertido — nenhum commit feito e nenhum passo fechado no plano
+- 2026-11-04 08:16 · E1-S07: [!] bloqueado após 3 falhas

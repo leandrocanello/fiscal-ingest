@@ -34,7 +34,7 @@
 - [x] E2-S15 | AUTO+    | deps: E2-S14 | Documento.blobRef → Optional<BlobRef> no domain; nfe e fake gravam o mesmo formato; tirar o gancho lerBlob do contrato
 - [x] E2-S16 | AUTO     | deps: E2-S14 | cStat do consChNFe no CStatMapper (217/236/614–619/640/641/653/654 → definitivo; 593 → ErroAutenticacao; 252 → definitivo), testes primeiro
 - [!] E1-S07 | AUTO+    | deps: -      | CNPJ alfanumérico (NT Conjunta 2025.001; produção desde 06/07/2026): `Cnpj` aceita raiz+ordem alfanuméricas e DV numérico, validação 100% no back-end; impacto em chave de acesso, certificado, extrator, banco
-- [~] E2-S13 | AUTO+    | deps: E2-S07,E2-S11 | enviar o evento de manifestação (RecepcaoEvento SOAP) + mapear o retEvento
+- [r] E2-S13 | AUTO+    | deps: E2-S07,E2-S11 | enviar o evento de manifestação (RecepcaoEvento SOAP) + mapear o retEvento
 - [ ] E2-S12 | HUMANO   | deps: E2-S09,E2-S13 | smoke em homologação: distNSU, consChNFe, ciência, autXML
 
 ## Etapa 3 — Persistência e catálogo (Fase 3)

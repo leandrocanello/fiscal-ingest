@@ -233,3 +233,8 @@ ou responda aqui, e troque o status no ROADMAP de `[!]` para `[~]`.
 - **O que é preciso:** D2 fixou a operação `nfeRecepcaoEvento`, e o código segue D2. Um usuário do [fórum ACBr (tópico 78871)](https://www.projetoacbr.com.br/forum/topic/78871-qual-%C3%A9-o-erro-do-meu-xml/) relata que, no endpoint nacional, a action documentada é `.../NFeRecepcaoEvento4/nfeRecepcaoEventoNF`. É relato de fórum, não fonte oficial, e o WSDL não foi aberto.
 - **Opções:** (a) manter D2 e conferir no WSDL/smoke E2-S12; (b) trocar agora a constante `ContratoRecepcaoEvento.OPERACAO`.
 - **Recomendação:** (a), conferindo o WSDL no roteiro do smoke. A troca é de uma linha mais o `ContratoRecepcaoEventoTest`. Ver também DA-41 (`nfeDadosMsg` direto no `Body`).
+
+### [DECISAO] E2-S13-EVENTO — 2026-11-04 — guardar o evento de manifestação assinado antes de enviar (não bloqueia)
+- **O que é preciso:** o `manifestar` guarda só a resposta. Se ela se perde por timeout, não fica cópia do que foi declarado em nome do destinatário (§1.5 "guardar tudo", §3.3, §14).
+- **Opções:** (a) gravar o evento assinado no blob antes do envio, em subetapa curta depois do merge; (b) deixar para a E4, junto com a auditoria de quem manifestou; (c) não guardar, pois a SEFAZ devolve o evento pela distribuição.
+- **Recomendação:** (a), com falha na gravação impedindo o envio. Antes de ligar a manifestação na E4, a cópia precisa existir; (c) não cobre a falha de envio nem o que foi tentado.

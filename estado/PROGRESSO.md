@@ -660,3 +660,6 @@
 - 2026-11-04 08:47 · E2-S13: DESENVOLVER ok
 - 2026-11-04 08:48 · E2-S13: 3ª correção do revisor feita (teste do descritor confere só fazManifestacao(); commit test(nfe); só teste; suíte inteira verde, 552 testes; integração com a main não executada, é do script). Falha vista por mutação temporária, já desfeita (Capacidades(true, true, false, false)): `com endpoint de evento, o descritor declara a manifestação FAILED` / `50 tests completed, 1 failed`; com o formato da main, Capacidades(true, true, envioManifestacao != null, false), a classe de teste ficou verde · próximo: nova revisão; no merge, descritor() deve ficar Capacidades(true, true, envioManifestacao != null, false)
 - 2026-11-04 08:49 · E2-S13: DESENVOLVER ok
+- 2026-11-04 08:51 · E2-S13: 2ª revisão APROVAR PARA PR (3 correções conferidas; suíte da branch 552 testes verdes; merge com a main não simulado); PR em planos/E2-S13-pr.md; [DECISAO] E2-S13-EVENTO em PARA-VOCE · próximo: script integra a main (conflito em descritor()) e abre o PR
+- 2026-11-04 08:52 · E2-S13: REVISAR ok
+- 2026-11-04 08:52 · E2-S13: PR aberto para revisão

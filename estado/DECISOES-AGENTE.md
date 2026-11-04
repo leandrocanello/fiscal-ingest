@@ -288,3 +288,9 @@ Como desfazer: reverter o commit `fix(E3-S04)` do relay.
 - **Opções:** (a) conferir em `EnvioManifestacao`, na ordem credencial → chave → tipo; (b) conferir no `IdEvento` e mudar os testes dele.
 - **Escolha:** (a). Testes antigos intactos. Chave malformada recebe o mesmo desfecho do DV errado. Motivos fixos, sem a chave (inv. 13). Não tratado: `AssinaturaInvalidaException` ainda sai do `manifestar` como exceção se a assinatura falhar; está fora deste passo, fica para o revisor avaliar.
 - **Como desfazer:** mover `chaveValida` para o `IdEvento` e ajustar o `IdEventoTest`.
+
+### DA-47 · 2026-11-04 · E2-S13
+- **Contexto:** o teste da inv. 13 reprovou `ManifestarResultado.toString()`, porque a chave do `BlobRef` traz o CNPJ em claro (layout da §8.1).
+- **Opções:** (a) verificar só desfechos e logs, como pede o plano; (b) mascarar o `toString` do `BlobRef`, no domínio e fora deste passo.
+- **Escolha:** (a). Nenhum log atual imprime o `BlobRef`, mas quem logar um resultado inteiro expõe o CNPJ (§20 pede mascarado); olhar isso ao criar os logs do fetcher.
+- **Como desfazer:** trocar `.desfecho().toString()` por `.toString()` em `desfechosELogsSemXmlNemSegredo` e mascarar o `BlobRef`.

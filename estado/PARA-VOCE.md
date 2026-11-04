@@ -189,3 +189,11 @@
 - **Q4 — KEK em produção (§22, pergunta 2).** A porta aceita Vault ou KMS depois. Perdida a KEK local, nenhum certificado guardado abre: cada cliente precisa reenviar o seu. (a) Só KEK local por ora, por variável de ambiente, com backup fora do servidor documentado no runbook. (b) Definir já um KMS. **Recomendação:** (a), coerente com o self-host (ADR-008).
 - **Para conferir (só você pode):** com um `.pfx` real, na sua máquina e fora do repositório, confirme o OID `2.16.76.1.3.3` e a codificação do valor (DA-36), de preferência no smoke E2-S12.
 - Resposta:
+
+### [HUMANO→AGENTE] E1-S07 — 2026-11-03 — CNPJ alfanumérico: o que o autor pediu
+- **Pedido do autor:** "precisamos de CNPJ já validado para alfanumérico [...] validar isso 100% no back-end". A coluna `empresa.cnpj` já é texto (ok).
+- **Fatos de partida (fonte secundária: Machado Meyer, resumo da NT Conjunta 2025.001 v1.00, de 08/05/2025):** 14 posições; 8 de raiz e 4 de ordem **alfanuméricas**, 2 DV **numéricos**; no DV, cada caractere vale (código ASCII − 48); homologação desde 06/04/2026, produção desde 06/07/2026; só para inscrições novas (os numéricos continuam válidos); a chave de acesso passa a aceitar letras nas 12 primeiras posições do CNPJ e o DV da chave segue a mesma lógica; o Encat pediu para excluir algumas letras (I, O, U, Q, F?), **sem confirmação**.
+- **[VALIDAR]** pesos e módulo 11 do DV (a leitura usual é a mesma do CNPJ numérico: pesos 2–9 da direita para a esquerda) e a lista de letras permitidas — registrar a fonte em FONTES-OFICIAIS (item 8). Na dúvida, aceitar `[0-9A-Z]` maiúsculo e deixar a lista de letras proibidas como constante isolada.
+- **Planejador:** cobrir no mínimo `Cnpj` (domínio, com propriedades jqwik: numéricos antigos continuam válidos; DV errado é sempre rejeitado; minúsculas/caracteres fora do alfabeto rejeitados ou normalizados — decidir e registrar em DA), `ChaveAcessoNfe` e o DV da chave, extração do CNPJ do certificado (OID 2.16.76.1.3.3), `ExtratorMetadados`, `ChavesBlobPull`, colunas e `CHECK` no Postgres, e máscara de CNPJ em log (inv. 13).
+- Resposta: (autor) criar já, na frente das demais.
+

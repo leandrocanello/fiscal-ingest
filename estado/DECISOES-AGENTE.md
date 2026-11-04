@@ -264,3 +264,9 @@ Como desfazer: reverter o commit `fix(E3-S04)` do relay.
 - **Opções:** (a) esses campos `Optional`, só `cStat` obrigatório, e mais de um `retEvento` → `Invalida`; (b) todos obrigatórios; (c) pegar o primeiro `retEvento`.
 - **Escolha:** (a). Com (b), uma rejeição legítima viraria leitura inválida e seria retentada; com (c), uma resposta incoerente poderia passar por sucesso (D2: um evento por lote). Confirmar o leiaute no smoke E2-S12.
 - **Como desfazer:** ajustar `LeitorRetEnvEvento.ler` e os testes `eventoRejeitadoSoComCStat` e `maisDeUmRetEventoEhInvalida`.
+
+### DA-43 · 2026-11-04 · E2-S13
+- **Contexto:** D1 não dá código para "demais rejeições do lote", "chave inexistente/inválida" e "autor ≠ certificado", e o MOC não está disponível aqui. Além disso, "demais rejeições → definitivo" colide com "desconhecido → temporário" no lote. `ErroAutenticacao` leva o `estado_coleta` a `CERT_*` e para a coleta do CNPJ (§6.7).
+- **Opções:** (a) listas explícitas, e fora delas o fallback temporário; (b) no lote, tudo que não está na tabela vira definitivo. E para `575`: (x) `IndisponivelDefinitivo`; (y) `ErroAutenticacao`.
+- **Escolha:** (a) + (x). Lote definitivo: `215`, `225`, `243`, `252`. Evento definitivo: `217`, `236`, `614`–`619`. `ErroAutenticacao` só em `213`. Com (b), um código novo pararia de vez o que poderia ser retentado. `575` diz respeito a uma nota (o CNPJ não é o destinatário dela) e não ao certificado: com (y), uma única nota pararia a coleta do CNPJ. Sentido dos códigos: `252`, `217`, `236`, `614`–`619` em FONTES-OFICIAIS (Tab. 5-29, distribuição); `575`, `650`, `655` em fonte secundária (buscadorncm.com.br); `596` só por indício; **`213`, `215`, `225`, `243` de memória**. Conferir tudo na tabela do MOC/smoke E2-S12.
+- **Como desfazer:** ajustar os `case` de `CStatEventoMapper` e as linhas de `CStatEventoMapperTest`.

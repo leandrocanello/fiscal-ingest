@@ -639,3 +639,5 @@
 - 2026-11-04 08:22 · E2-S13: DESENVOLVER ok
 - 2026-11-04 08:24 · E2-S13: passo 4 feito (LeitorRetEnvEvento; commit b8c4b62 feat(nfe); DA-42; suíte inteira verde, 425 testes). Falha vista antes de implementar: `LeitorRetEnvEventoTest.java:3: error: package br.com.doc.ingest.adapter.nfe.evento.LeitorRetEnvEvento does not exist` / `LeitorRetEnvEventoTest.java:44: error: cannot find symbol` / `symbol: variable LeitorRetEnvEvento` · próximo: passo 5 (CStatEventoMapper)
 - 2026-11-04 08:24 · E2-S13: DESENVOLVER ok
+- 2026-11-04 08:27 · E2-S13: passo 5 feito (CStatEventoMapper; commit 68dc59b feat(nfe); DA-43: parte dos códigos de memória, conferir no MOC/smoke; suíte inteira verde, 465 testes). Falha vista antes de implementar: `CStatEventoMapperTest.java:30: error: cannot find symbol` / `symbol: class CStatEventoMapper` · próximo: passo 6 (TradutorRespostaEvento)
+- 2026-11-04 08:27 · E2-S13: DESENVOLVER ok

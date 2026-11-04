@@ -64,20 +64,18 @@ class NfeNacionalAdapterManifestarPropriedadesTest {
     }
 
     @Property(tries = 300)
-    void corpoGuardadoAntesEOkSoComRetEventoDeSucessoDaMesmaChave(
+    void todoCorpoGuardadoEOkSoComRetEventoDeSucessoDaMesmaChave(
             @ForAll("corpos") String corpo,
             @ForAll("status") int status,
             @ForAll boolean blobFalha) {
         byte[] bytes = corpo.getBytes(StandardCharsets.UTF_8);
         var blobs = new BlobStoreEmMemoria();
-        boolean[] gravouAntes = {false};
         BlobStore store = new BlobStore() {
             @Override
             public br.com.doc.ingest.domain.blob.BlobRef gravar(String c, byte[] b, String sha) {
                 if (blobFalha) {
                     throw new IllegalStateException("fora do ar");
                 }
-                gravouAntes[0] = true;
                 return blobs.gravar(c, b, sha);
             }
 
@@ -102,10 +100,11 @@ class NfeNacionalAdapterManifestarPropriedadesTest {
                     .contains("<nSeqEvento>1</nSeqEvento>");
             assertThat(corpo).containsPattern("<cStat>(135|136|573)</cStat><chNFe>");
         }
-        if (r.envelope().isPresent()) {
-            assertThat(blobs.ler(r.envelope().get())).hasValueSatisfying(b -> assertThat(b).isEqualTo(bytes));
+        if (blobFalha) {
+            assertThat(r.envelope()).isEmpty();
         } else {
-            assertThat(r.desfecho()).isNotInstanceOf(Desfecho.Ok.class);
+            assertThat(r.envelope()).isPresent();
+            assertThat(blobs.ler(r.envelope().get())).hasValueSatisfying(b -> assertThat(b).isEqualTo(bytes));
         }
     }
 

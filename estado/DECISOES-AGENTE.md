@@ -294,3 +294,9 @@ Como desfazer: reverter o commit `fix(E3-S04)` do relay.
 - **Opções:** (a) verificar só desfechos e logs, como pede o plano; (b) mascarar o `toString` do `BlobRef`, no domínio e fora deste passo.
 - **Escolha:** (a). Nenhum log atual imprime o `BlobRef`, mas quem logar um resultado inteiro expõe o CNPJ (§20 pede mascarado); olhar isso ao criar os logs do fetcher.
 - **Como desfazer:** trocar `.desfecho().toString()` por `.toString()` em `desfechosELogsSemXmlNemSegredo` e mascarar o `BlobRef`.
+
+### DA-48 · 2026-11-04 · E2-S13
+- **Contexto:** falha ao assinar ou serializar o evento saía do `manifestar` como exceção (parecer do revisor, inv. 4). O plano pede um desfecho com motivo fixo e deixa a escolha para a DA.
+- **Opções:** (a) `IndisponivelDefinitivo("falha ao assinar o evento")`, capturando `RuntimeException`; (b) `ErroAutenticacao`; (c) temporário; (d) capturar só `AssinaturaInvalidaException` e `IllegalStateException`.
+- **Escolha:** (a). A falha é permanente para aquele certificado, então (c) retentaria sem fim; (b) levaria o `estado_coleta` a `CERT_*` e pararia a coleta do CNPJ, embora a chave possa servir para o mTLS. `RuntimeException` segue o `buscarLote` e cobre as duas exceções do plano; só o caminho da assinatura tem teste, pois a falha de serialização não é provocável sem injetar dependência. A E4 não pode tratar esse desfecho como `ERRO_DEFINITIVO` do CNPJ (ressalva do revisor).
+- **Como desfazer:** trocar `FALHA_AO_ASSINAR` e o `catch` em `EnvioManifestacao.enviar`, e ajustar `falhaAoAssinarEhDefinitivoSemHttp`.

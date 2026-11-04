@@ -654,3 +654,5 @@
 - 2026-11-04 08:44 · E2-S13: REVISAR — DEVOLVER (3 correções: falha de assinatura escapa como exceção, inv. 4; propriedade da inv. 5 mais fraca que o declarado; teste de capacidades quebra ao integrar a main) · próximo: desenvolvedor corrige os passos "Corrigir", depois nova revisão
 - 2026-11-04 08:44 · E2-S13: REVISAR ok
 - 2026-11-04 08:44 · E2-S13: revisor devolveu para correção
+- 2026-11-04 08:45 · E2-S13: 1ª correção do revisor feita (falha ao assinar vira IndisponivelDefinitivo sem HTTP; commit fix(nfe); DA-48; suíte inteira verde, 552 testes). Falha vista antes de implementar: `inv. 4: falha ao assinar vira IndisponivelDefinitivo ... FAILED` / `br.com.doc.ingest.adapter.nfe.evento.AssinaturaInvalidaException at NfeNacionalAdapterManifestarTest.java:142` · próximo: corrigir a propriedade da inv. 5 (NfeNacionalAdapterManifestarPropriedadesTest)
+- 2026-11-04 08:46 · E2-S13: DESENVOLVER ok

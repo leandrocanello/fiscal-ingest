@@ -18,7 +18,6 @@ import br.com.doc.ingest.adapter.nfe.evento.FabricaDocumentoSeguro;
 import br.com.doc.ingest.adapter.nfe.soap.TipoAmbiente;
 import br.com.doc.ingest.adapter.nfe.transporte.FornecedorTransporte;
 import br.com.doc.ingest.adapter.nfe.transporte.TransporteHttpJdk;
-import br.com.doc.ingest.domain.adapter.Capacidades;
 import br.com.doc.ingest.domain.adapter.ContextoConsulta;
 import br.com.doc.ingest.domain.adapter.Credencial;
 import br.com.doc.ingest.domain.adapter.Desfecho;
@@ -266,7 +265,7 @@ class NfeNacionalAdapterManifestarTest {
     @Test
     @DisplayName("com endpoint de evento, o descritor declara a manifestação")
     void comEndpointDeEventoDeclaraManifestacao() {
-        assertThat(adapterCom(blobs).descritor().capacidades()).isEqualTo(new Capacidades(true, false, true, false));
+        assertThat(adapterCom(blobs).descritor().capacidades().fazManifestacao()).isTrue();
     }
 
     @Test

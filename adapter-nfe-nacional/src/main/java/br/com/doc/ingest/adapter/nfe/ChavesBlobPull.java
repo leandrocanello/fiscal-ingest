@@ -16,6 +16,7 @@ import java.util.Locale;
  * <pre>
  * raw/pull/{fonte}/{ambiente}/{cnpj}/{aaaa}/{mm}/{dd}/{sha256}.envelope.xml   (data em UTC)
  * raw/pull/{fonte}/{ambiente}/{cnpj}/nsu/{nsu com 15 dígitos}-{sha256}.xml
+ * raw/pull/{fonte}/{ambiente}/{cnpj}/evento/{aaaa}/{mm}/{dd}/{sha256}.retorno.xml   (data em UTC)
  * </pre>
  */
 public final class ChavesBlobPull {
@@ -26,6 +27,12 @@ public final class ChavesBlobPull {
     public static String envelope(FonteId fonte, TipoAmbiente ambiente, Cnpj cnpj, Instant recebidoEm, String sha256) {
         var data = recebidoEm.atOffset(ZoneOffset.UTC).toLocalDate();
         return String.format(Locale.ROOT, "%s/%04d/%02d/%02d/%s.envelope.xml",
+                prefixo(fonte, ambiente, cnpj), data.getYear(), data.getMonthValue(), data.getDayOfMonth(), sha256);
+    }
+
+    public static String envioEvento(FonteId fonte, TipoAmbiente ambiente, Cnpj cnpj, Instant recebidoEm, String sha256) {
+        var data = recebidoEm.atOffset(ZoneOffset.UTC).toLocalDate();
+        return String.format(Locale.ROOT, "%s/evento/%04d/%02d/%02d/%s.retorno.xml",
                 prefixo(fonte, ambiente, cnpj), data.getYear(), data.getMonthValue(), data.getDayOfMonth(), sha256);
     }
 

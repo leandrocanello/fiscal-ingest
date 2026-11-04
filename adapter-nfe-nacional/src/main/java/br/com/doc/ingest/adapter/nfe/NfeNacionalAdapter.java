@@ -1,7 +1,10 @@
 package br.com.doc.ingest.adapter.nfe;
 
+import br.com.doc.ingest.adapter.nfe.cert.CarregadorPfx;
+import br.com.doc.ingest.adapter.nfe.cert.CertificadoCarregado;
 import br.com.doc.ingest.adapter.nfe.doczip.DocZipDecodificado;
 import br.com.doc.ingest.adapter.nfe.doczip.DocZipDecoder;
+import br.com.doc.ingest.adapter.nfe.evento.EnvioManifestacao;
 import br.com.doc.ingest.adapter.nfe.mapping.CStatMapper;
 import br.com.doc.ingest.adapter.nfe.mapping.TradutorRespostaDistDfe;
 import br.com.doc.ingest.adapter.nfe.soap.ContratoDistDfe;
@@ -21,7 +24,9 @@ import br.com.doc.ingest.domain.adapter.ContextoConsulta;
 import br.com.doc.ingest.domain.adapter.Credencial;
 import br.com.doc.ingest.domain.adapter.Cursor;
 import br.com.doc.ingest.domain.adapter.Desfecho;
+import br.com.doc.ingest.domain.adapter.ManifestarResultado;
 import br.com.doc.ingest.domain.adapter.SourceAdapter;
+import br.com.doc.ingest.domain.adapter.TipoManifestacao;
 import br.com.doc.ingest.domain.blob.BlobRef;
 import br.com.doc.ingest.domain.blob.BlobStore;
 import br.com.doc.ingest.domain.blob.Sha256;
@@ -47,6 +52,8 @@ import java.util.UUID;
  * <p>Fluxo do {@code buscarLote}: monta o distDFeInt, envia pelo {@link TransporteSoap}, grava o envelope
  * bruto no {@link BlobStore} antes de interpretar (inv. 5), lê o {@code retDistDFeInt}, grava cada docZip
  * descompactado (sha256 na chave, inv. 7) e devolve só metadado + {@code BlobRef} + {@link Desfecho} (inv. 3 e 4).
+ *
+ * <p>Só manifesta quando recebe o endpoint do NFeRecepcaoEvento, que é outro serviço ({@link EnvioManifestacao}).
  */
 public final class NfeNacionalAdapter implements SourceAdapter {
 
@@ -64,27 +71,42 @@ public final class NfeNacionalAdapter implements SourceAdapter {
     private final TradutorRespostaDistDfe tradutor = new TradutorRespostaDistDfe(new CStatMapper());
     private final DocZipDecoder decoder = new DocZipDecoder();
 
+    private final EnvioManifestacao envioManifestacao;
+
     private volatile TransporteSoap transporte;
+    private volatile CertificadoCarregado certificado;
 
     public NfeNacionalAdapter(FonteId fonte, TipoAmbiente ambiente, URI endpoint, BlobStore blobs, Clock relogio,
                               FornecedorTransporte fornecedor) {
+        this(fonte, ambiente, endpoint, blobs, relogio, fornecedor, null);
+    }
+
+    public NfeNacionalAdapter(FonteId fonte, TipoAmbiente ambiente, URI endpoint, BlobStore blobs, Clock relogio,
+                              FornecedorTransporte fornecedor, URI endpointEvento) {
         this.fonte = Objects.requireNonNull(fonte, "fonte");
         this.ambiente = Objects.requireNonNull(ambiente, "ambiente");
         this.endpoint = Objects.requireNonNull(endpoint, "endpoint");
         this.blobs = Objects.requireNonNull(blobs, "blobs");
         this.relogio = Objects.requireNonNull(relogio, "relogio");
         this.fornecedor = Objects.requireNonNull(fornecedor, "fornecedor");
+        this.envioManifestacao = endpointEvento == null ? null
+                : new EnvioManifestacao(fonte, ambiente, endpointEvento, blobs, relogio);
     }
 
     @Override
     public AdapterDescriptor descritor() {
-        return new AdapterDescriptor(fonte, new Capacidades(true, false, false, false));
+        return new AdapterDescriptor(fonte, new Capacidades(true, false, envioManifestacao != null, false));
     }
 
-    /** Guarda só o transporte (com o SSLContext); a {@link Credencial} não fica retida no adapter. */
+    /**
+     * Guarda o transporte (com o SSLContext) e, se manifesta, o certificado aberto para assinar;
+     * a {@link Credencial} não fica retida no adapter.
+     */
     @Override
     public void autenticar(Credencial credencial) {
+        CertificadoCarregado aberto = envioManifestacao != null ? new CarregadorPfx().carregar(credencial) : null;
         this.transporte = fornecedor.para(credencial);
+        this.certificado = aberto;
     }
 
     @Override
@@ -174,6 +196,14 @@ public final class NfeNacionalAdapter implements SourceAdapter {
     @Override
     public BuscarUmResultado buscarUm(FonteId fonte, Cnpj cnpj, Nsu nsu) {
         return new BuscarUmResultado(Optional.empty(), new Desfecho.IndisponivelDefinitivo("consNSU ainda não suportado"));
+    }
+
+    @Override
+    public Optional<ManifestarResultado> manifestar(ContextoConsulta contexto, String chaveAcesso, TipoManifestacao tipo) {
+        if (envioManifestacao == null) {
+            return Optional.empty();
+        }
+        return Optional.of(envioManifestacao.enviar(transporte, certificado, contexto.cnpj(), chaveAcesso, tipo));
     }
 
     private static Nsu nsuDe(String valor) {

@@ -31,4 +31,32 @@ class MigracoesTest extends PostgresTestBase {
 
         assertThat(segunda).isZero();
     }
+
+    @Test
+    void aplicaAteV4ECriaOPapelDaAplicacao() {
+        DataSource ds = dataSourceNoSchema("mig_v4");
+
+        Migracoes.aplicar(ds);
+
+        Jdbi jdbi = Jdbi.create(ds);
+        List<String> versoes = jdbi.withHandle(h -> h.createQuery(
+                        "select version from flyway_schema_history where success order by installed_rank")
+                .mapTo(String.class).list());
+        long papeis = jdbi.withHandle(h -> h.createQuery(
+                        "select count(*) from pg_roles where rolname = 'fiscal_app'")
+                .mapTo(Long.class).one());
+        assertThat(versoes).contains("4");
+        assertThat(papeis).isEqualTo(1);
+    }
+
+    @Test
+    void aplicarEmDoisSchemasNaoFalhaPorqueOPapelJaExiste() {
+        DataSource primeiro = dataSourceNoSchema("mig_papel_a");
+        DataSource segundo = dataSourceNoSchema("mig_papel_b");
+
+        Migracoes.aplicar(primeiro);
+        int aplicadas = Migracoes.aplicar(segundo);
+
+        assertThat(aplicadas).isGreaterThanOrEqualTo(4);
+    }
 }

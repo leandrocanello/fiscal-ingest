@@ -23,6 +23,18 @@ class MigracoesTest extends PostgresTestBase {
     }
 
     @Test
+    void aplicaV7ECriaOutboxEConsumo() {
+        DataSource ds = dataSourceNoSchema("mig_outbox");
+
+        Migracoes.aplicar(ds);
+
+        String ultima = Jdbi.create(ds).withHandle(h -> h.createQuery(
+                        "select max(version::int)::text from flyway_schema_history where success")
+                .mapTo(String.class).one());
+        assertThat(ultima).isEqualTo("7");
+    }
+
+    @Test
     void reaplicarEhNoOp() {
         DataSource ds = dataSourceNoSchema("mig_reaplica");
 

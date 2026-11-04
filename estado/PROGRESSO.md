@@ -620,3 +620,7 @@
 - 2026-11-03 08:52 · E4-S02: DESENVOLVER ok
 - 2026-11-03 22:55 · E2-S13/E3-S05/E3-S07/E4-S01: decisões do autor registradas (recomendações aceitas) → [~]
 - 2026-11-03 23:00 · E1-S07: criada a pedido do autor (CNPJ alfanumérico), na frente das demais
+- 2026-11-04 08:00 · E3-S03: mergeado por você ✔
+- 2026-11-04 08:00 · E3-S04: mergeado por você ✔
+- 2026-11-04 08:00 · E3-S06: mergeado por você ✔
+- 2026-11-04 08:00 · E3-S07: [!] conflito no rebase para main

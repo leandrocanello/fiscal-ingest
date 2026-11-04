@@ -258,3 +258,9 @@ Como desfazer: reverter o commit `fix(E3-S04)` do relay.
 - **Opções:** (a) `nfeDadosMsg` direto no `Body`, operação só na `ACTION`, envelope só com namespace padrão; (b) elemento da operação em volta, como no `distDFe`; (c) prefixo `soap12:` e validar o evento extraído do envelope.
 - **Escolha:** (a). Fonte secundária para o `nfeDadosMsg` direto: [frones/nfe](https://github.com/frones/nfe/blob/1a5347eea6c9/soap.go) e [fórum ACBr 78871](https://www.projetoacbr.com.br/forum/topic/78871-qual-%C3%A9-o-erro-do-meu-xml/). O WSDL não foi aberto (regra de FONTES-OFICIAIS); confirmar no smoke E2-S12.
 - **Como desfazer:** mudar as strings de `EnvelopeEnvEvento.soap12` e a asserção de `soap12ComOperacaoDoWsdl`.
+
+### DA-42 · 2026-11-04 · E2-S13
+- **Contexto:** o plano define `RetornoEvento` sem dizer o que fazer com evento rejeitado sem chave/tipo/seq, nem com mais de um `retEvento` no lote. De memória (sem abrir o XSD), `chNFe`, `tpEvento`, `nSeqEvento` e `nProt` são opcionais no `retEvento`.
+- **Opções:** (a) esses campos `Optional`, só `cStat` obrigatório, e mais de um `retEvento` → `Invalida`; (b) todos obrigatórios; (c) pegar o primeiro `retEvento`.
+- **Escolha:** (a). Com (b), uma rejeição legítima viraria leitura inválida e seria retentada; com (c), uma resposta incoerente poderia passar por sucesso (D2: um evento por lote). Confirmar o leiaute no smoke E2-S12.
+- **Como desfazer:** ajustar `LeitorRetEnvEvento.ler` e os testes `eventoRejeitadoSoComCStat` e `maisDeUmRetEventoEhInvalida`.

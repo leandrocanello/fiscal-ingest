@@ -637,3 +637,5 @@
 - 2026-11-04 08:18 · E2-S13: DESENVOLVER ok
 - 2026-11-04 08:30 · E2-S13: passo 3 feito (ContratoRecepcaoEvento + EnvelopeEnvEvento; commit feat(nfe); DA-41; [DUVIDA] da action em PARA-VOCE; suíte inteira verde, 412 testes, na base da branch). Falha vista antes de implementar: `ContratoRecepcaoEventoTest.java:14: error: cannot find symbol` / `symbol: variable ContratoRecepcaoEvento` · próximo: passo 4 (LeitorRetEnvEvento)
 - 2026-11-04 08:22 · E2-S13: DESENVOLVER ok
+- 2026-11-04 08:24 · E2-S13: passo 4 feito (LeitorRetEnvEvento; commit b8c4b62 feat(nfe); DA-42; suíte inteira verde, 425 testes). Falha vista antes de implementar: `LeitorRetEnvEventoTest.java:3: error: package br.com.doc.ingest.adapter.nfe.evento.LeitorRetEnvEvento does not exist` / `LeitorRetEnvEventoTest.java:44: error: cannot find symbol` / `symbol: variable LeitorRetEnvEvento` · próximo: passo 5 (CStatEventoMapper)
+- 2026-11-04 08:24 · E2-S13: DESENVOLVER ok

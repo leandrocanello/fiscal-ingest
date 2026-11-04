@@ -651,3 +651,6 @@
 - 2026-11-04 08:39 · E2-S13: DESENVOLVER ok
 - 2026-11-04 08:40 · E2-S13: verificação — 2 propriedades jqwik (CStatEventoMapper, manifestar/inv.5), suíte verde, sem certificados versionados · próximo: revisão
 - 2026-11-04 08:40 · E2-S13: VERIFICAR ok
+- 2026-11-04 08:44 · E2-S13: REVISAR — DEVOLVER (3 correções: falha de assinatura escapa como exceção, inv. 4; propriedade da inv. 5 mais fraca que o declarado; teste de capacidades quebra ao integrar a main) · próximo: desenvolvedor corrige os passos "Corrigir", depois nova revisão
+- 2026-11-04 08:44 · E2-S13: REVISAR ok
+- 2026-11-04 08:44 · E2-S13: revisor devolveu para correção

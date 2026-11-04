@@ -326,6 +326,24 @@ class NfeNacionalAdapterManifestarTest {
     }
 
     @Test
+    @DisplayName("inv. 4: falha ao assinar vira IndisponivelDefinitivo com motivo fixo, sem exceção e sem HTTP")
+    void falhaAoAssinarEhDefinitivoSemHttp() {
+        responder(200, resposta("135"));
+        char[] senha = SENHA.toCharArray();
+        byte[] pfxEc = GeradorPfxDeTeste.comChaveEc(senha.clone(), AGORA.minus(1, ChronoUnit.DAYS),
+                AGORA.plus(365, ChronoUnit.DAYS));
+        NfeNacionalAdapter adapter = new NfeNacionalAdapter(FONTE, TipoAmbiente.HOMOLOGACAO, url(CAMINHO_DIST), blobs,
+                Clock.fixed(AGORA, ZoneOffset.UTC), transporteHttp(), url(CAMINHO_EVENTO));
+        adapter.autenticar(new Credencial(pfxEc, senha));
+
+        ManifestarResultado r = manifestar(adapter);
+
+        assertThat(r.desfecho()).isEqualTo(new Desfecho.IndisponivelDefinitivo("falha ao assinar o evento"));
+        assertThat(r.envelope()).isEmpty();
+        servidor.verify(0, anyRequestedFor(anyUrl()));
+    }
+
+    @Test
     @DisplayName("o autor do evento e a chave do blob usam o CNPJ do contexto")
     void autorEhOCnpjDoContexto() {
         Cnpj outro = new Cnpj("22222222000191");

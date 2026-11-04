@@ -63,6 +63,27 @@ public final class GeradorPfxDeTeste {
         }
     }
 
+    /** PKCS#12 com chave EC: abre normalmente, mas a assinatura RSA do evento recusa a chave. */
+    public static byte[] comChaveEc(char[] senha, Instant validoDe, Instant validoAte) {
+        try {
+            KeyPairGenerator gerador = KeyPairGenerator.getInstance("EC");
+            gerador.initialize(256, ALEATORIO);
+            KeyPair par = gerador.generateKeyPair();
+            X500Name sujeito = new X500Name("CN=" + CN);
+            JcaX509v3CertificateBuilder builder = new JcaX509v3CertificateBuilder(sujeito,
+                    new BigInteger(64, ALEATORIO).abs().add(BigInteger.ONE),
+                    Date.from(validoDe), Date.from(validoAte), sujeito, par.getPublic());
+            X509Certificate cert = new JcaX509CertificateConverter().getCertificate(
+                    builder.build(new JcaContentSignerBuilder("SHA256withECDSA").build(par.getPrivate())));
+            KeyStore ks = KeyStore.getInstance("PKCS12");
+            ks.load(null, null);
+            ks.setKeyEntry(ALIAS, par.getPrivate(), senha, new Certificate[] {cert});
+            return gravar(ks, senha);
+        } catch (Exception e) {
+            throw new IllegalStateException("falha ao gerar pfx EC de teste", e);
+        }
+    }
+
     /** PKCS#12 de servidor TLS para {@code localhost} (SAN DNS), para o WireMock HTTPS dos testes de mTLS. */
     static byte[] servidorLocalhost(char[] senha, Instant validoDe, Instant validoAte) {
         try {

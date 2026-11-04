@@ -41,6 +41,7 @@ public final class EnvioManifestacao {
     private static final Desfecho CHAVE_INVALIDA = new Desfecho.IndisponivelDefinitivo("chave de acesso inválida");
     private static final Desfecho TIPO_NAO_SUPORTADO =
             new Desfecho.IndisponivelDefinitivo("tipo de manifestação não suportado");
+    private static final Desfecho FALHA_AO_ASSINAR = new Desfecho.IndisponivelDefinitivo("falha ao assinar o evento");
 
     private final FonteId fonte;
     private final TipoAmbiente ambiente;
@@ -66,7 +67,13 @@ public final class EnvioManifestacao {
             return new ManifestarResultado(recusa.get(), Optional.empty());
         }
 
-        byte[] assinado = evento.assinado(ambiente, autor, chave, tipo, N_SEQ_EVENTO, certificado);
+        byte[] assinado;
+        try {
+            assinado = evento.assinado(ambiente, autor, chave, tipo, N_SEQ_EVENTO, certificado);
+        } catch (RuntimeException e) {
+            // inv. 4: o core só vê Desfecho; inv. 13: o texto da exceção não sai daqui
+            return new ManifestarResultado(FALHA_AO_ASSINAR, Optional.empty());
+        }
         ResultadoTransporte resultado = transporte.enviar(endpoint, ContratoRecepcaoEvento.ACTION,
                 EnvelopeEnvEvento.soap12(assinado, relogio.millis()));
         if (!(resultado instanceof ResultadoTransporte.RespostaHttp http)) {

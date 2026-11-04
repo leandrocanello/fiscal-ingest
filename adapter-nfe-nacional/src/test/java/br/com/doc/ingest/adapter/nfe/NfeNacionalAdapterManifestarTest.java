@@ -1,6 +1,8 @@
 package br.com.doc.ingest.adapter.nfe;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.anyRequestedFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.anyUrl;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
@@ -48,6 +50,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.EnumSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -234,5 +238,64 @@ class NfeNacionalAdapterManifestarTest {
         assertThat(semEvento.manifestar(new ContextoConsulta(FONTE, CNPJ), CHAVE, TipoManifestacao.CIENCIA)).isEmpty();
         assertThat(semEvento.descritor().capacidades().fazManifestacao()).isFalse();
         servidor.verify(0, postRequestedFor(urlEqualTo(CAMINHO_EVENTO)));
+    }
+
+    @Test
+    @DisplayName("sem autenticar: ErroAutenticacao, sem HTTP")
+    void semAutenticarEhErroAutenticacaoSemHttp() {
+        responder(200, resposta("135"));
+        NfeNacionalAdapter semCredencial = new NfeNacionalAdapter(FONTE, TipoAmbiente.HOMOLOGACAO, url(CAMINHO_DIST), blobs,
+                Clock.fixed(AGORA, ZoneOffset.UTC), transporteHttp(), url(CAMINHO_EVENTO));
+
+        ManifestarResultado r = manifestar(semCredencial);
+
+        assertThat(r.desfecho()).isEqualTo(new Desfecho.ErroAutenticacao("adapter não autenticado"));
+        assertThat(r.envelope()).isEmpty();
+        servidor.verify(0, anyRequestedFor(anyUrl()));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "35261012345678000195550010000001231000000015", // DV errado (o certo é 4)
+            "3526101234567800019555001000000123100000001", // 43 dígitos
+            "3526101234567800019555001000000123100000001A"})
+    @DisplayName("chave com DV ou formato inválido: IndisponivelDefinitivo com motivo fixo, sem HTTP")
+    void chaveComDvInvalidoEhDefinitivoSemHttp(String chave) {
+        responder(200, resposta("135"));
+
+        ManifestarResultado r = adapterCom(blobs)
+                .manifestar(new ContextoConsulta(FONTE, CNPJ), chave, TipoManifestacao.CIENCIA).orElseThrow();
+
+        assertThat(r.desfecho()).isEqualTo(new Desfecho.IndisponivelDefinitivo("chave de acesso inválida"));
+        assertThat(r.envelope()).isEmpty();
+        servidor.verify(0, anyRequestedFor(anyUrl()));
+    }
+
+    @ParameterizedTest
+    @EnumSource(value = TipoManifestacao.class, names = "CIENCIA", mode = EnumSource.Mode.EXCLUDE)
+    @DisplayName("tipo ainda não suportado: IndisponivelDefinitivo com motivo fixo, sem HTTP")
+    void tipoAindaNaoSuportadoEhDefinitivoSemHttp(TipoManifestacao tipo) {
+        responder(200, resposta("135"));
+
+        ManifestarResultado r = adapterCom(blobs).manifestar(new ContextoConsulta(FONTE, CNPJ), CHAVE, tipo).orElseThrow();
+
+        assertThat(r.desfecho()).isEqualTo(new Desfecho.IndisponivelDefinitivo("tipo de manifestação não suportado"));
+        assertThat(r.envelope()).isEmpty();
+        servidor.verify(0, anyRequestedFor(anyUrl()));
+    }
+
+    @Test
+    @DisplayName("o autor do evento e a chave do blob usam o CNPJ do contexto")
+    void autorEhOCnpjDoContexto() {
+        Cnpj outro = new Cnpj("22222222000191");
+        responder(200, resposta("135"));
+
+        ManifestarResultado r = adapterCom(blobs)
+                .manifestar(new ContextoConsulta(FONTE, outro), CHAVE, TipoManifestacao.CIENCIA).orElseThrow();
+
+        Document doc = FabricaDocumentoSeguro.ler(servidor.getAllServeEvents().get(0).getRequest().getBody());
+        Element lote = (Element) doc.getElementsByTagNameNS(ContratoEvento.NS_NFE, "envEvento").item(0);
+        assertThat(textoDe(lote, "CNPJ")).isEqualTo(outro.valor());
+        assertThat(r.envelope().orElseThrow().chave()).contains("/" + outro.valor() + "/");
     }
 }

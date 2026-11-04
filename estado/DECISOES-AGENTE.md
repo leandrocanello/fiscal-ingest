@@ -246,3 +246,9 @@ Como desfazer: reverter o commit `fix(E3-S04)` do relay.
 - **Escolha:** (a), para `dataSourceComoLoginDeTeste`. O teste continua com o mesmo login e as mesmas asserções, e não fica mais fraco. As 2 falhas de asserção que apareceram depois **não** foram alteradas (PARA-VOCE).
 - **Como desfazer:** reverter as 2 linhas de `CatalogoRlsTest` no commit `feat(domain): DV módulo 11 alfanumérico`.
 - **Situação (2026-11-04):** o commit foi revertido pelo `verificar.sh` às 08:13 e a renomeação **não está no código**. Ela volta junto com a decisão em PARA-VOCE "[DECISAO] E1-S07".
+
+### DA-40 · 2026-11-04 · E2-S13
+- **Contexto:** o `FakeSourceAdapter` declara `fazManifestacao = true` (testado em `deveRetornarDescritor`), mas, com o default de D3, `manifestar` devolve `Optional.empty()` (`naoManifesta`, pedido pelo plano). A capacidade e o comportamento do fake ficam incoerentes.
+- **Opções:** (a) manter os dois como estão; (b) mudar a capacidade do fake para `false`, alterando teste antigo que o plano não cita.
+- **Escolha:** (a). Nenhum código consome a capacidade para manifestar hoje.
+- **Como desfazer:** trocar a capacidade para `false` no fake e a asserção em `deveRetornarDescritor`.

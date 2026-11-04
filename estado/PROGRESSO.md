@@ -633,3 +633,5 @@
 - 2026-11-04 08:16 · E1-S07: passo 1 marcado [!] de novo, sem commit de código; main (b839918) segue sem compilar os testes do infra-postgres (CatalogoRlsTest.java:63) e sem resposta em PARA-VOCE · próximo: autor decidir "[DECISAO] E1-S07"
 - 2026-11-04 08:16 · E1-S07: revertido — nenhum commit feito e nenhum passo fechado no plano
 - 2026-11-04 08:16 · E1-S07: [!] bloqueado após 3 falhas
+- 2026-11-04 08:18 · E2-S13: passo 2 feito (ManifestarResultado + default SourceAdapter.manifestar; commit 4f5e1a9 feat(domain); DA-40; suíte inteira verde, 405 testes, na base dd77287, atrás da main b839918). Falha vista antes de implementar: `ManifestarResultadoTest.java:23: error: cannot find symbol / symbol: class ManifestarResultado` · `FakeSourceAdapterTest.java:60: error: cannot find symbol / symbol: method manifestar(ContextoConsulta,String,TipoManifestacao)` · próximo: passo 3 (ContratoRecepcaoEvento + EnvelopeEnvEvento)
+- 2026-11-04 08:18 · E2-S13: DESENVOLVER ok

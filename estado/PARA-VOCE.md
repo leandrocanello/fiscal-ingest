@@ -228,3 +228,8 @@
 Último motivo: nenhum commit feito e nenhum passo fechado no plano
 Logs: `estado/logs/` (arquivos *-E1-S07-*.json). Para destravar: ajuste o plano `estado/planos/E1-S07.md`
 ou responda aqui, e troque o status no ROADMAP de `[!]` para `[~]`.
+
+### [DUVIDA] E2-S13 — 2026-11-04 — action do AN pode ser `nfeRecepcaoEventoNF` (não bloqueia)
+- **O que é preciso:** D2 fixou a operação `nfeRecepcaoEvento`, e o código segue D2. Um usuário do [fórum ACBr (tópico 78871)](https://www.projetoacbr.com.br/forum/topic/78871-qual-%C3%A9-o-erro-do-meu-xml/) relata que, no endpoint nacional, a action documentada é `.../NFeRecepcaoEvento4/nfeRecepcaoEventoNF`. É relato de fórum, não fonte oficial, e o WSDL não foi aberto.
+- **Opções:** (a) manter D2 e conferir no WSDL/smoke E2-S12; (b) trocar agora a constante `ContratoRecepcaoEvento.OPERACAO`.
+- **Recomendação:** (a), conferindo o WSDL no roteiro do smoke. A troca é de uma linha mais o `ContratoRecepcaoEventoTest`. Ver também DA-41 (`nfeDadosMsg` direto no `Body`).

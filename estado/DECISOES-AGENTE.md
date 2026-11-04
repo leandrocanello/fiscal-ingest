@@ -252,3 +252,9 @@ Como desfazer: reverter o commit `fix(E3-S04)` do relay.
 - **Opções:** (a) manter os dois como estão; (b) mudar a capacidade do fake para `false`, alterando teste antigo que o plano não cita.
 - **Escolha:** (a). Nenhum código consome a capacidade para manifestar hoje.
 - **Como desfazer:** trocar a capacidade para `false` no fake e a asserção em `deveRetornarDescritor`.
+
+### DA-41 · 2026-11-04 · E2-S13
+- **Contexto:** o plano pede `soap12ComOperacaoDoWsdl` e D2 cita a operação `nfeRecepcaoEvento`, mas não diz se ela vira elemento no `Body` (no `distDFe` vira). Além disso, o C14N inclusivo leva os namespaces em escopo para o digest: com `xmlns:soap12` no `Envelope`, a assinatura falha quando conferida no próprio documento (testado: `assinaturaContinuaValidaDentroDoEnvelope` fica vermelho com prefixo).
+- **Opções:** (a) `nfeDadosMsg` direto no `Body`, operação só na `ACTION`, envelope só com namespace padrão; (b) elemento da operação em volta, como no `distDFe`; (c) prefixo `soap12:` e validar o evento extraído do envelope.
+- **Escolha:** (a). Fonte secundária para o `nfeDadosMsg` direto: [frones/nfe](https://github.com/frones/nfe/blob/1a5347eea6c9/soap.go) e [fórum ACBr 78871](https://www.projetoacbr.com.br/forum/topic/78871-qual-%C3%A9-o-erro-do-meu-xml/). O WSDL não foi aberto (regra de FONTES-OFICIAIS); confirmar no smoke E2-S12.
+- **Como desfazer:** mudar as strings de `EnvelopeEnvEvento.soap12` e a asserção de `soap12ComOperacaoDoWsdl`.

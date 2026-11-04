@@ -227,3 +227,15 @@ Como desfazer: reverter o commit `fix(E3-S04)` do relay.
 - **Opções:** CNPJ (a) só do `otherName` `2.16.76.1.3.3` × (b) também do CN. Leitura (a) leitor DER mínimo próprio × (b) `bcprov` em produção. Revogação (a) desligada × (b) LCR/OCSP online no upload. Titular (a) igualdade exata dos 14 dígitos × (b) mesma raiz. Validade e cadeia (a) `Clock` injetado em PKIX, com raízes e intermediárias em `ConfiancaIcp` × (b) só a cadeia que vem no `.pfx`.
 - **Escolha:** (a) em todos. O CN é texto livre, então fica fora. O OID vem de memória (DOC-ICP-04), sem conferência em fonte oficial: fica numa constante [VALIDAR], e um erro falha fechado (`SEM_CNPJ`), sem aceitar certificado indevido. Um certificado revogado passa no upload, mas a SEFAZ deve recusá-lo no mTLS. Igualdade exata é o texto da §7.4; a dúvida da filial está em PARA-VOCE. O acervo aceita `.pfx` sem intermediárias, que existem na prática.
 - **Como desfazer:** tudo em `ValidadorPfx` e `ExtratorCnpjCertificado`: trocar a constante do OID, ligar `setRevocationEnabled(true)` ou comparar a raiz, com o teste correspondente.
+
+### DA-37 · 2026-11-04 · E1-S07
+- **Contexto:** o autor pediu para decidir e registrar como tratar minúsculas e letras proibidas. A NT Conjunta 2025.001 v1.00 traz `[A-Z0-9]{12}[0-9]{2}` e diz que a exclusão de I, O, U, Q e F "precisa ser confirmada". A FAQ da Receita (pergunta 45) manda considerar todas as letras; as combinações proibidas são controle interno dela.
+- **Opções:** minúscula/máscara (a) recusar no `Cnpj` × (b) normalizar. Letras (a) aceitar as 26, com `LETRAS_VEDADAS` vazia e isolada × (b) já vedar as cinco. Zeros (a) recusar só os 14 zeros × (b) recusar raiz zerada.
+- **Escolha:** (a) em todos. O valor canônico evita duas grafias para a mesma chave de banco e de blob, e a NT só aceita maiúsculas; a normalização, se precisar, fica na borda do cadastro. Vedar letras sem confirmação poderia recusar CNPJ legítimo e perder nota. `00000000000191` passa no DV, e o Anexo I da NT só recusa os 14 zeros.
+- **Como desfazer:** preencher `LETRAS_VEDADAS`, ou normalizar antes de chamar o construtor, ajustando `CnpjTest`.
+
+### DA-38 · 2026-11-04 · E1-S07
+- **Contexto:** o pedido cita o DV da chave. Até aqui nenhum record de chave confere o DV (DA-20). É preciso decidir se uma chave com DV errado vinda de fora é recusada, e o objetivo nº 1 é nunca perder documento.
+- **Opções:** (a) DV obrigatório só no que **sai** para a SEFAZ (`ChaveAcessoNfe`, `IdEvento`); no que **entra** (`ChaveAcesso`, `ExtratorMetadados`), só formato, com `ChaveAcesso.temDvValido()` disponível; (b) DV obrigatório em todos os construtores.
+- **Escolha:** (a). Na saída, conferir o DV evita gastar consulta num pedido que seria rejeitado. Na entrada, a SEFAZ já validou o que vem pelo AN, e recusar por um erro nosso de cálculo travaria o documento fora do catálogo. A porta push (Fase 5, inv. 9) usa `temDvValido()` para decidir a confiança ou a rejeição.
+- **Como desfazer:** chamar a checagem de DV no construtor de `ChaveAcesso` e ajustar `ExtratorMetadadosTest.chaveComDvErradoAindaEhExtraida` e as fixtures do catálogo.

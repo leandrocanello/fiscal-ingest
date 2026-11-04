@@ -197,3 +197,13 @@
 - **Planejador:** cobrir no mínimo `Cnpj` (domínio, com propriedades jqwik: numéricos antigos continuam válidos; DV errado é sempre rejeitado; minúsculas/caracteres fora do alfabeto rejeitados ou normalizados — decidir e registrar em DA), `ChaveAcessoNfe` e o DV da chave, extração do CNPJ do certificado (OID 2.16.76.1.3.3), `ExtratorMetadados`, `ChavesBlobPull`, colunas e `CHECK` no Postgres, e máscara de CNPJ em log (inv. 13).
 - Resposta: (autor) criar já, na frente das demais.
 
+### [DUVIDA] E1-S07 → E4-S02 — 2026-11-04 — certificado alfanumérico e docs protegidos (não bloqueia)
+- **Contexto:** o plano `planos/E1-S07.md` segue sem esperar resposta, com as escolhas das DA-37 e DA-38. O `ExtratorCnpjCertificado` só existe na branch `auto/E4-S02`, não na `main`, e recusa qualquer byte fora de `0`–`9`. Um certificado alfanumérico continuaria como `SEM_CNPJ`. Depois da E1-S07, um `otherName` com DV errado lançaria exceção em vez de devolver vazio.
+- **Q1 — onde corrigir o extrator.**
+  - (a) Na própria E4-S02, ao rebasear sobre a `main` depois da E1-S07: trocar o laço por `Cnpj.valido` e usar CNPJs de teste com DV certo. Pró: a correção entra junto com o código. Contra: a E4-S02 precisa esperar a E1-S07.
+  - (b) Subetapa nova depois das duas. Pró: não mexe na E4-S02. Contra: a `main` fica com o extrator recusando esses certificados até lá.
+  - **Recomendação:** (a).
+- **Q2 — texto de docs protegidos.** O CLAUDE.md não cobre o formato. Sugestão para a §3.5: "CNPJ: `[A-Z0-9]{12}[0-9]{2}`, DV módulo 11 com valor = ASCII − 48 (NT Conjunta 2025.001); numéricos antigos continuam válidos". Só você edita.
+- **Para conferir (só você pode):** se há versão da NT Conjunta 2025.001 posterior à v1.00 no portal da NF-e. Se confirmar letras vedadas, basta preencher `LETRAS_VEDADAS`. Para o achado de 2026-11-04: a NT 2014.002 v1.40 cita `OID=2.16.76.1.3.3` (regra A07), o que reforça a constante da DA-36.
+- Resposta:
+

@@ -282,3 +282,9 @@ Como desfazer: reverter o commit `fix(E3-S04)` do relay.
 - **Opções:** (a) construtor novo com `endpointEvento`, e o de 6 argumentos continua sem manifestar (`Optional.empty()`, capacidade `false`, sem abrir o .pfx); (b) trocar o construtor e alterar os testes antigos; (c) derivar a URL do evento da URL da distribuição.
 - **Escolha:** (a). Testes antigos intactos e a capacidade reflete o que o adapter faz; `true` só com o endpoint injetado (D2: URL fora do código). Chave: `raw/pull/{fonte}/{ambiente}/{cnpj}/evento/{aaaa}/{mm}/{dd}/{sha256}.retorno.xml` (data em UTC). `idLote` = `relogio.millis()`: só identifica o lote, sem garantia de unicidade entre envios no mesmo milissegundo.
 - **Como desfazer:** remover o construtor de 6 argumentos e ajustar os testes; ou mudar `ChavesBlobPull.envioEvento` e `EnvioManifestacao.enviar`.
+
+### DA-46 · 2026-11-04 · E2-S13
+- **Contexto:** o DV da chave precisa ser conferido antes de chamar a SEFAZ (achado d da E2-S11), mas o `IdEvento` documenta que só confere o formato, e o `IdEventoTest` conta com isso. O plano não define a ordem das pré-condições nem o caso de chave malformada.
+- **Opções:** (a) conferir em `EnvioManifestacao`, na ordem credencial → chave → tipo; (b) conferir no `IdEvento` e mudar os testes dele.
+- **Escolha:** (a). Testes antigos intactos. Chave malformada recebe o mesmo desfecho do DV errado. Motivos fixos, sem a chave (inv. 13). Não tratado: `AssinaturaInvalidaException` ainda sai do `manifestar` como exceção se a assinatura falhar; está fora deste passo, fica para o revisor avaliar.
+- **Como desfazer:** mover `chaveValida` para o `IdEvento` e ajustar o `IdEventoTest`.

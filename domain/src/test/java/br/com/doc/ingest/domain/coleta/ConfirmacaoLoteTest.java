@@ -7,6 +7,7 @@ import br.com.doc.ingest.domain.model.Ambiente;
 import br.com.doc.ingest.domain.model.Cnpj;
 import br.com.doc.ingest.domain.model.FonteId;
 import br.com.doc.ingest.domain.model.Nsu;
+import br.com.doc.ingest.domain.outbox.MensagemOutbox;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -114,5 +115,27 @@ class ConfirmacaoLoteTest {
             case ResultadoCas.RetrocessoRecusado rr -> "retrocesso " + rr.ultNsuAtual();
         };
         assertThat(descricao).isEqualTo("aplicado 1");
+    }
+
+    @Test
+    @DisplayName("guarda cópia imutável das mensagens do outbox")
+    void mensagensSaoCopiaImutavel() {
+        var mensagens = new ArrayList<MensagemOutbox>();
+        mensagens.add(new MensagemOutbox("docs.coletados", "k", 1, "id-1", "{}"));
+        var confirmacao = new ConfirmacaoLote(LIDA, new Cursor("1"), new Nsu(1), List.of(), mensagens);
+
+        mensagens.add(new MensagemOutbox("docs.coletados", "k", 1, "id-2", "{}"));
+
+        assertThat(confirmacao.mensagens()).hasSize(1);
+        assertThatThrownBy(() -> confirmacao.mensagens().clear())
+                .isInstanceOf(UnsupportedOperationException.class);
+    }
+
+    @Test
+    @DisplayName("construtor sem mensagens equivale à lista vazia")
+    void construtorSemMensagensEquivaleAListaVazia() {
+        var confirmacao = new ConfirmacaoLote(LIDA, new Cursor("0"), new Nsu(0), List.of());
+
+        assertThat(confirmacao.mensagens()).isEmpty();
     }
 }

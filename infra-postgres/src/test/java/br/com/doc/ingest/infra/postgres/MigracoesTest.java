@@ -34,6 +34,18 @@ class MigracoesTest extends PostgresTestBase {
         assertThat(tabelas).contains("documento", "arquivo", "documento_empresa", "proveniencia");
     }
 
+        @Test
+        void aplicaV7ECriaOutboxEConsumo() {
+        DataSource ds = dataSourceNoSchema("mig_outbox");
+
+        Migracoes.aplicar(ds);
+
+        String ultima = Jdbi.create(ds).withHandle(h -> h.createQuery(
+                        "select max(version::int)::text from flyway_schema_history where success")
+                .mapTo(String.class).one());
+        assertThat(ultima).isEqualTo("7");
+    }
+
     @Test
     void reaplicarEhNoOp() {
         DataSource ds = dataSourceNoSchema("mig_reaplica");
@@ -42,5 +54,33 @@ class MigracoesTest extends PostgresTestBase {
         int segunda = Migracoes.aplicar(ds);
 
         assertThat(segunda).isZero();
+    }
+
+    @Test
+    void aplicaAteV4ECriaOPapelDaAplicacao() {
+        DataSource ds = dataSourceNoSchema("mig_v4");
+
+        Migracoes.aplicar(ds);
+
+        Jdbi jdbi = Jdbi.create(ds);
+        List<String> versoes = jdbi.withHandle(h -> h.createQuery(
+                        "select version from flyway_schema_history where success order by installed_rank")
+                .mapTo(String.class).list());
+        long papeis = jdbi.withHandle(h -> h.createQuery(
+                        "select count(*) from pg_roles where rolname = 'fiscal_app'")
+                .mapTo(Long.class).one());
+        assertThat(versoes).contains("4");
+        assertThat(papeis).isEqualTo(1);
+    }
+
+    @Test
+    void aplicarEmDoisSchemasNaoFalhaPorqueOPapelJaExiste() {
+        DataSource primeiro = dataSourceNoSchema("mig_papel_a");
+        DataSource segundo = dataSourceNoSchema("mig_papel_b");
+
+        Migracoes.aplicar(primeiro);
+        int aplicadas = Migracoes.aplicar(segundo);
+
+        assertThat(aplicadas).isGreaterThanOrEqualTo(4);
     }
 }

@@ -665,3 +665,4 @@
 - 2026-11-04 08:52 · E2-S13: PR aberto para revisão
 - 2026-11-04 09:10 · E3-S05: suíte BlobStoreContrato (testFixtures) + BlobStoreEmMemoriaContratoTest (10 casos); nasceu verde pois a implementação em memória já existia (não houve falha a mostrar); suíte inteira verde · próximo: módulo infra-blob-minio com Testcontainers
 - 2026-11-04 08:54 · E3-S05: DESENVOLVER ok
+- 2026-11-04 08:54 · E3-S05: revertido — chamada terminou com ERRO

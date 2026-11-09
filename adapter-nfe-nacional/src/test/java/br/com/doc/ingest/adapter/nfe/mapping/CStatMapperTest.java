@@ -35,6 +35,8 @@ import static org.assertj.core.api.Assertions.assertThat;
  * - 589: NSU maior que o maxNSU (IndisponivelDefinitivo "cursor inconsistente" - Tab. 5-29 H06)
  * - 108: servico paralisado momentaneamente (IndisponivelTemporario - Tab. 5-20 K03)
  * - 109: servico paralisado sem previsao (ServicoFora - Tab. 5-20 K03)
+ * - 217, 236, 614-619, 640, 641, 653, 654: rejeicoes do consChNFe (IndisponivelDefinitivo - Tab. 5-29,
+ *   decisao do autor 2026-10-29, E2-S16)
  * - qualquer outro / nulo / vazio: fallback IndisponivelTemporario de 5 min + WARN sanitizado
  */
 @DisplayName("CStatMapper (cStat -> Desfecho)")
@@ -51,7 +53,20 @@ class CStatMapperTest {
             "632, IndisponivelDefinitivo",
             "589, IndisponivelDefinitivo",
             "108, IndisponivelTemporario",
-            "109, ServicoFora"
+            "109, ServicoFora",
+            "217, IndisponivelDefinitivo",
+            "236, IndisponivelDefinitivo",
+            "614, IndisponivelDefinitivo",
+            "615, IndisponivelDefinitivo",
+            "616, IndisponivelDefinitivo",
+            "617, IndisponivelDefinitivo",
+            "618, IndisponivelDefinitivo",
+            "619, IndisponivelDefinitivo",
+            "640, IndisponivelDefinitivo",
+            "641, IndisponivelDefinitivo",
+            "653, IndisponivelDefinitivo",
+            "654, IndisponivelDefinitivo",
+            "252, IndisponivelDefinitivo"
     })
     void tabelaDeCodigosMapeados(String cStat, String tipoEsperado) {
         assertThat(mapper.mapear(cStat).getClass().getSimpleName()).isEqualTo(tipoEsperado);
@@ -91,6 +106,29 @@ class CStatMapperTest {
             assertThat(resultado).isInstanceOf(Desfecho.IndisponivelDefinitivo.class);
             assertThat(((Desfecho.IndisponivelDefinitivo) resultado).motivo())
                     .containsIgnoringCase("cursor inconsistente");
+        }
+    }
+
+    @Nested
+    @DisplayName("Rejeicoes de configuracao (consChNFe)")
+    class CasosConfiguracao {
+
+        @Test
+        @DisplayName("cStat 252 vira IndisponivelDefinitivo citando ambiente divergente (MOC 7.0 Tab. 5-29)")
+        void cStat252ViraIndisponivelDefinitivoAmbienteDivergente() {
+            Desfecho resultado = mapper.mapear("252");
+            assertThat(resultado).isInstanceOf(Desfecho.IndisponivelDefinitivo.class);
+            assertThat(((Desfecho.IndisponivelDefinitivo) resultado).motivo())
+                    .containsIgnoringCase("ambiente");
+        }
+
+        @Test
+        @DisplayName("cStat 593 vira ErroAutenticacao citando raiz do CNPJ diferente da do certificado")
+        void cStat593ViraErroAutenticacaoRaizDivergente() {
+            Desfecho resultado = mapper.mapear("593");
+            assertThat(resultado).isInstanceOf(Desfecho.ErroAutenticacao.class);
+            assertThat(((Desfecho.ErroAutenticacao) resultado).motivo())
+                    .containsIgnoringCase("raiz do CNPJ consultado difere da do certificado");
         }
     }
 
@@ -188,6 +226,16 @@ class CStatMapperTest {
 
                 assertThat(resultado).isEqualTo(new Desfecho.IndisponivelTemporario(Duration.ofMinutes(5)));
                 assertThat(warns()).hasSize(1);
+            }
+
+            @ParameterizedTest(name = "cStat [{0}]")
+            @ValueSource(strings = {"217", "236", "614", "615", "616", "617", "618", "619", "640", "641",
+                    "653", "654", "252", "593"})
+            @DisplayName("codigos do consChNFe mapeados explicitamente nao caem no fallback nem logam WARN")
+            void codigosDoConsChNFeNaoLogam(String cStat) {
+                mapper.mapear(cStat);
+
+                assertThat(warns()).isEmpty();
             }
 
             @Test

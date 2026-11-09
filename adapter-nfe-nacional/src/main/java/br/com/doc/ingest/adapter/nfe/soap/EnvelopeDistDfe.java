@@ -8,6 +8,7 @@ import jakarta.xml.bind.Marshaller;
 
 import java.io.ByteArrayOutputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.Locale;
 
 /** Monta o corpo {@code distDFeInt} da consulta por ultNSU. */
 public final class EnvelopeDistDfe {
@@ -27,11 +28,38 @@ public final class EnvelopeDistDfe {
 
     /** Fragmento XML (sem declaração), UTF-8. O ultNSU vai com 15 dígitos. */
     public static byte[] distNsu(TipoAmbiente ambiente, Cnpj cnpj, Nsu ultNsu) {
+        DistDfeInt req = base(ambiente, cnpj);
+        req.setUltNsu(nsu15(ultNsu));
+        return marshal(req);
+    }
+
+    /** Consulta pontual por NSU ({@code consNSU}); nunca leva distNSU. [VALIDAR item 9] nomes dos elementos. */
+    public static byte[] consNsu(TipoAmbiente ambiente, Cnpj cnpj, Nsu nsu) {
+        DistDfeInt req = base(ambiente, cnpj);
+        req.setNsuPontual(nsu15(nsu));
+        return marshal(req);
+    }
+
+    /** Consulta por chave de acesso ({@code consChNFe}); nunca leva distNSU. [VALIDAR item 9] nomes dos elementos. */
+    public static byte[] consChNFe(TipoAmbiente ambiente, Cnpj cnpj, String chave) {
+        DistDfeInt req = base(ambiente, cnpj);
+        req.setChaveNFe(chave);
+        return marshal(req);
+    }
+
+    private static DistDfeInt base(TipoAmbiente ambiente, Cnpj cnpj) {
         DistDfeInt req = new DistDfeInt();
         req.setVersao(ContratoDistDfe.VERSAO_LAYOUT);
         req.setTpAmb(ambiente.codigoTpAmb());
         req.setCnpj(cnpj.valor());
-        req.setUltNsu(String.format("%015d", ultNsu.valor()));
+        return req;
+    }
+
+    private static String nsu15(Nsu nsu) {
+        return String.format(Locale.ROOT, "%015d", nsu.valor());
+    }
+
+    private static byte[] marshal(DistDfeInt req) {
         try {
             Marshaller m = CONTEXTO.createMarshaller();
             m.setProperty(Marshaller.JAXB_FRAGMENT, true);
@@ -46,7 +74,19 @@ public final class EnvelopeDistDfe {
 
     /** Envelope SOAP 1.2 completo (UTF-8, com prólogo) em volta do distDFeInt. */
     public static byte[] soap12DistNsu(TipoAmbiente ambiente, Cnpj cnpj, Nsu ultNsu) {
-        String corpo = new String(distNsu(ambiente, cnpj, ultNsu), StandardCharsets.UTF_8);
+        return soap12(distNsu(ambiente, cnpj, ultNsu));
+    }
+
+    public static byte[] soap12ConsNsu(TipoAmbiente ambiente, Cnpj cnpj, Nsu nsu) {
+        return soap12(consNsu(ambiente, cnpj, nsu));
+    }
+
+    public static byte[] soap12ConsChNFe(TipoAmbiente ambiente, Cnpj cnpj, String chave) {
+        return soap12(consChNFe(ambiente, cnpj, chave));
+    }
+
+    private static byte[] soap12(byte[] corpoXml) {
+        String corpo = new String(corpoXml, StandardCharsets.UTF_8);
         String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
                 + "<soap12:Envelope xmlns:soap12=\"" + ContratoDistDfe.NS_SOAP12 + "\">"
                 + "<soap12:Body>"

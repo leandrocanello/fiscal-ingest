@@ -18,7 +18,7 @@ import jakarta.xml.bind.annotation.*;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement(name = "distDFeInt", namespace = "http://www.portalfiscal.inf.br/nfe")
-@XmlType(propOrder = {"tpAmb", "cnpj", "distNsu"})
+@XmlType(propOrder = {"tpAmb", "cnpj", "distNsu", "consNsu", "consChNFe"})
 public class DistDfeInt {
 
     @XmlAttribute(name = "versao")
@@ -33,6 +33,12 @@ public class DistDfeInt {
     @XmlElement(name = "distNSU")
     private DistNsu distNsu;
 
+    @XmlElement(name = "consNSU")
+    private ConsNsu consNsu;
+
+    @XmlElement(name = "consChNFe")
+    private ConsChNFe consChNFe;
+
     public String getVersao() { return versao; }
     public void setVersao(String versao) { this.versao = versao; }
 
@@ -46,6 +52,28 @@ public class DistDfeInt {
     public void setUltNsu(String ultNsu) {
         if (distNsu == null) distNsu = new DistNsu();
         distNsu.ultNSU = ultNsu;
+    }
+
+    public void setNsuPontual(String nsu) {
+        consNsu = new ConsNsu();
+        consNsu.nsu = nsu;
+    }
+
+    public void setChaveNFe(String chave) {
+        consChNFe = new ConsChNFe();
+        consChNFe.chNFe = chave;
+    }
+
+    @XmlAccessorType(XmlAccessType.FIELD)
+    public static class ConsNsu implements java.io.Serializable {
+        @XmlElement(name = "NSU")
+        private String nsu;
+    }
+
+    @XmlAccessorType(XmlAccessType.FIELD)
+    public static class ConsChNFe implements java.io.Serializable {
+        @XmlElement(name = "chNFe")
+        private String chNFe;
     }
 
     @XmlAccessorType(XmlAccessType.FIELD)

@@ -73,4 +73,53 @@ class EnvelopeDistDfeTest {
                 .getElementsByTagNameNS("http://www.portalfiscal.inf.br/nfe", "distDFeInt");
         assertThat(dist.getLength()).isEqualTo(1);
     }
+
+    private static final String CHAVE = "35200111111111000191550010000000011000000015";
+
+    @Test
+    @DisplayName("consNSU leva o NSU com quinze dígitos e não leva distNSU")
+    void consNsuSemDistNsu() {
+        String xml = new String(EnvelopeDistDfe.consNsu(TipoAmbiente.PRODUCAO, CNPJ, new Nsu(42)), StandardCharsets.UTF_8);
+        assertThat(xml)
+                .contains("<consNSU><NSU>000000000000042</NSU></consNSU>")
+                .contains("<CNPJ>11111111000191</CNPJ>")
+                .doesNotContain("distNSU")
+                .doesNotContain("ultNSU")
+                .doesNotContain("consChNFe");
+    }
+
+    @Test
+    @DisplayName("consChNFe leva a chave de 44 dígitos e não leva distNSU")
+    void consChNFeSemDistNsu() {
+        String xml = new String(EnvelopeDistDfe.consChNFe(TipoAmbiente.PRODUCAO, CNPJ, CHAVE), StandardCharsets.UTF_8);
+        assertThat(xml)
+                .contains("<consChNFe><chNFe>" + CHAVE + "</chNFe></consChNFe>")
+                .doesNotContain("distNSU")
+                .doesNotContain("consNSU");
+    }
+
+    @Test
+    @DisplayName("SOAP do consNSU/consChNFe usa o mesmo envelope e o mesmo ACTION")
+    void soapComMesmoEnvelope() {
+        String nsu = new String(EnvelopeDistDfe.soap12ConsNsu(TipoAmbiente.PRODUCAO, CNPJ, new Nsu(7)), StandardCharsets.UTF_8);
+        String chave = new String(EnvelopeDistDfe.soap12ConsChNFe(TipoAmbiente.PRODUCAO, CNPJ, CHAVE), StandardCharsets.UTF_8);
+        String dist = new String(EnvelopeDistDfe.soap12DistNsu(TipoAmbiente.PRODUCAO, CNPJ, new Nsu(7)), StandardCharsets.UTF_8);
+        String prefixo = dist.substring(0, dist.indexOf("<distDFeInt"));
+        assertThat(nsu).startsWith(prefixo).contains("<consNSU>").endsWith("</soap12:Body></soap12:Envelope>");
+        assertThat(chave).startsWith(prefixo).contains("<consChNFe>").endsWith("</soap12:Body></soap12:Envelope>");
+    }
+
+    @Test
+    @DisplayName("Formatação do NSU não depende do locale")
+    void formatacaoIndependeDeLocale() {
+        java.util.Locale anterior = java.util.Locale.getDefault();
+        try {
+            java.util.Locale.setDefault(java.util.Locale.forLanguageTag("ar-SA-u-nu-arab"));
+            assertThat(monta(TipoAmbiente.PRODUCAO, new Nsu(100))).contains("<ultNSU>000000000000100</ultNSU>");
+            assertThat(new String(EnvelopeDistDfe.consNsu(TipoAmbiente.PRODUCAO, CNPJ, new Nsu(42)), StandardCharsets.UTF_8))
+                    .contains("<NSU>000000000000042</NSU>");
+        } finally {
+            java.util.Locale.setDefault(anterior);
+        }
+    }
 }

@@ -706,3 +706,5 @@
 - 2026-11-09 · E4-S02: CofreSemSegredoTest/ArquiteturaCofreTest/contrato passaram de primeira; mutação vista: senha em claro → `nadaGuardadoContemPfxOuSenha` FAILED (`blob contém segredo em claro`, l.129); causa encadeada → `falhasNaoEncadeiamCausaComSegredo` FAILED (`causa encadeada em IllegalArgumentException`, l.183); revertido. Obs.: o caminho `utf8` com surrogate isolado não é alcançável por `guardar` (o KeyStore recusa senha não ASCII antes)
 - 2026-11-09 11:10 · E4-S02: testes de inv. 13 (sem segredo em blob/toString/causa/disco), ArchUnit do cert-vault e contrato do CofreDeCertificados; suíte inteira verde; último passo de Desenvolvimento concluído · próximo: Verificação do plano (revisor)
 - 2026-11-09 07:39 · E4-S02: DESENVOLVER ok
+- 2026-11-09 07:40 · E4-S02: verificação — jqwik, ArchUnit, grep de segredos, zeragem em finally e suíte inteira verdes, sem código novo · próximo: revisão
+- 2026-11-09 07:40 · E4-S02: VERIFICAR ok

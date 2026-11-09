@@ -23,7 +23,8 @@ class TodaTabelaComTenantIdTemRlsTest extends PostgresTestBase {
     //   que serve a dois tenants é coletado uma vez só (§8.1, DA-24). O tenant entra no catálogo.
     // - flyway_schema_history: controle das migrations, fora do negócio.
     private static final Set<String> TABELAS_SEM_TENANT =
-            Set.of("tenant", "estado_coleta", "ledger_nsu", "ledger_tentativa", "flyway_schema_history");
+            Set.of("tenant", "estado_coleta", "ledger_nsu", "ledger_tentativa", "flyway_schema_history",
+                    "outbox", "outbox_consumo"); // fila técnica sem tenant (CLAUDE.md §8); payload só com metadados
 
     private static Jdbi admin;
 

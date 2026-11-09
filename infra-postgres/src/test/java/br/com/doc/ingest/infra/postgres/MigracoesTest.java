@@ -35,15 +35,18 @@ class MigracoesTest extends PostgresTestBase {
     }
 
         @Test
-        void aplicaV7ECriaOutboxEConsumo() {
+    void criaOutboxEConsumo() {
         DataSource ds = dataSourceNoSchema("mig_outbox");
 
         Migracoes.aplicar(ds);
 
-        String ultima = Jdbi.create(ds).withHandle(h -> h.createQuery(
-                        "select max(version::int)::text from flyway_schema_history where success")
-                .mapTo(String.class).one());
-        assertThat(ultima).isEqualTo("7");
+        // Confere as tabelas, não a última versão: fixar a versão quebra a cada migration nova (V8, V9, V12...).
+        java.util.List<String> tabelas = Jdbi.create(ds).withHandle(h -> h.createQuery(
+                        "select table_name from information_schema.tables "
+                                + "where table_schema = 'mig_outbox' and table_name in ('outbox', 'outbox_consumo') "
+                                + "order by table_name")
+                .mapTo(String.class).list());
+        assertThat(tabelas).containsExactly("outbox", "outbox_consumo");
     }
 
     @Test

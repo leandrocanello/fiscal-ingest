@@ -1,5 +1,7 @@
 package br.com.doc.ingest.domain.cofre;
 
+import java.time.Instant;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -15,4 +17,10 @@ public interface RepositorioCertificados {
 
     /** Devolve vazio se o id não existe ou pertence a outro tenant. */
     Optional<CertificadoGuardado> buscar(long tenantId, long certificadoId);
+
+    /** Todos os certificados do titular no tenant, em qualquer ordem; vazio se não houver. */
+    List<CertificadoGuardado> doTitular(long tenantId, long titularEmpresaId);
+
+    /** Certificados (de todos os tenants) com {@code validoAte <= limite}, inclusive os já vencidos. */
+    List<CertificadoGuardado> vencendoAte(Instant limite);
 }

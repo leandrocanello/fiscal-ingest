@@ -4,6 +4,8 @@ import br.com.doc.ingest.domain.cofre.CertificadoGuardado;
 import br.com.doc.ingest.domain.cofre.NovoCertificado;
 import br.com.doc.ingest.domain.cofre.RepositorioCertificados;
 
+import java.time.Instant;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
@@ -31,5 +33,19 @@ public final class RepositorioCertificadosEmMemoria implements RepositorioCertif
         return registros.values().stream()
                 .filter(c -> c.tenantId() == tenantId && c.id() == certificadoId)
                 .findFirst();
+    }
+
+    @Override
+    public List<CertificadoGuardado> doTitular(long tenantId, long titularEmpresaId) {
+        return registros.values().stream()
+                .filter(c -> c.tenantId() == tenantId && c.titularEmpresaId() == titularEmpresaId)
+                .toList();
+    }
+
+    @Override
+    public List<CertificadoGuardado> vencendoAte(Instant limite) {
+        return registros.values().stream()
+                .filter(c -> !c.validoAte().isAfter(limite))
+                .toList();
     }
 }

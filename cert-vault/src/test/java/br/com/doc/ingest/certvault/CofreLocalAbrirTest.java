@@ -275,6 +275,16 @@ class CofreLocalAbrirTest {
             }
             return delegado.buscar(tenantId, certificadoId);
         }
+
+        @Override
+        public java.util.List<CertificadoGuardado> doTitular(long tenantId, long titularEmpresaId) {
+            return delegado.doTitular(tenantId, titularEmpresaId);
+        }
+
+        @Override
+        public java.util.List<CertificadoGuardado> vencendoAte(java.time.Instant limite) {
+            return delegado.vencendoAte(limite);
+        }
     }
 
     /** Conta as leituras, para provar que um certificado vencido nem chega ao blob store. */

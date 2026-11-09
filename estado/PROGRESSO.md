@@ -688,3 +688,6 @@
 - 2026-11-09 07:14 · E4-S01: DESENVOLVER ok
 - 2026-11-09 · E4-S01: verificação — caos, jqwik, arquitetura e suíte inteira verdes (--rerun-tasks); falta teste como fiscal_app (dataSourceComoApp ausente) · próximo: revisão
 - 2026-11-09 07:17 · E4-S01: VERIFICAR ok
+- 2026-11-09 07:18 · E4-S01: revisão — APROVAR PARA PR (inv. 1/2 com testes e mutações; suíte verde; achados menores: ordem por ambiente, liberar vs bloqueio, V12 fora de ordem); PR em planos/E4-S01-pr.md · próximo: PR pelo script; E4-S01b (fairness)
+- 2026-11-09 07:18 · E4-S01: REVISAR ok
+- 2026-11-09 07:19 · E4-S01: PR aberto para revisão

@@ -674,3 +674,5 @@
 - 2026-11-09 06:57 · E3-S05: [!] bloqueado após 3 falhas
 - 2026-11-09 06:58 · E4-S01: tipos e porta FilaColeta (domain), testes falharam por 'cannot find symbol' PedidoReivindicacao/ColetaReivindicada, depois verdes com suíte inteira · próximo: JdbiFilaColetaTest (claim SKIP LOCKED + lease)
 - 2026-11-09 06:58 · E4-S01: DESENVOLVER ok
+- 2026-11-09 07:00 · E4-S01: JdbiFilaColeta.reivindicar (SKIP LOCKED + lease), 9 testes; falha vista inicial = classe JdbiFilaColeta inexistente (erro de compilação); suíte verde · próximo: ordem e limite do claim (V12)
+- 2026-11-09 07:00 · E4-S01: DESENVOLVER ok

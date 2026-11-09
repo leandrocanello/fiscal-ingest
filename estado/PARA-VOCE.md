@@ -238,3 +238,8 @@ ou responda aqui, e troque o status no ROADMAP de `[!]` para `[~]`.
 - **O que é preciso:** o `manifestar` guarda só a resposta. Se ela se perde por timeout, não fica cópia do que foi declarado em nome do destinatário (§1.5 "guardar tudo", §3.3, §14).
 - **Opções:** (a) gravar o evento assinado no blob antes do envio, em subetapa curta depois do merge; (b) deixar para a E4, junto com a auditoria de quem manifestou; (c) não guardar, pois a SEFAZ devolve o evento pela distribuição.
 - **Recomendação:** (a), com falha na gravação impedindo o envio. Antes de ligar a manifestação na E4, a cópia precisa existir; (c) não cobre a falha de envio nem o que foi tentado.
+
+### [DECISAO] E3-S05-IMAGEM — 2026-11-09 — imagem MinIO da D2 não existe mais no Docker Hub (bloqueia E3-S05)
+- **O que é preciso:** a D2 aceita (`minio/minio` com tag fixa) falha: `docker pull minio/minio` → "pull access denied/repository does not exist"; `quay.io/minio/minio:<tag>` e `:latest` → 401 UNAUTHORIZED (sem login). O módulo e o `MinioDisponivelTest` estavam prontos (Testcontainers 2.0.2: classe `org.testcontainers.containers.MinIOContainer`, não `.minio.`); só a imagem não baixa. Nada foi commitado; a árvore foi limpa.
+- **Opções:** (a) você faz `docker login quay.io` (ou libera o acesso) e eu uso `quay.io/minio/minio:RELEASE.<tag fixa>`; (b) `chainguard/minio` (baixa aqui, mas só tem `latest` — quebra a tag fixa da DA-11); (c) espelhar a imagem num registry próprio com tag fixa; (d) trocar por outro S3 compatível (ex.: SeaweedFS, Garage) e rever os passos 3, 5 e 6 (o `If-None-Match` precisa ser suportado).
+- **Recomendação:** (a) ou (c) — mantém MinIO e tag fixa. Depois, desmarque o `[!]` do passo 2 do plano.

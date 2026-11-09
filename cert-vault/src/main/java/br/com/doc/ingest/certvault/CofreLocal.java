@@ -1,10 +1,13 @@
 package br.com.doc.ingest.certvault;
 
 import br.com.doc.ingest.certvault.ResultadoValidacao.PfxValidado;
+import br.com.doc.ingest.domain.adapter.Credencial;
 import br.com.doc.ingest.domain.blob.BlobRef;
 import br.com.doc.ingest.domain.blob.BlobStore;
 import br.com.doc.ingest.domain.blob.Sha256;
+import br.com.doc.ingest.domain.cofre.CertificadoGuardado;
 import br.com.doc.ingest.domain.cofre.CofreDeCertificados;
+import br.com.doc.ingest.domain.cofre.FalhaAbertura;
 import br.com.doc.ingest.domain.cofre.NovoCertificado;
 import br.com.doc.ingest.domain.cofre.PedidoGuarda;
 import br.com.doc.ingest.domain.cofre.RepositorioCertificados;
@@ -14,6 +17,7 @@ import br.com.doc.ingest.domain.cofre.ResultadoGuarda;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.CharacterCodingException;
+import java.nio.charset.CharsetDecoder;
 import java.nio.charset.CharsetEncoder;
 import java.nio.charset.CodingErrorAction;
 import java.nio.charset.StandardCharsets;
@@ -21,6 +25,7 @@ import java.time.Clock;
 import java.util.Arrays;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * {@link CofreDeCertificados} local com envelope encryption (CLAUDE.md §7.4, DA-35).
@@ -29,6 +34,10 @@ import java.util.Objects;
  * ({@code tenant|titular|fingerprint|PFX ou SENHA}) → grava os dois envelopes em
  * {@code cofre/{tenant}/{fingerprint}/{pfx|senha}-{sha256}.env} → só então registra os metadados (inv. 5 e 7).
  * Em reenvio, o repositório devolve o registro existente; os envelopes novos ficam órfãos, mas são só cifrado.
+ *
+ * <p>Abrir: busca o registro do tenant → vencido devolve {@code Vencido} sem ler o blob store → decifra o .pfx e
+ * a senha com a AAD reconstruída do registro, só em memória → devolve uma {@link Credencial} nova a cada chamada.
+ * Blob ausente, trocado ou com KEK desconhecida vira {@code Indisponivel}, sem causa nem conteúdo.
  *
  * <p>As cópias claras do .pfx, da senha e da DEK feitas aqui são zeradas em {@code finally}. A senha vira
  * UTF-8 por {@link CharsetEncoder}, sem passar por {@code String}. Cópias internas do JDK (a chave em
@@ -91,7 +100,47 @@ public final class CofreLocal implements CofreDeCertificados {
 
     @Override
     public ResultadoAbertura abrir(long tenantId, long certificadoId) {
-        throw new UnsupportedOperationException("abrir ainda não implementado");
+        Optional<CertificadoGuardado> encontrado = repositorio.buscar(tenantId, certificadoId);
+        if (encontrado.isEmpty()) {
+            return new ResultadoAbertura.NaoEncontrado();
+        }
+        CertificadoGuardado certificado = encontrado.get();
+        if (relogio.instant().isAfter(certificado.validoAte())) {
+            return new ResultadoAbertura.Vencido(certificado.validoAte());
+        }
+        byte[] pfx = null;
+        byte[] senhaUtf8 = null;
+        char[] senha = null;
+        try {
+            ResultadoDecifra decifraPfx = decifrar(certificado, PARTE_PFX, certificado.pfxCifrado());
+            if (decifraPfx instanceof ResultadoDecifra.Falha falha) {
+                return new ResultadoAbertura.Indisponivel(falha.motivo());
+            }
+            pfx = ((ResultadoDecifra.Decifrado) decifraPfx).conteudo();
+            ResultadoDecifra decifraSenha = decifrar(certificado, PARTE_SENHA, certificado.senhaCifrada());
+            if (decifraSenha instanceof ResultadoDecifra.Falha falha) {
+                return new ResultadoAbertura.Indisponivel(falha.motivo());
+            }
+            senhaUtf8 = ((ResultadoDecifra.Decifrado) decifraSenha).conteudo();
+            senha = utf16(senhaUtf8);
+            if (senha == null) {
+                return new ResultadoAbertura.Indisponivel(FalhaAbertura.ENVELOPE_INVALIDO);
+            }
+            return new ResultadoAbertura.Aberto(new Credencial(pfx, senha));
+        } finally {
+            zerar(pfx);
+            zerar(senhaUtf8);
+            if (senha != null) {
+                Arrays.fill(senha, '\0');
+            }
+        }
+    }
+
+    private ResultadoDecifra decifrar(CertificadoGuardado certificado, String parte, BlobRef ref) {
+        return blobs.ler(ref)
+                .map(cifrado -> envelope.decifrar(cifrado, aad(certificado.tenantId(),
+                        certificado.titularEmpresaId(), certificado.fingerprint(), parte), keks))
+                .orElseGet(() -> new ResultadoDecifra.Falha(FalhaAbertura.BLOB_AUSENTE));
     }
 
     private BlobRef gravar(PedidoGuarda pedido, String fingerprint, String parte, byte[] cifrado) {
@@ -103,8 +152,11 @@ public final class CofreLocal implements CofreDeCertificados {
 
     /** Contexto autenticado do envelope: trocar blobs entre certificados ou partes não decifra (DA-35). */
     private static byte[] aad(PedidoGuarda pedido, String fingerprint, String parte) {
-        return (pedido.tenantId() + "|" + pedido.titularEmpresaId() + "|" + fingerprint + "|" + parte)
-                .getBytes(StandardCharsets.UTF_8);
+        return aad(pedido.tenantId(), pedido.titularEmpresaId(), fingerprint, parte);
+    }
+
+    private static byte[] aad(long tenantId, long titularEmpresaId, String fingerprint, String parte) {
+        return (tenantId + "|" + titularEmpresaId + "|" + fingerprint + "|" + parte).getBytes(StandardCharsets.UTF_8);
     }
 
     /** UTF-8 exato da senha, sem {@code String}; o buffer intermediário é zerado. */
@@ -124,6 +176,26 @@ public final class CofreLocal implements CofreDeCertificados {
         } finally {
             if (buffer != null && buffer.hasArray()) {
                 Arrays.fill(buffer.array(), (byte) 0);
+            }
+        }
+    }
+
+    /** Senha de volta a {@code char[]}, sem {@code String}; vazio se o UTF-8 for inválido. O buffer é zerado. */
+    private static char[] utf16(byte[] utf8) {
+        CharsetDecoder decodificador = StandardCharsets.UTF_8.newDecoder()
+                .onMalformedInput(CodingErrorAction.REPORT)
+                .onUnmappableCharacter(CodingErrorAction.REPORT);
+        CharBuffer buffer = null;
+        try {
+            buffer = decodificador.decode(ByteBuffer.wrap(utf8));
+            char[] senha = new char[buffer.remaining()];
+            buffer.get(senha);
+            return senha;
+        } catch (CharacterCodingException e) {
+            return null;
+        } finally {
+            if (buffer != null && buffer.hasArray()) {
+                Arrays.fill(buffer.array(), '\0');
             }
         }
     }

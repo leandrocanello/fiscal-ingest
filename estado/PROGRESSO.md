@@ -694,3 +694,6 @@
 - 2026-11-09 · E4-S02: falha vista (stub devolvendo ILEGIVEL): `ValidadorPfxTest > abre o .pfx moderno ... FAILED`, `> recusa senha errada FAILED`, `> recusa .pfx sem chave privada FAILED`, `> recusa acima do limite antes de tentar abrir FAILED` · `9 tests completed, 7 failed`
 - 2026-11-09 08:40 · E4-S02: ValidadorPfx (abertura: limite 64 KiB, moderno/legado, senha, sem chave, ambíguo, fingerprint) + ConfiancaIcp + ResultadoValidacao; suíte inteira verde · próximo: ValidadorPfxTest (regras: validade → cadeia PKIX → CNPJ)
 - 2026-11-09 07:22 · E4-S02: DESENVOLVER ok
+- 2026-11-09 · E4-S02: falha vista (sem regras): `recusa certificado autoassinado FAILED`, `recusa CNPJ divergente ... FAILED`, `recusa quando a AC já venceu ... FAILED`, `recusa vencido e ainda não iniciado ... FAILED` · `81 tests completed, 9 failed`
+- 2026-11-09 09:10 · E4-S02: ValidadorPfx regras (validade inclusiva → cadeia PKIX com data do Clock e acervo → CNPJ exato, filial recusada); suíte inteira verde · próximo: CofreLocalGuardarTest
+- 2026-11-09 07:24 · E4-S02: DESENVOLVER ok

@@ -61,6 +61,18 @@ class ChavesBlobPullTest {
     }
 
     @Test
+    @DisplayName("inv. 7: resposta do envio de evento fica em fonte/ambiente/cnpj/evento/aaaa/mm/dd (UTC)/sha")
+    void chaveDoEnvioDeEventoIncluiSha() {
+        var instante = Instant.parse("2026-10-28T02:30:00Z");
+
+        var chave = ChavesBlobPull.envioEvento(FONTE, TipoAmbiente.PRODUCAO, CNPJ, instante, SHA);
+
+        assertThat(chave).isEqualTo(
+                "raw/pull/NFE_AN/PRODUCAO/11111111000191/evento/2026/10/28/" + SHA + ".retorno.xml");
+        assertThatCode(() -> new BlobRef(chave, SHA)).doesNotThrowAnyException();
+    }
+
+    @Test
     @DisplayName("as chaves geradas são aceitas por BlobRef")
     void chaveAceitaPorBlobRef() {
         var instante = Instant.parse("2026-10-28T12:00:00Z");

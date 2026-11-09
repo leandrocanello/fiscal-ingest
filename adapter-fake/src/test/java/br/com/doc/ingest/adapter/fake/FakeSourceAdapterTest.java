@@ -51,6 +51,22 @@ class FakeSourceAdapterTest {
     }
 
     @Nested
+    @DisplayName("manifestar")
+    class Manifestar {
+
+        @Test
+        @DisplayName("não manifesta: o default da porta devolve Optional.empty()")
+        void naoManifesta() {
+            FakeSourceAdapter adapter = new FakeSourceAdapter(fonte);
+
+            Optional<ManifestarResultado> resultado = adapter.manifestar(
+                    new ContextoConsulta(fonte, cnpj), "3".repeat(44), TipoManifestacao.CIENCIA);
+
+            assertThat(resultado).isEmpty();
+        }
+    }
+
+    @Nested
     @DisplayName("buscarLote")
     class BuscarLote {
 

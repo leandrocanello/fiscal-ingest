@@ -686,3 +686,5 @@
 - 2026-11-09 07:10 · E4-S01: DESENVOLVER ok
 - 2026-11-09 07:25 · E4-S01: FilaColetaPropriedadesTest (5 props) passou de primeira; mutações detectadas (sem checagem de lease → FAILED; greatest→atribuição → FAILED), revertidas; passos de fairness pulados (D4=a → E4-S01b); suíte verde · próximo: Verificação do plano
 - 2026-11-09 07:14 · E4-S01: DESENVOLVER ok
+- 2026-11-09 · E4-S01: verificação — caos, jqwik, arquitetura e suíte inteira verdes (--rerun-tasks); falta teste como fiscal_app (dataSourceComoApp ausente) · próximo: revisão
+- 2026-11-09 07:17 · E4-S01: VERIFICAR ok

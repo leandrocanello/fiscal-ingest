@@ -336,3 +336,9 @@ Como desfazer: reverter o commit `fix(E3-S04)` do relay.
 - **Opções:** (a) a rotação troca por CAS (`certificado_id is not distinct from :esperado`) e só quando o certificado atual é nulo ou do mesmo tenant (conferido por `RepositorioCertificados.buscar`); senão devolve `OutroTenant` sem efeito × (b) o último tenant a rotacionar vence.
 - **Escolha:** (a). É conservadora e não decide a D1 no lugar do autor. A troca nunca toca cursor, `ult_nsu`, `versao`, lease nem `bloqueado_ate` (inv. 1 e 2).
 - **Como desfazer:** quando a D1 for decidida, trocar a checagem de tenant no `RotacionarCertificadoUseCase`; o SQL do CAS fica igual.
+
+### DA-55 · 2026-11-09 · E4-S04
+- **Contexto:** DA-53 não diz o que `escolher` devolve quando há vencido e renovação futura, sem nenhum válido.
+- **Opções:** (a) `Vencido` (há vencido → coleta já está parada) × (b) `AindaNaoValido` (a renovação é a novidade).
+- **Escolha:** (a). O titular está sem certificado utilizável agora; a E4-S03 precisa saber disso. `AindaNaoValido` só quando não há nenhum vencido. Teste `vencidoComRenovacaoFuturaEhVencido`.
+- **Como desfazer:** trocar a ordem dos dois ramos finais em `CertificadoVigente.escolher`.

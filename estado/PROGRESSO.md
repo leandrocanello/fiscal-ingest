@@ -721,3 +721,5 @@
 - 2026-11-09 07:49 · E4-S04: PLANEJAR ok
 - 2026-11-09 07:51 · E4-S04: doTitular/vencendoAte na porta + em memória (falha vista: cannot find symbol doTitular/vencendoAte; suíte verde; contrato em RepositorioCertificadosContratoTest, dublê RepositorioAdulteravel só delega) · próximo: CertificadoVigente
 - 2026-11-09 07:52 · E4-S04: DESENVOLVER ok
+- 2026-11-09 07:54 · E4-S04: CertificadoVigente + SituacaoTitular (falha vista: package SituacaoTitular does not exist / cannot find symbol; suíte verde; DA-55) · próximo: PoliticaAlertaVencimento
+- 2026-11-09 07:54 · E4-S04: DESENVOLVER ok

@@ -95,7 +95,7 @@ public final class NfeNacionalAdapter implements SourceAdapter {
 
     @Override
     public AdapterDescriptor descritor() {
-        return new AdapterDescriptor(fonte, new Capacidades(true, true, false, false));
+        return new AdapterDescriptor(fonte, new Capacidades(true, true, envioManifestacao != null, false));
     }
 
     /**

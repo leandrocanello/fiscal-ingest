@@ -728,3 +728,4 @@
 - 2026-11-09 08:05 · E4-S04: VerificarVencimentosUseCase (falha vista: 'cannot find symbol' em RegistroAlertasVencimento/TipoAlerta/VerificarVencimentosUseCase; suíte verde; teste em cert-vault/src/test pois domain não tem testFixtures; porta ganhou emitidos(certificadoId) para saber marcos já emitidos antes de notificar) · próximo: troca de certificado por CAS (Jdbi)
 - 2026-11-09 07:59 · E4-S04: DESENVOLVER ok
 - 2026-11-09 20:30 · decisões do autor registradas (E4-S03, E2-S12, E2-S13, E4-S02); E1-S07/E3-S07 destravadas (main verde vem no PR #40); criadas E2-S17, E2-S18, E4-S06
+- 2026-11-09 20:35 · E3-S05: MinIO descartado (projeto arquivado, sem imagens); autor escolheu SeaweedFS; plano antigo arquivado, subetapa vai ser replanejada

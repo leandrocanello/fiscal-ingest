@@ -691,3 +691,6 @@
 - 2026-11-09 07:18 · E4-S01: revisão — APROVAR PARA PR (inv. 1/2 com testes e mutações; suíte verde; achados menores: ordem por ambiente, liberar vs bloqueio, V12 fora de ordem); PR em planos/E4-S01-pr.md · próximo: PR pelo script; E4-S01b (fairness)
 - 2026-11-09 07:18 · E4-S01: REVISAR ok
 - 2026-11-09 07:19 · E4-S01: PR aberto para revisão
+- 2026-11-09 · E4-S02: falha vista (stub devolvendo ILEGIVEL): `ValidadorPfxTest > abre o .pfx moderno ... FAILED`, `> recusa senha errada FAILED`, `> recusa .pfx sem chave privada FAILED`, `> recusa acima do limite antes de tentar abrir FAILED` · `9 tests completed, 7 failed`
+- 2026-11-09 08:40 · E4-S02: ValidadorPfx (abertura: limite 64 KiB, moderno/legado, senha, sem chave, ambíguo, fingerprint) + ConfiancaIcp + ResultadoValidacao; suíte inteira verde · próximo: ValidadorPfxTest (regras: validade → cadeia PKIX → CNPJ)
+- 2026-11-09 07:22 · E4-S02: DESENVOLVER ok

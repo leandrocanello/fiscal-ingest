@@ -697,3 +697,6 @@
 - 2026-11-09 · E4-S02: falha vista (sem regras): `recusa certificado autoassinado FAILED`, `recusa CNPJ divergente ... FAILED`, `recusa quando a AC já venceu ... FAILED`, `recusa vencido e ainda não iniciado ... FAILED` · `81 tests completed, 9 failed`
 - 2026-11-09 09:10 · E4-S02: ValidadorPfx regras (validade inclusiva → cadeia PKIX com data do Clock e acervo → CNPJ exato, filial recusada); suíte inteira verde · próximo: CofreLocalGuardarTest
 - 2026-11-09 07:24 · E4-S02: DESENVOLVER ok
+- 2026-11-09 · E4-S02: falha vista (CofreLocal esqueleto): `CofreLocal.guardar > guarda o pfx e a senha cifrados ... FAILED` (UnsupportedOperationException), `se o blob store falha ... FAILED` (esperava IllegalStateException), `88 tests completed, 7 failed`. Obs.: o PKCS12 do JDK recusa gerar .pfx com senha não ASCII ("Password is not ASCII"); o teste usa senha ASCII. `abreEDevolveMesmoPfxESenha` (senha não ASCII) precisará de .pfx legado ou gerado via BC no próximo passo
+- 2026-11-09 09:40 · E4-S02: CofreLocal.guardar (valida → cifra pfx e senha com a mesma DEK e AAD por parte → grava cofre/{tenant}/{fp}/{parte}-{sha}.env → registrarSeAusente; zera cópias em finally); suíte inteira verde · próximo: CofreLocalAbrirTest
+- 2026-11-09 07:29 · E4-S02: DESENVOLVER ok

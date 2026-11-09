@@ -248,3 +248,60 @@ ou responda aqui, e troque o status no ROADMAP de `[!]` para `[~]`.
 Último motivo: nenhum commit feito e nenhum passo fechado no plano
 Logs: `estado/logs/` (arquivos *-E3-S05-*.json). Para destravar: ajuste o plano `estado/planos/E3-S05.md`
 ou responda aqui, e troque o status no ROADMAP de `[!]` para `[~]`.
+
+### [HUMANO] E2-S12 — 2026-11-09 — smoke em homologação: distNSU, consChNFe, ciência, autXML
+- **O que é preciso:** confirmar contra o AN de **homologação** (tpAmb=2, sem valor fiscal) o que hoje só foi testado com
+  WireMock e está marcado [VALIDAR]. É manual, fora do CI e com flag explícita (inv. 14). Só você pode fazer: exige A1
+  ICP-Brasil **real** (em homologação não existe certificado "de teste") e notas emitidas em homologação.
+- **Pré-requisitos que ainda faltam:**
+  1. **E2-S13 mergeada** (está `[r]`): sem ela não há envio da ciência.
+  2. **Não existe como rodar o adapter:** ainda não há `app-*` nem harness. Falta também o **truststore ICP-Brasil**
+     decidido na E2-S10 (opção c), que não foi implementado (não há `src/main/resources` no adapter).
+  3. Certificados: A1 de uma **empresa** (destinatária, que consulta e manifesta) e A1 do **escritório** (para o `autXML`).
+- **D1 — como rodar o smoke:**
+  - (a) **Subetapa AUTO nova `E2-S17`** (antes da E2-S12) que cria um teste JUnit `@Tag("homologacao")`, fora da task
+    `test`, só rodado por `./gradlew :adapter-nfe-nacional:smokeHomologacao -Dsmoke.homologacao=true`. Ele lê o caminho do
+    `.pfx`, a senha, o CNPJ, a UF e as URLs de variáveis de ambiente. Grava o cursor em `~/fiscal-smoke/cursor-<cnpj>.txt` e
+    **recusa NSU menor** (inv. 1). Salva as respostas brutas em `~/fiscal-smoke/AAAA-MM-DD/`, fora do repositório. O agente
+    escreve, mas nunca roda. Prós: usa o adapter de verdade (envelope, mapper, assinatura) e pode ser repetido. Contra:
+    mais uma subetapa.
+  - (b) `main` avulsa num módulo `smoke`. Prós: mais simples de chamar. Contras: código fora do padrão de teste e risco
+    de virar app.
+  - (c) Manual com SoapUI/curl. Prós: nada a codar. Contra: **não testa o nosso código**, só a SEFAZ.
+- **D2 — truststore ICP-Brasil (já decidido em c, falta implementar):** (a) incluir na E2-S17 o arquivo das ACs públicas
+  do ITI, versionado, com o caminho sobrescrito por variável de ambiente; (b) você baixa e aponta pela variável só no smoke.
+- **D3 — de onde vêm as notas de teste:** (a) **emitir em homologação** pelo ERP/emissor de uma empresa sua, com
+  `dest` = CNPJ da empresa-teste e `autXML` = CNPJ do escritório (o emitente precisa estar habilitado para homologação na
+  SEFAZ da UF dele, [conferir]); (b) pedir a um parceiro que emita em homologação; (c) só `distNSU` vazio (`137`). Contra
+  de (c): valida pouco, sem `138`, ciência nem `autXML`.
+- **Recomendação:** D1 (a) · D2 (a) · D3 (a). Se faltar o A1 do escritório, faça o smoke parcial e deixe o `autXML` para
+  depois (ADR-019 fica "validar em homologação").
+- **Roteiro (depois da E2-S13 e da E2-S17 mergeadas):**
+  1. **URLs de homologação:** confira no portal, em [Relação de Serviços Web](https://www.nfe.fazenda.gov.br/portal/webServices.aspx),
+     as do Ambiente Nacional para `NFeDistribuicaoDFe` e `NFeRecepcaoEvento4`. A pista atual é
+     `https://hom1.nfe.fazenda.gov.br/NFeDistribuicaoDFe/NFeDistribuicaoDFe.asmx` e `.../NFeRecepcaoEvento4/NFeRecepcaoEvento4.asmx`
+     [conferir; FONTES item 9 tem `hom.` de 2014].
+  2. **WSDL** (com mTLS): `read -s PFX_SENHA; curl --cert-type P12 --cert "empresa.pfx:$PFX_SENHA" "<URL>?wsdl" -o ~/fiscal-smoke/recepcao.wsdl`.
+     Confira a **action**: `nfeRecepcaoEvento` ou `nfeRecepcaoEventoNF` (DÚVIDA E2-S13 acima). Confira também se o
+     `nfeDadosMsg` vai direto no `Body` (DA-41). Faça o mesmo com o WSDL da distribuição (`nfeDistDFeInteresse`).
+  3. **Truststore:** baixe as ACs no [repositório da ICP-Brasil (ITI)](https://www.gov.br/iti/pt-br/assuntos/repositorio)
+     e confira se o handshake fecha sem `PKIX path building failed`.
+  4. **Emita 1–2 NF-e em homologação** (D3). Anote as chaves num arquivo **local**.
+  5. **distNSU com o A1 da empresa**, a partir de `ultNSU=0`. Espere `138` com `resNFe` (ou `137`). Depois de um `137`,
+     **pare por 1h**: anote se o bloqueio aparece e quanto dura (FONTES itens 1 e 2). Anote também o comportamento com
+     `ultNSU < maxNSU`.
+  6. **consChNFe** com a chave emitida: espere `138` com `resNFe`. São no máximo ~20 por hora; não repita à toa.
+  7. **Ciência (210210)** da mesma chave: espere `135`. **Reenvie uma vez:** espere `573` → `Ok` (idempotência decidida na
+     E2-S13). Uma rejeição `297`/`298` indica erro nosso de assinatura (RSA_SHA1, C14N, `Id`): guarde o bruto.
+  8. **distNSU de novo** a partir do último NSU salvo (o harness lê o arquivo): espere `procNFe` + `procEventoNFe` em NSU
+     posterior. Confira a classificação, o `ExtratorMetadados` e a tabela `SituacaoNfe` (DA-33).
+  9. **autXML:** distNSU com o A1 do **escritório**, a partir de 0. Espere o `procNFe` da nota emitida (FONTES item 5).
+  10. (Opcional) distNSU com o A1 do **emitente**: ele recebe a ciência das próprias notas? (FONTES item 4).
+  11. **Registro:** não commite nenhuma resposta bruta (são XML reais com CNPJ). Abra um PR `docs/` com
+      `docs/SMOKE-HOMOLOGACAO.md` (data, passos, cStat obtidos, CNPJs mascarados) e atualize `docs/FONTES-OFICIAIS.md`
+      nos itens 1, 2, 4, 5, 7 e 9. Responda abaixo com cada divergência, e eu abro as subetapas de correção. Depois
+      marque a E2-S12 `[x]` no ROADMAP.
+- **O que conferir (checklist):** URLs e actions (item 9) · `nfeDadosMsg` no `Body` (DA-41) · truststore · `137`/`138` e
+  bloqueio de ~1h · `resNFe` → ciência → `procNFe` · `135`/`573` e campos do `retEvento` (DA-47/48) · RSA_SHA1/C14N/`Id`
+  (item 7) · `autXML` (item 5) · eventos para o emitente (item 4) · `SituacaoNfe` (DA-33).
+- Resposta:

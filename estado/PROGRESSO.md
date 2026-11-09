@@ -711,3 +711,6 @@
 - 2026-11-09 07:42 · E4-S02: REVISAR — APROVAR PARA PR (suíte 639 verde; inv. 5/7/13/14 com teste; 4 achados menores no parecer) · próximo: abrir PR (script)
 - 2026-11-09 07:42 · E4-S02: REVISAR ok
 - 2026-11-09 07:42 · E4-S02: PR aberto para revisão
+- 2026-11-09 07:43 · E2-S12: PREPARAR — item HUMANO em PARA-VOCE (D1 harness E2-S17, D2 truststore, D3 notas de teste + roteiro de 11 passos) · próximo: autor decide D1–D3; depende do merge da E2-S13
+- 2026-11-09 07:44 · E2-S12: PREPARAR ok
+- 2026-11-09 07:44 · E2-S12: preparado para você (PARA-VOCE.md)

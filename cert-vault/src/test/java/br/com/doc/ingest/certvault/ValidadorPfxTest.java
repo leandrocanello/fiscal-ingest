@@ -9,6 +9,7 @@ import br.com.doc.ingest.domain.model.Cnpj;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.HexFormat;
@@ -139,6 +140,119 @@ class ValidadorPfxTest {
                     .doesNotContain(new String(SENHA))
                     .doesNotContainIgnoringCase(hex)
                     .doesNotContain(Arrays.toString(Arrays.copyOf(pfx, 8)).replace("]", ""));
+        }
+    }
+
+    // ===== regras: validade → cadeia → CNPJ (DA-36) =====
+
+    private static final Instant MEIO = Instant.parse("2026-06-01T00:00:00Z");
+
+    private ValidadorPfx validadorEm(Instant agora) {
+        return new ValidadorPfx(new ConfiancaIcp(Set.of(gerador.raiz()), List.of(gerador.intermediaria())),
+                new RelogioManual(agora), ValidadorPfx.LIMITE_PADRAO_BYTES);
+    }
+
+    private static ResultadoValidacao validarCom(ValidadorPfx v, byte[] pfx, String cnpjTitular) {
+        return v.validar(pfx, SENHA.clone(), new Cnpj(cnpjTitular));
+    }
+
+    @Test
+    @DisplayName("recusa vencido e ainda não iniciado; notBefore e notAfter exatos ainda valem")
+    void recusaVencidoENaoIniciado() {
+        Instant de = Instant.parse("2026-03-01T00:00:00Z");
+        Instant ate = Instant.parse("2026-09-01T00:00:00Z");
+        byte[] pfx = gerador.pfxModerno(gerador.titularComValidade(CNPJ, de, ate), SENHA);
+
+        assertThat(motivo(validarCom(validadorEm(de.minusSeconds(1)), pfx, CNPJ)))
+                .isEqualTo(MotivoRecusa.FORA_DA_VALIDADE);
+        assertThat(motivo(validarCom(validadorEm(ate.plusSeconds(1)), pfx, CNPJ)))
+                .isEqualTo(MotivoRecusa.FORA_DA_VALIDADE);
+        assertThat(validarCom(validadorEm(de), pfx, CNPJ)).isInstanceOf(PfxValidado.class);
+        assertThat(validarCom(validadorEm(ate), pfx, CNPJ)).isInstanceOf(PfxValidado.class);
+    }
+
+    @Test
+    @DisplayName("a validade é conferida antes da cadeia e do CNPJ")
+    void validadeVemAntesDaCadeiaEDoCnpj() {
+        byte[] pfx = gerador.pfxModerno(gerador.autoassinado(CNPJ), SENHA);
+
+        assertThat(motivo(validarCom(validadorEm(ATE.plus(Duration.ofDays(1))), pfx, "99888777000166")))
+                .isEqualTo(MotivoRecusa.FORA_DA_VALIDADE);
+    }
+
+    @Test
+    @DisplayName("recusa certificado autoassinado")
+    void recusaAutoassinado() {
+        byte[] pfx = gerador.pfxModerno(gerador.autoassinado(CNPJ), SENHA);
+
+        assertThat(motivo(validarCom(validadorEm(MEIO), pfx, CNPJ))).isEqualTo(MotivoRecusa.CADEIA_NAO_CONFIAVEL);
+    }
+
+    @Test
+    @DisplayName("recusa certificado de AC falsa com os mesmos nomes da verdadeira")
+    void recusaAcFalsaDeMesmoNome() {
+        byte[] pfx = gerador.pfxModerno(gerador.deAcFalsaDeMesmoNome(CNPJ), SENHA);
+
+        assertThat(motivo(validarCom(validadorEm(MEIO), pfx, CNPJ))).isEqualTo(MotivoRecusa.CADEIA_NAO_CONFIAVEL);
+    }
+
+    @Test
+    @DisplayName("recusa certificado emitido por um certificado final (sem cA)")
+    void recusaEmitidoPorCertificadoFinal() {
+        byte[] pfx = gerador.pfxModerno(gerador.emitidoPorCertificadoFinal(CNPJ), SENHA);
+
+        assertThat(motivo(validarCom(validadorEm(MEIO), pfx, CNPJ))).isEqualTo(MotivoRecusa.CADEIA_NAO_CONFIAVEL);
+    }
+
+    @Test
+    @DisplayName("recusa quando a AC já venceu na data do relógio, mesmo com o titular válido")
+    void recusaAcVencidaNaDataDoRelogio() {
+        Instant ateTitular = ATE.plus(Duration.ofDays(365));
+        byte[] pfx = gerador.pfxModerno(gerador.titularComValidade(CNPJ, DE, ateTitular), SENHA);
+
+        assertThat(motivo(validarCom(validadorEm(ATE.plus(Duration.ofDays(30))), pfx, CNPJ)))
+                .isEqualTo(MotivoRecusa.CADEIA_NAO_CONFIAVEL);
+    }
+
+    @Test
+    @DisplayName("aceita .pfx sem intermediárias se o acervo as tiver; recusa se não tiver")
+    void aceitaPfxSemIntermediariasSeOAcervoTiver() {
+        byte[] pfx = gerador.pfxSemIntermediarias(gerador.titular(CNPJ), SENHA);
+        ValidadorPfx soRaiz = new ValidadorPfx(new ConfiancaIcp(Set.of(gerador.raiz()), List.of()),
+                new RelogioManual(MEIO), ValidadorPfx.LIMITE_PADRAO_BYTES);
+
+        assertThat(validarCom(validadorEm(MEIO), pfx, CNPJ)).isInstanceOf(PfxValidado.class);
+        assertThat(motivo(validarCom(soRaiz, pfx, CNPJ))).isEqualTo(MotivoRecusa.CADEIA_NAO_CONFIAVEL);
+    }
+
+    @Test
+    @DisplayName("recusa certificado sem CNPJ no otherName (sem SAN ou e-CPF)")
+    void recusaSemCnpj() {
+        byte[] semSan = gerador.pfxModerno(gerador.semSan(CNPJ), SENHA);
+        byte[] eCpf = gerador.pfxModerno(gerador.eCpf("12345678909"), SENHA);
+
+        assertThat(motivo(validarCom(validadorEm(MEIO), semSan, CNPJ))).isEqualTo(MotivoRecusa.SEM_CNPJ);
+        assertThat(motivo(validarCom(validadorEm(MEIO), eCpf, CNPJ))).isEqualTo(MotivoRecusa.SEM_CNPJ);
+    }
+
+    @Test
+    @DisplayName("recusa CNPJ divergente do titular, inclusive filial de mesma raiz (DA-36)")
+    void recusaCnpjDivergente() {
+        byte[] pfx = gerador.pfxModerno(gerador.titular(CNPJ), SENHA);
+
+        assertThat(motivo(validarCom(validadorEm(MEIO), pfx, "99888777000166")))
+                .isEqualTo(MotivoRecusa.CNPJ_DIVERGENTE);
+        assertThat(motivo(validarCom(validadorEm(MEIO), pfx, "11222333000262")))
+                .isEqualTo(MotivoRecusa.CNPJ_DIVERGENTE);
+    }
+
+    @Test
+    @DisplayName("aceita certificado válido, de cadeia confiável e do titular, em qualquer codificação do CNPJ")
+    void aceitaCertificadoValido() {
+        for (GeradorCertificadoDeTeste.CodificacaoCnpj codificacao : GeradorCertificadoDeTeste.CodificacaoCnpj.values()) {
+            byte[] pfx = gerador.pfxModerno(gerador.titular(CNPJ, codificacao), SENHA);
+
+            assertThat(validarCom(validadorEm(MEIO), pfx, CNPJ)).isInstanceOf(PfxValidado.class);
         }
     }
 }

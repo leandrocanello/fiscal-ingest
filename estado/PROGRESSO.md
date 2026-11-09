@@ -719,3 +719,5 @@
 - 2026-11-09 07:47 · E4-S03: plano aguarda decisão (passo [!]) → [h]
 - 2026-11-09 08:00 · E4-S04: PLANEJAR — plano com 8 passos (vigente por titular, alertas 60/30/15/7/1, troca de certificado_id por CAS sem tocar cursor, caos); DA-53/54; persistência fica na E4-S02b e o caso entre tenants na D1 da E4-S03 · próximo: desenvolver E4-S04
 - 2026-11-09 07:49 · E4-S04: PLANEJAR ok
+- 2026-11-09 07:51 · E4-S04: doTitular/vencendoAte na porta + em memória (falha vista: cannot find symbol doTitular/vencendoAte; suíte verde; contrato em RepositorioCertificadosContratoTest, dublê RepositorioAdulteravel só delega) · próximo: CertificadoVigente
+- 2026-11-09 07:52 · E4-S04: DESENVOLVER ok

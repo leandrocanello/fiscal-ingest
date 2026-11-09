@@ -723,3 +723,5 @@
 - 2026-11-09 07:52 · E4-S04: DESENVOLVER ok
 - 2026-11-09 07:54 · E4-S04: CertificadoVigente + SituacaoTitular (falha vista: package SituacaoTitular does not exist / cannot find symbol; suíte verde; DA-55) · próximo: PoliticaAlertaVencimento
 - 2026-11-09 07:54 · E4-S04: DESENVOLVER ok
+- 2026-11-09 07:56 · E4-S04: PoliticaAlertaVencimento (falha vista: 'cannot find symbol PoliticaAlertaVencimento'; suíte verde) · próximo: VerificarVencimentosUseCase
+- 2026-11-09 07:56 · E4-S04: DESENVOLVER ok

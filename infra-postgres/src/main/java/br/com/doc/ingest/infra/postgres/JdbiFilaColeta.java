@@ -18,6 +18,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 
 /**
  * {@link FilaColeta} em Postgres: claim com {@code FOR UPDATE SKIP LOCKED} e lease. Toda hora vem
@@ -87,16 +88,46 @@ public final class JdbiFilaColeta implements FilaColeta {
 
     @Override
     public boolean renovar(ChaveColeta chave, String dono, Duration lease) {
-        throw new UnsupportedOperationException("E4-S01: próximo passo");
+        Instant leaseAte = clock.instant().plus(lease);
+        return jdbi.withHandle(h -> h.createUpdate("""
+                        update estado_coleta set lease_ate = :leaseAte
+                        where fonte = :fonte and cnpj_consultado = :cnpj and ambiente = :ambiente
+                          and lease_owner = :dono
+                        """)
+                .bind("leaseAte", Timestamp.from(leaseAte))
+                .bind("dono", dono)
+                .bindMap(chaveComoMapa(chave))
+                .execute()) > 0;
     }
 
     @Override
     public boolean liberar(ChaveColeta chave, String dono, Instant proximoDue) {
-        throw new UnsupportedOperationException("E4-S01: próximo passo");
+        return jdbi.withHandle(h -> h.createUpdate("""
+                        update estado_coleta set lease_owner = null, lease_ate = null, due_at = :due
+                        where fonte = :fonte and cnpj_consultado = :cnpj and ambiente = :ambiente
+                          and lease_owner = :dono
+                        """)
+                .bind("due", Timestamp.from(proximoDue))
+                .bind("dono", dono)
+                .bindMap(chaveComoMapa(chave))
+                .execute()) > 0;
     }
 
     @Override
     public void registrarBloqueio(ChaveColeta chave, Instant bloqueadoAte) {
-        throw new UnsupportedOperationException("E4-S01: próximo passo");
+        jdbi.useHandle(h -> h.createUpdate("""
+                        update estado_coleta
+                        set bloqueado_ate = greatest(bloqueado_ate, :bloqueio),
+                            due_at = greatest(due_at, bloqueado_ate, :bloqueio)
+                        where fonte = :fonte and cnpj_consultado = :cnpj and ambiente = :ambiente
+                        """)
+                .bind("bloqueio", Timestamp.from(bloqueadoAte))
+                .bindMap(chaveComoMapa(chave))
+                .execute());
+    }
+
+    private static Map<String, Object> chaveComoMapa(ChaveColeta chave) {
+        return Map.of("fonte", chave.fonte().id(), "cnpj", chave.cnpj().valor(),
+                "ambiente", chave.ambiente().name());
     }
 }

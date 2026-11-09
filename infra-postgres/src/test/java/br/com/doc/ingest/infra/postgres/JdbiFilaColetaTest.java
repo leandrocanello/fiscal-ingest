@@ -220,4 +220,105 @@ class JdbiFilaColetaTest extends PostgresTestBase {
 
         assertThat(def).contains("due_at").containsIgnoringCase("ATIVO");
     }
+
+    private Instant coluna(String coluna) {
+        Timestamp t = jdbi.withHandle(h -> h.createQuery("select " + coluna + " from estado_coleta")
+                .mapTo(Timestamp.class).findOne().orElse(null));
+        return t == null ? null : t.toInstant();
+    }
+
+    private String dono() {
+        return jdbi.withHandle(h -> h.createQuery("select lease_owner from estado_coleta")
+                .mapTo(String.class).findOne().orElse(null));
+    }
+
+    @Test
+    void donoRenovaEEstendeOLease() {
+        insere("ATIVO", null, null, "A", INICIO.plusSeconds(10));
+        relogio.avancar(Duration.ofSeconds(5));
+
+        boolean ok = fila.renovar(CHAVE, "A", LEASE);
+
+        assertThat(ok).isTrue();
+        assertThat(coluna("lease_ate")).isEqualTo(INICIO.plusSeconds(5).plus(LEASE));
+    }
+
+    @Test
+    void outroDonoNaoRenova() {
+        insere("ATIVO", null, null, "A", INICIO.plusSeconds(10));
+
+        boolean ok = fila.renovar(CHAVE, "B", LEASE);
+
+        assertThat(ok).isFalse();
+        assertThat(coluna("lease_ate")).isEqualTo(INICIO.plusSeconds(10));
+        assertThat(dono()).isEqualTo("A");
+    }
+
+    @Test
+    void donoLiberaGravandoProximoDue() {
+        insere("ATIVO", null, null, "A", INICIO.plus(LEASE));
+        Instant proximo = INICIO.plusSeconds(3600);
+
+        boolean ok = fila.liberar(CHAVE, "A", proximo);
+
+        assertThat(ok).isTrue();
+        assertThat(dono()).isNull();
+        assertThat(coluna("lease_ate")).isNull();
+        assertThat(coluna("due_at")).isEqualTo(proximo);
+        assertThat(reivindica("B")).isEmpty();
+        relogio.avancar(Duration.ofSeconds(3600));
+        assertThat(reivindica("B")).hasSize(1);
+    }
+
+    @Test
+    void outroDonoNaoLibera() {
+        insere("ATIVO", null, null, "A", INICIO.plus(LEASE));
+
+        boolean ok = fila.liberar(CHAVE, "B", INICIO.plusSeconds(3600));
+
+        assertThat(ok).isFalse();
+        assertThat(dono()).isEqualTo("A");
+        assertThat(coluna("lease_ate")).isEqualTo(INICIO.plus(LEASE));
+        assertThat(coluna("due_at")).isNull();
+    }
+
+    @Test
+    void registrarBloqueioNuncaEncurta() {
+        Instant longo = INICIO.plusSeconds(7200);
+        insere("ATIVO", null, longo, null, null);
+
+        fila.registrarBloqueio(CHAVE, INICIO.plusSeconds(3600));
+
+        assertThat(coluna("bloqueado_ate")).isEqualTo(longo);
+        assertThat(coluna("due_at")).isEqualTo(longo);
+    }
+
+    @Test
+    void registrarBloqueioMaiorEstendeEEmpurraODue() {
+        insere("ATIVO", INICIO.plusSeconds(60), null, null, null);
+        Instant bloqueio = INICIO.plusSeconds(3600);
+
+        fila.registrarBloqueio(CHAVE, bloqueio);
+
+        assertThat(coluna("bloqueado_ate")).isEqualTo(bloqueio);
+        assertThat(coluna("due_at")).isEqualTo(bloqueio);
+    }
+
+    @Test
+    void bloqueioRecebidoPorDonoVencidoValeMesmoAssim() {
+        insere("ATIVO", null, null, "A", INICIO.plus(LEASE));
+        relogio.avancar(LEASE);
+        var deB = reivindica("B");
+        assertThat(deB).hasSize(1);
+        Instant leaseDeB = coluna("lease_ate");
+        Instant bloqueio = relogio.instant().plusSeconds(3600);
+
+        fila.registrarBloqueio(CHAVE, bloqueio);
+
+        assertThat(dono()).isEqualTo("B");
+        assertThat(coluna("lease_ate")).isEqualTo(leaseDeB);
+        assertThat(coluna("bloqueado_ate")).isEqualTo(bloqueio);
+        relogio.avancar(Duration.ofSeconds(1800));
+        assertThat(reivindica("C")).isEmpty();
+    }
 }

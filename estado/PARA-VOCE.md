@@ -243,3 +243,8 @@ ou responda aqui, e troque o status no ROADMAP de `[!]` para `[~]`.
 - **O que é preciso:** a D2 aceita (`minio/minio` com tag fixa) falha: `docker pull minio/minio` → "pull access denied/repository does not exist"; `quay.io/minio/minio:<tag>` e `:latest` → 401 UNAUTHORIZED (sem login). O módulo e o `MinioDisponivelTest` estavam prontos (Testcontainers 2.0.2: classe `org.testcontainers.containers.MinIOContainer`, não `.minio.`); só a imagem não baixa. Nada foi commitado; a árvore foi limpa.
 - **Opções:** (a) você faz `docker login quay.io` (ou libera o acesso) e eu uso `quay.io/minio/minio:RELEASE.<tag fixa>`; (b) `chainguard/minio` (baixa aqui, mas só tem `latest` — quebra a tag fixa da DA-11); (c) espelhar a imagem num registry próprio com tag fixa; (d) trocar por outro S3 compatível (ex.: SeaweedFS, Garage) e rever os passos 3, 5 e 6 (o `If-None-Match` precisa ser suportado).
 - **Recomendação:** (a) ou (c) — mantém MinIO e tag fixa. Depois, desmarque o `[!]` do passo 2 do plano.
+
+### [BLOQUEIO] E3-S05 — 2026-11-09 — 3 falhas seguidas
+Último motivo: nenhum commit feito e nenhum passo fechado no plano
+Logs: `estado/logs/` (arquivos *-E3-S05-*.json). Para destravar: ajuste o plano `estado/planos/E3-S05.md`
+ou responda aqui, e troque o status no ROADMAP de `[!]` para `[~]`.

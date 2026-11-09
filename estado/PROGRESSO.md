@@ -669,3 +669,6 @@
 - 2026-11-04 08:54 · E3-S05: revertido — limite de uso no meio da chamada
 - 2026-11-09 06:56 · E3-S05: passo 2 bloqueado (imagem minio/minio indisponível no Docker Hub, quay 401); sem commit de código · próximo: aguardar resposta em PARA-VOCE E3-S05-IMAGEM
 - 2026-11-09 06:56 · E3-S05: revertido — nenhum commit feito e nenhum passo fechado no plano
+- 2026-11-09 07:10 · E3-S05: passo 2 segue bloqueado (docker pull minio/minio ainda falha; sem resposta em E3-S05-IMAGEM); marcado [!] no plano, sem commit de código · próximo: aguardar resposta do autor
+- 2026-11-09 06:57 · E3-S05: revertido — nenhum commit feito e nenhum passo fechado no plano
+- 2026-11-09 06:57 · E3-S05: [!] bloqueado após 3 falhas

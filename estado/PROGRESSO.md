@@ -678,3 +678,5 @@
 - 2026-11-09 07:00 · E4-S01: DESENVOLVER ok
 - 2026-11-09 · E4-S01: ordem e limite do claim (order by due_at nulls first + limit, V12 índice parcial); falhas vistas: ordem, limite e índice ausente · próximo: renovar, liberar e bloquear
 - 2026-11-09 07:03 · E4-S01: DESENVOLVER ok
+- 2026-11-09 07:04 · E4-S01: renovar/liberar/registrarBloqueio na JdbiFilaColeta (falha vista: 7 testes novos com UnsupportedOperationException; suíte verde depois) · próximo: FilaColetaCasTest
+- 2026-11-09 07:05 · E4-S01: DESENVOLVER ok

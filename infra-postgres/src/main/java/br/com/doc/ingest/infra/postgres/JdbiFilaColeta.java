@@ -16,6 +16,7 @@ import java.sql.Timestamp;
 import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -23,6 +24,16 @@ import java.util.List;
  * do {@link Clock}, por bind. O claim não toca em cursor nem versão (DA-34).
  */
 public final class JdbiFilaColeta implements FilaColeta {
+
+    private record Linha(Timestamp dueAt, ColetaReivindicada coleta) {
+    }
+
+    /** UPDATE ... RETURNING não garante ordem: reaplica a ordem do claim (due_at nulo primeiro, depois a chave). */
+    private static final Comparator<Linha> ORDEM_DA_FILA = Comparator
+            .comparing(Linha::dueAt, Comparator.nullsFirst(Comparator.naturalOrder()))
+            .thenComparing(l -> l.coleta().posicao().chave().fonte().id())
+            .thenComparing(l -> l.coleta().posicao().chave().cnpj().valor())
+            .thenComparing(l -> l.coleta().posicao().chave().ambiente());
 
     private final Jdbi jdbi;
     private final Clock clock;
@@ -43,6 +54,8 @@ public final class JdbiFilaColeta implements FilaColeta {
                               and (due_at is null or due_at <= :agora)
                               and (bloqueado_ate is null or bloqueado_ate <= :agora)
                               and (lease_ate is null or lease_ate <= :agora)
+                            order by due_at nulls first, fonte, cnpj_consultado, ambiente
+                            limit :limite
                             for update skip locked
                         )
                         update estado_coleta e
@@ -50,12 +63,13 @@ public final class JdbiFilaColeta implements FilaColeta {
                         from alvo
                         where e.fonte = alvo.fonte and e.cnpj_consultado = alvo.cnpj_consultado
                           and e.ambiente = alvo.ambiente
-                        returning e.fonte, e.cnpj_consultado, e.ambiente, e.cursor_token, e.ult_nsu, e.versao
+                        returning e.fonte, e.cnpj_consultado, e.ambiente, e.cursor_token, e.ult_nsu, e.versao, e.due_at
                         """)
                 .bind("agora", Timestamp.from(agora))
+                .bind("limite", pedido.limite())
                 .bind("dono", pedido.dono())
                 .bind("leaseAte", Timestamp.from(leaseAte))
-                .map((rs, ctx) -> new ColetaReivindicada(
+                .map((rs, ctx) -> new Linha(rs.getTimestamp("due_at"), new ColetaReivindicada(
                         new PosicaoColeta(
                                 new ChaveColeta(new FonteId(rs.getString("fonte")),
                                         new Cnpj(rs.getString("cnpj_consultado")),
@@ -63,8 +77,12 @@ public final class JdbiFilaColeta implements FilaColeta {
                                 new Cursor(rs.getString("cursor_token")),
                                 new Nsu(rs.getLong("ult_nsu")),
                                 rs.getLong("versao")),
-                        pedido.dono(), leaseAte))
-                .list());
+                        pedido.dono(), leaseAte)))
+                .list())
+                .stream()
+                .sorted(ORDEM_DA_FILA)
+                .map(Linha::coleta)
+                .toList();
     }
 
     @Override

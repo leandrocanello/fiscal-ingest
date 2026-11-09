@@ -46,13 +46,18 @@ class JdbiFilaColetaTest extends PostgresTestBase {
     }
 
     private void insere(String estado, Instant dueAt, Instant bloqueadoAte, String leaseOwner, Instant leaseAte) {
+        insereCnpj(CHAVE.cnpj().valor(), estado, dueAt, bloqueadoAte, leaseOwner, leaseAte);
+    }
+
+    private void insereCnpj(String cnpj, String estado, Instant dueAt, Instant bloqueadoAte, String leaseOwner,
+                            Instant leaseAte) {
         jdbi.useHandle(h -> h.createUpdate("""
                         insert into estado_coleta (fonte, cnpj_consultado, ambiente, cursor_token, ult_nsu, versao,
                                                    estado, due_at, bloqueado_ate, lease_owner, lease_ate, atualizado_em)
                         values (:fonte, :cnpj, :ambiente, '0', 0, 0, :estado, :due, :bloq, :dono, :leaseAte, :agora)
                         """)
                 .bind("fonte", CHAVE.fonte().id())
-                .bind("cnpj", CHAVE.cnpj().valor())
+                .bind("cnpj", cnpj)
                 .bind("ambiente", CHAVE.ambiente().name())
                 .bind("estado", estado)
                 .bind("due", dueAt == null ? null : Timestamp.from(dueAt))
@@ -155,5 +160,64 @@ class JdbiFilaColetaTest extends PostgresTestBase {
         var linha = jdbi.withHandle(h -> h.createQuery("select cursor_token || '/' || ult_nsu || '/' || versao from estado_coleta")
                 .mapTo(String.class).one());
         assertThat(linha).isEqualTo("42/42/3");
+    }
+
+    private static String cnpj(int n) {
+        return String.format("%014d", n);
+    }
+
+    private List<String> cnpjs(List<ColetaReivindicada> r) {
+        return r.stream().map(c -> c.posicao().chave().cnpj().valor()).toList();
+    }
+
+    @Test
+    void vencidosHaMaisTempoSaemPrimeiro() {
+        insereCnpj(cnpj(4), "ATIVO", INICIO.minusSeconds(10), null, null, null);
+        insereCnpj(cnpj(3), "ATIVO", INICIO.minusSeconds(50), null, null, null);
+        insereCnpj(cnpj(2), "ATIVO", INICIO.minusSeconds(10), null, null, null);
+        insereCnpj(cnpj(1), "ATIVO", null, null, null, null);
+
+        var r = fila.reivindicar(new PedidoReivindicacao("A", LEASE, 10));
+
+        assertThat(cnpjs(r)).containsExactly(cnpj(1), cnpj(3), cnpj(2), cnpj(4));
+    }
+
+    @Test
+    void respeitaOLimite() {
+        for (int i = 1; i <= 5; i++) {
+            insereCnpj(cnpj(i), "ATIVO", null, null, null, null);
+        }
+
+        assertThat(fila.reivindicar(new PedidoReivindicacao("A", LEASE, 3))).hasSize(3);
+    }
+
+    @Test
+    void segundoClaimPegaOsRestantes() {
+        for (int i = 1; i <= 5; i++) {
+            insereCnpj(cnpj(i), "ATIVO", null, null, null, null);
+        }
+
+        var primeiro = fila.reivindicar(new PedidoReivindicacao("A", LEASE, 3));
+        var segundo = fila.reivindicar(new PedidoReivindicacao("B", LEASE, 3));
+
+        assertThat(cnpjs(primeiro)).containsExactly(cnpj(1), cnpj(2), cnpj(3));
+        assertThat(cnpjs(segundo)).containsExactly(cnpj(4), cnpj(5));
+    }
+
+    @Test
+    void semElegiveisDevolveVazio() {
+        assertThat(reivindica("A")).isEmpty();
+    }
+
+    @Test
+    void esquemaTemIndiceDaFila() {
+        String def = jdbi.withHandle(h -> h.createQuery("""
+                        select indexdef from pg_indexes
+                        where schemaname = current_schema() and tablename = 'estado_coleta'
+                          and indexname = 'ix_estado_coleta_fila'
+                        """)
+                .mapTo(String.class).findOne().orElse(""));
+
+        assertThat(def).contains("due_at").containsIgnoringCase("ATIVO");
     }
 }

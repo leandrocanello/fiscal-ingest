@@ -306,3 +306,21 @@ Como desfazer: reverter o commit `fix(E3-S04)` do relay.
 - **Opções:** (a) no teste, gravar os envelopes direto no formato do cofre e testar só a volta UTF-8 → `char[]` do `abrir`; (b) abrir o `.pfx` com BouncyCastle no validador e no adapter (dependência nova em produção).
 - **Escolha:** (a). Senha vazia e ASCII passam pelo `guardar` real. Na prática, um `.pfx` com senha não ASCII não sobe no cofre (recusa `SENHA_INCORRETA`, que engana o usuário). Avaliar uma recusa específica ou o BC numa subetapa futura, se aparecer caso real.
 - **Como desfazer:** remover `registrarSemValidar` do `CofreLocalAbrirTest` e passar o caso não ASCII pelo `guardar`, depois de adotar (b).
+
+### DA-50 · 2026-11-09 · E4-S03
+- **Contexto:** a §8 traz `consentimento` com `revogado_em` na mesma linha, mas diz "append-only; revogação = nova linha". Não diz como a linha de revogação aponta para a concessão.
+- **Opções:** (a) linha de revogação com `revoga_id` (FK composta com `tenant_id` para a concessão), `revogado_em` preenchido e os demais campos copiados; no máximo uma revogação por concessão (`unique (revoga_id)`) × (b) `update` de `revogado_em` na concessão, contrariando a inv. 6 × (c) tabela separada `consentimento_revogacao`.
+- **Escolha:** (a). Vigente em `t` = concessão com `concedido_em <= t`, `valido_ate` nulo ou `> t`, e sem revogação com `revogado_em <= t`. Renovar = nova concessão.
+- **Como desfazer:** antes da primeira instalação real, trocar a V14 e o `JdbiConsentimentos`; a regra de vigência fica isolada em `Consentimento.vigenteEm`.
+
+### DA-51 · 2026-11-09 · E4-S03
+- **Contexto:** a §6.6 lista `BLOQUEADO_ATE(t)` como estado, mas a E4-S01 (DA-34) só grava a coluna `bloqueado_ate` e deixa o `estado` em `ATIVO`.
+- **Opções:** (a) `BLOQUEADO_ATE` é derivado (`estado = ATIVO` e `agora < bloqueado_ate`), nunca gravado em `estado`; a máquina recusa transição para ele × (b) gravar o estado e criar um job para voltar a `ATIVO`, com duas fontes de verdade para o mesmo fato.
+- **Escolha:** (a). Não há transição para auditar na volta a `ATIVO`; o bloqueio já fica no ledger de tentativas. O `check` da V1 continua aceitando o valor.
+- **Como desfazer:** liberar a transição na `MaquinaEstadosColeta` e gravar o estado no `registrarBloqueio` da E4-S01.
+
+### DA-52 · 2026-11-09 · E4-S03
+- **Contexto:** a §6.6 lista os estados, mas não as transições permitidas nem a prioridade quando há vários motivos.
+- **Opções:** (a) estado calculado por prioridade a partir de fatos, com matriz explícita × (b) transições livres.
+- **Escolha:** (a). Prioridade: `ERRO_DEFINITIVO` (só sai por ação de operador com motivo) > `CONSENTIMENTO_REVOGADO` > `PAUSADO_PELO_CLIENTE` > `AGUARDANDO_CERTIFICADO` > `CERT_VENCIDO` > `ATIVO`. Qualquer estado vai para `ERRO_DEFINITIVO`; os demais transitam entre si quando os fatos mudam; transição para o mesmo estado é no-op, sem linha de auditoria. Transição nunca mexe em cursor, `ult_nsu`, `versao`, lease nem `bloqueado_ate` (inv. 1).
+- **Como desfazer:** a matriz e a prioridade ficam só em `MaquinaEstadosColeta`, com teste de tabela.

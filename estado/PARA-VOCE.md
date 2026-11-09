@@ -305,3 +305,21 @@ ou responda aqui, e troque o status no ROADMAP de `[!]` para `[~]`.
   bloqueio de ~1h · `resNFe` → ciência → `procNFe` · `135`/`573` e campos do `retEvento` (DA-47/48) · RSA_SHA1/C14N/`Id`
   (item 7) · `autXML` (item 5) · eventos para o emitente (item 4) · `SituacaoNfe` (DA-33).
 - Resposta:
+
+### [DECISAO] E4-S03 — 2026-11-09 — consentimento numa coleta sem tenant e auditoria das transições
+- **O que é preciso:** o plano `planos/E4-S03.md` está pronto, mas parado no passo `[!]`. A §7.1 diz "sem consentimento vigente, não há coleta", e o consentimento é **por empresa** (tem tenant). Só que o `estado_coleta` é **por CNPJ consultado, sem tenant** (§8.1, sua decisão de 2026-10-29), e um CNPJ pode servir a dois tenants. A §6.6 pede auditoria de toda transição, mas a `auditoria` da §8 tem `tenant_id`. As escolhas menores (revogação como linha nova, matriz de transições, `BLOQUEADO_ATE` derivado) ficaram nas DA-50 a DA-52.
+- **D1 — CNPJ em dois tenants: quando a coleta está consentida.**
+  - (a) Basta **um** tenant ativo, com empresa ativa daquele `(cnpj, ambiente)`, ter `COLETA_DFE` vigente. Pró: a coleta é uma só, e quem revogou deixa de receber pelo catálogo e pela entrega (inv. 10/12), sem tirar a coleta do outro. Contra: o certificado em uso pode ser justamente o do tenant que revogou. Mitigação: na E4-S04 (escolha do certificado vigente), só vale certificado de tenant com consentimento.
+  - (b) Exige o consentimento do tenant **dono do certificado em uso** (`estado_coleta.certificado_id`). Pró: juridicamente exato. Contra: depende da tabela `certificado` (E4-S02b, ainda não planejada); até lá, a subetapa fica parada.
+  - (c) **Qualquer** revogação para a coleta. Pró: o mais conservador. Contra: um tenant derruba a coleta do outro.
+  - Mecanismo nos três: função `security definer` `coleta_consentida(cnpj, ambiente, agora)`, que só devolve booleano, no mesmo papel `fiscal_roteador` da V11 (E3-S07, D3 (a)), criado de forma idempotente se a V11 ainda não estiver na base.
+- **D2 — o escritório consultando o próprio CNPJ precisa de `COLETA_DFE`?** A §7.1 exige consentimento para certificado de empresa usado **por terceiro**. O escritório, com o próprio certificado, não é terceiro dele mesmo, mas a plataforma é.
+  - (a) Sim, todo titular, inclusive `ESCRITORIO` (evidência = termo de adesão). Pró: regra única, sem exceção por tipo, e a trilha fica completa. Contra: um passo a mais no cadastro do escritório.
+  - (b) Só empresas do tipo `EMPRESA`. Pró: menos atrito. Contra: exceção por tipo, e a coleta do `autXML` fica sem registro de finalidade.
+- **D3 — onde fica a auditoria das transições de `estado_coleta`.**
+  - (a) Tabela própria append-only `estado_coleta_transicao` (`fonte, cnpj_consultado, ambiente, de, para, motivo, ator, ocorrido_em`), **sem tenant**, como `ledger_tentativa`. Ela entra em `TABELAS_SEM_TENANT` do `TodaTabelaComTenantIdTemRlsTest` (guarda de RLS da §13: por isso a decisão é sua). Pró: coerente com a §8.1; uma linha por transição. Contra: a §8 não lista a tabela, e o tenant não vê a trilha direto (precisa da mesma função de tenants do CNPJ).
+  - (b) `auditoria` da §8 com `tenant_id` nulo. Contra: quebra a RLS (linha sem tenant fica invisível ou exige exceção na política).
+  - (c) Uma linha de `auditoria` por tenant assinante. Pró: cada tenant vê a sua. Contra: N linhas por transição, e um tenant cadastrado depois não vê o histórico.
+- **Roteiro:** responda D1–D3 abaixo. Se escolher D1 (b), crie antes a linha da E4-S02b (Q1 da `[DUVIDA] E4-S02`) e ponha-a nas deps da E4-S03. Depois troque a E4-S03 de `[h]` para `[~]` no ROADMAP. Se escolher D3 (a), considere citar a tabela na §8 do CLAUDE.md (só você edita). **Atenção:** enquanto a `[DECISAO] E1-S07` (testes do `infra-postgres` sem compilar na `main`) não for resolvida, esta subetapa também não fecha "suíte verde".
+- **Recomendação:** D1 (a) · D2 (a) · D3 (a).
+- Resposta:

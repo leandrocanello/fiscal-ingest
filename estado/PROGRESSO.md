@@ -714,3 +714,5 @@
 - 2026-11-09 07:43 · E2-S12: PREPARAR — item HUMANO em PARA-VOCE (D1 harness E2-S17, D2 truststore, D3 notas de teste + roteiro de 11 passos) · próximo: autor decide D1–D3; depende do merge da E2-S13
 - 2026-11-09 07:44 · E2-S12: PREPARAR ok
 - 2026-11-09 07:44 · E2-S12: preparado para você (PARA-VOCE.md)
+- 2026-11-09 07:50 · E4-S03: PLANEJAR — plano com 9 passos, parado em [!] aguardando [DECISAO] E4-S03 (D1 CNPJ em dois tenants, D2 consentimento do escritório, D3 auditoria sem tenant); DA-50..52 registradas · próximo: autor decide D1–D3
+- 2026-11-09 07:47 · E4-S03: PLANEJAR ok

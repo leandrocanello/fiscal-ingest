@@ -676,3 +676,5 @@
 - 2026-11-09 06:58 · E4-S01: DESENVOLVER ok
 - 2026-11-09 07:00 · E4-S01: JdbiFilaColeta.reivindicar (SKIP LOCKED + lease), 9 testes; falha vista inicial = classe JdbiFilaColeta inexistente (erro de compilação); suíte verde · próximo: ordem e limite do claim (V12)
 - 2026-11-09 07:00 · E4-S01: DESENVOLVER ok
+- 2026-11-09 · E4-S01: ordem e limite do claim (order by due_at nulls first + limit, V12 índice parcial); falhas vistas: ordem, limite e índice ausente · próximo: renovar, liberar e bloquear
+- 2026-11-09 07:03 · E4-S01: DESENVOLVER ok

@@ -15,6 +15,10 @@ final class RelogioManual extends Clock {
         this.agora = inicio;
     }
 
+    void definir(Instant instante) {
+        agora = instante;
+    }
+
     void avancar(Duration d) {
         agora = agora.plus(d);
     }

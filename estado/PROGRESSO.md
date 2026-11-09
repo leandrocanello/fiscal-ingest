@@ -684,3 +684,5 @@
 - 2026-11-09 07:07 · E4-S01: DESENVOLVER ok
 - 2026-11-09 07:10 · E4-S01: CaosClaimConcorrenteTest (3 testes) passou de primeira; mutações: sem 'skip locked' → claimNaoEsperaLinhaTravada TimeoutException; sem lock/for update → nenhumaChaveTemDoisDonos e lease vencido FALHAM; revertidas; suíte verde · próximo: FilaColetaTenantTest (D4=b)
 - 2026-11-09 07:10 · E4-S01: DESENVOLVER ok
+- 2026-11-09 07:25 · E4-S01: FilaColetaPropriedadesTest (5 props) passou de primeira; mutações detectadas (sem checagem de lease → FAILED; greatest→atribuição → FAILED), revertidas; passos de fairness pulados (D4=a → E4-S01b); suíte verde · próximo: Verificação do plano
+- 2026-11-09 07:14 · E4-S01: DESENVOLVER ok

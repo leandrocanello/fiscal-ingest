@@ -682,3 +682,5 @@
 - 2026-11-09 07:05 · E4-S01: DESENVOLVER ok
 - 2026-11-09 07:07 · E4-S01: FilaColetaCasTest (3 testes) passou de primeira; mutação (claim com versao = versao + 1) fez falhar donoVencidoAindaConfirmaOLoteQueJaConsumiu (AssertionFailedError em FilaColetaCasTest:94), revertida · próximo: CaosClaimConcorrenteTest
 - 2026-11-09 07:07 · E4-S01: DESENVOLVER ok
+- 2026-11-09 07:10 · E4-S01: CaosClaimConcorrenteTest (3 testes) passou de primeira; mutações: sem 'skip locked' → claimNaoEsperaLinhaTravada TimeoutException; sem lock/for update → nenhumaChaveTemDoisDonos e lease vencido FALHAM; revertidas; suíte verde · próximo: FilaColetaTenantTest (D4=b)
+- 2026-11-09 07:10 · E4-S01: DESENVOLVER ok

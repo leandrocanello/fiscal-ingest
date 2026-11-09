@@ -300,3 +300,9 @@ Como desfazer: reverter o commit `fix(E3-S04)` do relay.
 - **Opções:** (a) `IndisponivelDefinitivo("falha ao assinar o evento")`, capturando `RuntimeException`; (b) `ErroAutenticacao`; (c) temporário; (d) capturar só `AssinaturaInvalidaException` e `IllegalStateException`.
 - **Escolha:** (a). A falha é permanente para aquele certificado, então (c) retentaria sem fim; (b) levaria o `estado_coleta` a `CERT_*` e pararia a coleta do CNPJ, embora a chave possa servir para o mTLS. `RuntimeException` segue o `buscarLote` e cobre as duas exceções do plano; só o caminho da assinatura tem teste, pois a falha de serialização não é provocável sem injetar dependência. A E4 não pode tratar esse desfecho como `ERRO_DEFINITIVO` do CNPJ (ressalva do revisor).
 - **Como desfazer:** trocar `FALHA_AO_ASSINAR` e o `catch` em `EnvioManifestacao.enviar`, e ajustar `falhaAoAssinarEhDefinitivoSemHttp`.
+
+### DA-49 · 2026-11-09 · E4-S02
+- **Contexto:** o plano pede `abreEDevolveMesmoPfxESenha` com senha não ASCII, mas o `KeyStore` PKCS12 do JDK 21 recusa senha não ASCII ao abrir (`getSecretKey failed: Password is not ASCII`), inclusive em `.pfx` legado gerado pelo BC. O `ValidadorPfx` recusa esse `.pfx` com `SENHA_INCORRETA`, e o `CarregadorPfx` do adapter também não o abriria.
+- **Opções:** (a) no teste, gravar os envelopes direto no formato do cofre e testar só a volta UTF-8 → `char[]` do `abrir`; (b) abrir o `.pfx` com BouncyCastle no validador e no adapter (dependência nova em produção).
+- **Escolha:** (a). Senha vazia e ASCII passam pelo `guardar` real. Na prática, um `.pfx` com senha não ASCII não sobe no cofre (recusa `SENHA_INCORRETA`, que engana o usuário). Avaliar uma recusa específica ou o BC numa subetapa futura, se aparecer caso real.
+- **Como desfazer:** remover `registrarSemValidar` do `CofreLocalAbrirTest` e passar o caso não ASCII pelo `guardar`, depois de adotar (b).

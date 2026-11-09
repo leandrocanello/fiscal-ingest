@@ -42,7 +42,7 @@ class CatalogoRlsTest extends PostgresTestBase {
         Migracoes.aplicar(ds);
         admin = Jdbi.create(ds);
         admin.useHandle(h -> h.execute("grant usage on schema " + schema + " to " + LOGIN_APP));
-        app = Jdbi.create(dataSourceComoApp(schema));
+        app = Jdbi.create(dataSourceComoAppCatalogo(schema));
         a = semear("Escritório A", "11111111000101", "a".repeat(64));
         b = semear("Escritório B", "22222222000101", "b".repeat(64));
     }
@@ -60,7 +60,7 @@ class CatalogoRlsTest extends PostgresTestBase {
         }
     }
 
-    private static DataSource dataSourceComoApp(String schema) {
+    private static DataSource dataSourceComoAppCatalogo(String schema) {
         PGSimpleDataSource ds = new PGSimpleDataSource();
         ds.setUrl(((PGSimpleDataSource) dataSource()).getUrl());
         ds.setUser(LOGIN_APP);

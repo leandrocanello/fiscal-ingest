@@ -725,3 +725,5 @@
 - 2026-11-09 07:54 · E4-S04: DESENVOLVER ok
 - 2026-11-09 07:56 · E4-S04: PoliticaAlertaVencimento (falha vista: 'cannot find symbol PoliticaAlertaVencimento'; suíte verde) · próximo: VerificarVencimentosUseCase
 - 2026-11-09 07:56 · E4-S04: DESENVOLVER ok
+- 2026-11-09 08:05 · E4-S04: VerificarVencimentosUseCase (falha vista: 'cannot find symbol' em RegistroAlertasVencimento/TipoAlerta/VerificarVencimentosUseCase; suíte verde; teste em cert-vault/src/test pois domain não tem testFixtures; porta ganhou emitidos(certificadoId) para saber marcos já emitidos antes de notificar) · próximo: troca de certificado por CAS (Jdbi)
+- 2026-11-09 07:59 · E4-S04: DESENVOLVER ok

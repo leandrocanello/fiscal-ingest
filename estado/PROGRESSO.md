@@ -672,3 +672,5 @@
 - 2026-11-09 07:10 · E3-S05: passo 2 segue bloqueado (docker pull minio/minio ainda falha; sem resposta em E3-S05-IMAGEM); marcado [!] no plano, sem commit de código · próximo: aguardar resposta do autor
 - 2026-11-09 06:57 · E3-S05: revertido — nenhum commit feito e nenhum passo fechado no plano
 - 2026-11-09 06:57 · E3-S05: [!] bloqueado após 3 falhas
+- 2026-11-09 06:58 · E4-S01: tipos e porta FilaColeta (domain), testes falharam por 'cannot find symbol' PedidoReivindicacao/ColetaReivindicada, depois verdes com suíte inteira · próximo: JdbiFilaColetaTest (claim SKIP LOCKED + lease)
+- 2026-11-09 06:58 · E4-S01: DESENVOLVER ok

@@ -324,3 +324,15 @@ Como desfazer: reverter o commit `fix(E3-S04)` do relay.
 - **Opções:** (a) estado calculado por prioridade a partir de fatos, com matriz explícita × (b) transições livres.
 - **Escolha:** (a). Prioridade: `ERRO_DEFINITIVO` (só sai por ação de operador com motivo) > `CONSENTIMENTO_REVOGADO` > `PAUSADO_PELO_CLIENTE` > `AGUARDANDO_CERTIFICADO` > `CERT_VENCIDO` > `ATIVO`. Qualquer estado vai para `ERRO_DEFINITIVO`; os demais transitam entre si quando os fatos mudam; transição para o mesmo estado é no-op, sem linha de auditoria. Transição nunca mexe em cursor, `ult_nsu`, `versao`, lease nem `bloqueado_ate` (inv. 1).
 - **Como desfazer:** a matriz e a prioridade ficam só em `MaquinaEstadosColeta`, com teste de tabela.
+
+### DA-53 · 2026-11-09 · E4-S04
+- **Contexto:** a §7.4 pede alertas em 60/30/15/7/1 dias e rotação sem perder cursor, mas não diz qual certificado vale quando o titular tem vários, se os alertas se repetem nem o que fazer quando o job fica parado e cruza vários marcos de uma vez.
+- **Opções:** vigente (a) válido no instante (`validoDe <= agora <= validoAte`, inclusivo como no `CofreLocal.abrir`) com o maior `validoAte`; empate por `enviadoEm`, depois `id` × (b) o último enviado. Alerta (a) uma vez por marco, só para o vigente; marcos cruzados juntos emitem só o mais urgente; ordem notificar → registrar (pelo menos uma vez) × (b) alertar todo dia dentro da janela × (c) registrar antes de notificar (no máximo uma vez).
+- **Escolha:** (a) em ambos. O último enviado pode ser um `.pfx` antigo reenviado por engano; o maior `validoAte` sempre adia o vencimento. Alerta repetido diariamente vira ruído; perder um alerta é pior que receber dois.
+- **Como desfazer:** a regra fica só em `CertificadoVigente.escolher` e `PoliticaAlertaVencimento`, com testes de tabela.
+
+### DA-54 · 2026-11-09 · E4-S04
+- **Contexto:** `estado_coleta` não tem tenant, e a `[DECISAO] E4-S03` (D1: CNPJ em dois tenants) segue aberta. Uma rotação de um tenant poderia sobrescrever o certificado escolhido por outro.
+- **Opções:** (a) a rotação troca por CAS (`certificado_id is not distinct from :esperado`) e só quando o certificado atual é nulo ou do mesmo tenant (conferido por `RepositorioCertificados.buscar`); senão devolve `OutroTenant` sem efeito × (b) o último tenant a rotacionar vence.
+- **Escolha:** (a). É conservadora e não decide a D1 no lugar do autor. A troca nunca toca cursor, `ult_nsu`, `versao`, lease nem `bloqueado_ate` (inv. 1 e 2).
+- **Como desfazer:** quando a D1 for decidida, trocar a checagem de tenant no `RotacionarCertificadoUseCase`; o SQL do CAS fica igual.

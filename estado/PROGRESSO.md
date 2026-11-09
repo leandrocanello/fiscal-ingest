@@ -716,3 +716,6 @@
 - 2026-11-09 07:44 · E2-S12: preparado para você (PARA-VOCE.md)
 - 2026-11-09 07:50 · E4-S03: PLANEJAR — plano com 9 passos, parado em [!] aguardando [DECISAO] E4-S03 (D1 CNPJ em dois tenants, D2 consentimento do escritório, D3 auditoria sem tenant); DA-50..52 registradas · próximo: autor decide D1–D3
 - 2026-11-09 07:47 · E4-S03: PLANEJAR ok
+- 2026-11-09 07:47 · E4-S03: plano aguarda decisão (passo [!]) → [h]
+- 2026-11-09 08:00 · E4-S04: PLANEJAR — plano com 8 passos (vigente por titular, alertas 60/30/15/7/1, troca de certificado_id por CAS sem tocar cursor, caos); DA-53/54; persistência fica na E4-S02b e o caso entre tenants na D1 da E4-S03 · próximo: desenvolver E4-S04
+- 2026-11-09 07:49 · E4-S04: PLANEJAR ok

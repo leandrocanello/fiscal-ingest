@@ -33,9 +33,11 @@
 - [x] E2-S14 | AUTO     | deps: -      | recuperar na main o código perdido: fim da E2-S05 (XXE, extrator) + E2-S08/E2-S09 (mergeados na branch empilhada)
 - [x] E2-S15 | AUTO+    | deps: E2-S14 | Documento.blobRef → Optional<BlobRef> no domain; nfe e fake gravam o mesmo formato; tirar o gancho lerBlob do contrato
 - [x] E2-S16 | AUTO     | deps: E2-S14 | cStat do consChNFe no CStatMapper (217/236/614–619/640/641/653/654 → definitivo; 593 → ErroAutenticacao; 252 → definitivo), testes primeiro
-- [!] E1-S07 | AUTO+    | deps: -      | CNPJ alfanumérico (NT Conjunta 2025.001; produção desde 06/07/2026): `Cnpj` aceita raiz+ordem alfanuméricas e DV numérico, validação 100% no back-end; impacto em chave de acesso, certificado, extrator, banco
+- [~] E1-S07 | AUTO+    | deps: -      | CNPJ alfanumérico (NT Conjunta 2025.001; produção desde 06/07/2026): `Cnpj` aceita raiz+ordem alfanuméricas e DV numérico, validação 100% no back-end; impacto em chave de acesso, certificado, extrator, banco
 - [r] E2-S13 | AUTO+    | deps: E2-S07,E2-S11 | enviar o evento de manifestação (RecepcaoEvento SOAP) + mapear o retEvento
-- [h] E2-S12 | HUMANO   | deps: E2-S09,E2-S13 | smoke em homologação: distNSU, consChNFe, ciência, autXML
+- [ ] E2-S17 | AUTO     | deps: E2-S13 | harness de smoke em homologação (@Tag homologacao, fora do test; flag explícita; cursor local que recusa NSU menor) + truststore ICP-Brasil versionado e sobrescrevível
+- [ ] E2-S18 | AUTO     | deps: E2-S13 | gravar o evento de manifestação assinado no blob antes do envio (falha na gravação impede o envio)
+- [h] E2-S12 | HUMANO   | deps: E2-S13,E2-S17 | smoke em homologação: distNSU, consChNFe, ciência, autXML
 
 ## Etapa 3 — Persistência e catálogo (Fase 3)
 - [x] E3-S01 | AUTO     | deps: E1-S03 | JDBI + Flyway (ADR-025) + esquema base (tenant, empresa, estado_coleta, ledger_*)
@@ -44,15 +46,16 @@
 - [x] E3-S04 | AUTO     | deps: E3-S01 | outbox transacional + relay (fila no Postgres)
 - [!] E3-S05 | AUTO     | deps: E2-S04 | BlobStore MinIO (Testcontainers) + sha256 + idempotência
 - [x] E3-S06 | AUTO+    | deps: E3-S01 | catálogo: documento/arquivo/proveniência/documento_empresa
-- [!] E3-S07 | AUTO+    | deps: E3-S06,E2-S05 | processor de parse + ROTEAMENTO PELO CONTEÚDO + quarentena
+- [~] E3-S07 | AUTO+    | deps: E3-S06,E2-S05 | processor de parse + ROTEAMENTO PELO CONTEÚDO + quarentena
 - [ ] E3-S08 | AUTO     | deps: E3-S02..07 | ponta a ponta local: 1 CNPJ empresa + 1 CNPJ escritório (fake)
 
 ## Etapa 4 — Scheduler, cofre, consentimento (Fase 4)
 - [r] E4-S01 | AUTO     | deps: E3-S02 | claim SKIP LOCKED + lease + due_at + fairness por tenant
 - [r] E4-S02 | AUTO+    | deps: E2-S10 | CofreDeCertificados local (envelope encryption) — sem segredo em log
-- [h] E4-S03 | AUTO     | deps: E3-S01 | consentimento por finalidade + máquina de estados de estado_coleta
+- [~] E4-S03 | AUTO     | deps: E3-S01 | consentimento por finalidade + máquina de estados de estado_coleta
 - [~] E4-S04 | AUTO     | deps: E4-S02 | alertas de vencimento + rotação sem perder cursor
 - [ ] E4-S05 | AUTO     | deps: E4-S01..04 | simulação de N CNPJs sem nenhum 656
+- [ ] E4-S06 | AUTO+    | deps: E4-S02,E3-S03 | persistência do cofre: tabela certificado (tenant/empresa) + JdbiRepositorioCertificados + RLS
 
 ## Etapa 5 — Porta push + API de entrega (Fases 5 e 6)
 - [x] E5-S01 | DECISAO  | deps: -      | framework HTTP dos app-*: Spring Boot só nos app-* (ADR-027)

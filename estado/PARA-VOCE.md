@@ -188,8 +188,7 @@
 - **Q3 — CNPJ alfanumérico.** `Cnpj` só aceita 14 dígitos. O nome do PDF da NT 2014.002 v1.40 indica CNPJ alfanumérico (FONTES item 8, texto não extraído). Hoje, um certificado assim seria recusado como `SEM_CNPJ`, e o resto do sistema também não o representaria. (a) Abrir uma subetapa transversal para o `Cnpj` antes de produção. (b) Esperar um caso real. **Recomendação:** (a), depois de conferir a NT na fonte primária.
 - **Q4 — KEK em produção (§22, pergunta 2).** A porta aceita Vault ou KMS depois. Perdida a KEK local, nenhum certificado guardado abre: cada cliente precisa reenviar o seu. (a) Só KEK local por ora, por variável de ambiente, com backup fora do servidor documentado no runbook. (b) Definir já um KMS. **Recomendação:** (a), coerente com o self-host (ADR-008).
 - **Para conferir (só você pode):** com um `.pfx` real, na sua máquina e fora do repositório, confirme o OID `2.16.76.1.3.3` e a codificação do valor (DA-36), de preferência no smoke E2-S12.
-- Resposta:
-
+- Resposta (2026-11-09, autor): Q1 (a) → subetapa E4-S06 (tabela `certificado` + RLS) · Q2 (a), conferir no smoke · Q3 já é a E1-S07 · Q4 (a) KEK local por variável de ambiente, backup documentado.
 ### [HUMANO→AGENTE] E1-S07 — 2026-11-03 — CNPJ alfanumérico: o que o autor pediu
 - **Pedido do autor:** "precisamos de CNPJ já validado para alfanumérico [...] validar isso 100% no back-end". A coluna `empresa.cnpj` já é texto (ok).
 - **Fatos de partida (fonte secundária: Machado Meyer, resumo da NT Conjunta 2025.001 v1.00, de 08/05/2025):** 14 posições; 8 de raiz e 4 de ordem **alfanuméricas**, 2 DV **numéricos**; no DV, cada caractere vale (código ASCII − 48); homologação desde 06/04/2026, produção desde 06/07/2026; só para inscrições novas (os numéricos continuam válidos); a chave de acesso passa a aceitar letras nas 12 primeiras posições do CNPJ e o DV da chave segue a mesma lógica; o Encat pediu para excluir algumas letras (I, O, U, Q, F?), **sem confirmação**.
@@ -222,8 +221,7 @@
 - **Como destravar:** corrija as 3 na `main`, ou responda aqui autorizando (a) e inclua no plano um passo inicial com as 3 correções. Depois troque o `[!]` do passo 1 por `[ ]` e o status no ROADMAP de `[h]` ou `[!]` para `[~]`.
 - **Problema no script (`autonomo/`, protegido, só você edita):** o papel manda marcar `[!]` e terminar sem commit, mas o `verificar.sh` trata isso como falha ("nenhum commit feito e nenhum passo fechado") e desfaz o `[!]` do plano. O desvio para `[h]` do `proxima-acao.sh` não chega a rodar. Assim, a E1-S07 deve repetir chamadas até `MAX_FALHAS` (3) e cair em `[BLOQUEIO]`. Sugestão: aceitar chamada sem commit quando o plano ganhou um `- [!]`.
 - **Reconferido em 2026-11-04 (chamada 4 do dia):** sem resposta e `main` ainda em b839918; `:infra-postgres:compileTestJava` falha no mesmo ponto (`CatalogoRlsTest.java:63`). Nada mudou no código. Esta chamada também deve contar como falha no script, rumo ao `[BLOQUEIO]`.
-- Resposta:
-
+- Resposta (2026-11-09, autor): (a) — as 3 correções foram feitas pelo Claude no PR #40 (`auto/E3-S09`); `outbox` e `outbox_consumo` confirmadas sem tenant.
 ### [BLOQUEIO] E1-S07 — 2026-11-04 — 3 falhas seguidas
 Último motivo: nenhum commit feito e nenhum passo fechado no plano
 Logs: `estado/logs/` (arquivos *-E1-S07-*.json). Para destravar: ajuste o plano `estado/planos/E1-S07.md`
@@ -233,16 +231,19 @@ ou responda aqui, e troque o status no ROADMAP de `[!]` para `[~]`.
 - **O que é preciso:** D2 fixou a operação `nfeRecepcaoEvento`, e o código segue D2. Um usuário do [fórum ACBr (tópico 78871)](https://www.projetoacbr.com.br/forum/topic/78871-qual-%C3%A9-o-erro-do-meu-xml/) relata que, no endpoint nacional, a action documentada é `.../NFeRecepcaoEvento4/nfeRecepcaoEventoNF`. É relato de fórum, não fonte oficial, e o WSDL não foi aberto.
 - **Opções:** (a) manter D2 e conferir no WSDL/smoke E2-S12; (b) trocar agora a constante `ContratoRecepcaoEvento.OPERACAO`.
 - **Recomendação:** (a), conferindo o WSDL no roteiro do smoke. A troca é de uma linha mais o `ContratoRecepcaoEventoTest`. Ver também DA-41 (`nfeDadosMsg` direto no `Body`).
+- Resposta (2026-11-09, autor): (a) — manter `nfeRecepcaoEvento` e conferir no WSDL durante o smoke.
 
 ### [DECISAO] E2-S13-EVENTO — 2026-11-04 — guardar o evento de manifestação assinado antes de enviar (não bloqueia)
 - **O que é preciso:** o `manifestar` guarda só a resposta. Se ela se perde por timeout, não fica cópia do que foi declarado em nome do destinatário (§1.5 "guardar tudo", §3.3, §14).
 - **Opções:** (a) gravar o evento assinado no blob antes do envio, em subetapa curta depois do merge; (b) deixar para a E4, junto com a auditoria de quem manifestou; (c) não guardar, pois a SEFAZ devolve o evento pela distribuição.
 - **Recomendação:** (a), com falha na gravação impedindo o envio. Antes de ligar a manifestação na E4, a cópia precisa existir; (c) não cobre a falha de envio nem o que foi tentado.
+- Resposta (2026-11-09, autor): (a) — subetapa E2-S18: gravar o evento assinado no blob antes do envio; falha na gravação impede o envio.
 
 ### [DECISAO] E3-S05-IMAGEM — 2026-11-09 — imagem MinIO da D2 não existe mais no Docker Hub (bloqueia E3-S05)
 - **O que é preciso:** a D2 aceita (`minio/minio` com tag fixa) falha: `docker pull minio/minio` → "pull access denied/repository does not exist"; `quay.io/minio/minio:<tag>` e `:latest` → 401 UNAUTHORIZED (sem login). O módulo e o `MinioDisponivelTest` estavam prontos (Testcontainers 2.0.2: classe `org.testcontainers.containers.MinIOContainer`, não `.minio.`); só a imagem não baixa. Nada foi commitado; a árvore foi limpa.
 - **Opções:** (a) você faz `docker login quay.io` (ou libera o acesso) e eu uso `quay.io/minio/minio:RELEASE.<tag fixa>`; (b) `chainguard/minio` (baixa aqui, mas só tem `latest` — quebra a tag fixa da DA-11); (c) espelhar a imagem num registry próprio com tag fixa; (d) trocar por outro S3 compatível (ex.: SeaweedFS, Garage) e rever os passos 3, 5 e 6 (o `If-None-Match` precisa ser suportado).
 - **Recomendação:** (a) ou (c) — mantém MinIO e tag fixa. Depois, desmarque o `[!]` do passo 2 do plano.
+- Resposta (2026-11-09, autor): em discussão com o Claude: o login no quay não resolve (MinIO arquivou o projeto e tirou as imagens). Aguardando escolha do servidor S3 de teste.
 
 ### [BLOQUEIO] E3-S05 — 2026-11-09 — 3 falhas seguidas
 Último motivo: nenhum commit feito e nenhum passo fechado no plano
@@ -304,8 +305,7 @@ ou responda aqui, e troque o status no ROADMAP de `[!]` para `[~]`.
 - **O que conferir (checklist):** URLs e actions (item 9) · `nfeDadosMsg` no `Body` (DA-41) · truststore · `137`/`138` e
   bloqueio de ~1h · `resNFe` → ciência → `procNFe` · `135`/`573` e campos do `retEvento` (DA-47/48) · RSA_SHA1/C14N/`Id`
   (item 7) · `autXML` (item 5) · eventos para o emitente (item 4) · `SituacaoNfe` (DA-33).
-- Resposta:
-
+- Resposta (2026-11-09, autor): D1 (a) → subetapa E2-S17 (harness de smoke) · D2 (a) truststore ICP-Brasil versionado na E2-S17 · D3 (a). O smoke em si continua com o autor, quando tiver o A1.
 ### [DECISAO] E4-S03 — 2026-11-09 — consentimento numa coleta sem tenant e auditoria das transições
 - **O que é preciso:** o plano `planos/E4-S03.md` está pronto, mas parado no passo `[!]`. A §7.1 diz "sem consentimento vigente, não há coleta", e o consentimento é **por empresa** (tem tenant). Só que o `estado_coleta` é **por CNPJ consultado, sem tenant** (§8.1, sua decisão de 2026-10-29), e um CNPJ pode servir a dois tenants. A §6.6 pede auditoria de toda transição, mas a `auditoria` da §8 tem `tenant_id`. As escolhas menores (revogação como linha nova, matriz de transições, `BLOQUEADO_ATE` derivado) ficaram nas DA-50 a DA-52.
 - **D1 — CNPJ em dois tenants: quando a coleta está consentida.**
@@ -322,4 +322,4 @@ ou responda aqui, e troque o status no ROADMAP de `[!]` para `[~]`.
   - (c) Uma linha de `auditoria` por tenant assinante. Pró: cada tenant vê a sua. Contra: N linhas por transição, e um tenant cadastrado depois não vê o histórico.
 - **Roteiro:** responda D1–D3 abaixo. Se escolher D1 (b), crie antes a linha da E4-S02b (Q1 da `[DUVIDA] E4-S02`) e ponha-a nas deps da E4-S03. Depois troque a E4-S03 de `[h]` para `[~]` no ROADMAP. Se escolher D3 (a), considere citar a tabela na §8 do CLAUDE.md (só você edita). **Atenção:** enquanto a `[DECISAO] E1-S07` (testes do `infra-postgres` sem compilar na `main`) não for resolvida, esta subetapa também não fecha "suíte verde".
 - **Recomendação:** D1 (a) · D2 (a) · D3 (a).
-- Resposta:
+- Resposta (2026-11-09, autor): conforme a recomendação — D1 (a), D2 (a), D3 (a).

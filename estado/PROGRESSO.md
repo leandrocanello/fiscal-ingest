@@ -680,3 +680,5 @@
 - 2026-11-09 07:03 · E4-S01: DESENVOLVER ok
 - 2026-11-09 07:04 · E4-S01: renovar/liberar/registrarBloqueio na JdbiFilaColeta (falha vista: 7 testes novos com UnsupportedOperationException; suíte verde depois) · próximo: FilaColetaCasTest
 - 2026-11-09 07:05 · E4-S01: DESENVOLVER ok
+- 2026-11-09 07:07 · E4-S01: FilaColetaCasTest (3 testes) passou de primeira; mutação (claim com versao = versao + 1) fez falhar donoVencidoAindaConfirmaOLoteQueJaConsumiu (AssertionFailedError em FilaColetaCasTest:94), revertida · próximo: CaosClaimConcorrenteTest
+- 2026-11-09 07:07 · E4-S01: DESENVOLVER ok

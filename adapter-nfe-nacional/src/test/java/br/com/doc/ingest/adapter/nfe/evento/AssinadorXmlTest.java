@@ -39,7 +39,7 @@ class AssinadorXmlTest {
 
     private static final String DSIG = XMLSignature.XMLNS;
     private static final String CHAVE = "35261012345678000199550010000001231000000011";
-    private static final Cnpj AUTOR = new Cnpj("98765432000110");
+    private static final Cnpj AUTOR = new Cnpj("98765432000198");
     private static final Instant AGORA = Instant.parse("2026-10-28T13:04:05Z");
     private static final String ID = new IdEvento(TipoManifestacao.CIENCIA, CHAVE, 1).valor();
     private static final String SENHA = "senha-de-teste";

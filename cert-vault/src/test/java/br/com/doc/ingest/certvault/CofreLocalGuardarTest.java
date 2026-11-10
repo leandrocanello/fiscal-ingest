@@ -150,7 +150,7 @@ class CofreLocalGuardarTest {
         ResultadoGuarda senhaErrada = cofre.guardar(
                 new PedidoGuarda(TENANT, TITULAR, new Cnpj(CNPJ), pfx, "errada".toCharArray(), "operador"));
         ResultadoGuarda divergente = cofre.guardar(
-                new PedidoGuarda(TENANT, TITULAR, new Cnpj("99888777000166"), pfx, SENHA.clone(), "operador"));
+                new PedidoGuarda(TENANT, TITULAR, new Cnpj("99888777000100"), pfx, SENHA.clone(), "operador"));
 
         assertThat(senhaErrada).isEqualTo(new Recusado(MotivoRecusa.SENHA_INCORRETA));
         assertThat(divergente).isEqualTo(new Recusado(MotivoRecusa.CNPJ_DIVERGENTE));

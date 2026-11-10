@@ -27,7 +27,7 @@ class MontadorEventoCienciaTest {
 
     /** Chave sintética (UF/CNPJ fictícios) com DV válido. */
     private static final String CHAVE = "35261012345678000199550010000001231000000011";
-    private static final Cnpj AUTOR = new Cnpj("98765432000110");
+    private static final Cnpj AUTOR = new Cnpj("98765432000198");
     /** 2026-10-28 13:04:05.789 UTC → 10:04:05 em São Paulo (-03:00). */
     private static final Instant AGORA = Instant.parse("2026-10-28T13:04:05.789Z");
     private static final ZoneId SAO_PAULO = ZoneId.of("America/Sao_Paulo");
@@ -55,7 +55,7 @@ class MontadorEventoCienciaTest {
 
         assertThat(texto(doc, "/n:evento/n:infEvento/n:cOrgao")).isEqualTo("91");
         assertThat(texto(doc, "/n:evento/n:infEvento/n:tpAmb")).isEqualTo("1");
-        assertThat(texto(doc, "/n:evento/n:infEvento/n:CNPJ")).isEqualTo("98765432000110");
+        assertThat(texto(doc, "/n:evento/n:infEvento/n:CNPJ")).isEqualTo("98765432000198");
         assertThat(texto(doc, "/n:evento/n:infEvento/n:chNFe")).isEqualTo(CHAVE);
         assertThat(texto(doc, "/n:evento/n:infEvento/n:dhEvento")).isEqualTo("2026-10-28T10:04:05-03:00");
         assertThat(texto(doc, "/n:evento/n:infEvento/n:tpEvento")).isEqualTo("210210");

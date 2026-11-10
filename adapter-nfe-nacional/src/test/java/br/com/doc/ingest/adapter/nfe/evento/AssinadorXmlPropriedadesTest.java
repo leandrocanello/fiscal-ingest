@@ -7,6 +7,7 @@ import br.com.doc.ingest.adapter.nfe.soap.TipoAmbiente;
 import br.com.doc.ingest.domain.adapter.Credencial;
 import br.com.doc.ingest.domain.adapter.TipoManifestacao;
 import br.com.doc.ingest.domain.model.Cnpj;
+import br.com.doc.ingest.domain.model.FixturesFiscais;
 import net.jqwik.api.Arbitraries;
 import net.jqwik.api.Arbitrary;
 import net.jqwik.api.ForAll;
@@ -51,7 +52,7 @@ class AssinadorXmlPropriedadesTest {
 
     @Provide
     Arbitrary<Cnpj> cnpjs() {
-        return Arbitraries.strings().numeric().ofLength(14).map(Cnpj::new);
+        return Arbitraries.strings().numeric().ofLength(12).map(FixturesFiscais::cnpj).map(Cnpj::new);
     }
 
     private static Document assinado(Cnpj autor, String chave, int seq) {

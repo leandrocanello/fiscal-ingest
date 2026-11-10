@@ -280,7 +280,7 @@ class JdbiCatalogoTest extends PostgresTestBase {
 
     @Test
     void mesmaNotaPorDoisCnpjsConsultadosTemDuasProveniencias() {
-        long ledgerEscritorio = inserirLedgerNsu("99888777000166");
+        long ledgerEscritorio = inserirLedgerNsu("99888777000100");
         catalogo.registrar(completoDeA(oficial()));
 
         ResultadoRegistro segundo = catalogo.registrar(completoDeA(oficialDoLedger(ledgerEscritorio)));

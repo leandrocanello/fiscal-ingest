@@ -13,7 +13,7 @@ class MensagemOutboxTest {
 
     @Test
     void aceitaMensagemValida() {
-        var m = com("docs.coletados", "12345678000199", 1, "nsu-1", "{\"nsu\":1}");
+        var m = com("docs.coletados", "12345678000195", 1, "nsu-1", "{\"nsu\":1}");
         assertThat(m.topico()).isEqualTo("docs.coletados");
         assertThat(m.versaoSchema()).isEqualTo(1);
     }

@@ -176,7 +176,7 @@ class ValidadorPfxTest {
     void validadeVemAntesDaCadeiaEDoCnpj() {
         byte[] pfx = gerador.pfxModerno(gerador.autoassinado(CNPJ), SENHA);
 
-        assertThat(motivo(validarCom(validadorEm(ATE.plus(Duration.ofDays(1))), pfx, "99888777000166")))
+        assertThat(motivo(validarCom(validadorEm(ATE.plus(Duration.ofDays(1))), pfx, "99888777000100")))
                 .isEqualTo(MotivoRecusa.FORA_DA_VALIDADE);
     }
 
@@ -240,7 +240,7 @@ class ValidadorPfxTest {
     void recusaCnpjDivergente() {
         byte[] pfx = gerador.pfxModerno(gerador.titular(CNPJ), SENHA);
 
-        assertThat(motivo(validarCom(validadorEm(MEIO), pfx, "99888777000166")))
+        assertThat(motivo(validarCom(validadorEm(MEIO), pfx, "99888777000100")))
                 .isEqualTo(MotivoRecusa.CNPJ_DIVERGENTE);
         assertThat(motivo(validarCom(validadorEm(MEIO), pfx, "11222333000262")))
                 .isEqualTo(MotivoRecusa.CNPJ_DIVERGENTE);

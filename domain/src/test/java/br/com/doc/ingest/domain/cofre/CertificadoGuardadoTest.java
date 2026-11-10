@@ -14,7 +14,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 @DisplayName("CertificadoGuardado e NovoCertificado (só cifrado + metadados)")
 class CertificadoGuardadoTest {
 
-    private static final Cnpj CNPJ = new Cnpj("12345678000199");
+    private static final Cnpj CNPJ = new Cnpj("12345678000195");
     private static final String FINGERPRINT = "f".repeat(64);
     private static final BlobRef PFX_CIFRADO = new BlobRef("cofre/1/ff/pfx-aaa.env", "a".repeat(64));
     private static final BlobRef SENHA_CIFRADA = new BlobRef("cofre/1/ff/senha-bbb.env", "b".repeat(64));

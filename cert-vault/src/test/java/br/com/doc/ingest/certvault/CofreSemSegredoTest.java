@@ -152,7 +152,7 @@ class CofreSemSegredoTest {
         }
         // recusas reais, com a senha e o .pfx em jogo
         objetos.add(cofre.guardar(pedido(pfx, "outra-senha".toCharArray(), CNPJ)));
-        objetos.add(cofre.guardar(pedido(pfx, senha, "99888777000166")));
+        objetos.add(cofre.guardar(pedido(pfx, senha, "99888777000100")));
         objetos.add(cofre.guardar(pedido(new byte[] {1, 2, 3}, senha, CNPJ)));
         objetos.add(keks.atual());
         objetos.add(pedido(pfx, senha, CNPJ));

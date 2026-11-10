@@ -35,7 +35,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 class EnvelopeEnvEventoTest {
 
     private static final String CHAVE = "35261012345678000199550010000001231000000011";
-    private static final Cnpj AUTOR = new Cnpj("98765432000110");
+    private static final Cnpj AUTOR = new Cnpj("98765432000198");
     private static final Instant AGORA = Instant.parse("2026-10-28T13:04:05Z");
     private static final String NS_SOAP12 = "http://www.w3.org/2003/05/soap-envelope";
 

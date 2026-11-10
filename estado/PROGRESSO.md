@@ -733,3 +733,6 @@
 - 2026-11-10 13:00 · E4-S01: mergeado por você ✔
 - 2026-11-10 13:00 · E4-S02: mergeado por você ✔
 - 2026-11-10 13:00 · E4-S04: rebase para main após merge de E4-S02
+- 2026-11-10 · E1-S07 passo 1 — falha vista: `DigitoVerificadorTest.java:12: error: cannot find symbol` (classe inexistente); após implementar, `chaveNumericaEAlfanumerica: expected: 5 but was: 0` → a chave numérica de fixture (`...0001` + 5) tem DV errado; DV 0 conferido à parte em Python, teste corrigido.
+- 2026-11-10 14:00 · E1-S07: DigitoVerificador.modulo11 alfanumérico (TDD, suíte inteira verde, commit feat(domain)) · próximo: FixturesFiscais + troca dos literais com DV errado
+- 2026-11-10 13:05 · E1-S07: DESENVOLVER ok

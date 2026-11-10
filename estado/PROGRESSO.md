@@ -729,3 +729,7 @@
 - 2026-11-09 07:59 · E4-S04: DESENVOLVER ok
 - 2026-11-09 20:30 · decisões do autor registradas (E4-S03, E2-S12, E2-S13, E4-S02); E1-S07/E3-S07 destravadas (main verde vem no PR #40); criadas E2-S17, E2-S18, E4-S06
 - 2026-11-09 20:35 · E3-S05: MinIO descartado (projeto arquivado, sem imagens); autor escolheu SeaweedFS; plano antigo arquivado, subetapa vai ser replanejada
+- 2026-11-10 13:00 · E2-S13: mergeado por você ✔
+- 2026-11-10 13:00 · E4-S01: mergeado por você ✔
+- 2026-11-10 13:00 · E4-S02: mergeado por você ✔
+- 2026-11-10 13:00 · E4-S04: rebase para main após merge de E4-S02

@@ -766,3 +766,6 @@
 - 2026-11-11 13:23 · E1-S07: DESENVOLVER ok
 - 2026-11-11 13:24 · E1-S07 (verificar): propriedades jqwik de Cnpj e ChaveAcesso; contrato, RLS/append-only e invariantes conferidos; suíte inteira verde · próximo: revisão
 - 2026-11-11 13:25 · E1-S07: VERIFICAR ok
+- 2026-11-11 13:26 · E1-S07 (revisar): DEVOLVER — ExtratorCnpjCertificado mudou sem teste (DV errado → vazio) e ainda recusa CNPJ alfanumérico; 2 passos Corrigir no plano; suíte verde (1169) · próximo: dev corrige cert-vault e volta à revisão
+- 2026-11-11 13:26 · E1-S07: REVISAR ok
+- 2026-11-11 13:26 · E1-S07: revisor devolveu para correção

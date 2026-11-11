@@ -671,7 +671,21 @@ class NfeNacionalAdapterTest {
 
     // ---- buscarPorChave (consChNFe) ----
 
-    private static final String CHAVE = "35261011111111000191550010000000011000000015";
+    private static final String CHAVE = "35261011111111000191550010000000011000000010";
+
+    @Test
+    @DisplayName("chave com DV errado é recusada antes do consChNFe: nenhuma chamada HTTP")
+    void chaveComDvErradoNaoChegaNaSefaz() {
+        responder(resposta("138", 42, 42, docZip(42, "procNFe_v4.00.xsd", XML_PROC)));
+        String dvErrado = CHAVE.substring(0, 43) + "5";
+
+        org.assertj.core.api.Assertions.assertThatThrownBy(() -> adapter.buscarPorChave(
+                        new ContextoConsulta(FONTE, CNPJ), new ChaveAcessoNfe(dvErrado)))
+                .isInstanceOf(IllegalArgumentException.class);
+
+        servidor.verify(0, com.github.tomakehurst.wiremock.client.WireMock.anyRequestedFor(
+                com.github.tomakehurst.wiremock.client.WireMock.anyUrl()));
+    }
 
     @Test
     @DisplayName("buscarPorChave 138: devolve o procNFe com a chave pedida e consChNFe sem distNSU")

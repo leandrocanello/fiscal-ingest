@@ -47,7 +47,7 @@ class AssinadorXmlPropriedadesTest {
 
     @Provide
     Arbitrary<String> chaves() {
-        return Arbitraries.strings().numeric().ofLength(44);
+        return Arbitraries.strings().numeric().ofLength(43).map(FixturesFiscais::chave);
     }
 
     @Provide

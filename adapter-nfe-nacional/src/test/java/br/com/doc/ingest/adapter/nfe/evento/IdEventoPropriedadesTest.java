@@ -1,8 +1,10 @@
 package br.com.doc.ingest.adapter.nfe.evento;
 
 import br.com.doc.ingest.domain.adapter.TipoManifestacao;
+import br.com.doc.ingest.domain.model.FixturesFiscais;
 import net.jqwik.api.Arbitraries;
 import net.jqwik.api.Arbitrary;
+import net.jqwik.api.Combinators;
 import net.jqwik.api.ForAll;
 import net.jqwik.api.Property;
 import net.jqwik.api.Provide;
@@ -14,7 +16,11 @@ class IdEventoPropriedadesTest {
 
     @Provide
     Arbitrary<String> chaves() {
-        return Arbitraries.strings().numeric().ofLength(44);
+        Arbitrary<String> uf = Arbitraries.strings().numeric().ofLength(6);
+        Arbitrary<String> cnpj = Arbitraries.strings().numeric().withCharRange('A', 'Z').ofLength(12);
+        Arbitrary<String> resto = Arbitraries.strings().numeric().ofLength(25);
+        return Combinators.combine(uf, cnpj, resto)
+                .as((u, c, r) -> FixturesFiscais.chave(u + c + r));
     }
 
     @Property

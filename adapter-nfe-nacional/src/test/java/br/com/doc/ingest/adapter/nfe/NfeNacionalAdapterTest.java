@@ -1,6 +1,8 @@
 package br.com.doc.ingest.adapter.nfe;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.containing;
+import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
@@ -120,6 +122,26 @@ class NfeNacionalAdapterTest {
 
     private static UUID idEsperado(int nsu) {
         return UUID.nameUUIDFromBytes(("NFE_AN|PRODUCAO|11111111000191|" + nsu).getBytes(StandardCharsets.UTF_8));
+    }
+
+    @Test
+    @DisplayName("buscarLote com CNPJ alfanumérico: CNPJ intacto no envelope, no Documento, nos blobs e no id")
+    void buscarLoteComCnpjAlfanumerico() {
+        Cnpj alfanumerico = new Cnpj("12ABC34501DE35");
+        responder(resposta("138", 1, 1, docZip(1, "procNFe_v4.00.xsd", XML_PROC)));
+
+        BuscarLoteResultado r = adapter.buscarLote(new ContextoConsulta(FONTE, alfanumerico), Cursor.inicial());
+
+        servidor.verify(postRequestedFor(urlEqualTo(CAMINHO)).withRequestBody(containing("<CNPJ>12ABC34501DE35</CNPJ>")));
+        assertThat(r.desfecho()).isEqualTo(new Desfecho.Ok());
+        Documento doc = r.documentos().get(0);
+        assertThat(doc.cnpjDestinatario()).isEqualTo(alfanumerico);
+        assertThat(doc.id()).isEqualTo(UUID.nameUUIDFromBytes(
+                "NFE_AN|PRODUCAO|12ABC34501DE35|1".getBytes(StandardCharsets.UTF_8)));
+        String sha = Sha256.hex(XML_PROC.getBytes(StandardCharsets.UTF_8));
+        assertThat(doc.blobRef()).contains(new BlobRef(
+                ChavesBlobPull.documento(FONTE, TipoAmbiente.PRODUCAO, alfanumerico, new Nsu(1), sha), sha));
+        assertThat(r.envelope()).hasValueSatisfying(e -> assertThat(e.chave()).contains("/12ABC34501DE35/"));
     }
 
     @Test

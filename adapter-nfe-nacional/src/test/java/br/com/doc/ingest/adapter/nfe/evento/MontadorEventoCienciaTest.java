@@ -96,6 +96,18 @@ class MontadorEventoCienciaTest {
         assertThat(texto(montar(TipoAmbiente.HOMOLOGACAO), "/n:evento/n:infEvento/n:tpAmb")).isEqualTo("2");
     }
 
+    @Test
+    @DisplayName("autor e chave alfanuméricos vão intactos no CNPJ, no chNFe e no Id (NT Conjunta 2025.001)")
+    void autorEChaveAlfanumericos() throws Exception {
+        String chave = "35260412ABC34501DE35550010000000011000000013";
+        Document doc = montador.montar(TipoAmbiente.PRODUCAO, new Cnpj("12ABC34501DE35"), chave,
+                TipoManifestacao.CIENCIA, 1);
+
+        assertThat(texto(doc, "/n:evento/n:infEvento/n:CNPJ")).isEqualTo("12ABC34501DE35");
+        assertThat(texto(doc, "/n:evento/n:infEvento/n:chNFe")).isEqualTo(chave);
+        assertThat(texto(doc, "/n:evento/n:infEvento/@Id")).isEqualTo("ID210210" + chave + "01");
+    }
+
     private static String texto(Document doc, String expr) throws XPathExpressionException {
         return (String) xpath().evaluate(expr, doc, XPathConstants.STRING);
     }

@@ -217,6 +217,20 @@ class AssinadorXmlTest {
     }
 
     @Test
+    @DisplayName("assina e valida evento com Id e autor alfanuméricos (NT Conjunta 2025.001)")
+    void assinaEventoComIdAlfanumerico() throws Exception {
+        String chave = "35260412ABC34501DE35550010000000011000000013";
+        String id = new IdEvento(TipoManifestacao.CIENCIA, chave, 1).valor();
+        Document doc = new MontadorEvento(Clock.fixed(AGORA, ZoneOffset.UTC), ZoneId.of("America/Sao_Paulo"))
+                .montar(TipoAmbiente.HOMOLOGACAO, new Cnpj("12ABC34501DE35"), chave, TipoManifestacao.CIENCIA, 1);
+
+        new AssinadorXml(AlgoritmoAssinatura.PADRAO).assinar(doc, id, certificado);
+
+        assertThat(unico(signature(doc), "Reference").getAttribute("URI")).isEqualTo("#" + id);
+        assertThat(valida(doc)).isTrue();
+    }
+
+    @Test
     @DisplayName("padrão é RSA_SHA1 (MOC 7.0 Tab. 4-2, decisão E2-S11 D1)")
     void padraoEhRsaSha1() {
         assertThat(AlgoritmoAssinatura.PADRAO).isEqualTo(AlgoritmoAssinatura.RSA_SHA1);

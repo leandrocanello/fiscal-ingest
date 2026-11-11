@@ -747,3 +747,6 @@
 - 2026-11-11 · E1-S07: falha vista antes da implementação (stubs): `aceitaChaveAlfanumerica() :: IllegalArgumentException: chave de acesso deve ter 44 dígitos`; `formatoNaoConfereDv() :: Expecting value to be true but was false`; `emitenteEDestinatarioAlfanumericos() :: IllegalArgumentException: destinatário deve ter 11 ou 14 dígitos`
 - 2026-11-11 13:10 · E1-S07: passo 5 (ChaveAcesso alfanumérica: formatoValido/temDvValido, construtor só formato; MetadadosDocumento aceita CNPJ alfanumérico sem DV; suíte verde) · próximo: ChaveAcessoNfe/IdEvento com DV obrigatório na saída
 - 2026-11-11 13:02 · E1-S07: DESENVOLVER ok
+- 2026-11-11 · E1-S07: falha vista antes da implementação: `ChaveAcessoNfeTest.aceitaAlfanumericaComDvCerto :: IllegalArgumentException: chave de acesso deve ter 44 dígitos`; `recusaDvErradoSemEcoar[2] :: Expecting code to raise a throwable`; `IdEventoTest.aceitaAlfanumerica :: Chave de acesso deve ter 44 dígitos numéricos`; `chaveComDvErradoNaoChegaNaSefaz :: Expecting code to raise a throwable`
+- 2026-11-11 14:30 · E1-S07: passo 6 (ChaveAcessoNfe/IdEvento/EnvioManifestacao com formato da NT + DV obrigatório via ChaveAcessoNfe.valida; suíte verde) · próximo: ExtratorMetadados aceita chave alfanumérica
+- 2026-11-11 13:05 · E1-S07: DESENVOLVER ok

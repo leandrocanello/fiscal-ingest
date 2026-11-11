@@ -84,11 +84,6 @@ final class ExtratorCnpjCertificado {
         if (valor.fim() - valor.inicio() != TAMANHO_CNPJ) {
             return Optional.empty();
         }
-        for (int i = valor.inicio(); i < valor.fim(); i++) {
-            if (der[i] < '0' || der[i] > '9') {
-                return Optional.empty();
-            }
-        }
         String texto = new String(der, valor.inicio(), TAMANHO_CNPJ, StandardCharsets.US_ASCII);
         return Cnpj.valido(texto) ? Optional.of(new Cnpj(texto)) : Optional.empty();
     }

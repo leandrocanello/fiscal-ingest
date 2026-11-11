@@ -17,6 +17,7 @@ import br.com.doc.ingest.domain.catalogo.TipoArquivo;
 import br.com.doc.ingest.domain.catalogo.VinculoEmpresa;
 import br.com.doc.ingest.domain.model.ChaveAcesso;
 import br.com.doc.ingest.domain.model.Cnpj;
+import br.com.doc.ingest.domain.model.FixturesFiscais;
 import org.jdbi.v3.core.Jdbi;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -276,6 +277,45 @@ class JdbiCatalogoTest extends PostgresTestBase {
         assertThat(push.provenienciaNova()).isTrue();
         assertThat(fichaDeA().arquivos().getFirst().proveniencias())
                 .containsExactlyInAnyOrder(oficial(), upload(Confianca.VALIDADO_ASSINATURA));
+    }
+
+    @Test
+    void mesmaChaveAlfanumericaViraUmDocumento() {
+        // invariante 8 com CNPJ alfanumérico (NT Conjunta 2025.001): emitente, consultado e chave com letras
+        String cnpjAlfa = FixturesFiscais.cnpj("12ABC34501DE");
+        var emitenteAlfa = new Cnpj(cnpjAlfa);
+        var chaveAlfa = new ChaveAcesso(FixturesFiscais.chave("352604" + cnpjAlfa + "55001000000001100000001"));
+        // A e 6 colidem no DV: a chave com 6 no lugar do A também é válida, mas é OUTRA nota
+        var chaveColidente = new ChaveAcesso(chaveAlfa.valor().substring(0, 8) + "6" + chaveAlfa.valor().substring(9));
+        long empresaAlfa = inserirEmpresa(tenantA, cnpjAlfa);
+        long ledgerAlfa = inserirLedgerNsu(cnpjAlfa);
+        var metadados = new MetadadosDocumento(Optional.of(1), Optional.of(1L), Optional.of(EMISSAO),
+                Optional.of(emitenteAlfa), Optional.of(FixturesFiscais.cnpj("98ZY76543210")),
+                Optional.of(BigDecimal.TEN), Optional.of("4.00"));
+        var vinculo = new VinculoEmpresa(empresaAlfa, Direcao.SAIDA);
+
+        ResultadoRegistro an = catalogo.registrar(new RegistroArquivo(tenantA, chaveAlfa, metadados,
+                SituacaoDocumento.AUTORIZADA, TipoArquivo.COMPLETO, Optional.empty(), Optional.empty(), BLOB,
+                List.of(vinculo), oficialDoLedger(ledgerAlfa)));
+        ResultadoRegistro push = catalogoDepois.registrar(new RegistroArquivo(tenantA, chaveAlfa, metadados,
+                SituacaoDocumento.AUTORIZADA, TipoArquivo.COMPLETO, Optional.empty(), Optional.empty(), BLOB,
+                List.of(vinculo), upload(Confianca.VALIDADO_ASSINATURA)));
+        ResultadoRegistro outra = catalogo.registrar(new RegistroArquivo(tenantA, chaveColidente, metadados,
+                SituacaoDocumento.AUTORIZADA, TipoArquivo.COMPLETO, Optional.empty(), Optional.empty(), BLOB,
+                List.of(vinculo), oficialDoLedger(ledgerAlfa)));
+
+        assertThat(push.documentoId()).isEqualTo(an.documentoId());
+        assertThat(push.documentoCriado()).isFalse();
+        assertThat(push.provenienciaNova()).isTrue();
+        assertThat(outra.documentoId()).isNotEqualTo(an.documentoId());
+        assertThat(contar("documento")).isEqualTo(2);
+        FichaDocumento ficha = catalogo.consultar(tenantA, chaveAlfa).orElseThrow();
+        assertThat(ficha.chave()).isEqualTo(chaveAlfa);
+        assertThat(ficha.estado().metadados().emitenteCnpj()).contains(emitenteAlfa);
+        assertThat(ficha.estado().metadados().destinatarioDoc()).contains(FixturesFiscais.cnpj("98ZY76543210"));
+        assertThat(ficha.vinculos()).containsExactly(vinculo);
+        assertThat(ficha.arquivos().getFirst().proveniencias())
+                .containsExactlyInAnyOrder(oficialDoLedger(ledgerAlfa), upload(Confianca.VALIDADO_ASSINATURA));
     }
 
     @Test

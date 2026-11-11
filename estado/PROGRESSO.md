@@ -769,3 +769,5 @@
 - 2026-11-11 13:26 · E1-S07 (revisar): DEVOLVER — ExtratorCnpjCertificado mudou sem teste (DV errado → vazio) e ainda recusa CNPJ alfanumérico; 2 passos Corrigir no plano; suíte verde (1169) · próximo: dev corrige cert-vault e volta à revisão
 - 2026-11-11 13:26 · E1-S07: REVISAR ok
 - 2026-11-11 13:26 · E1-S07: revisor devolveu para correção
+- 2026-11-11 13:40 · E1-S07 (corrigir 1/2): ExtratorCnpjCertificadoTest.dvErradoDevolveVazio (3 codificações); falha com o código antigo: "dvErradoDevolveVazio [1] 11222333000182 FAILED — java.lang.IllegalArgumentException at ExtratorCnpjCertificadoTest.java:101"; passa com Cnpj.valido; suíte verde · próximo: extrair CNPJ alfanumérico do certificado
+- 2026-11-11 13:28 · E1-S07: DESENVOLVER ok

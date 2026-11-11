@@ -5,6 +5,7 @@ import br.com.doc.ingest.domain.coleta.ColetaReivindicada;
 import br.com.doc.ingest.domain.coleta.PedidoReivindicacao;
 import br.com.doc.ingest.domain.model.Ambiente;
 import br.com.doc.ingest.domain.model.Cnpj;
+import br.com.doc.ingest.domain.model.FixturesFiscais;
 import br.com.doc.ingest.domain.model.FonteId;
 import org.jdbi.v3.core.Jdbi;
 import org.junit.jupiter.api.BeforeEach;
@@ -52,7 +53,8 @@ class CaosClaimConcorrenteTest extends PostgresTestBase {
     }
 
     private static String cnpj(int i) {
-        return String.format("%014d", i);
+        // base deslocada de 1: a base zerada daria 14 zeros, recusado mesmo com DV certo
+        return FixturesFiscais.cnpj(String.format("%012d", i + 1));
     }
 
     private void insere(int i, Instant leaseAte) {

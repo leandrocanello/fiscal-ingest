@@ -52,7 +52,10 @@ class AssinadorXmlPropriedadesTest {
 
     @Provide
     Arbitrary<Cnpj> cnpjs() {
-        return Arbitraries.strings().numeric().ofLength(12).map(FixturesFiscais::cnpj).map(Cnpj::new);
+        // 14 zeros passam no DV, mas sao recusados (Anexo I da NT Conjunta 2025.001)
+        return Arbitraries.strings().numeric().ofLength(12)
+                .filter(base -> !base.equals("000000000000"))
+                .map(FixturesFiscais::cnpj).map(Cnpj::new);
     }
 
     private static Document assinado(Cnpj autor, String chave, int seq) {

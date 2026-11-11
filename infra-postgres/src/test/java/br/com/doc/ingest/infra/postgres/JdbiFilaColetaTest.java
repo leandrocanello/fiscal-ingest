@@ -7,6 +7,7 @@ import br.com.doc.ingest.domain.coleta.PedidoReivindicacao;
 import br.com.doc.ingest.domain.coleta.PosicaoColeta;
 import br.com.doc.ingest.domain.model.Ambiente;
 import br.com.doc.ingest.domain.model.Cnpj;
+import br.com.doc.ingest.domain.model.FixturesFiscais;
 import br.com.doc.ingest.domain.model.FonteId;
 import br.com.doc.ingest.domain.model.Nsu;
 import org.jdbi.v3.core.Jdbi;
@@ -163,7 +164,8 @@ class JdbiFilaColetaTest extends PostgresTestBase {
     }
 
     private static String cnpj(int n) {
-        return String.format("%014d", n);
+        // base deslocada de 1: a base zerada daria 14 zeros, recusado mesmo com DV certo
+        return FixturesFiscais.cnpj(String.format("%012d", n + 1));
     }
 
     private List<String> cnpjs(List<ColetaReivindicada> r) {

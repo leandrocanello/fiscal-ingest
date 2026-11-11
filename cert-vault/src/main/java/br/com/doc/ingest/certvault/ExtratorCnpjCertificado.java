@@ -89,7 +89,8 @@ final class ExtratorCnpjCertificado {
                 return Optional.empty();
             }
         }
-        return Optional.of(new Cnpj(new String(der, valor.inicio(), TAMANHO_CNPJ, StandardCharsets.US_ASCII)));
+        String texto = new String(der, valor.inicio(), TAMANHO_CNPJ, StandardCharsets.US_ASCII);
+        return Cnpj.valido(texto) ? Optional.of(new Cnpj(texto)) : Optional.empty();
     }
 
     /** Um TLV do DER: {@code inicio} e {@code fim} delimitam o conteúdo e sempre cabem no limite pedido. */

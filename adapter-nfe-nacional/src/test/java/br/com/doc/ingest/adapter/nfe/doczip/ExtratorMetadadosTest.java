@@ -1,5 +1,6 @@
 package br.com.doc.ingest.adapter.nfe.doczip;
 
+import br.com.doc.ingest.domain.model.FixturesFiscais;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -45,17 +46,112 @@ class ExtratorMetadadosTest {
     }
 
     private static String procNFe(String destinatario) {
-        return "<nfeProc xmlns=\"http://www.portalfiscal.inf.br/nfe\" versao=\"4.00\"><NFe><infNFe Id=\"NFe" + CHAVE
+        return procNFe(CHAVE, "11111111000191", destinatario, "33333333000133", "44444444000144", "55555555000155");
+    }
+
+    private static String procNFe(String chave, String emitente, String destinatario, String transportador,
+                                  String autorizado1, String autorizado2) {
+        return "<nfeProc xmlns=\"http://www.portalfiscal.inf.br/nfe\" versao=\"4.00\"><NFe><infNFe Id=\"NFe" + chave
                 + "\" versao=\"4.00\">"
                 + "<ide><cUF>35</cUF><mod>55</mod><serie>1</serie><nNF>123</nNF>"
                 + "<dhEmi>2026-10-20T10:30:00-03:00</dhEmi></ide>"
-                + "<emit><CNPJ>11111111000191</CNPJ><xNome>Emitente</xNome></emit>"
+                + "<emit><CNPJ>" + emitente + "</CNPJ><xNome>Emitente</xNome></emit>"
                 + "<dest>" + destinatario + "<xNome>Destinatario</xNome></dest>"
                 + "<total><ICMSTot><vNF>1234.56</vNF></ICMSTot></total>"
-                + "<transp><transporta><CNPJ>33333333000133</CNPJ></transporta></transp>"
-                + "<autXML><CNPJ>44444444000144</CNPJ></autXML>"
-                + "<autXML><CNPJ>55555555000155</CNPJ></autXML>"
-                + "</infNFe></NFe><protNFe><infProt><chNFe>" + CHAVE + "</chNFe></infProt></protNFe></nfeProc>";
+                + "<transp><transporta><CNPJ>" + transportador + "</CNPJ></transporta></transp>"
+                + "<autXML><CNPJ>" + autorizado1 + "</CNPJ></autXML>"
+                + "<autXML><CNPJ>" + autorizado2 + "</CNPJ></autXML>"
+                + "</infNFe></NFe><protNFe><infProt><chNFe>" + chave + "</chNFe></infProt></protNFe></nfeProc>";
+    }
+
+    private static String resNFe(String chave, String emitente) {
+        return "<resNFe xmlns=\"http://www.portalfiscal.inf.br/nfe\" versao=\"1.01\">"
+                + "<chNFe>" + chave + "</chNFe><CNPJ>" + emitente + "</CNPJ>"
+                + "<dhEmi>2026-10-20T10:30:00-03:00</dhEmi><tpNF>1</tpNF><vNF>10.00</vNF><cSitNFe>1</cSitNFe></resNFe>";
+    }
+
+    private static String resEvento(String chave, String autor) {
+        return "<resEvento xmlns=\"http://www.portalfiscal.inf.br/nfe\" versao=\"1.01\">"
+                + "<cOrgao>91</cOrgao><CNPJ>" + autor + "</CNPJ><chNFe>" + chave + "</chNFe>"
+                + "<dhEvento>2026-10-21T09:00:00-03:00</dhEvento><tpEvento>210210</tpEvento>"
+                + "<nSeqEvento>1</nSeqEvento></resEvento>";
+    }
+
+    private static String procEvento(String chave, String autor) {
+        return "<procEventoNFe xmlns=\"http://www.portalfiscal.inf.br/nfe\" versao=\"1.00\"><evento>"
+                + "<infEvento Id=\"ID210210" + chave + "01\"><cOrgao>91</cOrgao><CNPJ>" + autor + "</CNPJ>"
+                + "<chNFe>" + chave + "</chNFe><tpEvento>210210</tpEvento><nSeqEvento>1</nSeqEvento>"
+                + "</infEvento></evento></procEventoNFe>";
+    }
+
+    /** CNPJs alfanuméricos sintéticos (NT Conjunta 2025.001), com DV certo. */
+    static final String EMIT_ALFA = FixturesFiscais.cnpj("12ABC34501DE");
+    static final String DEST_ALFA = FixturesFiscais.cnpj("AB12CD34EF56");
+    static final String TRANSP_ALFA = FixturesFiscais.cnpj("ZZ00YY11XX22");
+    static final String AUT1_ALFA = FixturesFiscais.cnpj("A1B2C3D40001");
+    static final String AUT2_ALFA = FixturesFiscais.cnpj("9K8J7H6G0001");
+    static final String CHAVE_ALFA = FixturesFiscais.chave("352604" + EMIT_ALFA + "55001000000001100000001");
+
+    @Test
+    @DisplayName("leChaveAlfanumericaDeProcNFe")
+    void leChaveAlfanumericaDeProcNFe() {
+        MetadadosDfe m = ExtratorMetadados.extrair(TipoSchemaDfe.PROC_NFE, bytes(procNFe(CHAVE_ALFA,
+                EMIT_ALFA, "<CNPJ>" + DEST_ALFA + "</CNPJ>", TRANSP_ALFA, AUT1_ALFA, AUT2_ALFA)));
+
+        assertThat(m.chave()).isEqualTo(CHAVE_ALFA);
+        assertThat(m.modelo()).isEqualTo("55");
+    }
+
+    @Test
+    @DisplayName("leChaveAlfanumericaDeResNFeEEvento")
+    void leChaveAlfanumericaDeResNFeEEvento() {
+        for (var par : java.util.List.of(
+                java.util.Map.entry(TipoSchemaDfe.RES_NFE, resNFe(CHAVE_ALFA, EMIT_ALFA)),
+                java.util.Map.entry(TipoSchemaDfe.RES_EVENTO, resEvento(CHAVE_ALFA, DEST_ALFA)),
+                java.util.Map.entry(TipoSchemaDfe.PROC_EVENTO_NFE, procEvento(CHAVE_ALFA, DEST_ALFA)))) {
+            MetadadosDfe m = ExtratorMetadados.extrair(par.getKey(), bytes(par.getValue()));
+
+            assertThat(m.chave()).isEqualTo(CHAVE_ALFA);
+            assertThat(m.modelo()).isEqualTo("55");
+        }
+    }
+
+    @Test
+    @DisplayName("leCnpjsAlfanumericos: emitente, destinatário, autXML, transportador e autor do evento")
+    void leCnpjsAlfanumericos() {
+        MetadadosDfe nota = ExtratorMetadados.extrair(TipoSchemaDfe.PROC_NFE, bytes(procNFe(CHAVE_ALFA,
+                EMIT_ALFA, "<CNPJ>" + DEST_ALFA + "</CNPJ>", TRANSP_ALFA, AUT1_ALFA, AUT2_ALFA)));
+        MetadadosDfe resumo = ExtratorMetadados.extrair(TipoSchemaDfe.RES_NFE, bytes(resNFe(CHAVE_ALFA, EMIT_ALFA)));
+        MetadadosDfe evento = ExtratorMetadados.extrair(TipoSchemaDfe.PROC_EVENTO_NFE,
+                bytes(procEvento(CHAVE_ALFA, DEST_ALFA)));
+
+        assertThat(nota.cnpjEmitente()).contains(EMIT_ALFA);
+        assertThat(nota.documentoDestinatario()).contains(DEST_ALFA);
+        assertThat(nota.cnpjsAutorizados()).containsExactly(AUT1_ALFA, AUT2_ALFA);
+        assertThat(nota.cnpjTransportador()).contains(TRANSP_ALFA);
+        assertThat(resumo.cnpjEmitente()).contains(EMIT_ALFA);
+        assertThat(evento.cnpjAutorEvento()).contains(DEST_ALFA);
+    }
+
+    @Test
+    @DisplayName("chaveComDvErradoAindaEhExtraida (DA-38: na entrada não se recusa documento pelo DV)")
+    void chaveComDvErradoAindaEhExtraida() {
+        char dv = CHAVE_ALFA.charAt(43);
+        String dvErrado = CHAVE_ALFA.substring(0, 43) + (dv == '9' ? '0' : (char) (dv + 1));
+
+        MetadadosDfe m = ExtratorMetadados.extrair(TipoSchemaDfe.RES_NFE, bytes(resNFe(dvErrado, EMIT_ALFA)));
+
+        assertThat(m.chave()).isEqualTo(dvErrado);
+    }
+
+    @Test
+    @DisplayName("chaveMinusculaContinuaInvalida")
+    void chaveMinusculaContinuaInvalida() {
+        String minuscula = CHAVE_ALFA.toLowerCase(java.util.Locale.ROOT);
+
+        assertThatThrownBy(() -> ExtratorMetadados.extrair(TipoSchemaDfe.RES_NFE, bytes(resNFe(minuscula, EMIT_ALFA))))
+                .isInstanceOf(DocZipInvalidoException.class)
+                .hasMessageNotContaining(minuscula);
     }
 
     @Test

@@ -9,7 +9,7 @@ import java.util.Optional;
  * Metadado extraído do XML de um DF-e (só metadado, nunca o XML). Campos opcionais ficam vazios
  * quando o schema não os traz.
  *
- * @param chave                 chave de acesso (44 dígitos)
+ * @param chave                 chave de acesso (44 caracteres; CNPJ alfanumérico nas posições 7–20)
  * @param modelo                modelo derivado das posições 21–22 da chave
  * @param cnpjEmitente          CNPJ do emitente
  * @param documentoDestinatario CNPJ ou CPF do destinatário

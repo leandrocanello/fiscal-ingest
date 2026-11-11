@@ -773,3 +773,6 @@
 - 2026-11-11 13:28 · E1-S07: DESENVOLVER ok
 - 2026-11-11 13:30 · E1-S07 (corrigir 2/2): ExtratorCnpjCertificadoTest.extraiCnpjAlfanumerico + minusculaDevolveVazio; falha antes: "[OCTET_STRING] Expecting Optional to contain: Cnpj[***DE35] but was empty."; laço 0-9 removido, só Cnpj.valido; suíte verde (1173) · próximo: voltar à revisão
 - 2026-11-11 13:30 · E1-S07: DESENVOLVER ok
+- 2026-11-11 13:31 · E1-S07: REVISAR (2ª rodada) APROVAR PARA PR; correções do cert-vault conferidas, suíte verde (1173); PR em planos/E1-S07-pr.md · próximo: abrir PR e revisão do autor
+- 2026-11-11 13:32 · E1-S07: REVISAR ok
+- 2026-11-11 13:32 · E1-S07: PR aberto para revisão

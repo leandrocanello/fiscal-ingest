@@ -107,4 +107,12 @@ class MetadadosDocumentoTest {
                 Optional.empty(), Optional.empty(), Optional.empty()))
                 .isInstanceOf(NullPointerException.class);
     }
+
+    @Test
+    void toStringMascaraOEmitente() {
+        // inv. 13: o CNPJ do emitente sai mascarado, como o destinatario
+        assertThat(comDestinatario(CPF).toString())
+                .doesNotContain("11111111000191")
+                .contains("emitente=***0191");
+    }
 }

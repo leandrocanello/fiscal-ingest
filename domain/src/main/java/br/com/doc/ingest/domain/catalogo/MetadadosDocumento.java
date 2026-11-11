@@ -50,12 +50,12 @@ public record MetadadosDocumento(
         }
     }
 
-    /** Mascara o documento do destinatário (CPF é dado pessoal, invariante 13). */
+    /** Mascara o emitente e o destinatário (CPF é dado pessoal, invariante 13). */
     @Override
     public String toString() {
         return "MetadadosDocumento[serie=" + serie.map(String::valueOf).orElse("-")
                 + ", numero=" + numero.map(String::valueOf).orElse("-")
-                + ", emitente=" + emitenteCnpj.map(Cnpj::valor).orElse("-")
+                + ", emitente=" + emitenteCnpj.map(Cnpj::mascarado).orElse("-")
                 + ", destinatario=" + destinatarioDoc.map(MetadadosDocumento::mascarar).orElse("-") + "]";
     }
 

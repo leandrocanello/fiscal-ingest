@@ -46,10 +46,10 @@ public record MetadadosDfe(
         cnpjsAutorizados = List.copyOf(cnpjsAutorizados);
     }
 
-    /** Mascara o documento do destinatário (CPF é dado pessoal, invariante 13). */
+    /** Mascara o emitente e o destinatário (CPF é dado pessoal, invariante 13). */
     @Override
     public String toString() {
-        return "MetadadosDfe[modelo=" + modelo + ", emitente=" + cnpjEmitente.orElse("-")
+        return "MetadadosDfe[modelo=" + modelo + ", emitente=" + cnpjEmitente.map(MetadadosDfe::mascarar).orElse("-")
                 + ", destinatario=" + documentoDestinatario.map(MetadadosDfe::mascarar).orElse("-") + "]";
     }
 

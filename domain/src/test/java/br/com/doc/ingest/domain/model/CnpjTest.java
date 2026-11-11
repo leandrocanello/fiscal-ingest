@@ -97,4 +97,15 @@ class CnpjTest {
         assertThatCode(() -> Cnpj.valido("qualquer coisa")).doesNotThrowAnyException();
         assertThatCode(() -> new Cnpj(FixturesFiscais.cnpj("ZZZZZZZZ0001"))).doesNotThrowAnyException();
     }
+
+    @Test
+    void toStringMascara() {
+        // inv. 13: so os 4 ultimos caracteres aparecem
+        assertThat(new Cnpj("11222333000181").toString())
+                .isEqualTo("Cnpj[***0181]")
+                .doesNotContain("11222333");
+        assertThat(new Cnpj("12ABC34501DE35").toString())
+                .isEqualTo("Cnpj[***DE35]")
+                .doesNotContain("12ABC345");
+    }
 }

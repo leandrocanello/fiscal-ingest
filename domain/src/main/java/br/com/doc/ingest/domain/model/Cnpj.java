@@ -46,8 +46,13 @@ public record Cnpj(String valor) {
         return valor.charAt(12) - '0' == dv1 && valor.charAt(13) - '0' == dv2;
     }
 
+    /** O CNPJ para texto (log, exceção): só os 4 últimos caracteres (inv. 13). */
+    public String mascarado() {
+        return "***" + valor.substring(10);
+    }
+
     @Override
     public String toString() {
-        return "Cnpj[" + valor + "]";
+        return "Cnpj[" + mascarado() + "]";
     }
 }

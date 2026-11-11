@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 /**
  * Metadado de um documento do catálogo (só metadado, nunca o XML). Campos opcionais ficam vazios
@@ -14,7 +15,7 @@ import java.util.Optional;
  * @param numero          número da nota
  * @param emissao         data/hora de emissão
  * @param emitenteCnpj    CNPJ do emitente
- * @param destinatarioDoc CNPJ ou CPF do destinatário
+ * @param destinatarioDoc CNPJ (alfanumérico ou não) ou CPF do destinatário
  * @param valorTotal      valor total da nota
  * @param versaoLayout    versão do layout do XML
  */
@@ -26,6 +27,9 @@ public record MetadadosDocumento(
         Optional<String> destinatarioDoc,
         Optional<BigDecimal> valorTotal,
         Optional<String> versaoLayout) {
+
+    /** CPF numérico ou CNPJ no formato da NT Conjunta 2025.001, sem conferir DV (DA-38). */
+    private static final Pattern DOCUMENTO = Pattern.compile("[0-9]{11}|[A-Z0-9]{12}[0-9]{2}");
 
     public MetadadosDocumento {
         Objects.requireNonNull(serie, "serie");
@@ -46,7 +50,7 @@ public record MetadadosDocumento(
         }
         if (destinatarioDoc.filter(d -> !documentoValido(d)).isPresent()) {
             // não ecoa o valor recebido (inv. 13)
-            throw new IllegalArgumentException("destinatário deve ter 11 ou 14 dígitos");
+            throw new IllegalArgumentException("destinatário deve ser CPF (11 dígitos) ou CNPJ (14 caracteres)");
         }
     }
 
@@ -60,7 +64,7 @@ public record MetadadosDocumento(
     }
 
     private static boolean documentoValido(String doc) {
-        return (doc.length() == 11 || doc.length() == 14) && doc.chars().allMatch(c -> c >= '0' && c <= '9');
+        return DOCUMENTO.matcher(doc).matches();
     }
 
     private static String mascarar(String doc) {

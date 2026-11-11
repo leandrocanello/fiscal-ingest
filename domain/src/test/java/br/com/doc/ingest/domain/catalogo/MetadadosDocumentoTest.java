@@ -115,4 +115,26 @@ class MetadadosDocumentoTest {
                 .doesNotContain("11111111000191")
                 .contains("emitente=***0191");
     }
+
+    @Test
+    void emitenteEDestinatarioAlfanumericos() {
+        var metadados = new MetadadosDocumento(
+                Optional.empty(), Optional.empty(), Optional.empty(),
+                Optional.of(new Cnpj("12ABC34501DE35")),
+                Optional.of("12ABC34501DE35"),
+                Optional.empty(), Optional.empty());
+        assertThat(metadados.emitenteCnpj()).contains(new Cnpj("12ABC34501DE35"));
+        assertThat(metadados.destinatarioDoc()).contains("12ABC34501DE35");
+        // destinatario nao exige DV (DA-38: na entrada so o formato)
+        assertThat(comDestinatario("12ABC34501DE99").destinatarioDoc()).contains("12ABC34501DE99");
+        assertThat(metadados.toString()).doesNotContain("12ABC34501DE35");
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"1234567890A", "A2345678909", "12abc34501de35", "12ABC34501DEA5"})
+    void destinatarioCpfContinuaSoNumerico(String invalido) {
+        assertThatThrownBy(() -> comDestinatario(invalido))
+                .isInstanceOf(IllegalArgumentException.class)
+                .satisfies(e -> assertThat(e.getMessage()).doesNotContain(invalido));
+    }
 }

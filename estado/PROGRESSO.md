@@ -776,3 +776,5 @@
 - 2026-11-11 13:31 · E1-S07: REVISAR (2ª rodada) APROVAR PARA PR; correções do cert-vault conferidas, suíte verde (1173); PR em planos/E1-S07-pr.md · próximo: abrir PR e revisão do autor
 - 2026-11-11 13:32 · E1-S07: REVISAR ok
 - 2026-11-11 13:32 · E1-S07: PR aberto para revisão
+- 2026-11-11 13:33 · E3-S05: PLANEJAR — plano refeito para SeaweedFS (tag fixa) + módulo infra-blob-s3; 1º passo prova If-None-Match (412), senão [!]; suíte BlobStoreContrato refeita (nunca chegou à main) · próximo: DESENVOLVER passo 1
+- 2026-11-11 13:33 · E3-S05: PLANEJAR ok

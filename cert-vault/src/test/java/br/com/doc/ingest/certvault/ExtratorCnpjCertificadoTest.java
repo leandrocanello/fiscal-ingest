@@ -91,6 +91,17 @@ class ExtratorCnpjCertificadoTest {
         assertThat(ExtratorCnpjCertificado.extrair(titular.certificado())).isEmpty();
     }
 
+    @ParameterizedTest
+    @ValueSource(strings = {"11222333000182", "11222333000191"})
+    @DisplayName("CNPJ com DV errado no certificado devolve vazio, sem lançar")
+    void dvErradoDevolveVazio(String valor) {
+        for (CodificacaoCnpj codificacao : CodificacaoCnpj.values()) {
+            CertificadoTitular titular = gerador.titular(valor, codificacao);
+
+            assertThat(ExtratorCnpjCertificado.extrair(titular.certificado())).as("%s", codificacao).isEmpty();
+        }
+    }
+
     @Test
     @DisplayName("o OtherName feito à mão confirma a leitura; todo prefixo dele é recusado")
     void derTruncadoDevolveVazio() {

@@ -744,3 +744,6 @@
 - 2026-11-11 · E1-S07: falha vista antes da correção: `expected: "Cnpj[***0181]" but was: "Cnpj[11222333000181]"`; `MetadadosDocumento[... emitente=11111111000191 ...] not to contain "11111111000191"`; `MetadadosDfe[modelo=55, emitente=12ABC34501DE35 ...] not to contain "12ABC34501DE35"`
 - 2026-11-11 14:00 · E1-S07: passo 4 (CNPJ mascarado em toString: Cnpj, MetadadosDocumento, MetadadosDfe; suíte verde, 1105 testes) · próximo: ChaveAcesso alfanumérica (formatoValido/temDvValido)
 - 2026-11-11 12:56 · E1-S07: DESENVOLVER ok
+- 2026-11-11 · E1-S07: falha vista antes da implementação (stubs): `aceitaChaveAlfanumerica() :: IllegalArgumentException: chave de acesso deve ter 44 dígitos`; `formatoNaoConfereDv() :: Expecting value to be true but was false`; `emitenteEDestinatarioAlfanumericos() :: IllegalArgumentException: destinatário deve ter 11 ou 14 dígitos`
+- 2026-11-11 13:10 · E1-S07: passo 5 (ChaveAcesso alfanumérica: formatoValido/temDvValido, construtor só formato; MetadadosDocumento aceita CNPJ alfanumérico sem DV; suíte verde) · próximo: ChaveAcessoNfe/IdEvento com DV obrigatório na saída
+- 2026-11-11 13:02 · E1-S07: DESENVOLVER ok

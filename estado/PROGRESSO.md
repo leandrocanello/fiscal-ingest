@@ -762,3 +762,5 @@
 - 2026-11-11 · E1-S07: passo 9b — testes passaram de primeira (V13 já cobre). Prova de que discriminam: sem a V13, `JdbiCatalogoTest > mesmaChaveAlfanumericaViraUmDocumento() FAILED` (CHECK da V8); `NaoRetrocessoAlfanumericoTest` passa mesmo sem a V13 (colunas do cursor nunca recusaram letra; fica como guarda de regressão).
 - 2026-11-11 17:00 · E1-S07: passo 9b (JdbiCatalogoTest.mesmaChaveAlfanumericaViraUmDocumento + NaoRetrocessoAlfanumericoTest; sem mudança de produção; suíte verde) · próximo: docs/FONTES-OFICIAIS.md com as fontes do CNPJ alfanumérico
 - 2026-11-11 13:21 · E1-S07: DESENVOLVER ok
+- 2026-11-11 13:23 · E1-S07: passo 10 (FONTES-OFICIAIS item 15 + nota no item 8; URLs da NT/FAQ ausentes, DA-56; suíte verde) · próximo: Verificação — CnpjPropriedadesTest e ChaveAcessoPropriedadesTest
+- 2026-11-11 13:23 · E1-S07: DESENVOLVER ok

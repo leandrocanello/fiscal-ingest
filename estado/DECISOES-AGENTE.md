@@ -342,3 +342,9 @@ Como desfazer: reverter o commit `fix(E3-S04)` do relay.
 - **Opções:** (a) `Vencido` (há vencido → coleta já está parada) × (b) `AindaNaoValido` (a renovação é a novidade).
 - **Escolha:** (a). O titular está sem certificado utilizável agora; a E4-S03 precisa saber disso. `AindaNaoValido` só quando não há nenhum vencido. Teste `vencidoComRenovacaoFuturaEhVencido`.
 - **Como desfazer:** trocar a ordem dos dois ramos finais em `CertificadoVigente.escolher`.
+
+### DA-56 · 2026-11-11 · E1-S07
+- **Contexto:** o passo de docs pede "as URLs" da NT Conjunta 2025.001 e da FAQ da Receita, mas o planejamento (2026-11-04) não as registrou em nenhum arquivo de estado. A regra de `docs/FONTES-OFICIAIS.md` proíbe link que não foi aberto na sessão.
+- **Opções:** (a) registrar as fontes por nome, versão e data, sem URL, com a lacuna explícita; (b) pesquisar de novo as URLs agora; (c) escrever URLs de memória.
+- **Escolha:** (a). O plano diz para não pesquisar de novo, e (c) viola a regra do arquivo. A NT 2014.002 v1.40 já tinha URL no item 8 e foi referenciada.
+- **Como desfazer:** abrir as URLs oficiais e incluí-las na tabela do item 15 de `docs/FONTES-OFICIAIS.md`.

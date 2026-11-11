@@ -348,3 +348,9 @@ Como desfazer: reverter o commit `fix(E3-S04)` do relay.
 - **Opções:** (a) registrar as fontes por nome, versão e data, sem URL, com a lacuna explícita; (b) pesquisar de novo as URLs agora; (c) escrever URLs de memória.
 - **Escolha:** (a). O plano diz para não pesquisar de novo, e (c) viola a regra do arquivo. A NT 2014.002 v1.40 já tinha URL no item 8 e foi referenciada.
 - **Como desfazer:** abrir as URLs oficiais e incluí-las na tabela do item 15 de `docs/FONTES-OFICIAIS.md`.
+
+### DA-57 · 2026-11-11 · E3-S05
+- **Contexto:** o módulo S3 precisa de imagem de teste com tag fixa e de nome de módulo (MinIO foi arquivado).
+- **Opções:** tag numérica `chrislusf/seaweedfs:4.53` (a mais nova no Docker Hub hoje) × `latest`; módulo `infra-blob-s3` × `infra-blob-minio`.
+- **Escolha:** `4.53`, declarada só em `SeaweedFsTestBase`; comando `server -s3 -s3.config=... -dir=/data` com autenticação ligada (identidade sintética em `s3.json`). Módulo `infra-blob-s3` (autorizado pelo autor). O SDK (checksum CRC32 padrão) funcionou sem `WHEN_REQUIRED`; `If-None-Match: *` em chave existente devolve 412 e preserva o conteúdo.
+- **Como desfazer:** trocar a tag na constante `IMAGEM`; renomear o módulo em `settings.gradle.kts`.

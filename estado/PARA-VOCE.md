@@ -323,3 +323,5 @@ ou responda aqui, e troque o status no ROADMAP de `[!]` para `[~]`.
 - **Roteiro:** responda D1–D3 abaixo. Se escolher D1 (b), crie antes a linha da E4-S02b (Q1 da `[DUVIDA] E4-S02`) e ponha-a nas deps da E4-S03. Depois troque a E4-S03 de `[h]` para `[~]` no ROADMAP. Se escolher D3 (a), considere citar a tabela na §8 do CLAUDE.md (só você edita). **Atenção:** enquanto a `[DECISAO] E1-S07` (testes do `infra-postgres` sem compilar na `main`) não for resolvida, esta subetapa também não fecha "suíte verde".
 - **Recomendação:** D1 (a) · D2 (a) · D3 (a).
 - Resposta (2026-11-09, autor): conforme a recomendação — D1 (a), D2 (a), D3 (a).
+### [DECISAO] E3-S05-DOCS — 2026-11-11 — atualizar docs para `infra-blob-s3`
+CLAUDE.md §19 e ARCHITECTURE ainda dizem `infra-blob-minio`/"MinIO". O módulo agora é `infra-blob-s3` (SeaweedFS 4.53 nos testes). Recomendação: trocar os nomes e registrar o ADR (arquivos que o agente não pode editar).

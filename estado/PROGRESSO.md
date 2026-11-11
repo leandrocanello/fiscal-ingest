@@ -771,3 +771,5 @@
 - 2026-11-11 13:26 · E1-S07: revisor devolveu para correção
 - 2026-11-11 13:40 · E1-S07 (corrigir 1/2): ExtratorCnpjCertificadoTest.dvErradoDevolveVazio (3 codificações); falha com o código antigo: "dvErradoDevolveVazio [1] 11222333000182 FAILED — java.lang.IllegalArgumentException at ExtratorCnpjCertificadoTest.java:101"; passa com Cnpj.valido; suíte verde · próximo: extrair CNPJ alfanumérico do certificado
 - 2026-11-11 13:28 · E1-S07: DESENVOLVER ok
+- 2026-11-11 13:30 · E1-S07 (corrigir 2/2): ExtratorCnpjCertificadoTest.extraiCnpjAlfanumerico + minusculaDevolveVazio; falha antes: "[OCTET_STRING] Expecting Optional to contain: Cnpj[***DE35] but was empty."; laço 0-9 removido, só Cnpj.valido; suíte verde (1173) · próximo: voltar à revisão
+- 2026-11-11 13:30 · E1-S07: DESENVOLVER ok

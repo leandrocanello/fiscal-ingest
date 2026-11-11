@@ -750,3 +750,6 @@
 - 2026-11-11 · E1-S07: falha vista antes da implementação: `ChaveAcessoNfeTest.aceitaAlfanumericaComDvCerto :: IllegalArgumentException: chave de acesso deve ter 44 dígitos`; `recusaDvErradoSemEcoar[2] :: Expecting code to raise a throwable`; `IdEventoTest.aceitaAlfanumerica :: Chave de acesso deve ter 44 dígitos numéricos`; `chaveComDvErradoNaoChegaNaSefaz :: Expecting code to raise a throwable`
 - 2026-11-11 14:30 · E1-S07: passo 6 (ChaveAcessoNfe/IdEvento/EnvioManifestacao com formato da NT + DV obrigatório via ChaveAcessoNfe.valida; suíte verde) · próximo: ExtratorMetadados aceita chave alfanumérica
 - 2026-11-11 13:05 · E1-S07: DESENVOLVER ok
+- 2026-11-11 · E1-S07: falha vista antes da implementação: `leChaveAlfanumericaDeProcNFe`, `leChaveAlfanumericaDeResNFeEEvento`, `leCnpjsAlfanumericos`, `chaveComDvErradoAindaEhExtraida` :: `DocZipInvalidoException: Chave de acesso ausente ou inválida`
+- 2026-11-11 15:00 · E1-S07: passo 7 (ExtratorMetadados usa ChaveAcesso.formatoValido, sem DV na entrada; CNPJs alfanuméricos extraídos; suíte verde) · próximo: CNPJ alfanumérico de ponta a ponta no adapter (envelope, evento, assinador, blob, WireMock)
+- 2026-11-11 13:08 · E1-S07: DESENVOLVER ok

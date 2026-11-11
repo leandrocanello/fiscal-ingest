@@ -753,3 +753,6 @@
 - 2026-11-11 · E1-S07: falha vista antes da implementação: `leChaveAlfanumericaDeProcNFe`, `leChaveAlfanumericaDeResNFeEEvento`, `leCnpjsAlfanumericos`, `chaveComDvErradoAindaEhExtraida` :: `DocZipInvalidoException: Chave de acesso ausente ou inválida`
 - 2026-11-11 15:00 · E1-S07: passo 7 (ExtratorMetadados usa ChaveAcesso.formatoValido, sem DV na entrada; CNPJs alfanuméricos extraídos; suíte verde) · próximo: CNPJ alfanumérico de ponta a ponta no adapter (envelope, evento, assinador, blob, WireMock)
 - 2026-11-11 13:08 · E1-S07: DESENVOLVER ok
+- 2026-11-11 · E1-S07: passo 8 — falha vista só por erro de digitação no literal da chave de teste (45 caracteres): `IllegalArgumentException: Chave de acesso inválida (formato da NT 2025.001 ou DV)` em `autorEChaveAlfanumericos`/`assinaEventoComIdAlfanumerico`; corrigido o literal, nenhuma produção precisou mudar (passos 3–7 já cobriam o adapter). Testes de caracterização.
+- 2026-11-11 15:40 · E1-S07: passo 8 (CNPJ alfanumérico de ponta a ponta no adapter: envelope, evento, assinador, chaves de blob, WireMock e suíte de contrato com subclasse alfanumérica; sem mudança de produção; suíte verde) · próximo: V13 com CHECKs de CNPJ e chave alfanuméricos
+- 2026-11-11 13:10 · E1-S07: DESENVOLVER ok

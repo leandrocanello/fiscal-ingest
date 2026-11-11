@@ -756,3 +756,6 @@
 - 2026-11-11 · E1-S07: passo 8 — falha vista só por erro de digitação no literal da chave de teste (45 caracteres): `IllegalArgumentException: Chave de acesso inválida (formato da NT 2025.001 ou DV)` em `autorEChaveAlfanumericos`/`assinaEventoComIdAlfanumerico`; corrigido o literal, nenhuma produção precisou mudar (passos 3–7 já cobriam o adapter). Testes de caracterização.
 - 2026-11-11 15:40 · E1-S07: passo 8 (CNPJ alfanumérico de ponta a ponta no adapter: envelope, evento, assinador, chaves de blob, WireMock e suíte de contrato com subclasse alfanumérica; sem mudança de produção; suíte verde) · próximo: V13 com CHECKs de CNPJ e chave alfanuméricos
 - 2026-11-11 13:10 · E1-S07: DESENVOLVER ok
+- 2026-11-11 · E1-S07: passo 9 — falha vista: `ERROR: new row for relation "documento" violates check constraint "documento_chave_acesso_check"` (colunasAceitamAlfanumerico) e `Expecting code to raise a throwable` (minuscula/formato errado/letra fora do lugar). Passo 9 dividido em dois no plano (9a V13; 9b catálogo + não-retrocesso).
+- 2026-11-11 16:30 · E1-S07: passo 9a (V13 com CHECKs de formato de CNPJ e chave alfanuméricos; CnpjAlfanumericoEsquemaTest; suíte verde) · próximo: JdbiCatalogoTest.mesmaChaveAlfanumericaViraUmDocumento + NaoRetrocessoAlfanumericoTest
+- 2026-11-11 13:15 · E1-S07: DESENVOLVER ok

@@ -738,3 +738,6 @@
 - 2026-11-10 13:05 · E1-S07: DESENVOLVER ok
 - 2026-11-10 13:10 · E1-S07: passo 2 — FixturesFiscais (testFixtures do domain) + literais de CNPJ com DV válido; falha inicial: 'FixturesFiscaisTest.java:12: error: cannot find symbol' (FixturesFiscais inexistente); suíte verde · próximo: CnpjTest + Cnpj alfanumérico com DV
 - 2026-11-10 13:10 · E1-S07: DESENVOLVER ok
+- 2026-11-11 · E1-S07 passo 3 — falha vista: `CnpjTest.java:16: error: cannot find symbol ... method valido(String)` (Cnpj antigo); trabalho herdado sem commit de sessão anterior, reverificado.
+- 2026-11-11 12:50 · E1-S07: passo 3 — Cnpj alfanumérico com DV + Cnpj.valido (extrator do cert-vault e fixtures de infra ajustados); suíte inteira verde · próximo: Cnpj.toString mascarado (inv. 13)
+- 2026-11-11 12:51 · E1-S07: DESENVOLVER ok

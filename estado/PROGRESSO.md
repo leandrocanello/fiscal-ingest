@@ -780,3 +780,5 @@
 - 2026-11-11 13:33 · E3-S05: PLANEJAR ok
 - 2026-11-11 14:05 · E3-S05: módulo infra-blob-s3 + SeaweedFS 4.53; 412 do If-None-Match provado (teste de compatibilidade passou de primeira: é sonda do servidor, sem código de produção para falhar antes) · próximo: passo 2 (BlobStoreContrato)
 - 2026-11-11 13:38 · E3-S05: DESENVOLVER ok
+- 2026-11-11 13:40 · E3-S05: suíte BlobStoreContrato + BlobStoreEmMemoriaContratoTest (verde de primeira: a memória já cumpria o contrato; falha intermediária só no meu teste concorrente, corrigida) · próximo: ArquiteturaBlobTest
+- 2026-11-11 13:40 · E3-S05: DESENVOLVER ok

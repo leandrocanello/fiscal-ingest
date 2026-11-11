@@ -741,3 +741,6 @@
 - 2026-11-11 · E1-S07 passo 3 — falha vista: `CnpjTest.java:16: error: cannot find symbol ... method valido(String)` (Cnpj antigo); trabalho herdado sem commit de sessão anterior, reverificado.
 - 2026-11-11 12:50 · E1-S07: passo 3 — Cnpj alfanumérico com DV + Cnpj.valido (extrator do cert-vault e fixtures de infra ajustados); suíte inteira verde · próximo: Cnpj.toString mascarado (inv. 13)
 - 2026-11-11 12:51 · E1-S07: DESENVOLVER ok
+- 2026-11-11 · E1-S07: falha vista antes da correção: `expected: "Cnpj[***0181]" but was: "Cnpj[11222333000181]"`; `MetadadosDocumento[... emitente=11111111000191 ...] not to contain "11111111000191"`; `MetadadosDfe[modelo=55, emitente=12ABC34501DE35 ...] not to contain "12ABC34501DE35"`
+- 2026-11-11 14:00 · E1-S07: passo 4 (CNPJ mascarado em toString: Cnpj, MetadadosDocumento, MetadadosDfe; suíte verde, 1105 testes) · próximo: ChaveAcesso alfanumérica (formatoValido/temDvValido)
+- 2026-11-11 12:56 · E1-S07: DESENVOLVER ok

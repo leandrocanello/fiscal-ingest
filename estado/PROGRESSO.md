@@ -782,3 +782,5 @@
 - 2026-11-11 13:38 · E3-S05: DESENVOLVER ok
 - 2026-11-11 13:40 · E3-S05: suíte BlobStoreContrato + BlobStoreEmMemoriaContratoTest (verde de primeira: a memória já cumpria o contrato; falha intermediária só no meu teste concorrente, corrigida) · próximo: ArquiteturaBlobTest
 - 2026-11-11 13:40 · E3-S05: DESENVOLVER ok
+- 2026-11-11 14:00 · E3-S05: regras ArquiteturaBlobTest (passam de imediato por serem só regras; suíte inteira verde) · próximo: S3ConfigTest/FabricaClienteS3
+- 2026-11-11 13:41 · E3-S05: DESENVOLVER ok

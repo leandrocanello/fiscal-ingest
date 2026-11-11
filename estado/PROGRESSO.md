@@ -764,3 +764,5 @@
 - 2026-11-11 13:21 · E1-S07: DESENVOLVER ok
 - 2026-11-11 13:23 · E1-S07: passo 10 (FONTES-OFICIAIS item 15 + nota no item 8; URLs da NT/FAQ ausentes, DA-56; suíte verde) · próximo: Verificação — CnpjPropriedadesTest e ChaveAcessoPropriedadesTest
 - 2026-11-11 13:23 · E1-S07: DESENVOLVER ok
+- 2026-11-11 13:24 · E1-S07 (verificar): propriedades jqwik de Cnpj e ChaveAcesso; contrato, RLS/append-only e invariantes conferidos; suíte inteira verde · próximo: revisão
+- 2026-11-11 13:25 · E1-S07: VERIFICAR ok

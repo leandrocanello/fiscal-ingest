@@ -809,3 +809,6 @@
 - 2026-11-12 · E3-S07 passo 2 — falha vista (compilação): `ExtratorMetadadosTest.java:69: error: cannot find symbol` (`versaoLayout()`) · `:78: error: cannot find symbol` (`cStatProtocolo()`) · `FAILURE: Build failed`
 - 2026-11-12 12:30 · E3-S07: MetadadosDfe/ExtratorMetadados leem versaoLayout (infNFe/@versao) e cStatProtocolo (protNFe/infProt/cStat), suíte verde · próximo: ParserDfe da NF-e (ParserDfeNfeTest, RegraSemBytesNoParserTest)
 - 2026-11-12 08:22 · E3-S07: DESENVOLVER ok
+- 2026-11-12 · E3-S07 passo 3 — falha vista: `RegraSemBytesNoParserTest > nenhumTipoDoParserTemCampoByteArray() FAILED` (pacote `domain.parser` vazio) · `ParserDfeNfeTest.java:7: error: package br.com.doc.ingest.domain.parser does not exist` · `FAILURE: Build failed`
+- 2026-11-12 13:10 · E3-S07: porta domain.parser.ParserDfe (ResultadoParse sealed, DfeAnalisado) + ParserDfeNfe e SituacaoNfe ([VALIDAR], DA-33) no adapter; evento só com campos da nota (emitente da chave); suíte verde · próximo: quarentena V10 (QuarentenaEsquemaTest, QuarentenaRlsTest, JdbiQuarentenaTest)
+- 2026-11-12 08:27 · E3-S07: DESENVOLVER ok

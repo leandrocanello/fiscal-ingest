@@ -812,3 +812,6 @@
 - 2026-11-12 · E3-S07 passo 3 — falha vista: `RegraSemBytesNoParserTest > nenhumTipoDoParserTemCampoByteArray() FAILED` (pacote `domain.parser` vazio) · `ParserDfeNfeTest.java:7: error: package br.com.doc.ingest.domain.parser does not exist` · `FAILURE: Build failed`
 - 2026-11-12 13:10 · E3-S07: porta domain.parser.ParserDfe (ResultadoParse sealed, DfeAnalisado) + ParserDfeNfe e SituacaoNfe ([VALIDAR], DA-33) no adapter; evento só com campos da nota (emitente da chave); suíte verde · próximo: quarentena V10 (QuarentenaEsquemaTest, QuarentenaRlsTest, JdbiQuarentenaTest)
 - 2026-11-12 08:27 · E3-S07: DESENVOLVER ok
+- 2026-11-12 · E3-S07 passo 4 — falha vista: `QuarentenaEsquemaTest > motivoInvalidoEhRecusado() FAILED` · `UnableToExecuteStatementException ... PSQLException` (relação quarentena inexistente) · `QuarentenaRlsTest > semTenantNaoVeNada() FAILED` · `JdbiQuarentenaTest.java:4: error: cannot find symbol` (porta Quarentena)
+- 2026-11-12 14:00 · E3-S07: V10 quarentena (RLS, trigger só-resolve, grants por coluna) + porta Quarentena e JdbiQuarentena; suíte verde · próximo: tenants do CNPJ consultado (V11, TenantsDoCnpjConsultadoTest, JdbiCadastroEmpresasTest)
+- 2026-11-12 08:33 · E3-S07: DESENVOLVER ok

@@ -372,3 +372,9 @@ Contexto: `bucketInexistenteLanca` — o SeaweedFS (4.53) cria o bucket implicit
 Opções: (a) asserir falha também em `gravar`; (b) asserir só em `ler` (GET em bucket ausente falha).
 Escolha: (b). `S3BlobStore` encapsula `SdkException` em `BlobStoreIndisponivelException` (chave + operação, causa preservada).
 Como desfazer: ajustar o teste se a política de bucket (Fase 10) desligar a criação implícita.
+
+### DA-61 · 2026-11-12 · E3-S07
+- **Contexto:** o plano pede para a `quarentena` só grants por coluna (`update (resolvido_em)`); superuser ou dono ainda poderiam reabrir, mudar o motivo ou apagar.
+- **Opções:** (a) só grants; (b) grants + trigger `quarentena_so_resolve` (preenche `resolvido_em` uma vez, recusa delete), no mesmo espírito do `recusar_alteracao_ledger` da V2.
+- **Escolha:** (b), testada em `QuarentenaEsquemaTest.resolvidaNaoReabreNemEhApagadaNemMudaOutraColuna`. Porta `Quarentena.abrir` devolve `boolean` (abriu agora) e `resolverDoDocumento` devolve `int` (quantas fechou).
+- **Como desfazer:** nova migração com `drop trigger quarentena_so_resolve on quarentena; drop function quarentena_so_resolve();` e remover o teste.

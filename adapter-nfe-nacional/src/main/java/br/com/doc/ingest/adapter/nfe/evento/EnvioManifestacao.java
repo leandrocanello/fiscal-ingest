@@ -1,5 +1,6 @@
 package br.com.doc.ingest.adapter.nfe.evento;
 
+import br.com.doc.ingest.adapter.nfe.ChaveAcessoNfe;
 import br.com.doc.ingest.adapter.nfe.ChavesBlobPull;
 import br.com.doc.ingest.adapter.nfe.cert.CertificadoCarregado;
 import br.com.doc.ingest.adapter.nfe.mapping.CStatEventoMapper;
@@ -22,7 +23,6 @@ import java.time.Duration;
 import java.time.ZoneId;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.regex.Pattern;
 
 /**
  * Envia a manifestação ao NFeRecepcaoEvento: monta e assina o evento, envia, grava a resposta bruta antes de
@@ -35,7 +35,6 @@ public final class EnvioManifestacao {
 
     private static final int N_SEQ_EVENTO = 1;
     private static final ZoneId FUSO_EVENTO = ZoneId.of("America/Sao_Paulo");
-    private static final Pattern CHAVE_44 = Pattern.compile("\\d{44}");
     private static final Desfecho TEMPORARIO = new Desfecho.IndisponivelTemporario(Duration.ofMinutes(5));
     private static final Desfecho SEM_CREDENCIAL = new Desfecho.ErroAutenticacao("adapter não autenticado");
     private static final Desfecho CHAVE_INVALIDA = new Desfecho.IndisponivelDefinitivo("chave de acesso inválida");
@@ -102,7 +101,7 @@ public final class EnvioManifestacao {
         if (transporte == null || certificado == null) {
             return Optional.of(SEM_CREDENCIAL);
         }
-        if (!chaveValida(chave)) {
+        if (!ChaveAcessoNfe.valida(chave)) {
             return Optional.of(CHAVE_INVALIDA);
         }
         try {
@@ -111,21 +110,5 @@ public final class EnvioManifestacao {
             return Optional.of(TIPO_NAO_SUPORTADO);
         }
         return Optional.empty();
-    }
-
-    /** 44 dígitos com DV de módulo 11: pesos de 2 a 9 a partir da direita; resto 0 ou 1 dá DV 0. */
-    private static boolean chaveValida(String chave) {
-        if (!CHAVE_44.matcher(chave).matches()) {
-            return false;
-        }
-        int soma = 0;
-        int peso = 2;
-        for (int i = 42; i >= 0; i--) {
-            soma += (chave.charAt(i) - '0') * peso;
-            peso = peso == 9 ? 2 : peso + 1;
-        }
-        int resto = soma % 11;
-        int dv = resto < 2 ? 0 : 11 - resto;
-        return chave.charAt(43) - '0' == dv;
     }
 }

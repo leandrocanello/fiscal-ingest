@@ -39,7 +39,7 @@ class AssinadorXmlTest {
 
     private static final String DSIG = XMLSignature.XMLNS;
     private static final String CHAVE = "35261012345678000199550010000001231000000011";
-    private static final Cnpj AUTOR = new Cnpj("98765432000110");
+    private static final Cnpj AUTOR = new Cnpj("98765432000198");
     private static final Instant AGORA = Instant.parse("2026-10-28T13:04:05Z");
     private static final String ID = new IdEvento(TipoManifestacao.CIENCIA, CHAVE, 1).valor();
     private static final String SENHA = "senha-de-teste";
@@ -214,6 +214,20 @@ class AssinadorXmlTest {
     private static Document eventoMontado() {
         return new MontadorEvento(Clock.fixed(AGORA, ZoneOffset.UTC), ZoneId.of("America/Sao_Paulo"))
                 .montar(TipoAmbiente.HOMOLOGACAO, AUTOR, CHAVE, TipoManifestacao.CIENCIA, 1);
+    }
+
+    @Test
+    @DisplayName("assina e valida evento com Id e autor alfanuméricos (NT Conjunta 2025.001)")
+    void assinaEventoComIdAlfanumerico() throws Exception {
+        String chave = "35260412ABC34501DE35550010000000011000000013";
+        String id = new IdEvento(TipoManifestacao.CIENCIA, chave, 1).valor();
+        Document doc = new MontadorEvento(Clock.fixed(AGORA, ZoneOffset.UTC), ZoneId.of("America/Sao_Paulo"))
+                .montar(TipoAmbiente.HOMOLOGACAO, new Cnpj("12ABC34501DE35"), chave, TipoManifestacao.CIENCIA, 1);
+
+        new AssinadorXml(AlgoritmoAssinatura.PADRAO).assinar(doc, id, certificado);
+
+        assertThat(unico(signature(doc), "Reference").getAttribute("URI")).isEqualTo("#" + id);
+        assertThat(valida(doc)).isTrue();
     }
 
     @Test

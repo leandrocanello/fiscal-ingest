@@ -32,9 +32,13 @@ import org.junit.jupiter.api.BeforeEach;
 /** Roda a suíte de contrato do SourceAdapter contra o NfeNacionalAdapter com WireMock em localhost (inv. 14). */
 class NfeNacionalAdapterContratoTest extends SourceAdapterContrato {
 
+    /** CNPJ consultado; a subclasse alfanumérica troca só isto. */
+    protected Cnpj cnpj() {
+        return new Cnpj("11111111000191");
+    }
+
     private static final String CAMINHO = "/ws/distdfe";
     private static final FonteId FONTE = new FonteId("NFE_AN");
-    private static final Cnpj CNPJ = new Cnpj("11111111000191");
 
     private WireMockServer servidor;
     private BlobStoreEmMemoria blobs;
@@ -64,7 +68,7 @@ class NfeNacionalAdapterContratoTest extends SourceAdapterContrato {
 
     @Override
     protected ContextoConsulta contexto() {
-        return new ContextoConsulta(FONTE, CNPJ);
+        return new ContextoConsulta(FONTE, cnpj());
     }
 
     @Override

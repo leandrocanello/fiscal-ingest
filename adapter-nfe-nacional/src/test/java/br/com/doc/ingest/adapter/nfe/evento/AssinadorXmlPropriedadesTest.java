@@ -7,6 +7,7 @@ import br.com.doc.ingest.adapter.nfe.soap.TipoAmbiente;
 import br.com.doc.ingest.domain.adapter.Credencial;
 import br.com.doc.ingest.domain.adapter.TipoManifestacao;
 import br.com.doc.ingest.domain.model.Cnpj;
+import br.com.doc.ingest.domain.model.FixturesFiscais;
 import net.jqwik.api.Arbitraries;
 import net.jqwik.api.Arbitrary;
 import net.jqwik.api.ForAll;
@@ -46,12 +47,15 @@ class AssinadorXmlPropriedadesTest {
 
     @Provide
     Arbitrary<String> chaves() {
-        return Arbitraries.strings().numeric().ofLength(44);
+        return Arbitraries.strings().numeric().ofLength(43).map(FixturesFiscais::chave);
     }
 
     @Provide
     Arbitrary<Cnpj> cnpjs() {
-        return Arbitraries.strings().numeric().ofLength(14).map(Cnpj::new);
+        // 14 zeros passam no DV, mas sao recusados (Anexo I da NT Conjunta 2025.001)
+        return Arbitraries.strings().numeric().ofLength(12)
+                .filter(base -> !base.equals("000000000000"))
+                .map(FixturesFiscais::cnpj).map(Cnpj::new);
     }
 
     private static Document assinado(Cnpj autor, String chave, int seq) {

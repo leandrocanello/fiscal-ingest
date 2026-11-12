@@ -9,7 +9,7 @@ import java.util.Optional;
  * Metadado extraído do XML de um DF-e (só metadado, nunca o XML). Campos opcionais ficam vazios
  * quando o schema não os traz.
  *
- * @param chave                 chave de acesso (44 dígitos)
+ * @param chave                 chave de acesso (44 caracteres; CNPJ alfanumérico nas posições 7–20)
  * @param modelo                modelo derivado das posições 21–22 da chave
  * @param cnpjEmitente          CNPJ do emitente
  * @param documentoDestinatario CNPJ ou CPF do destinatário
@@ -46,10 +46,10 @@ public record MetadadosDfe(
         cnpjsAutorizados = List.copyOf(cnpjsAutorizados);
     }
 
-    /** Mascara o documento do destinatário (CPF é dado pessoal, invariante 13). */
+    /** Mascara o emitente e o destinatário (CPF é dado pessoal, invariante 13). */
     @Override
     public String toString() {
-        return "MetadadosDfe[modelo=" + modelo + ", emitente=" + cnpjEmitente.orElse("-")
+        return "MetadadosDfe[modelo=" + modelo + ", emitente=" + cnpjEmitente.map(MetadadosDfe::mascarar).orElse("-")
                 + ", destinatario=" + documentoDestinatario.map(MetadadosDfe::mascarar).orElse("-") + "]";
     }
 

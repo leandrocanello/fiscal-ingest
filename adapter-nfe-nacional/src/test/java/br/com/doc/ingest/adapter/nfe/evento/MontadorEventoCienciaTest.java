@@ -27,7 +27,7 @@ class MontadorEventoCienciaTest {
 
     /** Chave sintética (UF/CNPJ fictícios) com DV válido. */
     private static final String CHAVE = "35261012345678000199550010000001231000000011";
-    private static final Cnpj AUTOR = new Cnpj("98765432000110");
+    private static final Cnpj AUTOR = new Cnpj("98765432000198");
     /** 2026-10-28 13:04:05.789 UTC → 10:04:05 em São Paulo (-03:00). */
     private static final Instant AGORA = Instant.parse("2026-10-28T13:04:05.789Z");
     private static final ZoneId SAO_PAULO = ZoneId.of("America/Sao_Paulo");
@@ -55,7 +55,7 @@ class MontadorEventoCienciaTest {
 
         assertThat(texto(doc, "/n:evento/n:infEvento/n:cOrgao")).isEqualTo("91");
         assertThat(texto(doc, "/n:evento/n:infEvento/n:tpAmb")).isEqualTo("1");
-        assertThat(texto(doc, "/n:evento/n:infEvento/n:CNPJ")).isEqualTo("98765432000110");
+        assertThat(texto(doc, "/n:evento/n:infEvento/n:CNPJ")).isEqualTo("98765432000198");
         assertThat(texto(doc, "/n:evento/n:infEvento/n:chNFe")).isEqualTo(CHAVE);
         assertThat(texto(doc, "/n:evento/n:infEvento/n:dhEvento")).isEqualTo("2026-10-28T10:04:05-03:00");
         assertThat(texto(doc, "/n:evento/n:infEvento/n:tpEvento")).isEqualTo("210210");
@@ -94,6 +94,18 @@ class MontadorEventoCienciaTest {
     @DisplayName("ambiente de homologação gera tpAmb 2")
     void ambienteHomologacaoGeraTpAmb2() throws Exception {
         assertThat(texto(montar(TipoAmbiente.HOMOLOGACAO), "/n:evento/n:infEvento/n:tpAmb")).isEqualTo("2");
+    }
+
+    @Test
+    @DisplayName("autor e chave alfanuméricos vão intactos no CNPJ, no chNFe e no Id (NT Conjunta 2025.001)")
+    void autorEChaveAlfanumericos() throws Exception {
+        String chave = "35260412ABC34501DE35550010000000011000000013";
+        Document doc = montador.montar(TipoAmbiente.PRODUCAO, new Cnpj("12ABC34501DE35"), chave,
+                TipoManifestacao.CIENCIA, 1);
+
+        assertThat(texto(doc, "/n:evento/n:infEvento/n:CNPJ")).isEqualTo("12ABC34501DE35");
+        assertThat(texto(doc, "/n:evento/n:infEvento/n:chNFe")).isEqualTo(chave);
+        assertThat(texto(doc, "/n:evento/n:infEvento/@Id")).isEqualTo("ID210210" + chave + "01");
     }
 
     private static String texto(Document doc, String expr) throws XPathExpressionException {

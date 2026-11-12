@@ -122,4 +122,16 @@ class EnvelopeDistDfeTest {
             java.util.Locale.setDefault(anterior);
         }
     }
+
+    @Test
+    @DisplayName("CNPJ alfanumérico vai intacto nas três formas de consulta (NT Conjunta 2025.001)")
+    void cnpjAlfanumericoVaiIntacto() {
+        Cnpj alfanumerico = new Cnpj("12ABC34501DE35");
+        assertThat(new String(EnvelopeDistDfe.soap12DistNsu(TipoAmbiente.PRODUCAO, alfanumerico, new Nsu(1)),
+                StandardCharsets.UTF_8)).contains("<CNPJ>12ABC34501DE35</CNPJ>");
+        assertThat(new String(EnvelopeDistDfe.soap12ConsNsu(TipoAmbiente.PRODUCAO, alfanumerico, new Nsu(1)),
+                StandardCharsets.UTF_8)).contains("<CNPJ>12ABC34501DE35</CNPJ>");
+        assertThat(new String(EnvelopeDistDfe.soap12ConsChNFe(TipoAmbiente.PRODUCAO, alfanumerico, CHAVE),
+                StandardCharsets.UTF_8)).contains("<CNPJ>12ABC34501DE35</CNPJ>");
+    }
 }

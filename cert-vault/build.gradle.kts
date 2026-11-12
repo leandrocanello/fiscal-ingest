@@ -13,6 +13,7 @@ dependencies {
     // BouncyCastle só para gerar certificados e .pfx sintéticos; fica fora do código de produção
     testFixturesImplementation("org.bouncycastle:bcpkix-jdk18on:1.79")
 
+    testImplementation(testFixtures(project(":domain")))
     testImplementation(project(":adapter-fake"))
     // CarregadorPfx do adapter: a credencial aberta pelo cofre precisa carregar no consumidor real
     testImplementation(project(":adapter-nfe-nacional"))

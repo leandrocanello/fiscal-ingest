@@ -40,7 +40,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class CofreLocalAbrirTest {
 
     private static final String CNPJ = "11222333000181";
-    private static final String OUTRO_CNPJ = "99888777000166";
+    private static final String OUTRO_CNPJ = "99888777000100";
     private static final Instant DE = Instant.parse("2026-01-01T00:00:00Z");
     private static final Instant ATE = Instant.parse("2027-01-01T00:00:00Z");
     private static final Instant AGORA = Instant.parse("2026-06-01T12:00:00Z");

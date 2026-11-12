@@ -53,7 +53,7 @@ class JdbiNsuLedgerTest extends PostgresTestBase {
     @Test
     void listarFiltraPorFonteCnpjEAmbiente() {
         var outraFonte = new FonteId("CTE_AN");
-        var outroCnpj = new Cnpj("99888777000166");
+        var outroCnpj = new Cnpj("99888777000100");
         var homologacao = new JdbiNsuLedger(jdbi, Ambiente.HOMOLOGACAO, RELOGIO);
         ledger.registrar(FONTE, CNPJ, e(1, StatusNsu.BAIXADO));
         ledger.registrar(outraFonte, CNPJ, e(2, StatusNsu.BAIXADO));

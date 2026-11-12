@@ -4,6 +4,7 @@ import br.com.doc.ingest.domain.coleta.ChaveColeta;
 import br.com.doc.ingest.domain.coleta.PedidoReivindicacao;
 import br.com.doc.ingest.domain.model.Ambiente;
 import br.com.doc.ingest.domain.model.Cnpj;
+import br.com.doc.ingest.domain.model.FixturesFiscais;
 import br.com.doc.ingest.domain.model.FonteId;
 import net.jqwik.api.*;
 import net.jqwik.api.lifecycle.BeforeTry;
@@ -80,8 +81,13 @@ class FilaColetaPropriedadesTest extends PostgresTestBase {
         });
     }
 
+    private static int indice(Cnpj cnpj) {
+        return Integer.parseInt(cnpj.valor().substring(0, 12)) - 1;
+    }
+
     private static String cnpj(int i) {
-        return String.format("%014d", i);
+        // base deslocada de 1: a base zerada daria 14 zeros, recusado mesmo com DV certo
+        return FixturesFiscais.cnpj(String.format("%012d", i + 1));
     }
 
     private static ChaveColeta chave(int i) {
@@ -144,7 +150,7 @@ class FilaColetaPropriedadesTest extends PostgresTestBase {
                 case REIVINDICAR -> {
                     var resposta = fila.reivindicar(new PedidoReivindicacao(dono, duracao, 2));
                     for (var c : resposta) {
-                        int i = Integer.parseInt(c.posicao().chave().cnpj().valor());
+                        int i = indice(c.posicao().chave().cnpj());
                         var m = modelo[i];
                         if (m.leaseAte != null && m.leaseAte.isAfter(agora)) {
                             leaseVigente.add("passo " + passo + " chave " + i);
@@ -209,7 +215,7 @@ class FilaColetaPropriedadesTest extends PostgresTestBase {
         var noFim = new HashSet<Integer>();
         for (int ciclo = 0; ciclo < CHAVES; ciclo++) {
             for (var c : fila.reivindicar(new PedidoReivindicacao("Z", Duration.ofHours(1), 2))) {
-                noFim.add(Integer.parseInt(c.posicao().chave().cnpj().valor()));
+                noFim.add(indice(c.posicao().chave().cnpj()));
             }
         }
         return new Execucao(leaseVigente, encurtados, divergencias, noFim, alterados);

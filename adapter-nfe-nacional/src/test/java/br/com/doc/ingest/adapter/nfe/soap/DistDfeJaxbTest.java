@@ -29,12 +29,12 @@ class DistDfeJaxbTest {
         @Test
         @DisplayName("unmarshal request distNSU")
         void deveUnmarshalRequestDistNsu() throws Exception {
-            String xml = "<distDFeInt versao=\"1.01\" xmlns=\"" + NFE_NS + "\"><tpAmb>1</tpAmb><CNPJ>12345678000199</CNPJ><distNSU><ultNSU>0</ultNSU></distNSU></distDFeInt>";
+            String xml = "<distDFeInt versao=\"1.01\" xmlns=\"" + NFE_NS + "\"><tpAmb>1</tpAmb><CNPJ>12345678000195</CNPJ><distNSU><ultNSU>0</ultNSU></distNSU></distDFeInt>";
             Unmarshaller u = ctx(DistDfeInt.class).createUnmarshaller();
             DistDfeInt req = (DistDfeInt) u.unmarshal(new StringReader(xml));
             assertThat(req.getVersao()).isEqualTo("1.01");
             assertThat(req.getTpAmb()).isEqualTo("1");
-            assertThat(req.getCnpj()).isEqualTo("12345678000199");
+            assertThat(req.getCnpj()).isEqualTo("12345678000195");
             assertThat(req.getUltNsu()).isEqualTo("0");
         }
 
@@ -44,13 +44,13 @@ class DistDfeJaxbTest {
             DistDfeInt req = new DistDfeInt();
             req.setVersao("1.01");
             req.setTpAmb("1");
-            req.setCnpj("12345678000199");
+            req.setCnpj("12345678000195");
             req.setUltNsu("100");
             Marshaller m = ctx(DistDfeInt.class).createMarshaller();
             StringWriter sw = new StringWriter();
             m.marshal(req, sw);
             String xml = sw.toString();
-            assertThat(xml).contains("distDFeInt").contains("12345678000199").contains("ultNSU").contains("100");
+            assertThat(xml).contains("distDFeInt").contains("12345678000195").contains("ultNSU").contains("100");
         }
 
         @Test

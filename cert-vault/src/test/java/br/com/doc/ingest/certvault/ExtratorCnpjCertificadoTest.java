@@ -3,6 +3,7 @@ package br.com.doc.ingest.certvault;
 import br.com.doc.ingest.certvault.GeradorCertificadoDeTeste.CertificadoTitular;
 import br.com.doc.ingest.certvault.GeradorCertificadoDeTeste.CodificacaoCnpj;
 import br.com.doc.ingest.domain.model.Cnpj;
+import br.com.doc.ingest.domain.model.FixturesFiscais;
 import net.jqwik.api.ForAll;
 import net.jqwik.api.Property;
 import net.jqwik.api.constraints.IntRange;
@@ -89,6 +90,41 @@ class ExtratorCnpjCertificadoTest {
         CertificadoTitular titular = gerador.titular(valor, CodificacaoCnpj.PRINTABLE_STRING);
 
         assertThat(ExtratorCnpjCertificado.extrair(titular.certificado())).isEmpty();
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"11222333000182", "11222333000191"})
+    @DisplayName("CNPJ com DV errado no certificado devolve vazio, sem lançar")
+    void dvErradoDevolveVazio(String valor) {
+        for (CodificacaoCnpj codificacao : CodificacaoCnpj.values()) {
+            CertificadoTitular titular = gerador.titular(valor, codificacao);
+
+            assertThat(ExtratorCnpjCertificado.extrair(titular.certificado())).as("%s", codificacao).isEmpty();
+        }
+    }
+
+    @Test
+    @DisplayName("extrai o CNPJ alfanumérico (NT Conjunta 2025.001) nas três codificações")
+    void extraiCnpjAlfanumerico() {
+        String alfanumerico = FixturesFiscais.cnpj("12ABC34501DE");
+        for (CodificacaoCnpj codificacao : CodificacaoCnpj.values()) {
+            CertificadoTitular titular = gerador.titular(alfanumerico, codificacao);
+
+            assertThat(ExtratorCnpjCertificado.extrair(titular.certificado()))
+                    .as("%s", codificacao)
+                    .contains(new Cnpj(alfanumerico));
+        }
+    }
+
+    @Test
+    @DisplayName("CNPJ alfanumérico em minúsculas devolve vazio")
+    void minusculaDevolveVazio() {
+        String minuscula = FixturesFiscais.cnpj("12ABC34501DE").toLowerCase();
+        for (CodificacaoCnpj codificacao : CodificacaoCnpj.values()) {
+            CertificadoTitular titular = gerador.titular(minuscula, codificacao);
+
+            assertThat(ExtratorCnpjCertificado.extrair(titular.certificado())).as("%s", codificacao).isEmpty();
+        }
     }
 
     @Test

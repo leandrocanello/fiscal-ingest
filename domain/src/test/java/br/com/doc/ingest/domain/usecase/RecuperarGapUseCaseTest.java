@@ -33,7 +33,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class RecuperarGapUseCaseTest {
 
     private final FonteId fonte = new FonteId("NFE_AN");
-    private final Cnpj cnpj = new Cnpj("12345678000199");
+    private final Cnpj cnpj = new Cnpj("12345678000195");
 
     @Nested
     @DisplayName("Recuperacao basica")

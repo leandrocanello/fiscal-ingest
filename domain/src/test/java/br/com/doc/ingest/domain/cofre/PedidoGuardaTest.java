@@ -11,7 +11,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 @DisplayName("PedidoGuarda (upload de pfx + senha, só em memória)")
 class PedidoGuardaTest {
 
-    private static final Cnpj CNPJ = new Cnpj("12345678000199");
+    private static final Cnpj CNPJ = new Cnpj("12345678000195");
     private static final byte[] PFX = {0x30, (byte) 0x82, 0x01, 0x02, 0x7f};
     private static final char[] SENHA = "segredo-sintetico".toCharArray();
 

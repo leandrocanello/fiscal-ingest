@@ -84,4 +84,24 @@ class ChavesBlobPullTest {
                 ChavesBlobPull.documento(FONTE, TipoAmbiente.PRODUCAO, CNPJ, new Nsu(Long.MAX_VALUE), SHA), SHA))
                 .doesNotThrowAnyException();
     }
+
+    @Test
+    @DisplayName("inv. 7: CNPJ alfanumérico entra intacto na chave e é aceito por BlobRef")
+    void cnpjAlfanumericoEntraNaChave() {
+        var alfanumerico = new Cnpj("12ABC34501DE35");
+        var instante = Instant.parse("2026-10-28T12:00:00Z");
+
+        var envelope = ChavesBlobPull.envelope(FONTE, TipoAmbiente.PRODUCAO, alfanumerico, instante, SHA);
+        var documento = ChavesBlobPull.documento(FONTE, TipoAmbiente.PRODUCAO, alfanumerico, new Nsu(1), SHA);
+        var evento = ChavesBlobPull.envioEvento(FONTE, TipoAmbiente.PRODUCAO, alfanumerico, instante, SHA);
+
+        assertThat(envelope).isEqualTo(
+                "raw/pull/NFE_AN/PRODUCAO/12ABC34501DE35/2026/10/28/" + SHA + ".envelope.xml");
+        assertThat(documento).isEqualTo(
+                "raw/pull/NFE_AN/PRODUCAO/12ABC34501DE35/nsu/000000000000001-" + SHA + ".xml");
+        assertThat(evento).startsWith("raw/pull/NFE_AN/PRODUCAO/12ABC34501DE35/evento/");
+        for (String chave : java.util.List.of(envelope, documento, evento)) {
+            assertThatCode(() -> new BlobRef(chave, SHA)).doesNotThrowAnyException();
+        }
+    }
 }

@@ -3,11 +3,14 @@ package br.com.doc.ingest.infra.blob;
 import br.com.doc.ingest.domain.blob.BlobRef;
 import br.com.doc.ingest.domain.blob.BlobStore;
 import br.com.doc.ingest.domain.blob.Sha256;
+import br.com.doc.ingest.domain.blob.BlobConflitanteException;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
+import software.amazon.awssdk.services.s3.model.HeadObjectRequest;
 import software.amazon.awssdk.services.s3.model.NoSuchKeyException;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
+import software.amazon.awssdk.services.s3.model.S3Exception;
 
 import java.util.Base64;
 import java.util.HexFormat;
@@ -35,14 +38,36 @@ public final class S3BlobStore implements BlobStore {
             throw new IllegalArgumentException("sha256 informado não confere com o conteúdo para a chave " + chave);
         }
         byte[] copia = conteudo.clone();
-        s3.putObject(PutObjectRequest.builder()
+        try {
+            s3.putObject(PutObjectRequest.builder()
                         .bucket(bucket)
                         .key(chave)
+                        .ifNoneMatch("*")
                         .metadata(Map.of(METADADO_SHA256, sha256))
                         .checksumSHA256(Base64.getEncoder().encodeToString(HexFormat.of().parseHex(sha256)))
                         .build(),
                 RequestBody.fromBytes(copia));
+        } catch (S3Exception e) {
+            if (e.statusCode() != 412) {
+                throw e;
+            }
+            String existente = shaExistente(chave);
+            if (!existente.equals(sha256)) {
+                throw new BlobConflitanteException(chave, existente, sha256);
+            }
+        }
         return ref;
+    }
+
+    /** sha256 do objeto já gravado: metadado, ou recalculado dos bytes se o metadado faltar. */
+    private String shaExistente(String chave) {
+        String meta = s3.headObject(HeadObjectRequest.builder().bucket(bucket).key(chave).build())
+                .metadata().get(METADADO_SHA256);
+        if (meta != null) {
+            return meta;
+        }
+        return Sha256.hex(s3.getObjectAsBytes(GetObjectRequest.builder().bucket(bucket).key(chave).build())
+                .asByteArray());
     }
 
     @Override

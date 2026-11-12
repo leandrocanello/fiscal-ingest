@@ -97,4 +97,27 @@ class S3BlobStoreTest extends SeaweedFsTestBase {
 
         assertThat(store.ler(new BlobRef("k4", Sha256.hex(original)))).isEmpty();
     }
+
+    @Test
+    void regravarMesmoConteudoEhNoOp() {
+        byte[] conteudo = bytes("igual");
+        BlobRef primeira = store.gravar("k5", conteudo, Sha256.hex(conteudo));
+        BlobRef segunda = store.gravar("k5", conteudo, Sha256.hex(conteudo));
+
+        assertThat(segunda).isEqualTo(primeira);
+        assertThat(store.ler(primeira)).hasValue(conteudo);
+    }
+
+    @Test
+    void regravarConteudoDiferenteLancaConflito() {
+        byte[] a = bytes("a");
+        byte[] b = bytes("b");
+        store.gravar("k6", a, Sha256.hex(a));
+
+        assertThatThrownBy(() -> store.gravar("k6", b, Sha256.hex(b)))
+                .isInstanceOf(br.com.doc.ingest.domain.blob.BlobConflitanteException.class)
+                .hasMessageContaining("k6")
+                .hasMessageNotContaining("b\"");
+        assertThat(store.ler(new BlobRef("k6", Sha256.hex(a)))).hasValue(a);
+    }
 }

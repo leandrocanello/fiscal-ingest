@@ -10,6 +10,9 @@ dependencies {
     }
     implementation("software.amazon.awssdk:url-connection-client")
 
+    testImplementation(testFixtures(project(":adapter-fake")))
+    testImplementation(project(":adapter-fake"))
+
     // Testcontainers 2.x (DA-11)
     testImplementation("org.testcontainers:testcontainers:2.0.2")
     testImplementation("org.testcontainers:testcontainers-junit-jupiter:2.0.2")

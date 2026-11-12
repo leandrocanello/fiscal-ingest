@@ -806,3 +806,6 @@
 - 2026-11-12 · E3-S07 passo 1 — falha vista (stub vazio): `RoteadorConteudoTest > emitenteDoTenantViraSaida() FAILED` · `transferenciaTemDoisVinculos() FAILED` · `resumoVinculaEmpresaConsultadaComoEntrada() FAILED` · `175 tests completed, 11 failed`
 - 2026-11-12 12:00 · E3-S07: RoteadorConteudo (D1a/D2a) + CnpjsDoConteudo/EmpresaDoTenant/TipoEmpresa, testes unitários e jqwik, suíte verde (commit f187f56) · próximo: ExtratorMetadados lê versaoLayout e cStatProtocolo
 - 2026-11-12 08:20 · E3-S07: DESENVOLVER ok
+- 2026-11-12 · E3-S07 passo 2 — falha vista (compilação): `ExtratorMetadadosTest.java:69: error: cannot find symbol` (`versaoLayout()`) · `:78: error: cannot find symbol` (`cStatProtocolo()`) · `FAILURE: Build failed`
+- 2026-11-12 12:30 · E3-S07: MetadadosDfe/ExtratorMetadados leem versaoLayout (infNFe/@versao) e cStatProtocolo (protNFe/infProt/cStat), suíte verde · próximo: ParserDfe da NF-e (ParserDfeNfeTest, RegraSemBytesNoParserTest)
+- 2026-11-12 08:22 · E3-S07: DESENVOLVER ok

@@ -796,3 +796,5 @@
 - 2026-11-12 08:04 · E3-S05: DESENVOLVER ok
 - 2026-11-12 08:10 · E3-S05: BlobStoreIndisponivelException (falha inicial: símbolo inexistente, compilação) · próximo: S3BlobStorePropriedadesTest
 - 2026-11-12 08:06 · E3-S05: DESENVOLVER ok
+- 2026-11-12 08:07 · E3-S05: S3BlobStorePropriedadesTest (50 tentativas, equivalência com memória) verde de primeira, sem ajustes; suíte inteira verde (passo de teste já passa por a implementação existir) · próximo: verificação final / revisão
+- 2026-11-12 08:07 · E3-S05: DESENVOLVER ok

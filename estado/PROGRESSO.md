@@ -792,3 +792,5 @@
 - 2026-11-12 08:01 · E3-S05: DESENVOLVER ok
 - 2026-11-12 08:02 · E3-S05: S3BlobStore gravar/ler com sha256 conferido (6 testes, falha inicial: classe S3BlobStore inexistente → 'cannot find symbol'; suíte inteira verde) · próximo: imutabilidade com If-None-Match
 - 2026-11-12 08:02 · E3-S05: DESENVOLVER ok
+- 2026-11-12 08:04 · E3-S05: escrita condicional (If-None-Match) + S3BlobStoreContratoTest; falha inicial: 3 testes (conflito não lançado, concorrência) · próximo: falhas de infraestrutura (BlobStoreIndisponivelException)
+- 2026-11-12 08:04 · E3-S05: DESENVOLVER ok

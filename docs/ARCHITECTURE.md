@@ -97,7 +97,7 @@ Sistema de baixa automática de documentos fiscais (NF-e, CT-e, MDF-e, NFS-e, et
 **Data Plane** (alto volume, documentos):
 - Documentos publicados num **stream** (Kafka, particionado por CNPJ).
 - **Workers stateless** fazem parse em streaming e persistem.
-- O **XML nunca passa pelo core** — vai direto ao object store (MinIO/S3).
+- O **XML nunca passa pelo core** — vai direto ao object store (S3 compatível).
 - Só **metadado + NSU** tocam o domínio/ledger.
 
 > É essa separação que impede o core de virar gargalo.
@@ -264,12 +264,12 @@ public record Documento(
 | Build | Gradle (Kotlin DSL) |
 | Ledger/Metadados/Catálogo/Feed | Postgres (fonte da verdade; particionar só com medição) |
 | Data plane / Stream | Outbox + filas no Postgres; Kafka quando a medição pedir (ADR-021) |
-| Object storage | MinIO / S3 (XML gzip, imutável, sha256) |
+| Object storage | S3 compatível — SeaweedFS nos testes (XML, imutável, sha256; ADR-030) |
 | Estado quente / rate-limit / locks | Postgres (lease + CAS); Redis quando a medição pedir (ADR-021) |
 | Agente local | Go (repositório separado `fiscal-agent`, ADR-009) |
 | Scheduler | Dedicado (due-time + token bucket por CNPJ) |
 | Unit tests | JUnit 5 + Mockito |
-| Integration tests | Testcontainers (Postgres/Kafka/MinIO) |
+| Integration tests | Testcontainers (Postgres/SeaweedFS; Kafka se entrar) |
 | SEFAZ mock | WireMock (NUNCA bater na SEFAZ real) |
 | Empacotamento | Docker / docker-compose |
 
@@ -290,7 +290,7 @@ fiscal-ingest/                         (este repositório)
 ├── ingest-push/                       (previsto) parse seguro, classificação, assinatura, roteamento
 ├── cert-vault/                        (previsto) CofreDeCertificados
 ├── infra-postgres/                    (previsto) ledger, estado_coleta, catálogo, feed, outbox, RLS
-├── infra-blob-minio/                  (previsto)
+├── infra-blob-s3/                     (E3-S05)
 ├── infra-stream-kafka/                (fase 10, se medido)
 ├── infra-ratelimit-redis/             (fase 10, se medido)
 ├── app-scheduler/ app-worker/ app-api/  (previstos) composição

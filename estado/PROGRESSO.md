@@ -800,3 +800,6 @@
 - 2026-11-12 08:07 · E3-S05: DESENVOLVER ok
 - 2026-11-12 08:11 · E3-S05: verificação concluída — suíte inteira verde (S3/SeaweedFS 4.53, contrato, propriedade, concorrência, arquitetura; sem skips), sem alteração de código · próximo: revisão
 - 2026-11-12 08:11 · E3-S05: VERIFICAR ok
+- 2026-11-12 08:15 · E3-S05: revisão — APROVAR PARA PR (suíte verde, concorrente 5× verde; achados não bloqueantes: sha do metadado no 412, bucket implícito, CNPJ na mensagem) · próximo: abrir PR e revisão do autor
+- 2026-11-12 08:15 · E3-S05: REVISAR ok
+- 2026-11-12 08:15 · E3-S05: PR aberto para revisão

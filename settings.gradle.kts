@@ -6,9 +6,9 @@ include(
     "adapter-nfe-nacional",
     "infra-postgres",
     "cert-vault",
+    "infra-blob-s3",
     // Módulos previstos (CLAUDE.md §19) — habilitar quando o diretório for criado:
     // "ingest-push",
-    // "infra-blob-minio",
     // "app-worker",
     // "app-api",
 )

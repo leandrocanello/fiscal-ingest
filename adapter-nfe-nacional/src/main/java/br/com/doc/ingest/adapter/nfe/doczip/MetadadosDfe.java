@@ -24,6 +24,8 @@ import java.util.Optional;
  * @param situacao              {@code cSitNFe} do resumo
  * @param tipoOperacao          {@code tpNF} (0 entrada, 1 saída)
  * @param cnpjAutorEvento       CNPJ do autor do evento (só em eventos)
+ * @param versaoLayout          {@code infNFe/@versao} (só no XML completo)
+ * @param cStatProtocolo        {@code protNFe/infProt/cStat} (só no XML completo); interpretado só no adapter
  */
 public record MetadadosDfe(
         String chave,
@@ -40,7 +42,9 @@ public record MetadadosDfe(
         Optional<Integer> seqEvento,
         Optional<String> situacao,
         Optional<String> tipoOperacao,
-        Optional<String> cnpjAutorEvento) {
+        Optional<String> cnpjAutorEvento,
+        Optional<String> versaoLayout,
+        Optional<String> cStatProtocolo) {
 
     public MetadadosDfe {
         cnpjsAutorizados = List.copyOf(cnpjsAutorizados);

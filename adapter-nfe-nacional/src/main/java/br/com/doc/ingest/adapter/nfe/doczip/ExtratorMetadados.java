@@ -69,6 +69,12 @@ public final class ExtratorMetadados {
                         if (id != null) {
                             folha.accept(String.join("/", caminho) + "/@Id", id);
                         }
+                        if (r.getLocalName().equals("infNFe")) {
+                            String versao = r.getAttributeValue(null, "versao");
+                            if (versao != null) {
+                                folha.accept(String.join("/", caminho) + "/@versao", versao);
+                            }
+                        }
                     }
                     case XMLStreamConstants.CHARACTERS -> texto.append(r.getText());
                     case XMLStreamConstants.END_ELEMENT -> {
@@ -107,6 +113,8 @@ public final class ExtratorMetadados {
         String tipoEvento;
         String seqEvento;
         String autorEvento;
+        String versaoLayout;
+        String cStatProtocolo;
         final List<String> autorizados = new ArrayList<>();
 
         void folha(String caminho, String texto) {
@@ -126,12 +134,14 @@ public final class ExtratorMetadados {
                 case "resEvento/CNPJ", "procEventoNFe/evento/infEvento/CNPJ" -> autorEvento = texto;
                 case "resEvento/tpEvento", "procEventoNFe/evento/infEvento/tpEvento" -> tipoEvento = texto;
                 case "resEvento/nSeqEvento", "procEventoNFe/evento/infEvento/nSeqEvento" -> seqEvento = texto;
+                case "nfeProc/protNFe/infProt/cStat" -> cStatProtocolo = texto;
                 default -> { }
             }
         }
 
         private void folhaInfNFe(String caminho, String texto) {
             switch (caminho) {
+                case "@versao" -> versaoLayout = texto;
                 case "@Id" -> chave = texto.startsWith("NFe") ? texto.substring(3) : texto;
                 case "ide/serie" -> serie = texto;
                 case "ide/nNF" -> numero = texto;
@@ -159,7 +169,8 @@ public final class ExtratorMetadados {
                     Optional.ofNullable(tipoEvento),
                     Optional.ofNullable(seqEvento).map(v -> inteiro(v, "Sequência do evento inválida")),
                     Optional.ofNullable(situacao), Optional.ofNullable(tipoOperacao),
-                    Optional.ofNullable(autorEvento));
+                    Optional.ofNullable(autorEvento), Optional.ofNullable(versaoLayout),
+                    Optional.ofNullable(cStatProtocolo));
         }
     }
 

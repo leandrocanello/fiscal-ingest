@@ -204,9 +204,7 @@
   - **Recomendação:** (a).
 - **Q2 — texto de docs protegidos.** O CLAUDE.md não cobre o formato. Sugestão para a §3.5: "CNPJ: `[A-Z0-9]{12}[0-9]{2}`, DV módulo 11 com valor = ASCII − 48 (NT Conjunta 2025.001); numéricos antigos continuam válidos". Só você edita.
 - **Para conferir (só você pode):** se há versão da NT Conjunta 2025.001 posterior à v1.00 no portal da NF-e. Se confirmar letras vedadas, basta preencher `LETRAS_VEDADAS`. Para o achado de 2026-11-04: a NT 2014.002 v1.40 cita `OID=2.16.76.1.3.3` (regra A07), o que reforça a constante da DA-36.
-- Resposta:
-
-
+- Resposta (2026-11-11, Claude/autor): Q1 resolvido na própria E1-S07 (2ª rodada de revisão corrigiu o `ExtratorCnpjCertificado`; PR #41 mergeado). Q2: texto entrou no CLAUDE.md §3.5 + ADR-031 (PR #42).
 ### [DECISAO] E1-S07 — 2026-11-04 — `main` com 2 testes vermelhos no infra-postgres (bloqueia "suíte verde")
 - **O que é preciso:** autorizar a correção de 2 testes antigos. Eles quebraram no merge da E3-S04/E3-S06, não pela E1-S07. A `main` nem compilava esses testes (corrigido só com renomeação, DA-39). Como os testes de `infra-postgres` não rodavam, a falha não aparecia.
   - `MigracoesTest.aplicaV7ECriaOutboxEConsumo`: espera a última migration `7`, e já existe a `9`.
@@ -325,3 +323,4 @@ ou responda aqui, e troque o status no ROADMAP de `[!]` para `[~]`.
 - Resposta (2026-11-09, autor): conforme a recomendação — D1 (a), D2 (a), D3 (a).
 ### [DECISAO] E3-S05-DOCS — 2026-11-11 — atualizar docs para `infra-blob-s3`
 CLAUDE.md §19 e ARCHITECTURE ainda dizem `infra-blob-minio`/"MinIO". O módulo agora é `infra-blob-s3` (SeaweedFS 4.53 nos testes). Recomendação: trocar os nomes e registrar o ADR (arquivos que o agente não pode editar).
+- Resposta (2026-11-11, Claude/autor): feito no PR #42 (CLAUDE.md §8.1/§15/§16/§19, ARCHITECTURE, ADR-030).

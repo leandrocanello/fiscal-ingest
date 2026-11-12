@@ -277,6 +277,24 @@
 
 ---
 
+## ADR-030 — Object store S3 compatível; SeaweedFS nos testes (MinIO descartado)
+
+**Data:** 2026-11-09
+**Contexto:** O MinIO arquivou o projeto (abr/2026) e as imagens da edição comunitária saíram do Docker Hub (set/2026) e do quay (401). A D2 da E3-S05 ("MinIO com tag fixa") ficou impossível.
+**Decisão:** O `BlobStore` fala S3 genérico (AWS SDK + `url-connection-client`) no módulo `infra-blob-s3`. Testes e docker-compose usam **SeaweedFS com tag fixa**. Imutabilidade por `PUT` com `If-None-Match: *`, com teste de compatibilidade do servidor.
+**Consequências:** Sem dependência de um fornecedor; em produção, qualquer S3 compatível. Se um servidor não honrar `If-None-Match`, o teste de compatibilidade falha antes de qualquer gravação real.
+
+---
+
+## ADR-031 — CNPJ alfanumérico validado no back-end
+
+**Data:** 2026-11-03
+**Contexto:** A NT Conjunta 2025.001 trouxe o CNPJ alfanumérico (produção desde 06/07/2026). O `Cnpj` só aceitava 14 dígitos.
+**Decisão:** `Cnpj` e `ChaveAcesso` aceitam `[A-Z0-9]{12}[0-9]{2}`, com DV módulo 11 e valor = ASCII − 48; os numéricos antigos continuam válidos. A validação fica no domínio e no banco (`CHECK` da V13). Letras vedadas, se a RFB confirmar, ficam numa constante (`LETRAS_VEDADAS`).
+**Consequências:** Certificado, extrator, chaves de blob e catálogo aceitam CNPJ alfanumérico (E1-S07).
+
+---
+
 ## Pendências de decisão (a confirmar)
 
 - [x] **Credencial/certificado** → bytes do `.pfx` + senha, só em memória, entregues pelo `CofreDeCertificados`; nunca caminho de disco no domínio. Cache de `SSLContext` por certificado no adapter (LRU/TTL). *(2026-10-21)*

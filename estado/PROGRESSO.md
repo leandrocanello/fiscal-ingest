@@ -818,3 +818,4 @@
 - 2026-11-12 · E3-S07 passo 5 — falha vista: `TenantsDoCnpjConsultadoTest.java:43: error: cannot find symbol` · `JdbiCadastroEmpresasTest.java:35: error: cannot find symbol` (JdbiCadastroEmpresas inexistente; função da V11 ausente)
 - 2026-11-12 14:40 · E3-S07: V11 (papel fiscal_roteador, política só dele, select por coluna, função security definer com search_path fixo) + porta CadastroEmpresas e JdbiCadastroEmpresas; RLS de empresa ligada no teste até a V5 entrar; suíte verde · próximo: ProcessadorColetado em app-worker (ProcessadorColetadoTest, ArquiteturaWorkerTest)
 - 2026-11-12 08:38 · E3-S07: DESENVOLVER ok
+- 2026-11-12 13:00 · E3-S05: mergeado por você ✔

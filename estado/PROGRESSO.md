@@ -790,3 +790,5 @@
 - 2026-11-12 08:00 · E1-S07: mergeado por você ✔
 - 2026-11-12 08:01 · E3-S05: S3Config + FabricaClienteS3 (testes viram falha por classe inexistente; depois suíte verde) · próximo: S3BlobStore gravar/ler com sha256
 - 2026-11-12 08:01 · E3-S05: DESENVOLVER ok
+- 2026-11-12 08:02 · E3-S05: S3BlobStore gravar/ler com sha256 conferido (6 testes, falha inicial: classe S3BlobStore inexistente → 'cannot find symbol'; suíte inteira verde) · próximo: imutabilidade com If-None-Match
+- 2026-11-12 08:02 · E3-S05: DESENVOLVER ok

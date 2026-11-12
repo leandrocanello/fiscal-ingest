@@ -360,3 +360,9 @@ Como desfazer: reverter o commit `fix(E3-S04)` do relay.
 - **Opções:** exigir sempre × padrão no record.
 - **Escolha:** conexão 5 s, chamada 30 s (nulo → padrão). `secretKey` clonada na entrada e na saída; `toString` mascara o secret.
 - **Como desfazer:** ajustar as constantes em `S3Config`.
+
+### DA-59 · 2026-11-12 · E3-S05
+- Contexto: `PutObject` com `checksumSHA256` (base64 do digest) no `S3BlobStore.gravar`.
+- Opções: enviar o checksum (integridade fim a fim) × só metadado `sha256`.
+- Escolha: o SeaweedFS 4.53 aceitou o `checksumSHA256`; enviado junto do metadado `sha256`. A conferência na leitura continua.
+- Como desfazer: remover `.checksumSHA256(...)` em `S3BlobStore.gravar`.

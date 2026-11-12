@@ -149,7 +149,7 @@ class CatalogoPropriedadesTest extends PostgresTestBase {
 
     /** Só as tabelas do catálogo: tenants, empresas e ledger ficam, para os ids se manterem entre as execuções. */
     private static void limparCatalogo() {
-        admin.useHandle(h -> h.execute("truncate proveniencia, arquivo, documento_empresa, documento"));
+        admin.useHandle(h -> h.execute("truncate quarentena, proveniencia, arquivo, documento_empresa, documento"));
     }
 
     @BeforeTry

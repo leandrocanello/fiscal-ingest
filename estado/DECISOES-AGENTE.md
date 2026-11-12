@@ -354,3 +354,9 @@ Como desfazer: reverter o commit `fix(E3-S04)` do relay.
 - **Opções:** tag numérica `chrislusf/seaweedfs:4.53` (a mais nova no Docker Hub hoje) × `latest`; módulo `infra-blob-s3` × `infra-blob-minio`.
 - **Escolha:** `4.53`, declarada só em `SeaweedFsTestBase`; comando `server -s3 -s3.config=... -dir=/data` com autenticação ligada (identidade sintética em `s3.json`). Módulo `infra-blob-s3` (autorizado pelo autor). O SDK (checksum CRC32 padrão) funcionou sem `WHEN_REQUIRED`; `If-None-Match: *` em chave existente devolve 412 e preserva o conteúdo.
 - **Como desfazer:** trocar a tag na constante `IMAGEM`; renomear o módulo em `settings.gradle.kts`.
+
+### DA-58 · 2026-11-12 · E3-S05
+- **Contexto:** `S3Config` precisa de timeouts padrão quando não informados.
+- **Opções:** exigir sempre × padrão no record.
+- **Escolha:** conexão 5 s, chamada 30 s (nulo → padrão). `secretKey` clonada na entrada e na saída; `toString` mascara o secret.
+- **Como desfazer:** ajustar as constantes em `S3Config`.

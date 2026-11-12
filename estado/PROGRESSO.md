@@ -788,3 +788,5 @@
 - 2026-11-11 13:41 · E3-S05: revertido — limite de uso no meio da chamada
 - 2026-11-11 21:55 · docs de CNPJ alfanumérico e S3/SeaweedFS no PR #42 (respostas aos itens E1-S07→E4-S02 e E3-S05-DOCS)
 - 2026-11-12 08:00 · E1-S07: mergeado por você ✔
+- 2026-11-12 08:01 · E3-S05: S3Config + FabricaClienteS3 (testes viram falha por classe inexistente; depois suíte verde) · próximo: S3BlobStore gravar/ler com sha256
+- 2026-11-12 08:01 · E3-S05: DESENVOLVER ok

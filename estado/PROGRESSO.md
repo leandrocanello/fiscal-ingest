@@ -794,3 +794,5 @@
 - 2026-11-12 08:02 · E3-S05: DESENVOLVER ok
 - 2026-11-12 08:04 · E3-S05: escrita condicional (If-None-Match) + S3BlobStoreContratoTest; falha inicial: 3 testes (conflito não lançado, concorrência) · próximo: falhas de infraestrutura (BlobStoreIndisponivelException)
 - 2026-11-12 08:04 · E3-S05: DESENVOLVER ok
+- 2026-11-12 08:10 · E3-S05: BlobStoreIndisponivelException (falha inicial: símbolo inexistente, compilação) · próximo: S3BlobStorePropriedadesTest
+- 2026-11-12 08:06 · E3-S05: DESENVOLVER ok

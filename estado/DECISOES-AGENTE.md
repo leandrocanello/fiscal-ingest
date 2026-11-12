@@ -366,3 +366,9 @@ Como desfazer: reverter o commit `fix(E3-S04)` do relay.
 - Opções: enviar o checksum (integridade fim a fim) × só metadado `sha256`.
 - Escolha: o SeaweedFS 4.53 aceitou o `checksumSHA256`; enviado junto do metadado `sha256`. A conferência na leitura continua.
 - Como desfazer: remover `.checksumSHA256(...)` em `S3BlobStore.gravar`.
+
+### DA-60 · 2026-11-12 · E3-S05
+Contexto: `bucketInexistenteLanca` — o SeaweedFS (4.53) cria o bucket implicitamente no `PUT`, então `gravar` em bucket ausente não falha.
+Opções: (a) asserir falha também em `gravar`; (b) asserir só em `ler` (GET em bucket ausente falha).
+Escolha: (b). `S3BlobStore` encapsula `SdkException` em `BlobStoreIndisponivelException` (chave + operação, causa preservada).
+Como desfazer: ajustar o teste se a política de bucket (Fase 10) desligar a criação implícita.

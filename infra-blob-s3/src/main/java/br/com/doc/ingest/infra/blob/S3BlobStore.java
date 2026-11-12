@@ -4,6 +4,7 @@ import br.com.doc.ingest.domain.blob.BlobRef;
 import br.com.doc.ingest.domain.blob.BlobStore;
 import br.com.doc.ingest.domain.blob.Sha256;
 import br.com.doc.ingest.domain.blob.BlobConflitanteException;
+import software.amazon.awssdk.core.exception.SdkException;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
@@ -33,6 +34,14 @@ public final class S3BlobStore implements BlobStore {
 
     @Override
     public BlobRef gravar(String chave, byte[] conteudo, String sha256) {
+        try {
+            return gravarNoS3(chave, conteudo, sha256);
+        } catch (SdkException e) {
+            throw new BlobStoreIndisponivelException("gravar", chave, e);
+        }
+    }
+
+    private BlobRef gravarNoS3(String chave, byte[] conteudo, String sha256) {
         BlobRef ref = new BlobRef(chave, sha256);
         if (!Sha256.hex(conteudo).equals(sha256)) {
             throw new IllegalArgumentException("sha256 informado não confere com o conteúdo para a chave " + chave);
@@ -72,6 +81,14 @@ public final class S3BlobStore implements BlobStore {
 
     @Override
     public Optional<byte[]> ler(BlobRef ref) {
+        try {
+            return lerDoS3(ref);
+        } catch (SdkException e) {
+            throw new BlobStoreIndisponivelException("ler", ref.chave(), e);
+        }
+    }
+
+    private Optional<byte[]> lerDoS3(BlobRef ref) {
         byte[] bytes;
         try {
             bytes = s3.getObjectAsBytes(GetObjectRequest.builder().bucket(bucket).key(ref.chave()).build())

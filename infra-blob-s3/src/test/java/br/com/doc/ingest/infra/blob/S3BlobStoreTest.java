@@ -120,4 +120,53 @@ class S3BlobStoreTest extends SeaweedFsTestBase {
                 .hasMessageNotContaining("b\"");
         assertThat(store.ler(new BlobRef("k6", Sha256.hex(a)))).hasValue(a);
     }
+
+    private S3Client clientePortaFechada() {
+        return S3Client.builder()
+                .endpointOverride(java.net.URI.create("http://127.0.0.1:1"))
+                .region(software.amazon.awssdk.regions.Region.US_EAST_1)
+                .credentialsProvider(software.amazon.awssdk.auth.credentials.StaticCredentialsProvider.create(
+                        software.amazon.awssdk.auth.credentials.AwsBasicCredentials.create(ACCESS_KEY, SECRET_KEY)))
+                .httpClientBuilder(software.amazon.awssdk.http.urlconnection.UrlConnectionHttpClient.builder())
+                .overrideConfiguration(c -> c.retryStrategy(
+                        software.amazon.awssdk.core.retry.RetryMode.STANDARD).apiCallTimeout(
+                        java.time.Duration.ofSeconds(5)))
+                .build();
+    }
+
+    @Test
+    void falhaDoServidorLancaENaoDevolveRef() {
+        try (S3Client quebrado = clientePortaFechada()) {
+            S3BlobStore s = new S3BlobStore(quebrado, bucket);
+            byte[] c = bytes("conteudo");
+            assertThatThrownBy(() -> s.gravar("k7", c, Sha256.hex(c)))
+                    .isInstanceOf(BlobStoreIndisponivelException.class)
+                    .hasMessageContaining("k7")
+                    .hasCauseInstanceOf(software.amazon.awssdk.core.exception.SdkClientException.class);
+        }
+    }
+
+    @Test
+    void bucketInexistenteLanca() {
+        S3BlobStore s = new S3BlobStore(s3, "bucket-que-nao-existe-" + java.util.UUID.randomUUID());
+        byte[] c = bytes("conteudo");
+        // o SeaweedFS cria o bucket implicitamente no PUT; só a leitura prova a falha de bucket ausente
+        assertThatThrownBy(() -> s.ler(new BlobRef("k8", Sha256.hex(c))))
+                .isInstanceOf(BlobStoreIndisponivelException.class);
+    }
+
+    @Test
+    void excecaoNaoTrazSecretNemBytes() {
+        try (S3Client quebrado = clientePortaFechada()) {
+            S3BlobStore s = new S3BlobStore(quebrado, bucket);
+            byte[] c = bytes("CONTEUDO-SENSIVEL");
+            Throwable t = org.assertj.core.api.Assertions.catchThrowable(() -> s.gravar("k9", c, Sha256.hex(c)));
+            assertThat(t).isInstanceOf(BlobStoreIndisponivelException.class);
+            assertThat(t.getMessage()).doesNotContain(SECRET_KEY).doesNotContain("CONTEUDO-SENSIVEL");
+            assertThat(t.toString()).doesNotContain(SECRET_KEY).doesNotContain("CONTEUDO-SENSIVEL");
+            for (Throwable c2 = t.getCause(); c2 != null; c2 = c2.getCause()) {
+                assertThat(c2.toString()).doesNotContain(SECRET_KEY).doesNotContain("CONTEUDO-SENSIVEL");
+            }
+        }
+    }
 }

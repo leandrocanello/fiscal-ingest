@@ -803,3 +803,6 @@
 - 2026-11-12 08:15 · E3-S05: revisão — APROVAR PARA PR (suíte verde, concorrente 5× verde; achados não bloqueantes: sha do metadado no 412, bucket implícito, CNPJ na mensagem) · próximo: abrir PR e revisão do autor
 - 2026-11-12 08:15 · E3-S05: REVISAR ok
 - 2026-11-12 08:15 · E3-S05: PR aberto para revisão
+- 2026-11-12 · E3-S07 passo 1 — falha vista (stub vazio): `RoteadorConteudoTest > emitenteDoTenantViraSaida() FAILED` · `transferenciaTemDoisVinculos() FAILED` · `resumoVinculaEmpresaConsultadaComoEntrada() FAILED` · `175 tests completed, 11 failed`
+- 2026-11-12 12:00 · E3-S07: RoteadorConteudo (D1a/D2a) + CnpjsDoConteudo/EmpresaDoTenant/TipoEmpresa, testes unitários e jqwik, suíte verde (commit f187f56) · próximo: ExtratorMetadados lê versaoLayout e cStatProtocolo
+- 2026-11-12 08:20 · E3-S07: DESENVOLVER ok

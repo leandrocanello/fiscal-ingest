@@ -39,4 +39,23 @@ final class UsuarioAppCatalogo {
         ds.setCurrentSchema(schema);
         return Jdbi.create((DataSource) ds);
     }
+
+    /**
+     * Faz no schema o que a V4/V5 da E3-S03 farão com {@code empresa} (leitura pelo {@code fiscal_app} e RLS
+     * forçada), enquanto elas não estão na base. Se a política da V5 já existir, não mexe.
+     */
+    static void ligarRlsDeEmpresa(Jdbi admin, String schema) {
+        admin.useHandle(h -> {
+            boolean temV5 = h.createQuery("select count(*) > 0 from pg_policies "
+                            + "where schemaname = :s and tablename = 'empresa' and policyname = 'empresa_isolamento'")
+                    .bind("s", schema).mapTo(Boolean.class).one();
+            if (!temV5) {
+                h.execute("grant select on empresa to fiscal_app");
+                h.execute("alter table empresa enable row level security");
+                h.execute("alter table empresa force row level security");
+                h.execute("create policy empresa_isolamento on empresa "
+                        + "using (tenant_id = nullif(current_setting('app.tenant_id', true), '')::bigint)");
+            }
+        });
+    }
 }

@@ -52,7 +52,7 @@
 ## Etapa 4 — Scheduler, cofre, consentimento (Fase 4)
 - [x] E4-S01 | AUTO     | deps: E3-S02 | claim SKIP LOCKED + lease + due_at + fairness por tenant
 - [x] E4-S02 | AUTO+    | deps: E2-S10 | CofreDeCertificados local (envelope encryption) — sem segredo em log
-- [~] E4-S03 | AUTO     | deps: E3-S01 | consentimento por finalidade + máquina de estados de estado_coleta
+- [!] E4-S03 | AUTO     | deps: E3-S01 | consentimento por finalidade + máquina de estados de estado_coleta
 - [~] E4-S04 | AUTO     | deps: E4-S02 | alertas de vencimento + rotação sem perder cursor
 - [ ] E4-S05 | AUTO     | deps: E4-S01..04 | simulação de N CNPJs sem nenhum 656
 - [ ] E4-S06 | AUTO+    | deps: E4-S02,E3-S03 | persistência do cofre: tabela certificado (tenant/empresa) + JdbiRepositorioCertificados + RLS

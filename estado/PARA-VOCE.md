@@ -324,3 +324,8 @@ ou responda aqui, e troque o status no ROADMAP de `[!]` para `[~]`.
 ### [DECISAO] E3-S05-DOCS — 2026-11-11 — atualizar docs para `infra-blob-s3`
 CLAUDE.md §19 e ARCHITECTURE ainda dizem `infra-blob-minio`/"MinIO". O módulo agora é `infra-blob-s3` (SeaweedFS 4.53 nos testes). Recomendação: trocar os nomes e registrar o ADR (arquivos que o agente não pode editar).
 - Resposta (2026-11-11, Claude/autor): feito no PR #42 (CLAUDE.md §8.1/§15/§16/§19, ARCHITECTURE, ADR-030).
+
+### [BLOQUEIO] E4-S03 — 2026-11-13 — 3 falhas seguidas
+Último motivo: suíte vermelha (ver logs/ultimo-teste.log)
+Logs: `estado/logs/` (arquivos *-E4-S03-*.json). Para destravar: ajuste o plano `estado/planos/E4-S03.md`
+ou responda aqui, e troque o status no ROADMAP de `[!]` para `[~]`.

@@ -845,3 +845,6 @@
 - 2026-11-13 08:34 · E4-S03: revertido — suíte vermelha (ver logs/ultimo-teste.log)
 - 2026-11-13 08:36 · E4-S03: ConsentimentoTest/PropriedadesTest falharam na compilação (símbolos Finalidade/Consentimento ausentes: 'cannot find symbol class Finalidade'); implementado domain.consentimento, :domain verde · :infra-postgres já não compila nos testes antes da mudança (CatalogoRlsTest.dataSourceComoApp 'weaker access' — pendência E1-S07, não alterado) · próximo: MaquinaEstadosColetaTest
 - 2026-11-13 08:36 · E4-S03: revertido — suíte vermelha (ver logs/ultimo-teste.log)
+- 2026-11-13 08:37 · E4-S03: Consentimento/Finalidade/Revogacao + vigenteEm no domain (falha vista: 'cannot find symbol' das classes ausentes; depois :domain:test verde). Suíte inteira: infra-postgres:compileTestJava já quebrada em main (CatalogoRlsTest.dataSourceComoApp x PostgresTestBase, E1-S07), não tocada · próximo: MaquinaEstadosColetaTest
+- 2026-11-13 08:38 · E4-S03: revertido — suíte vermelha (ver logs/ultimo-teste.log)
+- 2026-11-13 08:38 · E4-S03: [!] bloqueado após 3 falhas

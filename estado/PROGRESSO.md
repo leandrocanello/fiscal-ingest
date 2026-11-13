@@ -822,3 +822,6 @@
 - 2026-11-13 · E3-S07 passo 6 — falha vista: `ProcessadorColetadoTest.java:62: error: cannot find symbol` · `ProcessadorColetadoTest.java:72: error: package ResultadoProcessamento does not exist` (módulo app-worker sem ProcessadorColetado)
 - 2026-11-13 09:00 · E3-S07: módulo app-worker (só domain em produção) + ProcessadorColetado/ItemColetado/ResultadoProcessamento; ArquiteturaWorkerTest; suíte verde · próximo: quarentena SEM_EMPRESA abre/fecha e BlobIndisponivelException (passo 7)
 - 2026-11-13 08:02 · E3-S07: DESENVOLVER ok
+- 2026-11-13 · E3-S07 passo 7 — falha vista: `cannot find symbol BlobIndisponivelException` (compilação); depois `semVinculoAbreQuarentenaSemEmpresa FAILED (AssertionFailedError :181)` · `blobAusenteLancaENaoRegistra FAILED (:258, IllegalStateException)` · `vinculoNovoFechaQuarentenaDoDocumento FAILED (:213)` · `reprocessarDepoisDeCadastrarAEmpresaFechaQuarentena FAILED (:227)`
+- 2026-11-13 09:30 · E3-S07: quarentena SEM_EMPRESA abre/fecha pela FichaDocumento + BlobIndisponivelException retentável; suíte verde · próximo: ProcessadorColetadoIntegracaoTest no Postgres (passo 8)
+- 2026-11-13 08:07 · E3-S07: DESENVOLVER ok

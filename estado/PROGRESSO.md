@@ -856,3 +856,5 @@
 - 2026-11-13 08:57 · E4-S04: DESENVOLVER ok
 - 2026-11-13 09:03 · E4-S04: CaosRotacaoTest + EstadoColetaTrocaPropriedadesTest passaram de primeira (SQL já correto); mutação `versao = versao + 1` no UPDATE da troca derrubou `trocasAleatoriasNuncaMudamCursorNemVersao` (FAILED), revertida; suíte inteira verde · próximo: itens de Verificação do plano
 - 2026-11-13 09:06 · E4-S04: DESENVOLVER ok
+- 2026-11-13 09:07 · E4-S04: verificação — suíte inteira verde, caos/propriedades/arquitetura confirmados, sem .pfx versionado · próximo: revisão
+- 2026-11-13 09:07 · E4-S04: VERIFICAR ok

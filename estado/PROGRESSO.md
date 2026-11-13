@@ -819,3 +819,6 @@
 - 2026-11-12 14:40 · E3-S07: V11 (papel fiscal_roteador, política só dele, select por coluna, função security definer com search_path fixo) + porta CadastroEmpresas e JdbiCadastroEmpresas; RLS de empresa ligada no teste até a V5 entrar; suíte verde · próximo: ProcessadorColetado em app-worker (ProcessadorColetadoTest, ArquiteturaWorkerTest)
 - 2026-11-12 08:38 · E3-S07: DESENVOLVER ok
 - 2026-11-12 13:00 · E3-S05: mergeado por você ✔
+- 2026-11-13 · E3-S07 passo 6 — falha vista: `ProcessadorColetadoTest.java:62: error: cannot find symbol` · `ProcessadorColetadoTest.java:72: error: package ResultadoProcessamento does not exist` (módulo app-worker sem ProcessadorColetado)
+- 2026-11-13 09:00 · E3-S07: módulo app-worker (só domain em produção) + ProcessadorColetado/ItemColetado/ResultadoProcessamento; ArquiteturaWorkerTest; suíte verde · próximo: quarentena SEM_EMPRESA abre/fecha e BlobIndisponivelException (passo 7)
+- 2026-11-13 08:02 · E3-S07: DESENVOLVER ok

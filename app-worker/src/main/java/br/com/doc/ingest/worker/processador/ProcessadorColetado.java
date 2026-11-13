@@ -1,9 +1,11 @@
 package br.com.doc.ingest.worker.processador;
 
+import br.com.doc.ingest.domain.blob.BlobIndisponivelException;
 import br.com.doc.ingest.domain.blob.BlobStore;
 import br.com.doc.ingest.domain.catalogo.CadastroEmpresas;
 import br.com.doc.ingest.domain.catalogo.Catalogo;
 import br.com.doc.ingest.domain.catalogo.Confianca;
+import br.com.doc.ingest.domain.catalogo.MotivoQuarentena;
 import br.com.doc.ingest.domain.catalogo.OrigemArquivo;
 import br.com.doc.ingest.domain.catalogo.ProvenienciaInformada;
 import br.com.doc.ingest.domain.catalogo.Quarentena;
@@ -25,6 +27,11 @@ import java.util.Optional;
  *
  * <p>É borda, não core (§9): só fala com portas (DA-32). Reprocessar o mesmo item é seguro, porque o
  * catálogo é idempotente; se um tenant falhar, a exceção sobe e o item inteiro é reprocessado.
+ *
+ * <p>Quarentena {@code SEM_EMPRESA} (§7.3): depois de registrar, decide pela {@link
+ * br.com.doc.ingest.domain.catalogo.FichaDocumento} (e não só pelo resultado do registro), para que o
+ * reprocesso abra a quarentena que faltou: documento sem vínculo abre a do arquivo; com vínculo, fecha
+ * as do documento. Blob ausente lança {@link BlobIndisponivelException}, retentável.
  */
 public final class ProcessadorColetado {
 
@@ -49,8 +56,7 @@ public final class ProcessadorColetado {
         if (tenants.isEmpty()) {
             return new ResultadoProcessamento.SemTenant();
         }
-        // TODO(E3-S07, próximo passo): exceção própria e retentável para blob ausente
-        var xml = blobs.ler(item.blob()).orElseThrow(() -> new IllegalStateException("blob indisponível"));
+        var xml = blobs.ler(item.blob()).orElseThrow(() -> new BlobIndisponivelException(item.blob()));
         return switch (parser.analisar(item.schema(), xml)) {
             case ResultadoParse.Desconhecido d -> new ResultadoProcessamento.SchemaDesconhecido();
             case ResultadoParse.Invalido i -> new ResultadoProcessamento.Invalido(i.motivo());
@@ -65,10 +71,23 @@ public final class ProcessadorColetado {
         for (long tenantId : tenants) {
             var empresas = cadastro.empresasDoTenant(tenantId, item.ambiente());
             var vinculos = RoteadorConteudo.rotear(dfe.tipo(), dfe.cnpjs(), item.cnpjConsultado(), empresas);
-            resultados.add(catalogo.registrar(new RegistroArquivo(tenantId, dfe.chave(), dfe.metadados(),
+            var resultado = catalogo.registrar(new RegistroArquivo(tenantId, dfe.chave(), dfe.metadados(),
                     dfe.situacao(), dfe.tipo(), dfe.eventoTipo(), dfe.eventoSeq(), item.blob(), vinculos,
-                    proveniencia)));
+                    proveniencia));
+            atualizarQuarentena(tenantId, dfe, resultado);
+            resultados.add(resultado);
         }
         return new ResultadoProcessamento.Registrado(resultados);
+    }
+
+    private void atualizarQuarentena(long tenantId, DfeAnalisado dfe, ResultadoRegistro resultado) {
+        var ficha = catalogo.consultar(tenantId, dfe.chave())
+                .orElseThrow(() -> new IllegalStateException("documento registrado não aparece na consulta: id="
+                        + resultado.documentoId()));
+        if (ficha.vinculos().isEmpty()) {
+            quarentena.abrir(tenantId, resultado.arquivoId(), MotivoQuarentena.SEM_EMPRESA);
+        } else {
+            quarentena.resolverDoDocumento(tenantId, resultado.documentoId());
+        }
     }
 }

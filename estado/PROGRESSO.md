@@ -881,3 +881,5 @@
 - 2026-11-13 09:28 · E2-S17: DESENVOLVER ok
 - 2026-11-13 09:29 · E2-S17: SmokeHomologacaoTest (skipped sem flag, fora de test) + docs/SMOKE-HOMOLOGACAO.md; suíte verde · próximo: itens de Verificação/revisão
 - 2026-11-13 09:30 · E2-S17: DESENVOLVER ok
+- 2026-11-13 09:40 · E2-S17 (verificar): propriedade do cursor, tag homologacao fora de test (skipped sem flag), sem URL SEFAZ, suíte verde; código intacto · próximo: revisão
+- 2026-11-13 09:31 · E2-S17: VERIFICAR ok

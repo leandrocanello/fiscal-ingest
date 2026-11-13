@@ -843,3 +843,5 @@
 - 2026-11-13 08:32 · E3-S07: PR aberto para revisão
 - 2026-11-13 · E4-S03: ConsentimentoTest/PropriedadesTest + domain.consentimento (Finalidade, Consentimento, Revogacao, vigenteEm); falha vista: 'cannot find symbol' (classes inexistentes) · próximo: MaquinaEstadosColeta
 - 2026-11-13 08:34 · E4-S03: revertido — suíte vermelha (ver logs/ultimo-teste.log)
+- 2026-11-13 08:36 · E4-S03: ConsentimentoTest/PropriedadesTest falharam na compilação (símbolos Finalidade/Consentimento ausentes: 'cannot find symbol class Finalidade'); implementado domain.consentimento, :domain verde · :infra-postgres já não compila nos testes antes da mudança (CatalogoRlsTest.dataSourceComoApp 'weaker access' — pendência E1-S07, não alterado) · próximo: MaquinaEstadosColetaTest
+- 2026-11-13 08:36 · E4-S03: revertido — suíte vermelha (ver logs/ultimo-teste.log)

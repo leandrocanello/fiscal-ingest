@@ -877,3 +877,5 @@
 - 2026-11-13 09:24 · E2-S17: DESENVOLVER ok
 - 2026-11-13 09:26 · E2-S17: BlobStoreEmDiscoSmoke (inv. 7, recusa pasta em repo git); falha inicial: cannot find symbol BlobStoreEmDiscoSmoke; suíte verde · próximo: RoteiroSmokeTest
 - 2026-11-13 09:26 · E2-S17: DESENVOLVER ok
+- 2026-11-13 09:28 · E2-S17: RoteiroSmoke (distNsu/consultarChave/manifestarCiencia) com testes WireMock; falha inicial: RoteiroSmoke inexistente + CNPJ completo vazando no BlobRef impresso (corrigido com máscara) · próximo: SmokeHomologacaoTest + docs/SMOKE-HOMOLOGACAO.md
+- 2026-11-13 09:28 · E2-S17: DESENVOLVER ok

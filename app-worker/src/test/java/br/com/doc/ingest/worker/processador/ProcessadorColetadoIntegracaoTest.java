@@ -186,6 +186,92 @@ class ProcessadorColetadoIntegracaoTest extends PostgresTestBase {
                 contar("documento_empresa"), contar("quarentena")}).containsExactly(antes);
     }
 
+    @Test
+    void transferenciaEntreEmpresasTemDoisVinculos() {
+        long cliente = empresa(tenant, CLIENTE, "EMPRESA");
+        long destinataria = empresa(tenant, DESTINATARIA, "EMPRESA");
+        String chave = chave(CLIENTE, 7);
+
+        processar(DESTINATARIA, "procNFe_v4.00.xsd", procNFe(chave, CLIENTE, DESTINATARIA, List.of(), "100"));
+
+        assertThat(ficha(chave).vinculos()).containsExactlyInAnyOrder(
+                new VinculoEmpresa(cliente, Direcao.SAIDA), new VinculoEmpresa(destinataria, Direcao.ENTRADA));
+        assertThat(contar("documento")).isEqualTo(1);
+        assertThat(quarentenasAbertas()).isZero();
+    }
+
+    @Test
+    void cancelamentoAtualizaSituacao() {
+        empresa(tenant, DESTINATARIA, "EMPRESA");
+        String chave = chave(TERCEIRO, 8);
+        processar(DESTINATARIA, "procNFe_v4.00.xsd", procNFe(chave, TERCEIRO, DESTINATARIA, List.of(), "100"));
+
+        var evento = processar(DESTINATARIA, "procEventoNFe_v1.00.xsd", procEvento(chave, TERCEIRO, "110111"));
+
+        FichaDocumento ficha = ficha(chave);
+        assertThat(evento.documentoCriado()).isFalse();
+        assertThat(ficha.estado().situacao()).isEqualTo(SituacaoDocumento.CANCELADA);
+        assertThat(ficha.arquivos()).extracting(ArquivoFicha::tipo)
+                .containsExactlyInAnyOrder(TipoArquivo.COMPLETO, TipoArquivo.EVENTO);
+        assertThat(quarentenasAbertas()).isZero();
+    }
+
+    @Test
+    void eventoAntesDoXmlFechaQuarentenaQuandoANotaChega() {
+        long destinataria = empresa(tenant, DESTINATARIA, "EMPRESA");
+        String chave = chave(TERCEIRO, 9);
+
+        // O evento só vincula o emitente da chave (D1), que não é do tenant: fica em quarentena.
+        var evento = processar(DESTINATARIA, "procEventoNFe_v1.00.xsd", procEvento(chave, TERCEIRO, "210210"));
+        assertThat(ficha(chave).vinculos()).isEmpty();
+        assertThat(quarentenasAbertasDoArquivo(evento.arquivoId())).isEqualTo(1);
+
+        processar(DESTINATARIA, "procNFe_v4.00.xsd", procNFe(chave, TERCEIRO, DESTINATARIA, List.of(), "100"));
+
+        assertThat(ficha(chave).vinculos()).containsExactly(new VinculoEmpresa(destinataria, Direcao.ENTRADA));
+        assertThat(quarentenasAbertas()).isZero();
+        assertThat(contar("quarentena")).isEqualTo(1);
+        assertThat(contar("documento")).isEqualTo(1);
+    }
+
+    @Test
+    void notaNaoVazaParaTenantQueNaoConsultou() {
+        empresa(tenant, DESTINATARIA, "EMPRESA");
+        long outro = novoTenant();
+        empresa(outro, TERCEIRO, "EMPRESA");
+        String chave = chave(TERCEIRO, 10);
+
+        var r = processador.processar(item(DESTINATARIA, "procNFe_v4.00.xsd",
+                procNFe(chave, TERCEIRO, DESTINATARIA, List.of(), "100")));
+
+        // O tenant B tem o emitente, mas não o CNPJ consultado: a coleta não é dele (§8.1, inv. 10).
+        assertThat(((ResultadoProcessamento.Registrado) r).resultados()).hasSize(1);
+        assertThat(catalogo.consultar(outro, new ChaveAcesso(chave))).isEmpty();
+        assertThat(documentosDoTenant(outro)).isZero();
+        assertThat(documentosDoTenant(tenant)).isEqualTo(1);
+    }
+
+    @Test
+    void cnpjEmDoisTenantsViraDoisDocumentos() {
+        long destinatariaA = empresa(tenant, DESTINATARIA, "EMPRESA");
+        long outro = novoTenant();
+        long destinatariaB = empresa(outro, DESTINATARIA, "EMPRESA");
+        String chave = chave(TERCEIRO, 11);
+
+        var r = processador.processar(item(DESTINATARIA, "procNFe_v4.00.xsd",
+                procNFe(chave, TERCEIRO, DESTINATARIA, List.of(), "100")));
+
+        var resultados = ((ResultadoProcessamento.Registrado) r).resultados();
+        assertThat(resultados).hasSize(2).allMatch(ResultadoRegistro::documentoCriado);
+        assertThat(resultados.get(0).documentoId()).isNotEqualTo(resultados.get(1).documentoId());
+        assertThat(ficha(chave).vinculos()).containsExactly(new VinculoEmpresa(destinatariaA, Direcao.ENTRADA));
+        assertThat(catalogo.consultar(outro, new ChaveAcesso(chave)).orElseThrow().vinculos())
+                .containsExactly(new VinculoEmpresa(destinatariaB, Direcao.ENTRADA));
+        assertThat(documentosDoTenant(tenant)).isEqualTo(1);
+        assertThat(documentosDoTenant(outro)).isEqualTo(1);
+        assertThat(quarentenasAbertas()).isZero();
+    }
+
     // ===== apoio =====
 
     private ResultadoRegistro processar(Cnpj consultado, String schema, String xml) {
@@ -233,6 +319,11 @@ class ProcessadorColetadoIntegracaoTest extends PostgresTestBase {
         return admin.withHandle(h -> h.createQuery("select count(*) from " + tabela).mapTo(Long.class).one());
     }
 
+    private long documentosDoTenant(long tenantId) {
+        return admin.withHandle(h -> h.createQuery("select count(*) from documento where tenant_id = :t")
+                .bind("t", tenantId).mapTo(Long.class).one());
+    }
+
     private long quarentenasAbertas() {
         return admin.withHandle(h -> h.createQuery("select count(*) from quarentena where resolvido_em is null")
                 .mapTo(Long.class).one());
@@ -272,5 +363,15 @@ class ProcessadorColetadoIntegracaoTest extends PostgresTestBase {
                 + autXml
                 + "</infNFe></NFe><protNFe versao=\"4.00\"><infProt><chNFe>" + chave + "</chNFe>"
                 + "<cStat>" + cStat + "</cStat></infProt></protNFe></nfeProc>";
+    }
+
+    /** Evento autorizado; o autor é o próprio emitente (o parser não usa o autor, inv. 10). */
+    private static String procEvento(String chave, Cnpj autor, String tpEvento) {
+        return "<procEventoNFe xmlns=\"http://www.portalfiscal.inf.br/nfe\" versao=\"1.00\"><evento versao=\"1.00\">"
+                + "<infEvento Id=\"ID" + tpEvento + chave + "01\"><cOrgao>91</cOrgao><CNPJ>" + autor.valor()
+                + "</CNPJ><chNFe>" + chave + "</chNFe><dhEvento>2026-10-21T09:00:00-03:00</dhEvento>"
+                + "<tpEvento>" + tpEvento + "</tpEvento><nSeqEvento>1</nSeqEvento>"
+                + "<verEvento>1.00</verEvento></infEvento></evento>"
+                + "<retEvento versao=\"1.00\"><infEvento><cStat>135</cStat></infEvento></retEvento></procEventoNFe>";
     }
 }

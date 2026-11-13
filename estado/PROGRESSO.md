@@ -854,3 +854,5 @@
 - 2026-11-13 08:56 · E4-S04: DESENVOLVER ok
 - 2026-11-13 08:57 · E4-S04: testes CacheSslContextTest da rotação (passaram de primeira, como previsto; Javadoc do use case já citava o invalidar) · próximo: CaosRotacaoTest + propriedades da troca
 - 2026-11-13 08:57 · E4-S04: DESENVOLVER ok
+- 2026-11-13 09:03 · E4-S04: CaosRotacaoTest + EstadoColetaTrocaPropriedadesTest passaram de primeira (SQL já correto); mutação `versao = versao + 1` no UPDATE da troca derrubou `trocasAleatoriasNuncaMudamCursorNemVersao` (FAILED), revertida; suíte inteira verde · próximo: itens de Verificação do plano
+- 2026-11-13 09:06 · E4-S04: DESENVOLVER ok

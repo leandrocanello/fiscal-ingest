@@ -841,3 +841,5 @@
 - 2026-11-13 08:32 · E3-S07: revisão — APROVAR PARA PR (suíte verde; 5 achados de qualidade no parecer, nenhum bloqueante); PR em planos/E3-S07-pr.md · próximo: autor revisa o PR (atenção ao resumo do escritório e ao owner da função na V11)
 - 2026-11-13 08:32 · E3-S07: REVISAR ok
 - 2026-11-13 08:32 · E3-S07: PR aberto para revisão
+- 2026-11-13 · E4-S03: ConsentimentoTest/PropriedadesTest + domain.consentimento (Finalidade, Consentimento, Revogacao, vigenteEm); falha vista: 'cannot find symbol' (classes inexistentes) · próximo: MaquinaEstadosColeta
+- 2026-11-13 08:34 · E4-S03: revertido — suíte vermelha (ver logs/ultimo-teste.log)

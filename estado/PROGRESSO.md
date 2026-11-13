@@ -831,3 +831,5 @@
 - 2026-11-13 · E3-S07 passo 8b — 5 cenários novos passaram de primeira (processor já correto); falha vista por mutação: só o 1º tenant → `cnpjEmDoisTenantsViraDoisDocumentos() FAILED (AssertionError :265)`; sem `resolverDoDocumento` → `eventoAntesDoXmlFechaQuarentenaQuandoANotaChega() FAILED (AssertionFailedError :232)`
 - 2026-11-13 10:30 · E3-S07: parte 2 do ProcessadorColetadoIntegracaoTest (transferência, cancelamento, evento antes do XML, isolamento, dois tenants); suíte verde · próximo: CaosProcessadorTest
 - 2026-11-13 08:15 · E3-S07: DESENVOLVER ok
+- 2026-11-13 11:00 · E3-S07: CaosProcessadorTest (5 cenários); falha vista: `abrirAtrasadoDepoisDoVinculoNaoDeixaQuarentenaAberta() FAILED — expected: 0L but was: 1L` (quarentena aberta em documento vinculado); corrigido em JdbiQuarentena.abrir (DA-62); suíte verde · próximo: ProcessadorPropriedadesTest
+- 2026-11-13 08:21 · E3-S07: DESENVOLVER ok

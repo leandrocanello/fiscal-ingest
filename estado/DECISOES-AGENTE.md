@@ -378,3 +378,9 @@ Como desfazer: ajustar o teste se a política de bucket (Fase 10) desligar a cri
 - **Opções:** (a) só grants; (b) grants + trigger `quarentena_so_resolve` (preenche `resolvido_em` uma vez, recusa delete), no mesmo espírito do `recusar_alteracao_ledger` da V2.
 - **Escolha:** (b), testada em `QuarentenaEsquemaTest.resolvidaNaoReabreNemEhApagadaNemMudaOutraColuna`. Porta `Quarentena.abrir` devolve `boolean` (abriu agora) e `resolverDoDocumento` devolve `int` (quantas fechou).
 - **Como desfazer:** nova migração com `drop trigger quarentena_so_resolve on quarentena; drop function quarentena_so_resolve();` e remover o teste.
+
+### DA-62 · 2026-11-13 · E3-S07
+**Contexto:** o `CaosProcessadorTest` forçou a intercalação: o evento lê a ficha sem vínculo, a nota com vínculo registra e resolve (nada aberto) e só depois o evento abre a quarentena — que ficava aberta num documento vinculado.
+**Opções:** (a) `JdbiQuarentena.abrir` trava o documento (`for update`, mesma trava do `registrar`) e só insere se não houver `documento_empresa`; (b) processor relê a ficha depois de abrir e resolve se apareceu vínculo; (c) aceitar e depender de reprocesso.
+**Escolha:** (a). Contrato da porta `Quarentena.abrir` passa a dizer "não abre se o documento já tem vínculo" (devolve `false`). Teste novo `JdbiQuarentenaTest.naoAbreEmDocumentoComVinculo`; nenhum teste antigo mudou.
+**Como desfazer:** reverter o `abrir` para o `insert ... on conflict` simples e o javadoc da porta; `abrirAtrasadoDepoisDoVinculoNaoDeixaQuarentenaAberta` volta a falhar.

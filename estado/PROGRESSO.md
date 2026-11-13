@@ -863,3 +863,5 @@
 - 2026-11-13 09:09 · E4-S04: PR aberto para revisão
 - 2026-11-13 09:10 · E2-S17: PLANEJAR — plano com 9 passos (truststore ICP-Brasil com índice sha256 + sobrescrita FISCAL_TRUSTSTORE; task smokeHomologacao fora do test; ConfiguracaoSmoke, CursorLocal que recusa NSU menor, BlobStore em disco fora do repo, RoteiroSmoke contra WireMock); DA-63 · próximo: desenvolver
 - 2026-11-13 09:11 · E2-S17: PLANEJAR ok
+- 2026-11-13 09:16 · E2-S17: TruststoreIcpBrasil.deDiretorio (índice+sha256, PEM/DER); falha vista: 'cannot find symbol TruststoreIcpBrasil'; suíte verde · próximo: sobrescrita por FISCAL_TRUSTSTORE / carregar(env)
+- 2026-11-13 09:16 · E2-S17: DESENVOLVER ok

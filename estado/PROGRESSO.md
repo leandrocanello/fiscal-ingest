@@ -890,3 +890,5 @@
 - 2026-11-13 13:02 · E2-S17: PR aberto para revisão
 - 2026-11-13 13:04 · E2-S18: PLANEJAR — plano em planos/E2-S18.md (6 passos; DA-64: ManifestarResultado ganha eventoAssinado) · próximo: DESENVOLVER (sonnet)
 - 2026-11-13 13:04 · E2-S18: PLANEJAR ok
+- 2026-11-13 13:05 · E2-S18: ChavesBlobPull.eventoAssinado (teste falhou: símbolo eventoAssinado inexistente; suíte verde) · próximo: ManifestarResultado.eventoAssinado
+- 2026-11-13 13:05 · E2-S18: DESENVOLVER ok

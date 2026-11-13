@@ -848,3 +848,5 @@
 - 2026-11-13 08:37 · E4-S03: Consentimento/Finalidade/Revogacao + vigenteEm no domain (falha vista: 'cannot find symbol' das classes ausentes; depois :domain:test verde). Suíte inteira: infra-postgres:compileTestJava já quebrada em main (CatalogoRlsTest.dataSourceComoApp x PostgresTestBase, E1-S07), não tocada · próximo: MaquinaEstadosColetaTest
 - 2026-11-13 08:38 · E4-S03: revertido — suíte vermelha (ver logs/ultimo-teste.log)
 - 2026-11-13 08:38 · E4-S03: [!] bloqueado após 3 falhas
+- 2026-11-13 08:50 · E4-S04: trocarCertificado (CAS) + certificadosDoCnpj no EstadoColetaRepositorio/JdbiEstadoColeta; falha inicial vista: 'cannot find symbol ResultadoTroca/VinculoCertificado' (compilação); suíte inteira verde · próximo: RotacionarCertificadoUseCase
+- 2026-11-13 08:51 · E4-S04: DESENVOLVER ok

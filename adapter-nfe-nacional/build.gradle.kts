@@ -30,3 +30,19 @@ dependencies {
     // Logback em teste para capturar o WARN do fallback (ListAppender)
     testImplementation("ch.qos.logback:logback-classic:1.5.12")
 }
+
+// Smoke manual em homologacao (E2-S17): fora do `test`, fora do `check`; exige -Dsmoke.homologacao=true (inv. 14)
+tasks.test {
+    useJUnitPlatform { excludeTags("homologacao") }
+}
+
+tasks.register<Test>("smokeHomologacao") {
+    description = "Smoke manual contra a homologacao da SEFAZ. Exige -Dsmoke.homologacao=true."
+    group = "verification"
+    testClassesDirs = sourceSets["test"].output.classesDirs
+    classpath = sourceSets["test"].runtimeClasspath
+    useJUnitPlatform { includeTags("homologacao") }
+    systemProperty("smoke.homologacao", System.getProperty("smoke.homologacao") ?: "false")
+    outputs.upToDateWhen { false }
+    testLogging { events("passed", "skipped", "failed") }
+}

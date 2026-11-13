@@ -867,3 +867,5 @@
 - 2026-11-13 09:16 · E2-S17: DESENVOLVER ok
 - 2026-11-13 09:18 · E2-S17: TruststoreIcpBrasil.carregar(env) (FISCAL_TRUSTSTORE dir/PKCS12 ou padrão do classpath); falha inicial: cannot find symbol carregar · próximo: ACs raiz do ITI + indice.txt
 - 2026-11-13 09:18 · E2-S17: DESENVOLVER ok
+- 2026-11-13 12:30 · E2-S17: ACs raiz ICP-Brasil v5/v10/v11/v12 (ITI) versionadas com indice.txt + LEIAME; TruststoreIcpBrasilPadraoTest falhou (IllegalStateException, índice ausente) e passou; suíte verde · próximo: passo gradle (excludeTags homologacao + task smokeHomologacao)
+- 2026-11-13 09:20 · E2-S17: DESENVOLVER ok

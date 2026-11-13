@@ -49,6 +49,7 @@
 - [x] E3-S06 | AUTO+    | deps: E3-S01 | catálogo: documento/arquivo/proveniência/documento_empresa
 - [x] E3-S07 | AUTO+    | deps: E3-S06,E2-S05 | processor de parse + ROTEAMENTO PELO CONTEÚDO + quarentena
 - [ ] E3-S08 | AUTO     | deps: E3-S02..07 | ponta a ponta local: 1 CNPJ empresa + 1 CNPJ escritório (fake)
+- [ ] E3-S11 | AUTO+    | deps: E3-S08 | auditoria de NSU: recuperação automática de buracos no loop (GapCalculator + RecuperarGapUseCase via consNSU, respeitando o limite ~20/h e a inv. 1) + relatório de NSU por CNPJ consultado (faixa coletada, buracos abertos/recuperados, tentativas com erro, sem XML)
 
 ## Etapa 4 — Scheduler, cofre, consentimento (Fase 4)
 - [x] E4-S01 | AUTO     | deps: E3-S02 | claim SKIP LOCKED + lease + due_at + fairness por tenant

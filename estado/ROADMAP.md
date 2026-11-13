@@ -36,6 +36,7 @@
 - [x] E1-S07 | AUTO+    | deps: -      | CNPJ alfanumérico (NT Conjunta 2025.001; produção desde 06/07/2026): `Cnpj` aceita raiz+ordem alfanuméricas e DV numérico, validação 100% no back-end; impacto em chave de acesso, certificado, extrator, banco
 - [x] E2-S13 | AUTO+    | deps: E2-S07,E2-S11 | enviar o evento de manifestação (RecepcaoEvento SOAP) + mapear o retEvento
 - [r] E2-S17 | AUTO     | deps: E2-S13 | harness de smoke em homologação (@Tag homologacao, fora do test; flag explícita; cursor local que recusa NSU menor) + truststore ICP-Brasil versionado e sobrescrevível
+- [~] E3-S10 | AUTO     | deps: -      | main verde depois do merge da E3-S07 (integração feita sem rodar a suíte)
 - [~] E2-S18 | AUTO     | deps: E2-S13 | gravar o evento de manifestação assinado no blob antes do envio (falha na gravação impede o envio)
 - [h] E2-S12 | HUMANO   | deps: E2-S13,E2-S17 | smoke em homologação: distNSU, consChNFe, ciência, autXML
 
@@ -46,13 +47,13 @@
 - [x] E3-S04 | AUTO     | deps: E3-S01 | outbox transacional + relay (fila no Postgres)
 - [x] E3-S05 | AUTO     | deps: E2-S04 | BlobStore S3 compatível com SeaweedFS nos testes (Testcontainers, tag fixa) + sha256 + idempotência + If-None-Match
 - [x] E3-S06 | AUTO+    | deps: E3-S01 | catálogo: documento/arquivo/proveniência/documento_empresa
-- [~] E3-S07 | AUTO+    | deps: E3-S06,E2-S05 | processor de parse + ROTEAMENTO PELO CONTEÚDO + quarentena
+- [x] E3-S07 | AUTO+    | deps: E3-S06,E2-S05 | processor de parse + ROTEAMENTO PELO CONTEÚDO + quarentena
 - [ ] E3-S08 | AUTO     | deps: E3-S02..07 | ponta a ponta local: 1 CNPJ empresa + 1 CNPJ escritório (fake)
 
 ## Etapa 4 — Scheduler, cofre, consentimento (Fase 4)
 - [x] E4-S01 | AUTO     | deps: E3-S02 | claim SKIP LOCKED + lease + due_at + fairness por tenant
 - [x] E4-S02 | AUTO+    | deps: E2-S10 | CofreDeCertificados local (envelope encryption) — sem segredo em log
-- [!] E4-S03 | AUTO     | deps: E3-S01 | consentimento por finalidade + máquina de estados de estado_coleta
+- [~] E4-S03 | AUTO     | deps: E3-S01 | consentimento por finalidade + máquina de estados de estado_coleta
 - [r] E4-S04 | AUTO     | deps: E4-S02 | alertas de vencimento + rotação sem perder cursor
 - [ ] E4-S05 | AUTO     | deps: E4-S01..04 | simulação de N CNPJs sem nenhum 656
 - [ ] E4-S06 | AUTO+    | deps: E4-S02,E3-S03 | persistência do cofre: tabela certificado (tenant/empresa) + JdbiRepositorioCertificados + RLS

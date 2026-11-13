@@ -858,3 +858,6 @@
 - 2026-11-13 09:06 · E4-S04: DESENVOLVER ok
 - 2026-11-13 09:07 · E4-S04: verificação — suíte inteira verde, caos/propriedades/arquitetura confirmados, sem .pfx versionado · próximo: revisão
 - 2026-11-13 09:07 · E4-S04: VERIFICAR ok
+- 2026-11-13 09:12 · E4-S04: REVISAR — APROVAR PARA PR (suíte 1319/0 falhas; 5 achados de qualidade não bloqueantes no parecer); PR em planos/E4-S04-pr.md · próximo: abrir PR
+- 2026-11-13 09:09 · E4-S04: REVISAR ok
+- 2026-11-13 09:09 · E4-S04: PR aberto para revisão

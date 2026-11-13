@@ -892,3 +892,4 @@
 - 2026-11-13 13:04 · E2-S18: PLANEJAR ok
 - 2026-11-13 13:05 · E2-S18: ChavesBlobPull.eventoAssinado (teste falhou: símbolo eventoAssinado inexistente; suíte verde) · próximo: ManifestarResultado.eventoAssinado
 - 2026-11-13 13:05 · E2-S18: DESENVOLVER ok
+- 2026-11-13 16:45 · E3-S07: conflito do PR #44 com a main resolvido pelo Claude (merge em auto/E3-S07, sem rodar testes); volta a [~] para integrar, verificar e revisar — o PR #44 é atualizado depois

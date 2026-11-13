@@ -895,3 +895,5 @@
 - 2026-11-13 16:45 · E3-S07: conflito do PR #44 com a main resolvido pelo Claude (merge em auto/E3-S07, sem rodar testes); volta a [~] para integrar, verificar e revisar — o PR #44 é atualizado depois
 - 2026-11-13 16:50 · E3-S07 [x] (PR #44 mergeado pelo autor); E3-S10 criada na frente para garantir a main verde; E4-S03 destravada (falhou por branch velha sobre a main quebrada)
 - 2026-11-13 16:50 · E3-S11 criada a pedido do autor: recuperação automática de buracos de NSU + relatório de auditoria de NSU por CNPJ
+- 2026-11-13 17:50 · E2-S17: mergeado por você ✔
+- 2026-11-13 17:50 · E4-S04: mergeado por você ✔

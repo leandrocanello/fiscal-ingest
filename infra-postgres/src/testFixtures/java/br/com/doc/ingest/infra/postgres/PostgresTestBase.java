@@ -6,7 +6,7 @@ import org.testcontainers.postgresql.PostgreSQLContainer;
 import javax.sql.DataSource;
 
 /** Base dos testes de integração: um único container Postgres compartilhado pela JVM de testes. */
-abstract class PostgresTestBase {
+public abstract class PostgresTestBase {
 
     // Imagem fixada num único lugar (DA-11).
     private static final PostgreSQLContainer POSTGRES = new PostgreSQLContainer("postgres:17-alpine");
@@ -19,7 +19,7 @@ abstract class PostgresTestBase {
         POSTGRES.start();
     }
 
-    static DataSource dataSource() {
+    public static DataSource dataSource() {
         PGSimpleDataSource ds = new PGSimpleDataSource();
         ds.setUrl(POSTGRES.getJdbcUrl());
         ds.setUser(POSTGRES.getUsername());
@@ -28,7 +28,7 @@ abstract class PostgresTestBase {
     }
 
     /** DataSource apontando para um schema próprio (criado se faltar), isolando testes de migração. */
-    static DataSource dataSourceNoSchema(String schema) {
+    public static DataSource dataSourceNoSchema(String schema) {
         try (var c = dataSource().getConnection(); var st = c.createStatement()) {
             st.execute("create schema if not exists " + schema);
         } catch (java.sql.SQLException e) {

@@ -61,7 +61,47 @@ class ExtratorMetadadosTest {
                 + "<transp><transporta><CNPJ>" + transportador + "</CNPJ></transporta></transp>"
                 + "<autXML><CNPJ>" + autorizado1 + "</CNPJ></autXML>"
                 + "<autXML><CNPJ>" + autorizado2 + "</CNPJ></autXML>"
-                + "</infNFe></NFe><protNFe><infProt><chNFe>" + chave + "</chNFe></infProt></protNFe></nfeProc>";
+                + "</infNFe></NFe><protNFe versao=\"4.00\"><infProt><chNFe>" + chave + "</chNFe>"
+                + "<cStat>100</cStat></infProt></protNFe></nfeProc>";
+    }
+
+    @Test
+    @DisplayName("leVersaoDoLayoutDoInfNFe")
+    void leVersaoDoLayoutDoInfNFe() {
+        MetadadosDfe m = ExtratorMetadados.extrair(TipoSchemaDfe.PROC_NFE,
+                bytes(procNFe("<CNPJ>22222222000122</CNPJ>").replace("infNFe Id=\"NFe" + CHAVE
+                        + "\" versao=\"4.00\"", "infNFe Id=\"NFe" + CHAVE + "\" versao=\"4.01\"")));
+
+        assertThat(m.versaoLayout()).contains("4.01");
+    }
+
+    @Test
+    @DisplayName("leCStatDoProtocolo")
+    void leCStatDoProtocolo() {
+        MetadadosDfe m = ExtratorMetadados.extrair(TipoSchemaDfe.PROC_NFE,
+                bytes(procNFe("<CNPJ>22222222000122</CNPJ>")));
+
+        assertThat(m.cStatProtocolo()).contains("100");
+    }
+
+    @Test
+    @DisplayName("resumoEEventoNaoTemVersaoNemCStat")
+    void resumoEEventoNaoTemVersaoNemCStat() {
+        String res = "<resNFe xmlns=\"http://www.portalfiscal.inf.br/nfe\" versao=\"1.01\">"
+                + "<chNFe>" + CHAVE + "</chNFe><CNPJ>11111111000191</CNPJ><cSitNFe>1</cSitNFe></resNFe>";
+        String evento = "<procEventoNFe xmlns=\"http://www.portalfiscal.inf.br/nfe\" versao=\"1.00\"><evento>"
+                + "<infEvento Id=\"ID110111" + CHAVE + "01\"><CNPJ>11111111000191</CNPJ>"
+                + "<chNFe>" + CHAVE + "</chNFe><tpEvento>110111</tpEvento><nSeqEvento>1</nSeqEvento>"
+                + "</infEvento></evento><retEvento><infEvento><cStat>135</cStat>"
+                + "</infEvento></retEvento></procEventoNFe>";
+
+        MetadadosDfe resumo = ExtratorMetadados.extrair(TipoSchemaDfe.RES_NFE, bytes(res));
+        MetadadosDfe proc = ExtratorMetadados.extrair(TipoSchemaDfe.PROC_EVENTO_NFE, bytes(evento));
+
+        for (MetadadosDfe m : java.util.List.of(resumo, proc)) {
+            assertThat(m.versaoLayout()).isEmpty();
+            assertThat(m.cStatProtocolo()).isEmpty();
+        }
     }
 
     private static String resNFe(String chave, String emitente) {

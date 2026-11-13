@@ -7,8 +7,8 @@ include(
     "infra-postgres",
     "cert-vault",
     "infra-blob-s3",
+    "app-worker",
     // Módulos previstos (CLAUDE.md §19) — habilitar quando o diretório for criado:
     // "ingest-push",
-    // "app-worker",
     // "app-api",
 )

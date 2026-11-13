@@ -1,5 +1,10 @@
 // infra-postgres — persistência em Postgres com JDBI 3 + Flyway (ADR-025).
 // Sem Spring e sem JPA (ADR-027): verificado por ArchUnit.
+// testFixtures: PostgresTestBase e UsuarioAppCatalogo, reusados pelos testes de integração do app-worker (E3-S07).
+
+plugins {
+    `java-test-fixtures`
+}
 
 dependencies {
     implementation(project(":domain"))
@@ -14,5 +19,9 @@ dependencies {
     testImplementation(testFixtures(project(":domain")))
     testImplementation("org.testcontainers:testcontainers-postgresql:2.0.2")
     testImplementation("org.testcontainers:testcontainers-junit-jupiter:2.0.2")
+    testFixturesApi("org.testcontainers:testcontainers-postgresql:2.0.2")
+    testFixturesApi("org.jdbi:jdbi3-core:3.45.4")
+    testFixturesImplementation("org.postgresql:postgresql:42.7.4")
+
     testImplementation("com.tngtech.archunit:archunit-junit5:1.5.1")
 }

@@ -338,18 +338,18 @@ class ProcessadorColetadoIntegracaoTest extends PostgresTestBase {
     // ===== XML sintético =====
 
     /** Chave sintética: UF 35, AAMM 2610, CNPJ do emitente (posições 7–20), mod 55, série 001. */
-    private static String chave(Cnpj emitente, int numero) {
+    static String chave(Cnpj emitente, int numero) {
         return "352610" + emitente.valor() + "55001" + String.format("%09d", numero) + "1" + "12345678" + "0";
     }
 
-    private static String resNFe(String chave, Cnpj emitente) {
+    static String resNFe(String chave, Cnpj emitente) {
         return "<resNFe xmlns=\"http://www.portalfiscal.inf.br/nfe\" versao=\"1.01\">"
                 + "<chNFe>" + chave + "</chNFe><CNPJ>" + emitente.valor() + "</CNPJ><xNome>Emitente</xNome>"
                 + "<dhEmi>2026-10-20T10:30:00-03:00</dhEmi><tpNF>1</tpNF><vNF>1234.56</vNF>"
                 + "<cSitNFe>1</cSitNFe></resNFe>";
     }
 
-    private static String procNFe(String chave, Cnpj emitente, Cnpj destinatario, List<Cnpj> autorizados,
+    static String procNFe(String chave, Cnpj emitente, Cnpj destinatario, List<Cnpj> autorizados,
                                   String cStat) {
         StringBuilder autXml = new StringBuilder();
         autorizados.forEach(c -> autXml.append("<autXML><CNPJ>").append(c.valor()).append("</CNPJ></autXML>"));
@@ -366,7 +366,7 @@ class ProcessadorColetadoIntegracaoTest extends PostgresTestBase {
     }
 
     /** Evento autorizado; o autor é o próprio emitente (o parser não usa o autor, inv. 10). */
-    private static String procEvento(String chave, Cnpj autor, String tpEvento) {
+    static String procEvento(String chave, Cnpj autor, String tpEvento) {
         return "<procEventoNFe xmlns=\"http://www.portalfiscal.inf.br/nfe\" versao=\"1.00\"><evento versao=\"1.00\">"
                 + "<infEvento Id=\"ID" + tpEvento + chave + "01\"><cOrgao>91</cOrgao><CNPJ>" + autor.valor()
                 + "</CNPJ><chNFe>" + chave + "</chNFe><dhEvento>2026-10-21T09:00:00-03:00</dhEvento>"

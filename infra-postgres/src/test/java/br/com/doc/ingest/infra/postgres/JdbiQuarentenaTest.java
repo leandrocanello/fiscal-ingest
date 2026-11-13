@@ -135,6 +135,22 @@ class JdbiQuarentenaTest extends PostgresTestBase {
     }
 
     @Test
+    void naoAbreEmDocumentoComVinculo() {
+        long empresa = admin.withHandle(h -> h.createUpdate("insert into empresa (tenant_id, cnpj, raiz_cnpj, razao_social, tipo, ambiente) "
+                        + "values (:t, '11222333000181', '11222333', 'x', 'EMPRESA', 'PRODUCAO')")
+                .bind("t", tenant)
+                .executeAndReturnGeneratedKeys("id").mapTo(Long.class).one());
+        admin.useHandle(h -> h.createUpdate("insert into documento_empresa (tenant_id, documento_id, empresa_id, direcao) "
+                        + "values (:t, :d, :e, 'ENTRADA')")
+                .bind("t", tenant).bind("d", documento).bind("e", empresa).execute());
+
+        boolean abriu = quarentena.abrir(tenant, evento, MotivoQuarentena.SEM_EMPRESA);
+
+        assertThat(abriu).isFalse();
+        assertThat(linhas()).isEmpty();
+    }
+
+    @Test
     void falhaNaoExpoeParametros() {
         admin.useHandle(h -> h.execute("alter table quarentena add constraint recusa_arquivo "
                 + "check (arquivo_id <> " + resumo + ")"));

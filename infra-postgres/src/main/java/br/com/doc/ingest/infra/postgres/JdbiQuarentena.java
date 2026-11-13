@@ -25,18 +25,41 @@ public final class JdbiQuarentena implements Quarentena {
         this.clock = clock;
     }
 
+    /**
+     * Trava o documento do arquivo (a mesma trava do {@link JdbiCatalogo#registrar}) e só então confere o
+     * vínculo: quem leu a ficha sem vínculo e chega aqui depois de outro processor ter vinculado e resolvido
+     * não deixa quarentena aberta (corrida vista no {@code CaosProcessadorTest}).
+     */
     @Override
     public boolean abrir(long tenantId, long arquivoId, MotivoQuarentena motivo) {
-        return noTenant(tenantId, h -> h.createUpdate("""
-                        insert into quarentena (tenant_id, arquivo_id, motivo, criado_em)
-                        values (:tenant, :arquivo, :motivo, :agora)
-                        on conflict (tenant_id, arquivo_id) where resolvido_em is null do nothing
-                        """)
-                .bind("tenant", tenantId)
-                .bind("arquivo", arquivoId)
-                .bind("motivo", motivo.name())
-                .bind("agora", Timestamp.from(clock.instant()))
-                .execute() > 0);
+        return noTenant(tenantId, h -> {
+            h.createQuery("""
+                            select d.id
+                            from documento d
+                            join arquivo a on a.documento_id = d.id and a.tenant_id = d.tenant_id
+                            where a.id = :arquivo and a.tenant_id = :tenant
+                            for update of d
+                            """)
+                    .bind("tenant", tenantId)
+                    .bind("arquivo", arquivoId)
+                    .mapTo(Long.class)
+                    .findOne();
+            return h.createUpdate("""
+                            insert into quarentena (tenant_id, arquivo_id, motivo, criado_em)
+                            select :tenant, :arquivo, :motivo, :agora
+                            where not exists (
+                                select 1
+                                from documento_empresa de
+                                join arquivo a on a.documento_id = de.documento_id and a.tenant_id = de.tenant_id
+                                where a.id = :arquivo and a.tenant_id = :tenant)
+                            on conflict (tenant_id, arquivo_id) where resolvido_em is null do nothing
+                            """)
+                    .bind("tenant", tenantId)
+                    .bind("arquivo", arquivoId)
+                    .bind("motivo", motivo.name())
+                    .bind("agora", Timestamp.from(clock.instant()))
+                    .execute() > 0;
+        });
     }
 
     @Override

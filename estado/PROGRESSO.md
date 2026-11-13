@@ -850,3 +850,5 @@
 - 2026-11-13 08:38 · E4-S03: [!] bloqueado após 3 falhas
 - 2026-11-13 08:50 · E4-S04: trocarCertificado (CAS) + certificadosDoCnpj no EstadoColetaRepositorio/JdbiEstadoColeta; falha inicial vista: 'cannot find symbol ResultadoTroca/VinculoCertificado' (compilação); suíte inteira verde · próximo: RotacionarCertificadoUseCase
 - 2026-11-13 08:51 · E4-S04: DESENVOLVER ok
+- 2026-11-13 08:56 · E4-S04: RotacionarCertificadoUseCase (+DesfechoRotacao, ResultadoRotacao, FakeEstadoColeta); falha vista: compilação (cannot find symbol RotacionarCertificadoUseCase); suíte inteira verde · próximo: CacheSslContextTest na rotação
+- 2026-11-13 08:56 · E4-S04: DESENVOLVER ok

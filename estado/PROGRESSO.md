@@ -871,3 +871,5 @@
 - 2026-11-13 09:20 · E2-S17: DESENVOLVER ok
 - 2026-11-13 09:21 · E2-S17: task smokeHomologacao + exclusão da tag homologacao no test; SmokeHomologacaoTest guarda (falha vista: --tests não encontra a classe no test; smoke sem flag = SKIPPED) · próximo: ConfiguracaoSmoke
 - 2026-11-13 09:21 · E2-S17: DESENVOLVER ok
+- 2026-11-13 09:23 · E2-S17: ConfiguracaoSmoke (+ConfiguracaoSmokeTest, falhou por classe inexistente; suíte verde) · próximo: CursorLocal
+- 2026-11-13 09:23 · E2-S17: DESENVOLVER ok

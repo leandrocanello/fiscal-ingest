@@ -46,7 +46,7 @@
 - [x] E3-S04 | AUTO     | deps: E3-S01 | outbox transacional + relay (fila no Postgres)
 - [x] E3-S05 | AUTO     | deps: E2-S04 | BlobStore S3 compatível com SeaweedFS nos testes (Testcontainers, tag fixa) + sha256 + idempotência + If-None-Match
 - [x] E3-S06 | AUTO+    | deps: E3-S01 | catálogo: documento/arquivo/proveniência/documento_empresa
-- [~] E3-S07 | AUTO+    | deps: E3-S06,E2-S05 | processor de parse + ROTEAMENTO PELO CONTEÚDO + quarentena
+- [r] E3-S07 | AUTO+    | deps: E3-S06,E2-S05 | processor de parse + ROTEAMENTO PELO CONTEÚDO + quarentena
 - [ ] E3-S08 | AUTO     | deps: E3-S02..07 | ponta a ponta local: 1 CNPJ empresa + 1 CNPJ escritório (fake)
 
 ## Etapa 4 — Scheduler, cofre, consentimento (Fase 4)

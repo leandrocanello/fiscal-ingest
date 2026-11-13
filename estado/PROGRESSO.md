@@ -879,3 +879,5 @@
 - 2026-11-13 09:26 · E2-S17: DESENVOLVER ok
 - 2026-11-13 09:28 · E2-S17: RoteiroSmoke (distNsu/consultarChave/manifestarCiencia) com testes WireMock; falha inicial: RoteiroSmoke inexistente + CNPJ completo vazando no BlobRef impresso (corrigido com máscara) · próximo: SmokeHomologacaoTest + docs/SMOKE-HOMOLOGACAO.md
 - 2026-11-13 09:28 · E2-S17: DESENVOLVER ok
+- 2026-11-13 09:29 · E2-S17: SmokeHomologacaoTest (skipped sem flag, fora de test) + docs/SMOKE-HOMOLOGACAO.md; suíte verde · próximo: itens de Verificação/revisão
+- 2026-11-13 09:30 · E2-S17: DESENVOLVER ok

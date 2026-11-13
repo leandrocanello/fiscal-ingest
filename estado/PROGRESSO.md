@@ -873,3 +873,5 @@
 - 2026-11-13 09:21 · E2-S17: DESENVOLVER ok
 - 2026-11-13 09:23 · E2-S17: ConfiguracaoSmoke (+ConfiguracaoSmokeTest, falhou por classe inexistente; suíte verde) · próximo: CursorLocal
 - 2026-11-13 09:23 · E2-S17: DESENVOLVER ok
+- 2026-11-13 09:24 · E2-S17: CursorLocal (teste falhou por classe inexistente: 'cannot find symbol class CursorLocal'; agora verde, suíte inteira ok) · próximo: BlobStoreEmDiscoSmoke
+- 2026-11-13 09:24 · E2-S17: DESENVOLVER ok

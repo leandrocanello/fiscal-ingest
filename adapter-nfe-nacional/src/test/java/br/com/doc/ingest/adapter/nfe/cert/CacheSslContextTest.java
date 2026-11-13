@@ -94,6 +94,34 @@ class CacheSslContextTest {
     }
 
     @Test
+    void rotacaoUsaContextoNovoEOAntigoSaiPorInvalidacao() {
+        CacheSslContext cache = cache(4);
+        SSLContext antigo = cache.obter(credencial(pfxA));
+
+        SSLContext renovado = cache.obter(credencial(pfxB));
+        assertThat(renovado).isNotSameAs(antigo);
+        assertThat(cache.tamanho()).isEqualTo(2);
+
+        cache.invalidar(Sha256.hex(pfxA));
+
+        assertThat(cache.tamanho()).isEqualTo(1);
+        assertThat(cache.obter(credencial(pfxB))).isSameAs(renovado);
+        assertThat(cache.obter(credencial(pfxA))).isNotSameAs(antigo);
+    }
+
+    @Test
+    void invalidarFingerprintDesconhecidoNaoFazNada() {
+        CacheSslContext cache = cache(4);
+        SSLContext a = cache.obter(credencial(pfxA));
+
+        cache.invalidar(Sha256.hex(pfxC));
+
+        assertThat(cache.tamanho()).isEqualTo(1);
+        assertThat(cache.obter(credencial(pfxA))).isSameAs(a);
+        assertThat(carregador.chamadas.get()).isEqualTo(1);
+    }
+
+    @Test
     void pfxDiferenteGeraContextoDiferente() {
         CacheSslContext cache = cache(4);
 

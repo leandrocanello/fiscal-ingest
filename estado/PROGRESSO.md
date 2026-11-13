@@ -865,3 +865,5 @@
 - 2026-11-13 09:11 · E2-S17: PLANEJAR ok
 - 2026-11-13 09:16 · E2-S17: TruststoreIcpBrasil.deDiretorio (índice+sha256, PEM/DER); falha vista: 'cannot find symbol TruststoreIcpBrasil'; suíte verde · próximo: sobrescrita por FISCAL_TRUSTSTORE / carregar(env)
 - 2026-11-13 09:16 · E2-S17: DESENVOLVER ok
+- 2026-11-13 09:18 · E2-S17: TruststoreIcpBrasil.carregar(env) (FISCAL_TRUSTSTORE dir/PKCS12 ou padrão do classpath); falha inicial: cannot find symbol carregar · próximo: ACs raiz do ITI + indice.txt
+- 2026-11-13 09:18 · E2-S17: DESENVOLVER ok

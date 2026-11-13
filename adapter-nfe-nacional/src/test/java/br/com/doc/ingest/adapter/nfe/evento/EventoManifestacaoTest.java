@@ -30,7 +30,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class EventoManifestacaoTest {
 
     private static final String CHAVE = "35261012345678000199550010000001231000000011";
-    private static final Cnpj AUTOR = new Cnpj("98765432000110");
+    private static final Cnpj AUTOR = new Cnpj("98765432000198");
     private static final Instant AGORA = Instant.parse("2026-10-28T13:04:05Z");
 
     private static CertificadoCarregado certificado;

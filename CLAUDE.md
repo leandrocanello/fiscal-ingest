@@ -71,7 +71,7 @@ pare e resuma. Incrementos pequenos. Na dúvida entre "avançar" e "perguntar", 
  │  Porta PULL (SourceAdapter)               Porta PUSH (API de recebimento)          │
  │          └───────────────────┬──────────────────────┘                               │
  │                              ▼                                                      │
- │  Pipeline único: grava bruto (MinIO) → registra (Postgres) → outbox → processors    │
+ │  Pipeline único: grava bruto (S3)    → registra (Postgres) → outbox → processors    │
  │                              ▼                                                      │
  │  Catálogo: 1 documento por (tenant, chave) · N arquivos · N proveniências           │
  │                              ▼                                                      │
@@ -233,6 +233,9 @@ estaduais. Não desenhe nada que impeça esses itens, mas **não os implemente**
 - **mTLS com A1 (.pfx) ICP-Brasil**, normalmente com validade de 1 ano. A3 (token ou cartão) não serve para automação.
 - **[VALIDAR]** qual certificado pode consultar qual CNPJ: e-CNPJ da matriz para as filiais com mesma raiz?
   Procurador? A premissa segura é **cada certificado consulta o CNPJ do seu próprio titular** (ou raiz).
+- **CNPJ alfanumérico** (NT Conjunta 2025.001; produção desde 06/07/2026): `[A-Z0-9]{12}[0-9]{2}`, DV módulo 11 com
+  valor de cada caractere = ASCII − 48; os CNPJs numéricos antigos continuam válidos. A chave de acesso aceita letras
+  nas 12 posições do CNPJ. Validação 100% no back-end (`Cnpj`, `ChaveAcesso`, `CHECK` da V13) — E1-S07, ADR-031.
 - `.pfx` antigo pode usar criptografia legada (RC2/3DES). Se o `KeyStore` padrão recusar, carregue com BouncyCastle.
 
 ### 3.6 Outros fatos de mercado relevantes
@@ -498,7 +501,7 @@ Observações:
 - `status` do ledger segue `StatusNsu`: `BAIXADO | RESUMO | EVENTO | DESCARTADO | FORA_PRAZO | GAP`.
 - Particionamento (`ledger_nsu`, `arquivo`, `feed`): só com medição. Projete pensando em hash por tenant/CNPJ.
 
-### 8.1 Object store (MinIO/S3)
+### 8.1 Object store (S3 compatível)
 ```
 raw/pull/{fonte}/{ambiente}/{cnpj_consultado}/{aaaa}/{mm}/{dd}/{sha256}.envelope.xml   # sem tenant (ver abaixo)
 raw/push/{tenant}/{aaaa}/{mm}/{dd}/{sha256}.bin                        # exatamente como chegou
@@ -510,6 +513,9 @@ doc/{tenant}/{modelo}/{aaaa}/{mm}/{chave}/{tipo}-{sha256}.xml.gz      # cada arq
   consentimento e expurgo; o bruto de um CNPJ só é expurgado quando nenhum tenant ativo o usa.
 - SHA-256 em todo objeto, gravado no Postgres. Imutável (versionamento/WORM quando possível). Criptografia em repouso.
 - Gravar a mesma chave com o mesmo hash não faz nada.
+- **Servidor:** qualquer S3 compatível (AWS S3, R2, Backblaze, SeaweedFS próprio). O MinIO foi descartado: o projeto foi
+  arquivado em abril de 2026 e as imagens saíram do Docker Hub e do quay (ADR-030). Imutabilidade por `PUT` com
+  `If-None-Match: *` (412 para quem perde), provada contra o SeaweedFS nos testes.
 - **Tiering:** por ora, objetos individuais e **regra de ciclo de vida** da própria storage. Pacotes ZIP mensais
   só com medição e com **catálogo de indireção** (o `BlobRef` lógico aponta para pacote + offset), em pacotes
   **apenas de acréscimo** (eventos chegam depois do "fechamento" do mês).
@@ -728,7 +734,7 @@ Os PDFs (DANFE) ficam guardados como anexo informativo, **nunca** como fonte de 
    malformada, `docZip` corrompido, certificado inválido.
 5. **Porta push:** XML válido, duplicado, sem protocolo, assinatura inválida, emitente fora do agente,
    **XXE**, zip bomb, ISO-8859-1, BOM.
-6. **Integração** (Testcontainers): Postgres (CAS, RLS, outbox, sequenciador), MinIO; Kafka e Redis quando entrarem.
+6. **Integração** (Testcontainers): Postgres (CAS, RLS, outbox, sequenciador), SeaweedFS (S3); Kafka e Redis quando entrarem.
 7. **Caos:**
    - queda entre gravar o bruto e registrar → relê, sem perda e sem duplicata;
    - dois fetchers no mesmo CNPJ → só um avança;
@@ -756,7 +762,7 @@ e sem `Instant.now()` solto no domínio); cada invariante da seção 2.2 com tes
 | 1 ✅ | Contrato do adapter + fake | revalidar |
 | 1.5 ✅ | Saneamento: wrapper, `settings`, auditoria, correção dos docs | concluída em 2026-10-22 |
 | **2** | **Adapter NF-e AN** — 2A ✅ CStatMapper + JAXB · **2B** `buscarLote` (envelope `distDFeInt`, decode de `docZip`, classificação, porta `BlobStore`, envelope bruto) · **2C** `buscarUm` + `consChNFe` · **2D** carregador de `.pfx` (inclui legado) + `SSLContext` por certificado + cache · **2E** `manifestar` (XML-DSig, C14N, algoritmo **[VALIDAR]**) | suíte de contrato verde; nenhum `cStat` no core; smoke de homologação documentado, **incluindo o `autXML`** |
-| **3** | **Persistência**: 3A Postgres (`estado_coleta`, `ledger_*`, CAS, outbox, Flyway, RLS) · 3B MinIO (`BlobStore`, layout, sha256) · 3C **catálogo** + processor de parse + **roteamento pelo conteúdo** + quarentena | testes de integração e de caos verdes; 1 CNPJ (empresa) e 1 CNPJ (escritório/`autXML`) ponta a ponta local |
+| **3** | **Persistência**: 3A Postgres (`estado_coleta`, `ledger_*`, CAS, outbox, Flyway, RLS) · 3B object store S3 (`BlobStore`, layout, sha256; SeaweedFS nos testes) · 3C **catálogo** + processor de parse + **roteamento pelo conteúdo** + quarentena | testes de integração e de caos verdes; 1 CNPJ (empresa) e 1 CNPJ (escritório/`autXML`) ponta a ponta local |
 | **4** | **Scheduler + cofre**: claim `SKIP LOCKED` + lease, `due_at`, fairness; `CofreDeCertificados` local cifrado; consentimento; estados por CNPJ; alertas de vencimento | coleta contínua de vários CNPJs sem 656 em simulação |
 | **5** | **Porta push + upload manual** (`/v1/ingestao/arquivos`), validação de assinatura, proveniência e confiança | todos os casos do item 5 da seção 15 verdes |
 | **6** | **API de entrega v1**: feed com sequenciador, documentos/XML, OAuth de integrador, autorização, sandbox, OpenAPI · depois **webhooks** (HMAC, retentativa, reenvio, painel de entregas) | teste de propriedade do feed; caos "integrador fora do ar" |
@@ -835,7 +841,7 @@ fiscal-ingest/                         (este repositório)
 ├── ingest-push/             # parse seguro, classificação, validação de assinatura, roteamento
 ├── cert-vault/              # CofreDeCertificados (local cifrado + plugáveis)
 ├── infra-postgres/          # ledger, estado_coleta, catálogo, feed, outbox, RLS, Flyway
-├── infra-blob-minio/
+├── infra-blob-s3/            # S3 compatível (SeaweedFS nos testes; ADR-030)
 ├── infra-stream-kafka/      # (fase 10, se medido)
 ├── infra-ratelimit-redis/   # (fase 10, se medido)
 ├── app-scheduler/           # control plane

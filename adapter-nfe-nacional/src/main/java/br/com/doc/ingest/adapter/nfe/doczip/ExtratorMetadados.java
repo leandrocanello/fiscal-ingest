@@ -1,5 +1,7 @@
 package br.com.doc.ingest.adapter.nfe.doczip;
 
+import br.com.doc.ingest.domain.model.ChaveAcesso;
+
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -156,7 +158,8 @@ public final class ExtratorMetadados {
         }
 
         MetadadosDfe montar() {
-            if (chave == null || !chave.matches("\\d{44}")) {
+            // Só o formato da NT Conjunta 2025.001; o DV não é exigido na entrada (DA-38).
+            if (!ChaveAcesso.formatoValido(chave)) {
                 throw new DocZipInvalidoException("Chave de acesso ausente ou inválida");
             }
             return new MetadadosDfe(chave, chave.substring(20, 22),

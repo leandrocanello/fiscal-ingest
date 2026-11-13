@@ -3,6 +3,7 @@ package br.com.doc.ingest.domain.adapter;
 import br.com.doc.ingest.domain.model.Cnpj;
 import br.com.doc.ingest.domain.model.FonteId;
 import br.com.doc.ingest.domain.model.Nsu;
+import java.util.Optional;
 
 /**
  * A porta unica do adapter - todo adapter de fonte fiscal implementa esta interface.
@@ -42,4 +43,18 @@ public interface SourceAdapter extends ConsultaPontualPort {
      */
     @Override
     BuscarUmResultado buscarUm(FonteId fonte, Cnpj cnpj, Nsu nsu);
+
+    /**
+     * Envia a manifestacao do destinatario sobre uma nota. Opcional: por padrao o adapter nao
+     * manifesta e devolve vazio.
+     *
+     * @param contexto    fonte + cnpj (o autor da manifestacao)
+     * @param chaveAcesso chave da nota manifestada
+     * @param tipo        significado da manifestacao (o codigo da fonte fica no adapter, inv. 4)
+     * @return desfecho normalizado + referencia da resposta bruta; vazio se o adapter nao manifesta
+     */
+    default Optional<ManifestarResultado> manifestar(
+            ContextoConsulta contexto, String chaveAcesso, TipoManifestacao tipo) {
+        return Optional.empty();
+    }
 }

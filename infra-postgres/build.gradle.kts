@@ -16,6 +16,7 @@ dependencies {
     implementation("org.postgresql:postgresql:42.7.4")
 
     // Testcontainers 2.x: compatível com Docker Engine 29 (DA-11)
+    testImplementation(testFixtures(project(":domain")))
     testImplementation("org.testcontainers:testcontainers-postgresql:2.0.2")
     testImplementation("org.testcontainers:testcontainers-junit-jupiter:2.0.2")
     testFixturesApi("org.testcontainers:testcontainers-postgresql:2.0.2")

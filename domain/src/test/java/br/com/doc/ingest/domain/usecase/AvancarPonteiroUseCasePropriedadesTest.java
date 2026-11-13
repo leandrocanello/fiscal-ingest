@@ -36,7 +36,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class AvancarPonteiroUseCasePropriedadesTest {
 
     private static final FonteId FONTE = new FonteId("NFE_AN");
-    private static final Cnpj CNPJ = new Cnpj("12345678000199");
+    private static final Cnpj CNPJ = new Cnpj("12345678000195");
 
     @Property
     void cursorNuncaRecua(@ForAll("sequenciasDeLotes") List<BuscarLoteResultado> lotes) {

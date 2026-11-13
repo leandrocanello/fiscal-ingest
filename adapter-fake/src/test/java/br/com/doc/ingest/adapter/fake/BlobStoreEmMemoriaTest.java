@@ -12,7 +12,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class BlobStoreEmMemoriaTest {
 
-    private static final String CHAVE = "raw/pull/t1/12345678000199/2026/10/23/x.envelope.xml.gz";
+    private static final String CHAVE = "raw/pull/t1/12345678000195/2026/10/23/x.envelope.xml.gz";
 
     private final BlobStoreEmMemoria store = new BlobStoreEmMemoria();
 

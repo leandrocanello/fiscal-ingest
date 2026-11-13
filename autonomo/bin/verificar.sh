@@ -56,8 +56,14 @@ case "$ACAO" in
       # mostra exatamente o que esta chamada mudou no plano.
       fechados_antes=$(git -C "$FI_ESTADO" show "HEAD:estado/planos/$ID.md" 2>/dev/null | grep -c '^- \[x\]')
       fechados_agora=$(grep -c '^- \[x\]' "$FI_ESTADO_DIR/planos/$ID.md" 2>/dev/null)
+      bloq_antes=$(git -C "$FI_ESTADO" show "HEAD:estado/planos/$ID.md" 2>/dev/null | grep -cE '^\s*- \[!\]')
+      bloq_agora=$(grep -cE '^\s*- \[!\]' "$FI_ESTADO_DIR/planos/$ID.md" 2>/dev/null)
       if (( ${fechados_agora:-0} > ${fechados_antes:-0} )); then
         progresso "$ID: passo concluído sem alteração de código (aceito)"
+      elif (( ${bloq_agora:-0} > ${bloq_antes:-0} )); then
+        # O agente parou num passo que depende de você: não é falha. O proxima-acao vai marcar [h].
+        progresso "$ID: passo marcado [!] (aguarda decisão) — sem commit, aceito"
+        estado_set ".falhas[\"$ID\"]" 0; exit 0   # nada mudou no código: não roda a suíte
       else
         falha "$ID" "$ANTES" "nenhum commit feito e nenhum passo fechado no plano"; exit 1
       fi

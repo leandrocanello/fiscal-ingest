@@ -14,7 +14,7 @@ class BlobRefTest {
     @Test
     @DisplayName("aceita chave do layout de armazenamento e sha256 válido")
     void aceitaChaveValida() {
-        var chave = "raw/pull/t1/12345678000199/2026/10/23/x.envelope.xml.gz";
+        var chave = "raw/pull/t1/12345678000195/2026/10/23/x.envelope.xml.gz";
         var ref = new BlobRef(chave, SHA);
         assertThat(ref.chave()).isEqualTo(chave);
         assertThat(ref.sha256()).isEqualTo(SHA);

@@ -19,6 +19,8 @@ dependencies {
     // Testes - BlobStoreEmMemoria do adapter-fake nos testes do adapter real (DA-15)
     testImplementation(project(":adapter-fake"))
     testImplementation(testFixtures(project(":adapter-fake")))
+    // Testes - FixturesFiscais (CNPJ e chave com DV certo, E1-S07)
+    testImplementation(testFixtures(project(":domain")))
 
     // Testes - WireMock para simular a SEFAZ
     testImplementation("org.wiremock:wiremock:3.9.1")

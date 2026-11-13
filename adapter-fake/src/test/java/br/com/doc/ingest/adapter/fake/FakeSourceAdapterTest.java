@@ -29,7 +29,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 class FakeSourceAdapterTest {
 
     private final FonteId fonte = new FonteId("NFE_AN");
-    private final Cnpj cnpj = new Cnpj("12345678000199");
+    private final Cnpj cnpj = new Cnpj("12345678000195");
 
     @Nested
     @DisplayName("Descritor")
@@ -47,6 +47,22 @@ class FakeSourceAdapterTest {
             assertThat(descritor.capacidades().fazPontual()).isTrue();
             assertThat(descritor.capacidades().fazManifestacao()).isTrue();
             assertThat(descritor.capacidades().permiteRetrocesso()).isFalse();
+        }
+    }
+
+    @Nested
+    @DisplayName("manifestar")
+    class Manifestar {
+
+        @Test
+        @DisplayName("não manifesta: o default da porta devolve Optional.empty()")
+        void naoManifesta() {
+            FakeSourceAdapter adapter = new FakeSourceAdapter(fonte);
+
+            Optional<ManifestarResultado> resultado = adapter.manifestar(
+                    new ContextoConsulta(fonte, cnpj), "3".repeat(44), TipoManifestacao.CIENCIA);
+
+            assertThat(resultado).isEmpty();
         }
     }
 

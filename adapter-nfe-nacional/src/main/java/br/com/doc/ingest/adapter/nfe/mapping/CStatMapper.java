@@ -112,7 +112,7 @@ public class CStatMapper {
     }
 
     /** So letras e digitos, truncado: o log nunca carrega XML nem texto livre da resposta. */
-    private static String sanitizar(String cStat) {
+    static String sanitizar(String cStat) {
         if (cStat == null) {
             return "null";
         }

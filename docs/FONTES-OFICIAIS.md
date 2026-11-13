@@ -37,6 +37,7 @@ Se a norma mudar, mude **o teste primeiro**.
 | 12 | Serviço de consulta de situação/protocolo por chave (limites) | PENDENTE | `CONFIRMADO_SEFAZ` (§4); Fase 5 |
 | 13 | NFCom/NF3e; cronograma IBS/CBS na NF-e; adesão ao ADN da NFS-e | FONTE LOCALIZADA (parcial) | Parser versionado; Fase 11+ |
 | 14 | Prazo legal de guarda dos XML (validar com jurídico) | FONTE LOCALIZADA (parcial) ⚠ | Política de retenção/expurgo (§14) |
+| 15 | CNPJ alfanumérico: formato, DV, letras, chave de acesso (E1-S07) | FONTE LOCALIZADA (cópia de terceiros da NT + FAQ da Receita) | `Cnpj`, `ChaveAcesso`, `ChaveAcessoNfe`, `IdEvento`, extrator, V13; E4-S02 (certificado) |
 
 ## Rastreio: [VALIDAR] de origem → item
 | Origem | Item(ns) |
@@ -132,6 +133,7 @@ Se a norma mudar, mude **o teste primeiro**.
 - **Leitura proposta:** Regra raiz/filial/procurador **NÃO LOCALIZADA** em fonte aberta. Mantém-se a premissa segura do CLAUDE.md §3.5/§7.2 (cada certificado consulta o CNPJ do próprio titular). Conferir a seção de validação do certificado na NT 2014.002 v1.40 lendo o PDF manualmente. Sem divergência confirmada.
 - **Status:** PENDENTE (nada primário; só pista secundária)
 - **Afeta:** E2D (carregador `.pfx`); cofre (§7); `estado_coleta`
+- **Atualização (E1-S07, 2026-11-04):** o texto da NT 2014.002 v1.40, de 08/07/2026 (mesma cópia de terceiros acima), foi lido: o campo `CNPJ` passa de "N" para "C" (CNPJ base alfanumérico); a regra H02 (`489`) cita "DV ou zeros"; a regra A07 cita `OID=2.16.76.1.3.3` (CNPJ no certificado). A regra raiz/filial/procurador continua sem fonte além do MOC H04/H05. Ver item 15.
 
 ### Item 9 — URLs e versões de WSDL/XSD (produção e homologação); política de versão das NTs
 - **Pergunta:** URLs e versões de WSDL/XSD (produção e homologação); política de versão das NTs.
@@ -254,3 +256,23 @@ Outros achados da Tab. 5-29 (p. 96) e do §5.7.4.4 (p. 94):
 - **Decisão E2-S11 (autor, 2026-10-27):** `AlgoritmoAssinatura {RSA_SHA1, RSA_SHA256}` com padrão `RSA_SHA1`.
   ⚠ MOC de 2020: conferir no smoke E2-S12 se alguma NT posterior passou a exigir SHA-256.
 
+## Item 15 — CNPJ alfanumérico (E1-S07, lido em 2026-11-04)
+
+> Status: **FONTE LOCALIZADA** — não conferido pelo autor. ⚠ A NT Conjunta foi lida em **cópia de terceiros**, não no portal da NF-e;
+> uma versão posterior à v1.00 **não foi verificada**. As URLs da NT Conjunta e da FAQ **não foram registradas** na sessão de pesquisa
+> e, pela regra deste arquivo, não entram aqui sem nova abertura (DA-56).
+
+| Fonte | Versão / data | O que diz | Uso no código |
+|---|---|---|---|
+| NT Conjunta 2025.001 (cópia de terceiros) | v1.00, 25/04/2025 | CNPJ `[A-Z0-9]{12}[0-9]{2}`; chave de acesso `[0-9]{6}[A-Z0-9]{12}[0-9]{26}`; DV módulo 11 com valor = ASCII − 48; a chave usa "a mesma lógica"; homologação 06/04/2026, produção 06/07/2026; Anexo I recusa `00000000000000`; exclusão de I, O, U, Q e F é pedido do Encat que "precisa ser confirmado" | `Cnpj`, `ChaveAcesso.formatoValido`, `DigitoVerificador.modulo11` |
+| FAQ do CNPJ alfanumérico — Receita Federal (gov.br) | lida em 2026-11-04 | "26 letras de A até Z"; perg. 45: os sistemas devem considerar todas as letras, combinações proibidas são controle interno da Receita; perg. 15: os numéricos atuais continuam válidos; perg. 14: exemplo `12ABC34501DE35` | `LETRAS_VEDADAS` vazia (DA-37); `CnpjTest.aceitaExemploDaReceita` |
+| NT 2014.002 (cópia de terceiros, URL no item 8) | v1.40, 08/07/2026 | `CNPJ` de "N" para "C"; H02/`489` "DV ou zeros"; A07 cita `OID=2.16.76.1.3.3` | `EnvelopeDistDfe` (CNPJ alfanumérico intacto); E4-S02 (extrator do certificado) |
+| Machado Meyer (secundária), resumo da NT Conjunta 2025.001 | 08/05/2025 | 8 de raiz + 4 de ordem alfanuméricas, 2 DV numéricos; só inscrições novas | pista inicial do pedido do autor |
+
+Leituras e limites registrados nos testes:
+- **`A` e `6` colidem no DV** (17 − 6 = 11): `12ABC34501DE35` e `126BC34501DE35` são ambos válidos (`CnpjTest.aColisaoAe6NaoEhDetectavelPeloDv`).
+- **`00000000000191` é válido** (raiz zerada com DV certo); só os 14 zeros são recusados (DA-37).
+- **DV da chave:** obrigatório só no que sai para a SEFAZ (`ChaveAcessoNfe`, `IdEvento`); na entrada, só formato (DA-38).
+- **[VALIDAR]** se as posições 7–20 da chave podem trazer CPF (emitente pessoa física): por isso não são validadas como `Cnpj`.
+- **Para o autor conferir:** versão da NT Conjunta 2025.001 posterior à v1.00 no portal (letras vedadas → preencher `LETRAS_VEDADAS`)
+  e as URLs oficiais da NT e da FAQ.

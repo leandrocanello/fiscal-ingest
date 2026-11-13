@@ -1,6 +1,7 @@
 package br.com.doc.ingest.adapter.nfe.evento;
 
 import br.com.doc.ingest.domain.adapter.TipoManifestacao;
+import br.com.doc.ingest.domain.model.FixturesFiscais;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -38,6 +39,25 @@ class IdEventoTest {
                 .isInstanceOf(IllegalArgumentException.class);
         assertThatThrownBy(() -> new IdEvento(TipoManifestacao.CIENCIA, null, 1))
                 .isInstanceOf(NullPointerException.class);
+    }
+
+    @Test
+    @DisplayName("aceita chave com CNPJ alfanumérico e DV certo")
+    void aceitaAlfanumerica() {
+        String chave = FixturesFiscais.chave("352604" + "12ABC34501DE35" + "55001000000001100000001");
+
+        assertThat(new IdEvento(TipoManifestacao.CIENCIA, chave, 1).valor()).isEqualTo("ID210210" + chave + "01");
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "35260412ABC34501DE35550010000000011000000014",
+            "35261012345678000195550010000001231000000015"})
+    @DisplayName("rejeita chave com DV errado, sem ecoar a chave")
+    void recusaDvErrado(String chave) {
+        assertThatThrownBy(() -> new IdEvento(TipoManifestacao.CIENCIA, chave, 1))
+                .isInstanceOf(IllegalArgumentException.class)
+                .satisfies(e -> assertThat(e.getMessage()).doesNotContain(chave));
     }
 
     @ParameterizedTest

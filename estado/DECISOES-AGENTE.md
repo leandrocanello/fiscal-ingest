@@ -384,3 +384,9 @@ Como desfazer: ajustar o teste se a política de bucket (Fase 10) desligar a cri
 **Opções:** (a) `JdbiQuarentena.abrir` trava o documento (`for update`, mesma trava do `registrar`) e só insere se não houver `documento_empresa`; (b) processor relê a ficha depois de abrir e resolve se apareceu vínculo; (c) aceitar e depender de reprocesso.
 **Escolha:** (a). Contrato da porta `Quarentena.abrir` passa a dizer "não abre se o documento já tem vínculo" (devolve `false`). Teste novo `JdbiQuarentenaTest.naoAbreEmDocumentoComVinculo`; nenhum teste antigo mudou.
 **Como desfazer:** reverter o `abrir` para o `insert ... on conflict` simples e o javadoc da porta; `abrirAtrasadoDepoisDoVinculoNaoDeixaQuarentenaAberta` volta a falhar.
+
+### DA-63 · 2026-11-13 · E2-S17
+- **Contexto:** o plano da E2-S17 precisa fixar o formato do truststore versionado e os nomes das variáveis do smoke; os docs só decidem "ACs do ITI versionadas + sobrescrita por variável" (E2-S10 c).
+- **Opções:** (a) `.crt` PEM soltos + `indice.txt` com sha256, sobrescrita `FISCAL_TRUSTSTORE` (diretório no mesmo formato ou PKCS12 com senha vazia); (b) um `.jks`/`.p12` versionado (cai no `.gitignore` e é binário opaco na revisão).
+- **Escolha:** (a). Variáveis do harness com prefixo `FISCAL_SMOKE_` (`PFX`, `SENHA`, `CNPJ`, `URL_DIST`, `URL_EVENTO`, `CHAVE`, `MANIFESTAR`, `DIR`); cursor em `~/fiscal-smoke/cursor-<cnpj>.txt`; brutos em `~/fiscal-smoke/AAAA-MM-DD/`.
+- **Como desfazer:** trocar o carregador em `TruststoreIcpBrasil` e os nomes em `ConfiguracaoSmoke`; nada fora do adapter depende disso.

@@ -1,7 +1,7 @@
 {
   "data": "2026-11-13",
   "diff_hoje": 459,
-  "chamadas_hoje": 17,
+  "chamadas_hoje": 18,
   "revertidas_hoje": 3,
   "base": {
     "E1-S04": "main",
@@ -33,7 +33,8 @@
     "E4-S02": "main",
     "E1-S07": "main",
     "E4-S03": "main",
-    "E4-S04": "main"
+    "E4-S04": "main",
+    "E2-S17": "main"
   },
   "falhas": {
     "E1-S04": 0,
@@ -67,6 +68,7 @@
     "E1-S07": 0,
     "E2-S12": 0,
     "E4-S03": 3,
-    "E4-S04": 0
+    "E4-S04": 0,
+    "E2-S17": 0
   }
 }

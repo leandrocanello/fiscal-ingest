@@ -35,7 +35,7 @@
 - [x] E2-S16 | AUTO     | deps: E2-S14 | cStat do consChNFe no CStatMapper (217/236/614–619/640/641/653/654 → definitivo; 593 → ErroAutenticacao; 252 → definitivo), testes primeiro
 - [x] E1-S07 | AUTO+    | deps: -      | CNPJ alfanumérico (NT Conjunta 2025.001; produção desde 06/07/2026): `Cnpj` aceita raiz+ordem alfanuméricas e DV numérico, validação 100% no back-end; impacto em chave de acesso, certificado, extrator, banco
 - [x] E2-S13 | AUTO+    | deps: E2-S07,E2-S11 | enviar o evento de manifestação (RecepcaoEvento SOAP) + mapear o retEvento
-- [ ] E2-S17 | AUTO     | deps: E2-S13 | harness de smoke em homologação (@Tag homologacao, fora do test; flag explícita; cursor local que recusa NSU menor) + truststore ICP-Brasil versionado e sobrescrevível
+- [~] E2-S17 | AUTO     | deps: E2-S13 | harness de smoke em homologação (@Tag homologacao, fora do test; flag explícita; cursor local que recusa NSU menor) + truststore ICP-Brasil versionado e sobrescrevível
 - [ ] E2-S18 | AUTO     | deps: E2-S13 | gravar o evento de manifestação assinado no blob antes do envio (falha na gravação impede o envio)
 - [h] E2-S12 | HUMANO   | deps: E2-S13,E2-S17 | smoke em homologação: distNSU, consChNFe, ciência, autXML
 

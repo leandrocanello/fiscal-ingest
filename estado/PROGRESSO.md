@@ -861,3 +861,5 @@
 - 2026-11-13 09:12 · E4-S04: REVISAR — APROVAR PARA PR (suíte 1319/0 falhas; 5 achados de qualidade não bloqueantes no parecer); PR em planos/E4-S04-pr.md · próximo: abrir PR
 - 2026-11-13 09:09 · E4-S04: REVISAR ok
 - 2026-11-13 09:09 · E4-S04: PR aberto para revisão
+- 2026-11-13 09:10 · E2-S17: PLANEJAR — plano com 9 passos (truststore ICP-Brasil com índice sha256 + sobrescrita FISCAL_TRUSTSTORE; task smokeHomologacao fora do test; ConfiguracaoSmoke, CursorLocal que recusa NSU menor, BlobStore em disco fora do repo, RoteiroSmoke contra WireMock); DA-63 · próximo: desenvolver
+- 2026-11-13 09:11 · E2-S17: PLANEJAR ok

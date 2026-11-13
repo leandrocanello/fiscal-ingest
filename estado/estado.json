@@ -1,7 +1,7 @@
 {
   "data": "2026-11-13",
   "diff_hoje": 794,
-  "chamadas_hoje": 30,
+  "chamadas_hoje": 31,
   "revertidas_hoje": 5,
   "base": {
     "E1-S04": "main",
@@ -69,6 +69,6 @@
     "E2-S12": 0,
     "E4-S03": 3,
     "E4-S04": 0,
-    "E2-S17": 1
+    "E2-S17": 0
   }
 }

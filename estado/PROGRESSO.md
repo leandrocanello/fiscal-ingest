@@ -885,3 +885,6 @@
 - 2026-11-13 09:31 · E2-S17: VERIFICAR ok
 - 2026-11-13 09:32 · E2-S17: revertido — chamada terminou com ERRO
 - 2026-11-13 09:32 · E2-S17: revertido — limite de uso no meio da chamada
+- 2026-11-13 13:02 · E2-S17: REVISAR — APROVAR PARA PR (atenção: distNsuDepoisDaCiencia pode reconsultar dentro da janela de 1h) · próximo: PR e merge pelo autor; depois smoke E2-S12 (HUMANO)
+- 2026-11-13 13:02 · E2-S17: REVISAR ok
+- 2026-11-13 13:02 · E2-S17: PR aberto para revisão

@@ -1,5 +1,8 @@
 package br.com.doc.ingest.domain.coleta;
 
+import br.com.doc.ingest.domain.model.Cnpj;
+
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -18,4 +21,13 @@ public interface EstadoColetaRepositorio {
      * retroceder. Em conflito ou retrocesso, nada é gravado.
      */
     ResultadoCas confirmarLote(ConfirmacaoLote confirmacao);
+
+    /**
+     * Troca o certificado da chave por CAS no valor atual ({@code esperado}, nulo se ainda não há).
+     * Nunca toca cursor, NSU, versão, lease nem bloqueio: o cursor é do CNPJ consultado (§7.4).
+     */
+    ResultadoTroca trocarCertificado(ChaveColeta chave, Long esperado, long novo);
+
+    /** Todas as chaves (fontes e ambientes) do CNPJ consultado, com o certificado de cada uma. */
+    List<VinculoCertificado> certificadosDoCnpj(Cnpj cnpj);
 }

@@ -6,6 +6,11 @@ import br.com.doc.ingest.domain.coleta.ConfirmacaoLote;
 import br.com.doc.ingest.domain.coleta.EstadoColetaRepositorio;
 import br.com.doc.ingest.domain.coleta.PosicaoColeta;
 import br.com.doc.ingest.domain.coleta.ResultadoCas;
+import br.com.doc.ingest.domain.coleta.ResultadoTroca;
+import br.com.doc.ingest.domain.coleta.VinculoCertificado;
+import br.com.doc.ingest.domain.model.Ambiente;
+import br.com.doc.ingest.domain.model.Cnpj;
+import br.com.doc.ingest.domain.model.FonteId;
 import br.com.doc.ingest.domain.ledger.EntradaLedger;
 import br.com.doc.ingest.domain.model.Nsu;
 import org.jdbi.v3.core.Handle;
@@ -13,6 +18,7 @@ import org.jdbi.v3.core.Jdbi;
 
 import java.sql.Timestamp;
 import java.time.Clock;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -96,6 +102,56 @@ public final class JdbiEstadoColeta implements EstadoColetaRepositorio {
         } catch (CasNaoAplicado e) {
             return e.resultado;
         }
+    }
+
+    @Override
+    public ResultadoTroca trocarCertificado(ChaveColeta chave, Long esperado, long novo) {
+        return jdbi.inTransaction(h -> {
+            int afetadas = h.createUpdate("""
+                            update estado_coleta set certificado_id = :novo, atualizado_em = :agora
+                            where fonte = :fonte and cnpj_consultado = :cnpj and ambiente = :ambiente
+                              and certificado_id is not distinct from cast(:esperado as bigint)
+                              and certificado_id is distinct from :novo
+                            """)
+                    .bind("novo", novo)
+                    .bindByType("esperado", esperado, Long.class)
+                    .bind("agora", Timestamp.from(clock.instant()))
+                    .bind("fonte", chave.fonte().id())
+                    .bind("cnpj", chave.cnpj().valor())
+                    .bind("ambiente", chave.ambiente().name())
+                    .execute();
+            if (afetadas == 1) {
+                return new ResultadoTroca.Trocado();
+            }
+            var atual = h.createQuery("""
+                            select certificado_id from estado_coleta
+                            where fonte = :fonte and cnpj_consultado = :cnpj and ambiente = :ambiente
+                            """)
+                    .bind("fonte", chave.fonte().id())
+                    .bind("cnpj", chave.cnpj().valor())
+                    .bind("ambiente", chave.ambiente().name())
+                    .map((rs, ctx) -> Optional.ofNullable((Long) rs.getObject("certificado_id")))
+                    .findOne();
+            if (atual.isEmpty()) {
+                return new ResultadoTroca.NaoEncontrada();
+            }
+            Long id = atual.get().orElse(null);
+            return id != null && id == novo ? new ResultadoTroca.SemMudanca() : new ResultadoTroca.Conflito(id);
+        });
+    }
+
+    @Override
+    public List<VinculoCertificado> certificadosDoCnpj(Cnpj cnpj) {
+        return jdbi.withHandle(h -> h.createQuery("""
+                        select fonte, ambiente, certificado_id from estado_coleta
+                        where cnpj_consultado = :cnpj
+                        """)
+                .bind("cnpj", cnpj.valor())
+                .map((rs, ctx) -> new VinculoCertificado(
+                        new ChaveColeta(new FonteId(rs.getString("fonte")), cnpj,
+                                Ambiente.valueOf(rs.getString("ambiente"))),
+                        (Long) rs.getObject("certificado_id")))
+                .list());
     }
 
     private static ResultadoCas diagnosticar(Handle h, PosicaoColeta lida) {

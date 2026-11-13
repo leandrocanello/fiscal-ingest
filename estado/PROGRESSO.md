@@ -828,3 +828,6 @@
 - 2026-11-13 · E3-S07 passo 8a — teste passou de primeira (processor já correto); falha vista só por mutação: sem `resolverDoDocumento` → `cadastrarEReprocessarFechaQuarentena() FAILED (AssertionFailedError :145)`
 - 2026-11-13 10:00 · E3-S07: passo 8 dividido; parte 1 do ProcessadorColetadoIntegracaoTest (6 cenários) + testFixtures de infra-postgres; suíte verde · próximo: parte 2 (transferência, cancelamento, evento antes do XML, isolamento e dois tenants)
 - 2026-11-13 08:12 · E3-S07: DESENVOLVER ok
+- 2026-11-13 · E3-S07 passo 8b — 5 cenários novos passaram de primeira (processor já correto); falha vista por mutação: só o 1º tenant → `cnpjEmDoisTenantsViraDoisDocumentos() FAILED (AssertionError :265)`; sem `resolverDoDocumento` → `eventoAntesDoXmlFechaQuarentenaQuandoANotaChega() FAILED (AssertionFailedError :232)`
+- 2026-11-13 10:30 · E3-S07: parte 2 do ProcessadorColetadoIntegracaoTest (transferência, cancelamento, evento antes do XML, isolamento, dois tenants); suíte verde · próximo: CaosProcessadorTest
+- 2026-11-13 08:15 · E3-S07: DESENVOLVER ok

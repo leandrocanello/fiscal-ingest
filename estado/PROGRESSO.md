@@ -888,3 +888,5 @@
 - 2026-11-13 13:02 · E2-S17: REVISAR — APROVAR PARA PR (atenção: distNsuDepoisDaCiencia pode reconsultar dentro da janela de 1h) · próximo: PR e merge pelo autor; depois smoke E2-S12 (HUMANO)
 - 2026-11-13 13:02 · E2-S17: REVISAR ok
 - 2026-11-13 13:02 · E2-S17: PR aberto para revisão
+- 2026-11-13 13:04 · E2-S18: PLANEJAR — plano em planos/E2-S18.md (6 passos; DA-64: ManifestarResultado ganha eventoAssinado) · próximo: DESENVOLVER (sonnet)
+- 2026-11-13 13:04 · E2-S18: PLANEJAR ok

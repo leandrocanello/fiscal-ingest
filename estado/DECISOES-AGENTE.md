@@ -390,3 +390,9 @@ Como desfazer: ajustar o teste se a política de bucket (Fase 10) desligar a cri
 - **Opções:** (a) `.crt` PEM soltos + `indice.txt` com sha256, sobrescrita `FISCAL_TRUSTSTORE` (diretório no mesmo formato ou PKCS12 com senha vazia); (b) um `.jks`/`.p12` versionado (cai no `.gitignore` e é binário opaco na revisão).
 - **Escolha:** (a). Variáveis do harness com prefixo `FISCAL_SMOKE_` (`PFX`, `SENHA`, `CNPJ`, `URL_DIST`, `URL_EVENTO`, `CHAVE`, `MANIFESTAR`, `DIR`); cursor em `~/fiscal-smoke/cursor-<cnpj>.txt`; brutos em `~/fiscal-smoke/AAAA-MM-DD/`.
 - **Como desfazer:** trocar o carregador em `TruststoreIcpBrasil` e os nomes em `ConfiguracaoSmoke`; nada fora do adapter depende disso.
+
+### DA-64 · 2026-11-13 · E2-S18
+- **Contexto:** o autor decidiu gravar o evento assinado antes do envio (PARA-VOCE "[DECISAO] E2-S13-EVENTO"), mas não disse se o core recebe a referência. Sem ela, a auditoria da E4 não sabe onde está o que foi assinado (o sha só existe no adapter). Também faltam a chave do blob e o desfecho da falha na gravação.
+- **Opções:** (a) novo componente `Optional<BlobRef> eventoAssinado` em `ManifestarResultado`, com construtor de 2 argumentos mantido; (b) só gravar, sem mudar o domínio; (c) devolver uma lista de refs.
+- **Escolha:** (a). Só `BlobRef`, sem bytes (inv. 3); testes existentes intactos. Chave `raw/pull/{fonte}/{ambiente}/{cnpj}/evento/{aaaa}/{mm}/{dd}/{sha256}.assinado.xml` (UTC). Falha ao gravar → `IndisponivelTemporario(5 min)`, igual à falha ao gravar a resposta (é infraestrutura, retentável), sem envio.
+- **Como desfazer:** remover o componente e o construtor extra de `ManifestarResultado` e os testes `eventoAssinado*`; a gravação em `EnvioManifestacao` continua valendo.

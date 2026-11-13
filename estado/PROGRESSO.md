@@ -833,3 +833,6 @@
 - 2026-11-13 08:15 · E3-S07: DESENVOLVER ok
 - 2026-11-13 11:00 · E3-S07: CaosProcessadorTest (5 cenários); falha vista: `abrirAtrasadoDepoisDoVinculoNaoDeixaQuarentenaAberta() FAILED — expected: 0L but was: 1L` (quarentena aberta em documento vinculado); corrigido em JdbiQuarentena.abrir (DA-62); suíte verde · próximo: ProcessadorPropriedadesTest
 - 2026-11-13 08:21 · E3-S07: DESENVOLVER ok
+- 2026-11-13 · E3-S07 passo 11 — `ProcessadorPropriedadesTest` passou de primeira (processor já correto); falha vista por mutação (sem `resolverDoDocumento`): `documentoComVinculoNuncaFicaComQuarentenaAberta FAILED — [documento 767 tem vínculo] expected: 0L but was: 1L`
+- 2026-11-13 12:00 · E3-S07: ProcessadorPropriedadesTest (ordem, quarentena aberta/fechada, 1 documento por tenant+chave); suíte verde (137 classes) · próximo: seção Verificação do plano (revisor)
+- 2026-11-13 08:26 · E3-S07: DESENVOLVER ok

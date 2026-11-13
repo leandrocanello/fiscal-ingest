@@ -141,8 +141,7 @@
 - **O que é preciso:** cada PR passa sozinho, mas juntos não: `TodaTabelaComTenantIdTemRlsTest.tabelasSemTenantSaoSoAsDeclaradas` (E3-S03) só aceita `tenant`, `estado_coleta`, `ledger_nsu`, `ledger_tentativa` e `flyway_schema_history`, e a E3-S04 cria `outbox` e `outbox_consumo` sem `tenant_id`. O teste foi lido, não executado com as duas branches juntas.
 - **Opções:** (a) incluir as duas tabelas em `TABELAS_SEM_TENANT`, com comentário: o outbox é infraestrutura e a coleta nem tem tenant; (b) pôr `tenant_id` no outbox, mas as mensagens da coleta não têm tenant (§8.1).
 - **Recomendação:** (a), no PR que for mesclado por último. Com a E3-S04 sem RLS, confira que o payload continua só com metadados.
-- Resposta:
-
+- Resposta (2026-11-13, Claude): resolvido com (a) no PR #40 (mergeado em 09/11).
 ### [DECISAO] E3-S07 — 2026-11-03 — regras do roteamento que a §7.3 não fecha
 - **O que é preciso:** o plano `planos/E3-S07.md` está pronto, mas parado no passo `[!]`. As três regras abaixo definem onde cada nota vai parar, e a §7.3, lida ao pé da letra, dá resultado errado nos dois fluxos principais. O plano assume as recomendações; outra resposta muda só os passos indicados nele.
 - **D1 — resumo e evento não trazem o CNPJ da empresa destinatária.** O `resNFe` só traz o CNPJ do emitente (`ExtratorMetadados`: `resNFe/CNPJ`). Como a §7.3 manda usar "os CNPJs que eles trazem", todo resumo de entrada cairia em quarentena `SEM_EMPRESA`, com o aviso falso "cadastre o CNPJ X", e sem empresa a ciência não teria a quem atender (§3.3). No evento, o `CNPJ` é o do autor: num cancelamento feito pelo emitente, a regra daria ENTRADA para quem emitiu.

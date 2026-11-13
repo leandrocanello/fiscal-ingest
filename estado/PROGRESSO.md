@@ -875,3 +875,5 @@
 - 2026-11-13 09:23 · E2-S17: DESENVOLVER ok
 - 2026-11-13 09:24 · E2-S17: CursorLocal (teste falhou por classe inexistente: 'cannot find symbol class CursorLocal'; agora verde, suíte inteira ok) · próximo: BlobStoreEmDiscoSmoke
 - 2026-11-13 09:24 · E2-S17: DESENVOLVER ok
+- 2026-11-13 09:26 · E2-S17: BlobStoreEmDiscoSmoke (inv. 7, recusa pasta em repo git); falha inicial: cannot find symbol BlobStoreEmDiscoSmoke; suíte verde · próximo: RoteiroSmokeTest
+- 2026-11-13 09:26 · E2-S17: DESENVOLVER ok

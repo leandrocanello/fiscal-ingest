@@ -869,3 +869,5 @@
 - 2026-11-13 09:18 · E2-S17: DESENVOLVER ok
 - 2026-11-13 12:30 · E2-S17: ACs raiz ICP-Brasil v5/v10/v11/v12 (ITI) versionadas com indice.txt + LEIAME; TruststoreIcpBrasilPadraoTest falhou (IllegalStateException, índice ausente) e passou; suíte verde · próximo: passo gradle (excludeTags homologacao + task smokeHomologacao)
 - 2026-11-13 09:20 · E2-S17: DESENVOLVER ok
+- 2026-11-13 09:21 · E2-S17: task smokeHomologacao + exclusão da tag homologacao no test; SmokeHomologacaoTest guarda (falha vista: --tests não encontra a classe no test; smoke sem flag = SKIPPED) · próximo: ConfiguracaoSmoke
+- 2026-11-13 09:21 · E2-S17: DESENVOLVER ok

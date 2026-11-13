@@ -852,3 +852,5 @@
 - 2026-11-13 08:51 · E4-S04: DESENVOLVER ok
 - 2026-11-13 08:56 · E4-S04: RotacionarCertificadoUseCase (+DesfechoRotacao, ResultadoRotacao, FakeEstadoColeta); falha vista: compilação (cannot find symbol RotacionarCertificadoUseCase); suíte inteira verde · próximo: CacheSslContextTest na rotação
 - 2026-11-13 08:56 · E4-S04: DESENVOLVER ok
+- 2026-11-13 08:57 · E4-S04: testes CacheSslContextTest da rotação (passaram de primeira, como previsto; Javadoc do use case já citava o invalidar) · próximo: CaosRotacaoTest + propriedades da troca
+- 2026-11-13 08:57 · E4-S04: DESENVOLVER ok

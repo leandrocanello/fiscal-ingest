@@ -916,3 +916,6 @@
 - 2026-11-16 08:58 · E2-S18: DESENVOLVER ok
 - 2026-11-16 09:00 · E2-S18 (verificar): propriedade eventoGuardadoAntesDeQualquerEnvio; mutação (gravar evento após enviar) derrubou a propriedade, revertida; suíte inteira verde · próximo: revisão
 - 2026-11-16 09:00 · E2-S18: VERIFICAR ok
+- 2026-11-16 09:02 · E2-S18 (revisar): APROVAR PARA PR; parecer no plano e PR em planos/E2-S18-pr.md (ressalvas menores: Javadoc de eventoAssinado, catch sem teste visto falhar) · próximo: abrir PR
+- 2026-11-16 09:02 · E2-S18: REVISAR ok
+- 2026-11-16 09:02 · E2-S18: PR aberto para revisão

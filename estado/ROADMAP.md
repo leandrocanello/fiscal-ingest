@@ -37,7 +37,7 @@
 - [x] E2-S13 | AUTO+    | deps: E2-S07,E2-S11 | enviar o evento de manifestação (RecepcaoEvento SOAP) + mapear o retEvento
 - [x] E2-S17 | AUTO     | deps: E2-S13 | harness de smoke em homologação (@Tag homologacao, fora do test; flag explícita; cursor local que recusa NSU menor) + truststore ICP-Brasil versionado e sobrescrevível
 - [r] E3-S10 | AUTO     | deps: -      | main verde depois do merge da E3-S07 (integração feita sem rodar a suíte)
-- [~] E2-S18 | AUTO     | deps: E2-S13 | gravar o evento de manifestação assinado no blob antes do envio (falha na gravação impede o envio)
+- [r] E2-S18 | AUTO     | deps: E2-S13 | gravar o evento de manifestação assinado no blob antes do envio (falha na gravação impede o envio)
 - [h] E2-S12 | HUMANO   | deps: E2-S13,E2-S17 | smoke em homologação: distNSU, consChNFe, ciência, autXML
 
 ## Etapa 3 — Persistência e catálogo (Fase 3)

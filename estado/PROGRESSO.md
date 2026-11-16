@@ -914,3 +914,5 @@
 - 2026-11-16 08:57 · E2-S18: DESENVOLVER ok
 - 2026-11-16 08:58 · E2-S18: teste recusasAntesDeAssinarNaoGravamNada (passou de primeira: gravação já após assinatura, nada a implementar; suíte verde) · próximo: propriedade jqwik eventoGuardadoAntesDeQualquerEnvio
 - 2026-11-16 08:58 · E2-S18: DESENVOLVER ok
+- 2026-11-16 09:00 · E2-S18 (verificar): propriedade eventoGuardadoAntesDeQualquerEnvio; mutação (gravar evento após enviar) derrubou a propriedade, revertida; suíte inteira verde · próximo: revisão
+- 2026-11-16 09:00 · E2-S18: VERIFICAR ok

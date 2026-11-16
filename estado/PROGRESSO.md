@@ -921,3 +921,5 @@
 - 2026-11-16 09:02 · E2-S18: PR aberto para revisão
 - 2026-11-16 · E4-S03: ConsentimentoTest/PropriedadesTest + domain.consentimento (Finalidade, Consentimento, Revogacao); falha vista: 'cannot find symbol' (classes inexistentes); domain:test verde · próximo: MaquinaEstadosColeta
 - 2026-11-16 09:03 · E4-S03: revertido — suíte vermelha (ver logs/ultimo-teste.log)
+- 2026-11-16 · E4-S03: Consentimento/Revogacao/Finalidade + vigenteEm no domain (teste falhou: "cannot find symbol" Consentimento/Finalidade/Revogacao; depois :domain:test verde). Obs.: `:infra-postgres:compileTestJava` já quebra na base (CatalogoRlsTest.dataSourceComoApp com acesso mais fraco que PostgresTestBase = [DECISAO] E1-S07), fora do meu passo · próximo: MaquinaEstadosColeta (passo 3)
+- 2026-11-16 09:05 · E4-S03: revertido — suíte vermelha (ver logs/ultimo-teste.log)

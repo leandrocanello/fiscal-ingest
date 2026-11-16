@@ -63,7 +63,7 @@
 - [x] E5-S01 | DECISAO  | deps: -      | framework HTTP dos app-*: Spring Boot só nos app-* (ADR-027)
 - [h] E5-S02 | AUTO+    | deps: E3-S06,E5-S01 | POST /v1/ingestao/arquivos + parser seguro (XXE, zip bomb)
 - [ ] E5-S03 | AUTO+    | deps: E5-S02 | validação de assinatura + confiança + CNPJ do agente
-- [~] E5-S04 | AUTO+    | deps: E3-S04 | sequenciador do feed + teste de propriedade "sem buracos"
+- [h] E5-S04 | AUTO+    | deps: E3-S04 | sequenciador do feed + teste de propriedade "sem buracos"
 - [ ] E5-S05 | AUTO     | deps: E5-S04 | GET /v1/feed, /documentos, /xml + OpenAPI
 - [ ] E5-S06 | AUTO+    | deps: E5-S05 | OAuth do integrador + autorização por empresa/escopo
 - [ ] E5-S07 | AUTO+    | deps: E5-S06 | webhooks: HMAC, retentativa, reenvio, log de entregas

@@ -949,3 +949,4 @@
 - 2026-11-16 09:41 · E5-S02: plano aguarda decisão (passo [!]) → [h]
 - 2026-11-16 09:44 · E5-S04: PLANEJAR — plano com 8 passos (mudanças do catálogo no domínio, catalogo.mudancas na TX do registrar, V22 feed + contador + RLS + append-only, SequenciadorFeed como Publicador idempotente, JdbiFeed, propriedade sem buracos + prova com sequenciador ingênuo, caos catálogo→outbox→feed); DA-76..78; 1º passo [!] por main vermelha ([BLOQUEIO] E5-S04 em PARA-VOCE) · próximo: autor destrava E4-S06/fixtures e troca [!] por [ ] na E5-S04
 - 2026-11-16 09:44 · E5-S04: PLANEJAR ok
+- 2026-11-16 09:44 · E5-S04: plano aguarda decisão (passo [!]) → [h]

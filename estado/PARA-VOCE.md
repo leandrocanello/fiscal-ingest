@@ -366,3 +366,7 @@ ou responda aqui, e troque o status no ROADMAP de `[!]` para `[~]`.
 - **Opções para o upload:** (a) o tenant gera, no portal, um token de API do mesmo tipo (tabela `credencial_tenant`); (b) login de usuário (OIDC/Spring Security) quando o front mínimo existir; (c) adiar o upload até a Fase 7, usando só o agente.
 - **Recomendação:** (a) para destravar o canal E com o mesmo mecanismo, e (b) quando houver portal. Também vale confirmar o token na Fase 7 (ou trocar por par de chaves). Se quiser, crie uma subetapa "E5-S02b upload com token do tenant" no ROADMAP.
 - Outras escolhas reversíveis da subetapa: DA-71 a DA-75 (recebimento imutável + resultado append-only, Spring Boot 3.5.x só no `app-api`, limites de ZIP, migration V20, corpo cru com 202/200).
+
+### [BLOQUEIO] E5-S02 — 2026-11-16 — main vermelha, pré-condição do plano
+- `./gradlew test` na base (c526332) falha em `:adapter-nfe-nacional:compileTestJava` (`MetadadosDfeTest.java:22`: 15 argumentos, o record pede 17). Depois disso ainda vêm as fixtures de CNPJ com DV inválido em 5 módulos (mesma causa do `[HUMANO] E4-S06`).
+- Não corrigi aqui (o plano manda parar). Passo 1 marcado `[!]`. Para destravar: resolva o `[HUMANO] E4-S06` (recomendo a opção (a), subetapa curta de fixtures), troque `[!]` por `[ ]` no plano da E5-S02 e o status no ROADMAP para `[~]`.

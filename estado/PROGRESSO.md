@@ -944,3 +944,5 @@
 - 2026-11-16 09:36 · E4-S06: plano aguarda decisão (passo [!]) → [h]
 - 2026-11-16 09:40 · E5-S02: PLANEJAR — plano com 10 passos (domínio push + caso de uso, ingest-push com classificador StAX seguro e descompactador com limites, V20 recebimento/resultado append-only + RLS + outbox, autenticador de agente por token hash, app-api Spring Boot com 202/200/401/413/415/503, processor que rejeita inseguro, integração/caos, openapi); DA-70..75; DUVIDA não bloqueante em PARA-VOCE · próximo: desenvolver E5-S02 (exige main verde)
 - 2026-11-16 09:40 · E5-S02: PLANEJAR ok
+- 2026-11-16 09:41 · E5-S02: passo 1 marcado [!] sem commit (pré-condição: main c526332 vermelha, `MetadadosDfeTest.java:22` não compila e fixtures de CNPJ com DV inválido; ver [HUMANO] E4-S06) · próximo: autor destrava E4-S06 e troca [!] por [ ] na E5-S02
+- 2026-11-16 09:41 · E5-S02: passo marcado [!] (aguarda decisão) — sem commit, aceito

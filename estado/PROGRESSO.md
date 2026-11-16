@@ -928,3 +928,5 @@
 - 2026-11-16 09:07 · E4-S03: [!] bloqueado após 3 falhas
 - 2026-11-16 09:11 · E3-S08: plano criado (10 passos: Documento com schema/status, ledger com BlobRef, codec docs.coletados, fake paginado/estrito, coletor, consumidor, ponta a ponta Postgres+memória, caos, variante SeaweedFS); DA-65 (Jackson no app-worker) e DA-66 (escopo) · próximo: desenvolver E3-S08 passo 1 (conferir main verde)
 - 2026-11-16 09:11 · E3-S08: PLANEJAR ok
+- 2026-11-16 09:12 · E3-S08: main vermelha (MetadadosDfeTest não compila: record com 17 args), BLOQUEIO registrado em PARA-VOCE, sem código · próximo: E3-S08 passo 1 após main verde
+- 2026-11-16 09:12 · E3-S08: revertido — nenhum commit feito e nenhum passo fechado no plano

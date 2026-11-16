@@ -908,3 +908,5 @@
 - 2026-11-16 08:53 · E2-S18: DESENVOLVER ok
 - 2026-11-16 08:54 · E2-S18: evento assinado gravado antes do envio (teste falhou em AssertionError: eventoAssinado vazio; suíte verde) · próximo: falhaAoGravarEventoNaoEnvia
 - 2026-11-16 08:55 · E2-S18: DESENVOLVER ok
+- 2026-11-16 08:56 · E2-S18: teste falhaAoGravarEventoNaoEnvia (passou de imediato: catch já implementado no passo anterior, sem falha vista); suíte verde · próximo: timeoutAindaDeixaEventoGuardado/falhaAoGravarRespostaMantemEventoGuardado
+- 2026-11-16 08:56 · E2-S18: DESENVOLVER ok

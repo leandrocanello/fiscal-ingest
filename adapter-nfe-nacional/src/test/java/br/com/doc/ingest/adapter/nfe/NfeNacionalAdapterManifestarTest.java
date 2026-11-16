@@ -396,6 +396,49 @@ class NfeNacionalAdapterManifestarTest {
     }
 
     @Test
+    @DisplayName("recusas antes de assinar (sem credencial, chave inválida, tipo não suportado, falha ao assinar) não gravam nada")
+    void recusasAntesDeAssinarNaoGravamNada() {
+        responder(200, resposta("135"));
+        var gravacoes = new java.util.concurrent.atomic.AtomicInteger();
+        BlobStore contador = new BlobStore() {
+            @Override
+            public br.com.doc.ingest.domain.blob.BlobRef gravar(String chave, byte[] conteudo, String sha256) {
+                gravacoes.incrementAndGet();
+                return blobs.gravar(chave, conteudo, sha256);
+            }
+
+            @Override
+            public java.util.Optional<byte[]> ler(br.com.doc.ingest.domain.blob.BlobRef ref) {
+                return blobs.ler(ref);
+            }
+        };
+        var contexto = new ContextoConsulta(FONTE, CNPJ);
+
+        NfeNacionalAdapter semCredencial = new NfeNacionalAdapter(FONTE, TipoAmbiente.HOMOLOGACAO, url(CAMINHO_DIST),
+                contador, Clock.fixed(AGORA, ZoneOffset.UTC), transporteHttp(), url(CAMINHO_EVENTO));
+        ManifestarResultado r1 = manifestar(semCredencial);
+
+        NfeNacionalAdapter autenticado = adapterCom(contador);
+        ManifestarResultado r2 = autenticado.manifestar(contexto, "123", TipoManifestacao.CIENCIA).orElseThrow();
+        ManifestarResultado r3 = autenticado.manifestar(contexto, CHAVE, TipoManifestacao.CONFIRMACAO).orElseThrow();
+
+        char[] senha = SENHA.toCharArray();
+        byte[] pfxEc = GeradorPfxDeTeste.comChaveEc(senha.clone(), AGORA.minus(1, ChronoUnit.DAYS),
+                AGORA.plus(365, ChronoUnit.DAYS));
+        NfeNacionalAdapter comChaveEc = new NfeNacionalAdapter(FONTE, TipoAmbiente.HOMOLOGACAO, url(CAMINHO_DIST),
+                contador, Clock.fixed(AGORA, ZoneOffset.UTC), transporteHttp(), url(CAMINHO_EVENTO));
+        comChaveEc.autenticar(new Credencial(pfxEc, senha));
+        ManifestarResultado r4 = manifestar(comChaveEc);
+
+        assertThat(java.util.List.of(r1, r2, r3, r4)).allSatisfy(r -> {
+            assertThat(r.envelope()).isEmpty();
+            assertThat(r.eventoAssinado()).isEmpty();
+        });
+        assertThat(gravacoes).hasValue(0);
+        servidor.verify(0, anyRequestedFor(anyUrl()));
+    }
+
+    @Test
     @DisplayName("o autor do evento e a chave do blob usam o CNPJ do contexto")
     void autorEhOCnpjDoContexto() {
         Cnpj outro = new Cnpj("22222222000191");

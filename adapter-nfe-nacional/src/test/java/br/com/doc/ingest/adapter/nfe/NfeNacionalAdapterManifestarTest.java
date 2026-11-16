@@ -288,6 +288,34 @@ class NfeNacionalAdapterManifestarTest {
     }
 
     @Test
+    @DisplayName("inv. 5: sem cópia do evento assinado, nada é enviado e o desfecho é temporário sem texto da exceção")
+    void falhaAoGravarEventoNaoEnvia() {
+        responder(200, resposta("135"));
+        BlobStore soFalhaNoEvento = new BlobStore() {
+            @Override
+            public BlobRef gravar(String chave, byte[] conteudo, String sha256) {
+                if (chave.endsWith(".assinado.xml")) {
+                    throw new IllegalStateException("blob store fora do ar");
+                }
+                return blobs.gravar(chave, conteudo, sha256);
+            }
+
+            @Override
+            public Optional<byte[]> ler(BlobRef ref) {
+                return blobs.ler(ref);
+            }
+        };
+
+        ManifestarResultado r = manifestar(adapterCom(soFalhaNoEvento));
+
+        assertThat(r.desfecho()).isEqualTo(TEMPORARIO);
+        assertThat(r.envelope()).isEmpty();
+        assertThat(r.eventoAssinado()).isEmpty();
+        assertThat(r.desfecho().toString()).doesNotContain("fora do ar");
+        servidor.verify(0, postRequestedFor(urlEqualTo(CAMINHO_EVENTO)));
+    }
+
+    @Test
     @DisplayName("com endpoint de evento, o descritor declara a manifestação")
     void comEndpointDeEventoDeclaraManifestacao() {
         assertThat(adapterCom(blobs).descritor().capacidades().fazManifestacao()).isTrue();

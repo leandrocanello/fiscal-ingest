@@ -328,3 +328,10 @@ CLAUDE.md §19 e ARCHITECTURE ainda dizem `infra-blob-minio`/"MinIO". O módulo 
 Último motivo: suíte vermelha (ver logs/ultimo-teste.log)
 Logs: `estado/logs/` (arquivos *-E4-S03-*.json). Para destravar: ajuste o plano `estado/planos/E4-S03.md`
 ou responda aqui, e troque o status no ROADMAP de `[!]` para `[~]`.
+
+### [DUVIDA] E3-S10 — 2026-11-16 — `ParserDfeNfe` recusa CNPJ alfanumérico
+- O que é: `adapter-nfe-nacional/.../doczip/ParserDfeNfe.java` (`cnpj(String)`) exige `\d{14}` antes de criar o `Cnpj`.
+  Veio da E3-S07, escrita antes da E1-S07. Uma nota com emitente/dest alfanumérico vira `Invalido("CNPJ fora do formato")`.
+- Não corrigi: a E3-S10 só deixa a main verde, sem comportamento novo.
+- Recomendação: subetapa pequena (TDD) trocando a regex por `[A-Z0-9]{12}\d{2}` (ou só delegar ao `Cnpj`), com teste de
+  procNFe alfanumérico no `ParserDfeNfeTest`.

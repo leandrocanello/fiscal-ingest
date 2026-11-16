@@ -897,3 +897,5 @@
 - 2026-11-13 16:50 · E3-S11 criada a pedido do autor: recuperação automática de buracos de NSU + relatório de auditoria de NSU por CNPJ
 - 2026-11-13 17:50 · E2-S17: mergeado por você ✔
 - 2026-11-13 17:50 · E4-S04: mergeado por você ✔
+- 2026-11-16 08:19 · E3-S10: main estava vermelha (MetadadosDfeTest não compilava: 15 args p/ record de 17; 9 classes com `IllegalArgumentException: CNPJ invalido ... DV`; ParserDfeNfeTest `Invalido[motivo=Metadados fora do formato]`). Corrigidas só fixtures (DV recalculado, mesma raiz) · suíte 1569/0 · commit 305609a · próximo: revisão (dúvida do ParserDfeNfe alfanumérico em PARA-VOCE)
+- 2026-11-16 08:19 · E3-S10: DESENVOLVER ok

@@ -335,3 +335,8 @@ ou responda aqui, e troque o status no ROADMAP de `[!]` para `[~]`.
 - Não corrigi: a E3-S10 só deixa a main verde, sem comportamento novo.
 - Recomendação: subetapa pequena (TDD) trocando a regex por `[A-Z0-9]{12}\d{2}` (ou só delegar ao `Cnpj`), com teste de
   procNFe alfanumérico no `ParserDfeNfeTest`.
+
+### [BLOQUEIO] E4-S03 — 2026-11-16 — 3 falhas seguidas
+Último motivo: suíte vermelha (ver logs/ultimo-teste.log)
+Logs: `estado/logs/` (arquivos *-E4-S03-*.json). Para destravar: ajuste o plano `estado/planos/E4-S03.md`
+ou responda aqui, e troque o status no ROADMAP de `[!]` para `[~]`.

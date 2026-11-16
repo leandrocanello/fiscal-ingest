@@ -923,3 +923,6 @@
 - 2026-11-16 09:03 · E4-S03: revertido — suíte vermelha (ver logs/ultimo-teste.log)
 - 2026-11-16 · E4-S03: Consentimento/Revogacao/Finalidade + vigenteEm no domain (teste falhou: "cannot find symbol" Consentimento/Finalidade/Revogacao; depois :domain:test verde). Obs.: `:infra-postgres:compileTestJava` já quebra na base (CatalogoRlsTest.dataSourceComoApp com acesso mais fraco que PostgresTestBase = [DECISAO] E1-S07), fora do meu passo · próximo: MaquinaEstadosColeta (passo 3)
 - 2026-11-16 09:05 · E4-S03: revertido — suíte vermelha (ver logs/ultimo-teste.log)
+- 2026-11-16 09:07 · E4-S03: ConsentimentoTest/PropriedadesTest (falhou por símbolos inexistentes: 'cannot find symbol Consentimento/Finalidade/Revogacao'), implementado domain.consentimento; :domain:test verde; suíte inteira não compila no infra-postgres por erro pré-existente (CatalogoRlsTest.dataSourceComoApp com acesso mais fraco que PostgresTestBase — [DECISAO] E1-S07) · próximo: MaquinaEstadosColetaTest
+- 2026-11-16 09:07 · E4-S03: revertido — suíte vermelha (ver logs/ultimo-teste.log)
+- 2026-11-16 09:07 · E4-S03: [!] bloqueado após 3 falhas

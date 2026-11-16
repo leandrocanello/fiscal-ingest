@@ -237,6 +237,31 @@ class NfeNacionalAdapterManifestarTest {
         assertThat(XMLSignatureFactory.getInstance("DOM").unmarshalXMLSignature(ctx).validate(ctx)).isTrue();
     }
 
+    @Test
+    @DisplayName("inv. 5: o evento assinado fica no blob, idêntico ao enviado, com assinatura válida")
+    void eventoAssinadoGravadoAntesDoEnvio() throws Exception {
+        responder(200, resposta("135"));
+
+        ManifestarResultado r = manifestar(adapterCom(blobs));
+
+        assertThat(r.eventoAssinado()).isPresent();
+        byte[] guardado = blobs.ler(r.eventoAssinado().orElseThrow()).orElseThrow();
+        String enviado = servidor.getAllServeEvents().get(0).getRequest().getBodyAsString();
+        String trecho = enviado.substring(enviado.indexOf("<evento"), enviado.lastIndexOf("</evento>") + "</evento>".length());
+        assertThat(new String(guardado, StandardCharsets.UTF_8)).isEqualTo(trecho);
+        assertThat(r.eventoAssinado().orElseThrow().chave())
+                .isEqualTo("raw/pull/NFE_AN/HOMOLOGACAO/11111111000191/evento/2026/11/04/" + Sha256.hex(guardado)
+                        + ".assinado.xml");
+
+        Document doc = FabricaDocumentoSeguro.ler(guardado);
+        Element infEvento = (Element) doc.getElementsByTagNameNS(ContratoEvento.NS_NFE, "infEvento").item(0);
+        infEvento.setIdAttributeNS(null, "Id", true);
+        Node assinatura = doc.getElementsByTagNameNS(XMLSignature.XMLNS, "Signature").item(0);
+        DOMValidateContext ctx = new DOMValidateContext(chavePublica, assinatura);
+        ctx.setProperty("org.jcp.xml.dsig.secureValidation", Boolean.FALSE);
+        assertThat(XMLSignatureFactory.getInstance("DOM").unmarshalXMLSignature(ctx).validate(ctx)).isTrue();
+    }
+
     @ParameterizedTest
     @CsvSource({"200,nao e xml", "500,erro interno", "200,''"})
     @DisplayName("inv. 5: resposta malformada, 5xx ou vazia fica guardada, byte a byte, e o desfecho é temporário")

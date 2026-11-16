@@ -935,3 +935,5 @@
 - 2026-11-16 09:13 · E3-S08: passo 1 — main segue vermelha (MetadadosDfeTest.java:22 com 15 args, record pede 17); BLOQUEIO já registrado em PARA-VOCE, sem código · próximo: aguardar correção do MetadadosDfeTest
 - 2026-11-16 09:13 · E3-S08: revertido — nenhum commit feito e nenhum passo fechado no plano
 - 2026-11-16 09:13 · E3-S08: [!] bloqueado após 3 falhas
+- 2026-11-16 09:16 · E4-S06: PLANEJAR — plano com 7 passos (passo 0 condicional p/ main vermelha, contrato em testFixtures, V14 certificado com FK composta+RLS+append-only, V15 função security definer p/ vencendoAte, JdbiRepositorioCertificados, cofre ponta a ponta no app-worker); DA-67/68/69 · próximo: desenvolver E4-S06
+- 2026-11-16 09:16 · E4-S06: PLANEJAR ok

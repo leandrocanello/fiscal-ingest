@@ -408,3 +408,21 @@ Como desfazer: ajustar o teste se a política de bucket (Fase 10) desligar a cri
 - **Opções:** (a) puxar tudo; (b) manter o ponta a ponta (fetcher → ledger com blob → outbox → processor) e mover o resto para quem já é dono do assunto.
 - **Escolha:** (b). `ledger_tentativa` vai para a E3-S11, junto com o relatório das "tentativas com erro". Publicar `catalogo.mudancas` vai para a E5-S04 (o sequenciador consome, e a gravação precisa estar na transação do `registrar`). Estados `CERT_*`/`ERRO_DEFINITIVO`/`CONSENTIMENTO_REVOGADO` ficam com a E4-S03; o cofre no fetcher, com a E4-S05/E4-S06. `chave_acesso` do ledger fica nula (o adapter não a extrai no lote, e o ledger não aceita UPDATE). O consumidor não usa o `RegistroDeConsumo`: o processor já é idempotente, como a E3-S07 provou.
 - **Como desfazer:** devolver os itens ao plano da E3-S08 (seção "Fora do escopo") e acrescentar passos.
+
+### DA-67 · 2026-11-16 · E4-S06
+- **Contexto:** a suíte `RepositorioCertificadosContratoTest` está em `cert-vault/src/test`, onde o `infra-postgres` não a vê. O `JdbiRepositorioCertificados` precisa rodar a mesma suíte. Os docs também não dizem como uma falha do banco chega ao cofre.
+- **Opções:** (a) levar a suíte para `cert-vault/src/testFixtures`, com `infra-postgres` em `testImplementation(testFixtures(project(":cert-vault")))`, como o `BlobStoreContrato` (testFixtures do `adapter-fake`, usado pelo `infra-blob-s3`); (b) levar para os testFixtures do `domain`, o que põe junit/assertj no domínio; (c) duplicar a suíte.
+- **Escolha:** (a). A dependência fica só no escopo de teste, e o `main` do `infra-postgres` continua dependendo apenas do `domain`. As falhas de banco viram `FalhaRepositorioCertificadosException` em `domain.cofre`, sem causa encadeada (o JDBI põe SQL e binds na mensagem), seguindo a linha da DA-35.
+- **Como desfazer:** devolver a classe a `cert-vault/src/test` e tirar a linha do `infra-postgres/build.gradle.kts`.
+
+### DA-68 · 2026-11-16 · E4-S06
+- **Contexto:** a §8 lista `certificado(..., status)`, mas não diz se a tabela é append-only. A porta `vencendoAte` lê todos os tenants, e a RLS forçada não deixa o `fiscal_app` fazer isso sem `app.tenant_id`.
+- **Opções:** (a) sem `status`, append-only (trigger + grant só de `select, insert`) e `vencendoAte` por função `security definer` de um papel próprio (`fiscal_vigia_certificado`), copiando a V11 / D3 (a) da E3-S07; (b) `status` mutável e laço por tenant (mas a tabela `tenant` também tem RLS); (c) papel com BYPASSRLS.
+- **Escolha:** (a). Nada usa `status` hoje: o vigente é calculado (DA-53), e a rotação já não apaga o certificado antigo. O append-only é mais restrito e mais fácil de afrouxar depois do que de apertar. A função segue o precedente já aceito: privilégio mínimo, `search_path` fixo, sem execução por `public`.
+- **Como desfazer:** uma migration nova que remova o trigger e conceda `update` (e acrescente `status`, se for o caso); trocar a função por outra estratégia sem mudar a porta.
+
+### DA-69 · 2026-11-16 · E4-S06
+- **Contexto:** a `main` está vermelha: `MetadadosDfeTest.java:22` chama o construtor com 15 argumentos, e o record pede 17 (PARA-VOCE `[BLOQUEIO] E3-S08`, que recomenda corrigir "em outra subetapa"). Sem a correção, a E4-S06 não fecha com a suíte verde.
+- **Opções:** (a) passo 0 condicional na E4-S06: se ainda estiver vermelha, completar só a chamada com `Optional.empty()`, sem mudar as asserções; (b) esperar uma subetapa dedicada.
+- **Escolha:** (a). É uma mudança de uma linha, só em teste e reversível, e destrava a E3-S08. Se outra branch corrigir antes, o passo é pulado.
+- **Como desfazer:** reverter o commit `test(adapter-nfe): MetadadosDfeTest...`.

@@ -462,3 +462,21 @@ Como desfazer: ajustar o teste se a política de bucket (Fase 10) desligar a cri
 - **Opções:** (a) corpo cru (`application/octet-stream|xml|zip`), metadados em `X-Nome-Original`/`X-Caminho-Origem` percent-encoded, `X-Conteudo-Sha256` opcional (divergente → 400); 202 no primeiro envio e 200 com corpo idêntico no reenvio (§6.4); (b) multipart/form-data.
 - **Escolha:** (a). Mais simples de limitar e de transmitir em streaming; o agente ainda não existe, então o contrato pode mudar no `api-contract/openapi.yaml` antes da Fase 7. Blob duplicado de um reenvio em outro dia (chave com data) é aceito como órfão inofensivo; o caso de uso consulta o existente antes de gravar para evitar isso no caso comum.
 - **Como desfazer:** trocar o controller e o `openapi.yaml`; o caso de uso não muda.
+
+### DA-76 · 2026-11-16 · E5-S04
+- **Contexto:** a DA-66 passou à E5-S04 publicar `catalogo.mudancas` na transação do `registrar`. A §8.2 dá a chave (`empresa_id`) e a §11.4 os tipos (`documento.recebido`/`documento.atualizado`), mas os docs não dizem quais mudanças do `ResultadoRegistro` viram item do feed, nem como montar o JSON sem biblioteca no `infra-postgres`.
+- **Opções:** (a) uma mensagem por empresa afetada: `RECEBIDO` para cada vínculo novo; `ATUALIZADO` para as empresas já vinculadas quando há arquivo novo ou o documento mudou; só proveniência nova ou sem vínculo (quarentena) → nada; JSON plano escrito à mão, só com números, nome de enum e instante; (b) uma mensagem por documento, com a lista de empresas; (c) Jackson no `infra-postgres`.
+- **Escolha:** (a). O feed é por empresa (§8 `feed.empresa_id`, §11.5), e a chave por empresa mantém a ordem pelo relay. Sem texto livre no payload, não há o que escapar. O sequenciador lê os campos com os operadores `jsonb` do Postgres, sem lib. A regra fica numa função pura (`MudancasDoRegistro`) com testes. Idempotência: `catalogo:{arquivoId}:{empresaId}:{tipo}`.
+- **Como desfazer:** mudar `MudancasDoRegistro.calcular` (por exemplo, para gerar item também em proveniência nova) e o codec; o feed não muda.
+
+### DA-77 · 2026-11-16 · E5-S04
+- **Contexto:** a §11.3 pede "um único worker (com lease)" gravando `seq = último + 1` numa transação serial. O `feed` tem RLS por tenant, então `max(seq)` dentro de uma transação de um tenant só enxerga aquele tenant. O relay (E3-S04) roda com vários workers concorrentes.
+- **Opções:** (a) contador global de linha única (`feed_sequencia`, `update ... set ultimo = ultimo + 1 returning`): o lock da linha serializa os escritores até o commit, então nenhum número fica visível antes de um menor; o sequenciador vira um `Publicador` comum do relay, seguro com N relays; (b) worker único com lease e `max(seq)` por função `security definer`; (c) `seq` por tenant.
+- **Escolha:** (a). Cumpre o "escritor único" da §11.3 por construção (um por vez, no banco) sem depender de lease, e usa o `seq bigint primary key` global da §8. O teste de propriedade e a prova com o sequenciador ingênuo (`nextval`) cobrem a garantia. Custo: as escritas do feed ficam serializadas, aceitável até haver medição.
+- **Como desfazer:** trocar o passo do contador no `SequenciadorFeed` por outro mecanismo; a tabela `feed` e o leitor não mudam. O teste de propriedade continua sendo o critério.
+
+### DA-78 · 2026-11-16 · E5-S04
+- **Contexto:** a §8 dá `feed(seq, tenant_id, empresa_id, documento_id, tipo_mudanca, ocorrido_em)`, sem idempotência nem regra de mutação. As migrations V14/V15 (E4-S03/E4-S06) e V20/V21 (E5-S02) estão reservadas por planos em aberto.
+- **Opções:** (a) `V22__feed.sql` com coluna extra `origem_idempotencia unique` (chave da mensagem do outbox), FKs compostas por tenant, RLS forçada e trigger append-only, grants só `select, insert` (no contador, `select, update`); (b) sem idempotência no banco e checagem só no código.
+- **Escolha:** (a). O relay entrega pelo menos uma vez (DA-26), e o `unique` torna a gravação exatamente uma vez. O feed é a fonte da verdade do integrador (§11.4), então um item publicado não deve mudar: append-only como defesa em profundidade, igual à DA-25. Quem mesclar por último confere a ordem das versões (DA-74).
+- **Como desfazer:** renomear a migration antes do primeiro deploy real; migration nova que remova o trigger, se algum dia for preciso corrigir item.

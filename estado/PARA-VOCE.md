@@ -370,3 +370,8 @@ ou responda aqui, e troque o status no ROADMAP de `[!]` para `[~]`.
 ### [BLOQUEIO] E5-S02 — 2026-11-16 — main vermelha, pré-condição do plano
 - `./gradlew test` na base (c526332) falha em `:adapter-nfe-nacional:compileTestJava` (`MetadadosDfeTest.java:22`: 15 argumentos, o record pede 17). Depois disso ainda vêm as fixtures de CNPJ com DV inválido em 5 módulos (mesma causa do `[HUMANO] E4-S06`).
 - Não corrigi aqui (o plano manda parar). Passo 1 marcado `[!]`. Para destravar: resolva o `[HUMANO] E4-S06` (recomendo a opção (a), subetapa curta de fixtures), troque `[!]` por `[ ]` no plano da E5-S02 e o status no ROADMAP para `[~]`.
+
+### [BLOQUEIO] E5-S04 — 2026-11-16 — main vermelha, pré-condição do plano
+- O plano da E5-S04 está pronto (`planos/E5-S04.md`, 8 passos; DA-76..78), mas a base é a mesma `main` c526332, que está vermelha também em `domain` e `infra-postgres`, os módulos que a subetapa toca (fixtures de CNPJ com DV inválido: mesma causa do `[HUMANO] E4-S06`). O 1º passo está marcado `[!]` para não gastar tentativas.
+- Para destravar: resolva o `[HUMANO] E4-S06` (recomendo a opção (a), subetapa curta de fixtures), troque o `[!]` do plano por `[ ]` e o status da E5-S04 no ROADMAP para `[~]`.
+- Para revisar à noite (sem bloquear): DA-77 troca o "worker único com lease" da §11.3 por um contador de linha única no Postgres (mesma garantia, comprovada por teste de propriedade e por um sequenciador ingênuo que falha). Se preferir o lease literal, diga antes do desenvolvimento.

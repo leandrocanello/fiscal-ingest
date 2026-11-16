@@ -108,6 +108,74 @@ class NfeNacionalAdapterManifestarPropriedadesTest {
         }
     }
 
+    private enum FalhaBlob { NENHUMA, SO_EVENTO, SO_RESPOSTA, TUDO }
+
+    @Property(tries = 300)
+    void eventoGuardadoAntesDeQualquerEnvio(
+            @ForAll("corpos") String corpo,
+            @ForAll("status") int status,
+            @ForAll boolean semResposta,
+            @ForAll("falhas") FalhaBlob falha) {
+        var blobs = new BlobStoreEmMemoria();
+        var gravados = new java.util.ArrayList<byte[]>();
+        BlobStore store = new BlobStore() {
+            @Override
+            public br.com.doc.ingest.domain.blob.BlobRef gravar(String c, byte[] b, String sha) {
+                boolean evento = c.endsWith(".assinado.xml");
+                if (falha == FalhaBlob.TUDO || (falha == FalhaBlob.SO_EVENTO && evento)
+                        || (falha == FalhaBlob.SO_RESPOSTA && !evento)) {
+                    throw new IllegalStateException("fora do ar");
+                }
+                var ref = blobs.gravar(c, b, sha);
+                gravados.add(b.clone());
+                return ref;
+            }
+
+            @Override
+            public java.util.Optional<byte[]> ler(br.com.doc.ingest.domain.blob.BlobRef ref) {
+                return blobs.ler(ref);
+            }
+        };
+        boolean eventoFalha = falha == FalhaBlob.TUDO || falha == FalhaBlob.SO_EVENTO;
+        var chamadas = new java.util.concurrent.atomic.AtomicInteger();
+        var enviado = new java.util.concurrent.atomic.AtomicReference<byte[]>();
+        var adapter = new NfeNacionalAdapter(FONTE, TipoAmbiente.HOMOLOGACAO, URI.create("http://localhost/d"), store,
+                Clock.fixed(AGORA, ZoneOffset.UTC),
+                c -> (e, a, env) -> {
+                    chamadas.incrementAndGet();
+                    String xml = new String(env, StandardCharsets.UTF_8);
+                    byte[] trecho = xml.substring(xml.indexOf("<evento"),
+                            xml.lastIndexOf("</evento>") + "</evento>".length()).getBytes(StandardCharsets.UTF_8);
+                    enviado.set(trecho);
+                    // inv. 5: no momento do envio o blob já contém exatamente o evento que vai no envelope
+                    assertThat(gravados).anySatisfy(g -> assertThat(g).isEqualTo(trecho));
+                    return semResposta
+                            ? new ResultadoTransporte.FalhaTransporte(ResultadoTransporte.Motivo.TIMEOUT)
+                            : new ResultadoTransporte.RespostaHttp(status, corpo.getBytes(StandardCharsets.UTF_8));
+                },
+                URI.create("http://localhost/e"));
+        adapter.autenticar(CREDENCIAL);
+
+        ManifestarResultado r = adapter.manifestar(new ContextoConsulta(FONTE, CNPJ), CHAVE, TipoManifestacao.CIENCIA)
+                .orElseThrow();
+
+        if (eventoFalha) {
+            assertThat(chamadas.get()).isZero();
+            assertThat(r.eventoAssinado()).isEmpty();
+            assertThat(r.envelope()).isEmpty();
+            assertThat(r.desfecho()).isNotInstanceOf(Desfecho.Ok.class);
+        } else {
+            assertThat(chamadas.get()).isEqualTo(1);
+            assertThat(r.eventoAssinado()).isPresent();
+            assertThat(blobs.ler(r.eventoAssinado().get())).hasValueSatisfying(b -> assertThat(b).isEqualTo(enviado.get()));
+        }
+    }
+
+    @Provide
+    Arbitrary<FalhaBlob> falhas() {
+        return Arbitraries.of(FalhaBlob.class);
+    }
+
     @Provide
     Arbitrary<Integer> status() {
         return Arbitraries.of(200, 200, 200, 201, 204, 301, 400, 401, 403, 404, 500, 503);

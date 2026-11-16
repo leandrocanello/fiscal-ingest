@@ -426,3 +426,39 @@ Como desfazer: ajustar o teste se a política de bucket (Fase 10) desligar a cri
 - **Opções:** (a) passo 0 condicional na E4-S06: se ainda estiver vermelha, completar só a chamada com `Optional.empty()`, sem mudar as asserções; (b) esperar uma subetapa dedicada.
 - **Escolha:** (a). É uma mudança de uma linha, só em teste e reversível, e destrava a E3-S08. Se outra branch corrigir antes, o passo é pulado.
 - **Como desfazer:** reverter o commit `test(adapter-nfe): MetadadosDfeTest...`.
+
+### DA-70 · 2026-11-16 · E5-S02
+- **Contexto:** a §6.4 pede "credencial do agente ou do tenant" no `POST /v1/ingestao/arquivos`, mas a §10.4 deixa em aberto "par de chaves ou token rotacionável" e a ativação é da Fase 7. Não existe autenticação de usuário do tenant.
+- **Opções:** (a) só canal AGENTE nesta subetapa, com token opaco (32 bytes aleatórios, base64url, prefixo `fia_`) guardado como SHA-256 em `agente.credencial_hash` (coluna já prevista na §8), conferido por um filtro simples atrás da porta `AutenticadorIngestao`; (b) par de chaves com requisição assinada; (c) Spring Security/OAuth já agora.
+- **Escolha:** (a). Usa o que a §8 já prevê, e a porta deixa trocar por par de chaves na Fase 7 sem mexer no caso de uso. SHA-256 basta para um token de alta entropia (não é senha). Sem Spring Security até a E5-S06. Canal UPLOAD com credencial do tenant fica fora (DUVIDA em PARA-VOCE).
+- **Como desfazer:** trocar a implementação de `AutenticadorIngestao` e o filtro; a migration ganha coluna nova sem apagar a antiga.
+
+### DA-71 · 2026-11-16 · E5-S02
+- **Contexto:** a §8 põe `status` e `motivo_rejeicao` mutáveis em `recebimento`, mas a §6.4 chama o recebimento de "append" e o processor muda o status depois.
+- **Opções:** (a) `recebimento` imutável + `recebimento_resultado` append-only (status atual = última linha); (b) `UPDATE` só de `status` a partir de `RECEBIDO`.
+- **Escolha:** (a). Mantém a trilha (quando e por que foi rejeitado) e o mesmo padrão do ledger e da proveniência; afrouxar depois é mais fácil que apertar.
+- **Como desfazer:** migration que acrescente `status`/`motivo_rejeicao` em `recebimento` e preencha a partir do último resultado.
+
+### DA-72 · 2026-11-16 · E5-S02
+- **Contexto:** o ADR-027 fixa "Spring Boot 3.x só nos `app-*`", sem versão nem forma de aplicar o BOM. O build raiz fixa JUnit 5.10.2, e o jqwik puxa o Platform 5.13 (§5).
+- **Opções:** (a) Spring Boot 3.5.x mais recente, plugin `org.springframework.boot` + `io.spring.dependency-management` só no `app-api`; (b) só `platform(spring-boot-dependencies)` sem o plugin; (c) Spring Boot 4.
+- **Escolha:** (a), respeitando o "3.x" do ADR. O BOM do Spring fica restrito ao `app-api`, para não mexer nas versões dos outros módulos. Se der conflito de JUnit Platform só nesse módulo, alinhar ali com `junit-bom`.
+- **Como desfazer:** trocar plugin por `platform(...)` no `app-api/build.gradle.kts`.
+
+### DA-73 · 2026-11-16 · E5-S02
+- **Contexto:** a §13 pede limites de tamanho, profundidade e quantidade de arquivos em ZIP, sem números.
+- **Opções:** valores padrão configuráveis (`LimitesPush`/`PropriedadesIngestao`).
+- **Escolha:** corpo 50 MiB · XML 5 MiB por item · profundidade 64 · ZIP: 10 000 entradas, 200 MiB descompactados no total (contados na leitura, sem confiar no cabeçalho), razão máx. 100 para entradas acima de 1 MiB · **ZIP aninhado recusado** (o agente já abre os `.zip` locais, §10.2 item 3).
+- **Como desfazer:** mudar os padrões em `LimitesPush`/`application.yml`; ZIP aninhado vira profundidade configurável.
+
+### DA-74 · 2026-11-16 · E5-S02
+- **Contexto:** as migrations V14/V15 estão reservadas por dois planos em aberto (E4-S03 e E4-S06, que já colidem entre si). O Flyway exige versão única.
+- **Opções:** (a) E5-S02 usa `V20__recebimento.sql` (e `V21`, se separar a função); (b) usar V14 e renumerar no merge.
+- **Escolha:** (a). Bases de teste são novas a cada execução, então o buraco de numeração não atrapalha. Quem mesclar depois confere a ordem.
+- **Como desfazer:** renomear o arquivo antes do primeiro deploy real.
+
+### DA-75 · 2026-11-16 · E5-S02
+- **Contexto:** formato do pedido e semântica do reenvio não estão fechados (o contrato será usado pelo agente Go).
+- **Opções:** (a) corpo cru (`application/octet-stream|xml|zip`), metadados em `X-Nome-Original`/`X-Caminho-Origem` percent-encoded, `X-Conteudo-Sha256` opcional (divergente → 400); 202 no primeiro envio e 200 com corpo idêntico no reenvio (§6.4); (b) multipart/form-data.
+- **Escolha:** (a). Mais simples de limitar e de transmitir em streaming; o agente ainda não existe, então o contrato pode mudar no `api-contract/openapi.yaml` antes da Fase 7. Blob duplicado de um reenvio em outro dia (chave com data) é aceito como órfão inofensivo; o caso de uso consulta o existente antes de gravar para evitar isso no caso comum.
+- **Como desfazer:** trocar o controller e o `openapi.yaml`; o caso de uso não muda.

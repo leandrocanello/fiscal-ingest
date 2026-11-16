@@ -360,3 +360,9 @@ ou responda aqui, e troque o status no ROADMAP de `[!]` para `[~]`.
   - adapter-nfe-nacional: `ParserDfeNfeTest`
 - Fora do escopo da E4-S06 (o plano só autoriza ajustar o construtor), e o plano B da Verificação (fechar com domain/cert-vault/infra-postgres/app-worker verdes) também não é possível. Opções: (a) subetapa curta "fix: fixtures de CNPJ com DV válido" antes de seguir a E4-S06; (b) autorizar a E4-S06 a corrigir as fixtures (só os valores, sem mexer nas asserções). Recomendo (a), feita logo em seguida: os próximos passos da E4-S06 tocam cert-vault/infra-postgres e não conseguem rodar a suíte verde.
 - 2026-11-16 (2ª chamada): a `main` não mudou (c526332). Passo 0 marcado `[!]` no plano para não gerar outro revert. Para destravar: responda (a) ou (b), troque `[!]` por `[ ]` no plano e o status da E4-S06 no ROADMAP para `[~]`.
+
+### [DUVIDA] E5-S02 — 2026-11-16 — credencial da porta push (não bloqueia)
+- **O que é:** a E5-S02 implementa só o canal **AGENTE**, com token opaco guardado como SHA-256 em `agente.credencial_hash` (DA-70), atrás da porta `AutenticadorIngestao`. A §10.4 deixa "par de chaves ou token rotacionável" em aberto, e o **upload manual pelo tenant** (canal E, Fase 5) precisa de uma autenticação de usuário do tenant que ainda não existe.
+- **Opções para o upload:** (a) o tenant gera, no portal, um token de API do mesmo tipo (tabela `credencial_tenant`); (b) login de usuário (OIDC/Spring Security) quando o front mínimo existir; (c) adiar o upload até a Fase 7, usando só o agente.
+- **Recomendação:** (a) para destravar o canal E com o mesmo mecanismo, e (b) quando houver portal. Também vale confirmar o token na Fase 7 (ou trocar por par de chaves). Se quiser, crie uma subetapa "E5-S02b upload com token do tenant" no ROADMAP.
+- Outras escolhas reversíveis da subetapa: DA-71 a DA-75 (recebimento imutável + resultado append-only, Spring Boot 3.5.x só no `app-api`, limites de ZIP, migration V20, corpo cru com 202/200).

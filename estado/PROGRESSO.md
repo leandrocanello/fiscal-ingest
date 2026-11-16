@@ -941,3 +941,6 @@
 - 2026-11-16 09:35 · E4-S06: revertido — suíte vermelha (ver logs/ultimo-teste.log)
 - 2026-11-16 09:36 · E4-S06: passo 0 marcado [!] sem commit de código (main igual a c526332, compileTestJava ainda falha em MetadadosDfeTest.java:22 e as fixtures de CNPJ com DV inválido continuam; refazer só repetiria o revert das 09:35) · próximo: autor responde [HUMANO] E4-S06 (a: subetapa de fixtures / b: autorizar aqui)
 - 2026-11-16 09:36 · E4-S06: passo marcado [!] (aguarda decisão) — sem commit, aceito
+- 2026-11-16 09:36 · E4-S06: plano aguarda decisão (passo [!]) → [h]
+- 2026-11-16 09:40 · E5-S02: PLANEJAR — plano com 10 passos (domínio push + caso de uso, ingest-push com classificador StAX seguro e descompactador com limites, V20 recebimento/resultado append-only + RLS + outbox, autenticador de agente por token hash, app-api Spring Boot com 202/200/401/413/415/503, processor que rejeita inseguro, integração/caos, openapi); DA-70..75; DUVIDA não bloqueante em PARA-VOCE · próximo: desenvolver E5-S02 (exige main verde)
+- 2026-11-16 09:40 · E5-S02: PLANEJAR ok

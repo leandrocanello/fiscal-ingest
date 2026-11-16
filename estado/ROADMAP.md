@@ -57,11 +57,11 @@
 - [!] E4-S03 | AUTO     | deps: E3-S01 | consentimento por finalidade + máquina de estados de estado_coleta
 - [x] E4-S04 | AUTO     | deps: E4-S02 | alertas de vencimento + rotação sem perder cursor
 - [ ] E4-S05 | AUTO     | deps: E4-S01..04 | simulação de N CNPJs sem nenhum 656
-- [~] E4-S06 | AUTO+    | deps: E4-S02,E3-S03 | persistência do cofre: tabela certificado (tenant/empresa) + JdbiRepositorioCertificados + RLS
+- [h] E4-S06 | AUTO+    | deps: E4-S02,E3-S03 | persistência do cofre: tabela certificado (tenant/empresa) + JdbiRepositorioCertificados + RLS
 
 ## Etapa 5 — Porta push + API de entrega (Fases 5 e 6)
 - [x] E5-S01 | DECISAO  | deps: -      | framework HTTP dos app-*: Spring Boot só nos app-* (ADR-027)
-- [ ] E5-S02 | AUTO+    | deps: E3-S06,E5-S01 | POST /v1/ingestao/arquivos + parser seguro (XXE, zip bomb)
+- [~] E5-S02 | AUTO+    | deps: E3-S06,E5-S01 | POST /v1/ingestao/arquivos + parser seguro (XXE, zip bomb)
 - [ ] E5-S03 | AUTO+    | deps: E5-S02 | validação de assinatura + confiança + CNPJ do agente
 - [ ] E5-S04 | AUTO+    | deps: E3-S04 | sequenciador do feed + teste de propriedade "sem buracos"
 - [ ] E5-S05 | AUTO     | deps: E5-S04 | GET /v1/feed, /documentos, /xml + OpenAPI

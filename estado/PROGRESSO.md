@@ -930,3 +930,5 @@
 - 2026-11-16 09:11 · E3-S08: PLANEJAR ok
 - 2026-11-16 09:12 · E3-S08: main vermelha (MetadadosDfeTest não compila: record com 17 args), BLOQUEIO registrado em PARA-VOCE, sem código · próximo: E3-S08 passo 1 após main verde
 - 2026-11-16 09:12 · E3-S08: revertido — nenhum commit feito e nenhum passo fechado no plano
+- 2026-11-16 09:12 · E3-S08: main continua vermelha (MetadadosDfeTest:22 não compila), BLOQUEIO já em PARA-VOCE, sem código nem commit · próximo: E3-S08 passo 1 após main verde
+- 2026-11-16 09:12 · E3-S08: revertido — nenhum commit feito e nenhum passo fechado no plano

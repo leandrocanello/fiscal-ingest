@@ -396,3 +396,15 @@ Como desfazer: ajustar o teste se a política de bucket (Fase 10) desligar a cri
 - **Opções:** (a) novo componente `Optional<BlobRef> eventoAssinado` em `ManifestarResultado`, com construtor de 2 argumentos mantido; (b) só gravar, sem mudar o domínio; (c) devolver uma lista de refs.
 - **Escolha:** (a). Só `BlobRef`, sem bytes (inv. 3); testes existentes intactos. Chave `raw/pull/{fonte}/{ambiente}/{cnpj}/evento/{aaaa}/{mm}/{dd}/{sha256}.assinado.xml` (UTC). Falha ao gravar → `IndisponivelTemporario(5 min)`, igual à falha ao gravar a resposta (é infraestrutura, retentável), sem envio.
 - **Como desfazer:** remover o componente e o construtor extra de `ManifestarResultado` e os testes `eventoAssinado*`; a gravação em `EnvioManifestacao` continua valendo.
+
+### DA-65 · 2026-11-16 · E3-S08
+- **Contexto:** o fetcher precisa montar o payload JSON de `docs.coletados`, e o consumidor precisa lê-lo de volta (DA-25: payload `jsonb` montado fora do domínio). O projeto não tem biblioteca JSON.
+- **Opções:** (a) `jackson-databind` só no `app-worker`, na versão do BOM do Spring Boot 3.x (o ADR-027 já põe o Spring nos `app-*`, e ele usa Jackson); (b) codec manual, escrito à mão, para um JSON plano; (c) consumidor relê o ledger e ignora o payload.
+- **Escolha:** (a). Fica isolado num único `CodecDocsColetados` com teste de ida e volta. O domínio continua sem JSON (ArchUnit).
+- **Como desfazer:** trocar a implementação do `CodecDocsColetados` e tirar a dependência do `app-worker/build.gradle.kts`. Nada fora do codec importa Jackson.
+
+### DA-66 · 2026-11-16 · E3-S08
+- **Contexto:** várias subetapas passaram pendências para a E3-S08. Com todas, ela fica grande demais para uma subetapa AUTO.
+- **Opções:** (a) puxar tudo; (b) manter o ponta a ponta (fetcher → ledger com blob → outbox → processor) e mover o resto para quem já é dono do assunto.
+- **Escolha:** (b). `ledger_tentativa` vai para a E3-S11, junto com o relatório das "tentativas com erro". Publicar `catalogo.mudancas` vai para a E5-S04 (o sequenciador consome, e a gravação precisa estar na transação do `registrar`). Estados `CERT_*`/`ERRO_DEFINITIVO`/`CONSENTIMENTO_REVOGADO` ficam com a E4-S03; o cofre no fetcher, com a E4-S05/E4-S06. `chave_acesso` do ledger fica nula (o adapter não a extrai no lote, e o ledger não aceita UPDATE). O consumidor não usa o `RegistroDeConsumo`: o processor já é idempotente, como a E3-S07 provou.
+- **Como desfazer:** devolver os itens ao plano da E3-S08 (seção "Fora do escopo") e acrescentar passos.

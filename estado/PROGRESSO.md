@@ -926,3 +926,5 @@
 - 2026-11-16 09:07 · E4-S03: ConsentimentoTest/PropriedadesTest (falhou por símbolos inexistentes: 'cannot find symbol Consentimento/Finalidade/Revogacao'), implementado domain.consentimento; :domain:test verde; suíte inteira não compila no infra-postgres por erro pré-existente (CatalogoRlsTest.dataSourceComoApp com acesso mais fraco que PostgresTestBase — [DECISAO] E1-S07) · próximo: MaquinaEstadosColetaTest
 - 2026-11-16 09:07 · E4-S03: revertido — suíte vermelha (ver logs/ultimo-teste.log)
 - 2026-11-16 09:07 · E4-S03: [!] bloqueado após 3 falhas
+- 2026-11-16 09:11 · E3-S08: plano criado (10 passos: Documento com schema/status, ledger com BlobRef, codec docs.coletados, fake paginado/estrito, coletor, consumidor, ponta a ponta Postgres+memória, caos, variante SeaweedFS); DA-65 (Jackson no app-worker) e DA-66 (escopo) · próximo: desenvolver E3-S08 passo 1 (conferir main verde)
+- 2026-11-16 09:11 · E3-S08: PLANEJAR ok

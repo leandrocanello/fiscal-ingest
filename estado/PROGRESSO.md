@@ -901,3 +901,6 @@
 - 2026-11-16 08:19 · E3-S10: DESENVOLVER ok
 - 2026-11-16 08:26 · E3-S10: suíte inteira verde na main (--rerun-tasks, 6m14s), ArchUnit dos 5 módulos verde, sem alteração de código · próximo: revisão
 - 2026-11-16 08:26 · E3-S10: VERIFICAR ok
+- 2026-11-16 08:35 · E3-S10: REVISAR — APROVAR PARA PR (só fixtures de teste, DVs conferidos, suíte verde reexecutada) · próximo: PR/merge pelo autor
+- 2026-11-16 08:39 · E3-S10: REVISAR ok
+- 2026-11-16 08:39 · E3-S10: PR aberto para revisão

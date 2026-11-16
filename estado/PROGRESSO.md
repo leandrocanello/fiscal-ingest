@@ -919,3 +919,5 @@
 - 2026-11-16 09:02 · E2-S18 (revisar): APROVAR PARA PR; parecer no plano e PR em planos/E2-S18-pr.md (ressalvas menores: Javadoc de eventoAssinado, catch sem teste visto falhar) · próximo: abrir PR
 - 2026-11-16 09:02 · E2-S18: REVISAR ok
 - 2026-11-16 09:02 · E2-S18: PR aberto para revisão
+- 2026-11-16 · E4-S03: ConsentimentoTest/PropriedadesTest + domain.consentimento (Finalidade, Consentimento, Revogacao); falha vista: 'cannot find symbol' (classes inexistentes); domain:test verde · próximo: MaquinaEstadosColeta
+- 2026-11-16 09:03 · E4-S03: revertido — suíte vermelha (ver logs/ultimo-teste.log)

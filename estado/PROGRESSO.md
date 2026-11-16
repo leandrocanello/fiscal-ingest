@@ -904,3 +904,5 @@
 - 2026-11-16 08:35 · E3-S10: REVISAR — APROVAR PARA PR (só fixtures de teste, DVs conferidos, suíte verde reexecutada) · próximo: PR/merge pelo autor
 - 2026-11-16 08:39 · E3-S10: REVISAR ok
 - 2026-11-16 08:39 · E3-S10: PR aberto para revisão
+- 2026-11-16 08:52 · E2-S18: ManifestarResultado ganhou eventoAssinado (falha inicial: construtor/símbolo inexistente em ManifestarResultadoTest; suíte verde) · próximo: gravar evento assinado antes do envio
+- 2026-11-16 08:53 · E2-S18: DESENVOLVER ok

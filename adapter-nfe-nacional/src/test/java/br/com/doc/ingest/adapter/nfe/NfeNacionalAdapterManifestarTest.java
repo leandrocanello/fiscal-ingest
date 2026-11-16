@@ -489,6 +489,47 @@ class NfeNacionalAdapterManifestarTest {
         assertThat(r.envelope()).isEmpty();
     }
 
+    @Test
+    @DisplayName("inv. 5: timeout do transporte deixa o evento assinado guardado e legível")
+    void timeoutAindaDeixaEventoGuardado() {
+        servidor.stubFor(post(urlEqualTo(CAMINHO_EVENTO)).willReturn(aResponse().withStatus(200)
+                .withFixedDelay(2_000).withBody(resposta("135"))));
+
+        ManifestarResultado r = manifestar(adapterCom(blobs, Duration.ofMillis(200)));
+
+        assertThat(r.desfecho()).isEqualTo(TEMPORARIO);
+        assertThat(r.envelope()).isEmpty();
+        assertThat(r.eventoAssinado()).isPresent();
+        assertThat(blobs.ler(r.eventoAssinado().orElseThrow())).isPresent();
+    }
+
+    @Test
+    @DisplayName("inv. 5: falha ao gravar a resposta mantém o evento assinado guardado")
+    void falhaAoGravarRespostaMantemEventoGuardado() {
+        responder(200, resposta("135"));
+        BlobStore soFalhaNaResposta = new BlobStore() {
+            @Override
+            public BlobRef gravar(String chave, byte[] conteudo, String sha256) {
+                if (chave.endsWith(".retorno.xml")) {
+                    throw new IllegalStateException("blob store fora do ar");
+                }
+                return blobs.gravar(chave, conteudo, sha256);
+            }
+
+            @Override
+            public Optional<byte[]> ler(BlobRef ref) {
+                return blobs.ler(ref);
+            }
+        };
+
+        ManifestarResultado r = manifestar(adapterCom(soFalhaNaResposta));
+
+        assertThat(r.desfecho()).isEqualTo(TEMPORARIO);
+        assertThat(r.envelope()).isEmpty();
+        assertThat(r.eventoAssinado()).isPresent();
+        assertThat(blobs.ler(r.eventoAssinado().orElseThrow())).isPresent();
+    }
+
     @ParameterizedTest
     @ValueSource(ints = {200, 500})
     @DisplayName("SOAP Fault, com 2xx ou 5xx: IndisponivelTemporario, com o bruto guardado")

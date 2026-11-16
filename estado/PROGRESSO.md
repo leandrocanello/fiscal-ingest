@@ -932,3 +932,6 @@
 - 2026-11-16 09:12 · E3-S08: revertido — nenhum commit feito e nenhum passo fechado no plano
 - 2026-11-16 09:12 · E3-S08: main continua vermelha (MetadadosDfeTest:22 não compila), BLOQUEIO já em PARA-VOCE, sem código nem commit · próximo: E3-S08 passo 1 após main verde
 - 2026-11-16 09:12 · E3-S08: revertido — nenhum commit feito e nenhum passo fechado no plano
+- 2026-11-16 09:13 · E3-S08: passo 1 — main segue vermelha (MetadadosDfeTest.java:22 com 15 args, record pede 17); BLOQUEIO já registrado em PARA-VOCE, sem código · próximo: aguardar correção do MetadadosDfeTest
+- 2026-11-16 09:13 · E3-S08: revertido — nenhum commit feito e nenhum passo fechado no plano
+- 2026-11-16 09:13 · E3-S08: [!] bloqueado após 3 falhas

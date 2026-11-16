@@ -344,3 +344,8 @@ ou responda aqui, e troque o status no ROADMAP de `[!]` para `[~]`.
 ### [BLOQUEIO] E3-S08 — 2026-11-16 — main vermelha, passo 1 do plano
 - `./gradlew test` na base falha em `:adapter-nfe-nacional:compileTestJava`: `MetadadosDfeTest.java:22` chama `new MetadadosDfe(...)` com 15 argumentos, mas o record agora pede 17 (merge E3-S07 trouxe `feat(adapter-nfe): extrator lê versão e protocolo`, d8ee71f, sem atualizar o teste).
 - Não corrigi aqui (o plano manda parar). Opções: (a) corrigir o teste na E3-S10/outra subetapa; (b) autorizar a E3-S08 a corrigir. Recomendo (a), pequeno ajuste no `MetadadosDfeTest`.
+
+### [BLOQUEIO] E3-S08 — 2026-11-16 — 3 falhas seguidas
+Último motivo: nenhum commit feito e nenhum passo fechado no plano
+Logs: `estado/logs/` (arquivos *-E3-S08-*.json). Para destravar: ajuste o plano `estado/planos/E3-S08.md`
+ou responda aqui, e troque o status no ROADMAP de `[!]` para `[~]`.

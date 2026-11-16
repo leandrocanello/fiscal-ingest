@@ -25,7 +25,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class VerificarVencimentosUseCaseTest {
 
     private static final Instant AGORA = Instant.parse("2026-11-09T12:00:00Z");
-    private static final Cnpj CNPJ = new Cnpj("12345678000199");
+    private static final Cnpj CNPJ = new Cnpj("12345678000195");
 
     private RepositorioCertificadosEmMemoria certificados;
     private RegistroAlertasVencimentoEmMemoria registro;

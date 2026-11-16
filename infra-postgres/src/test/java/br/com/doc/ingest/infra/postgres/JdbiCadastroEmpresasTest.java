@@ -53,19 +53,19 @@ class JdbiCadastroEmpresasTest extends PostgresTestBase {
     @Test
     void empresasDoTenantSoAsAtivasDoAmbiente() {
         long escritorio = empresa(tenantA, "11222333000181", "ESCRITORIO", "PRODUCAO", true);
-        long cliente = empresa(tenantA, "44555666000172", "EMPRESA", "PRODUCAO", true);
-        empresa(tenantA, "77888999000163", "EMPRESA", "PRODUCAO", false);
-        empresa(tenantA, "22333444000154", "EMPRESA", "HOMOLOGACAO", true);
+        long cliente = empresa(tenantA, "44555666000181", "EMPRESA", "PRODUCAO", true);
+        empresa(tenantA, "77888999000181", "EMPRESA", "PRODUCAO", false);
+        empresa(tenantA, "22333444000181", "EMPRESA", "HOMOLOGACAO", true);
 
         assertThat(cadastro.empresasDoTenant(tenantA, Ambiente.PRODUCAO)).containsExactly(
                 new EmpresaDoTenant(escritorio, new Cnpj("11222333000181"), TipoEmpresa.ESCRITORIO),
-                new EmpresaDoTenant(cliente, new Cnpj("44555666000172"), TipoEmpresa.EMPRESA));
+                new EmpresaDoTenant(cliente, new Cnpj("44555666000181"), TipoEmpresa.EMPRESA));
     }
 
     @Test
     void tenantANaoListaEmpresasDeB() {
         long deA = empresa(tenantA, "11222333000181", "EMPRESA", "PRODUCAO", true);
-        empresa(tenantB, "44555666000172", "EMPRESA", "PRODUCAO", true);
+        empresa(tenantB, "44555666000181", "EMPRESA", "PRODUCAO", true);
         empresa(tenantB, "11222333000181", "EMPRESA", "PRODUCAO", true);
 
         assertThat(cadastro.empresasDoTenant(tenantA, Ambiente.PRODUCAO)).extracting(EmpresaDoTenant::id)

@@ -49,13 +49,13 @@ class ProcessadorColetadoIntegracaoTest extends PostgresTestBase {
     private static final FonteId FONTE = new FonteId("NFE_AN");
 
     /** Escritório do tenant: consulta com o próprio certificado e aparece no {@code autXML} dos clientes. */
-    private static final Cnpj ESCRITORIO = new Cnpj("44444444000144");
+    private static final Cnpj ESCRITORIO = new Cnpj("44444444000191");
     /** Cliente do escritório que emite a nota. */
     private static final Cnpj CLIENTE = new Cnpj("11111111000191");
     /** Empresa destinatária, consultando com o próprio certificado. */
-    private static final Cnpj DESTINATARIA = new Cnpj("55555555000155");
+    private static final Cnpj DESTINATARIA = new Cnpj("55555555000191");
     /** Contraparte fora do tenant. */
-    private static final Cnpj TERCEIRO = new Cnpj("66666666000166");
+    private static final Cnpj TERCEIRO = new Cnpj("66666666000191");
 
     private Jdbi admin;
     private Catalogo catalogo;

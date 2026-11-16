@@ -62,11 +62,11 @@ class ProcessadorPropriedadesTest extends PostgresTestBase {
     private static final Instant AGORA = Instant.parse("2026-11-13T12:00:00Z");
     private static final FonteId FONTE = new FonteId("NFE_AN");
 
-    private static final Cnpj ESCRITORIO = new Cnpj("44444444000144");
+    private static final Cnpj ESCRITORIO = new Cnpj("44444444000191");
     private static final Cnpj CLIENTE = new Cnpj("11111111000191");
-    private static final Cnpj DESTINATARIA = new Cnpj("55555555000155");
-    private static final Cnpj TERCEIRO = new Cnpj("66666666000166");
-    private static final Cnpj OUTRO_TERCEIRO = new Cnpj("77777777000177");
+    private static final Cnpj DESTINATARIA = new Cnpj("55555555000191");
+    private static final Cnpj TERCEIRO = new Cnpj("66666666000191");
+    private static final Cnpj OUTRO_TERCEIRO = new Cnpj("77777777000191");
 
     /** Uma nota: quem emite, para quem, quem está no {@code autXML} e com qual CNPJ ela é consultada. */
     private record Nota(String chave, Cnpj emitente, Cnpj destinatario, List<Cnpj> autorizados, Cnpj consultado) { }

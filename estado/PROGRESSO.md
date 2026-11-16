@@ -910,3 +910,5 @@
 - 2026-11-16 08:55 · E2-S18: DESENVOLVER ok
 - 2026-11-16 08:56 · E2-S18: teste falhaAoGravarEventoNaoEnvia (passou de imediato: catch já implementado no passo anterior, sem falha vista); suíte verde · próximo: timeoutAindaDeixaEventoGuardado/falhaAoGravarRespostaMantemEventoGuardado
 - 2026-11-16 08:56 · E2-S18: DESENVOLVER ok
+- 2026-11-16 08:57 · E2-S18: testes timeoutAindaDeixaEventoGuardado e falhaAoGravarRespostaMantemEventoGuardado (já passaram de primeira, sem mudança de código; suíte verde) · próximo: recusasAntesDeAssinarNaoGravamNada
+- 2026-11-16 08:57 · E2-S18: DESENVOLVER ok

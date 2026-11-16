@@ -899,3 +899,5 @@
 - 2026-11-13 17:50 · E4-S04: mergeado por você ✔
 - 2026-11-16 08:19 · E3-S10: main estava vermelha (MetadadosDfeTest não compilava: 15 args p/ record de 17; 9 classes com `IllegalArgumentException: CNPJ invalido ... DV`; ParserDfeNfeTest `Invalido[motivo=Metadados fora do formato]`). Corrigidas só fixtures (DV recalculado, mesma raiz) · suíte 1569/0 · commit 305609a · próximo: revisão (dúvida do ParserDfeNfe alfanumérico em PARA-VOCE)
 - 2026-11-16 08:19 · E3-S10: DESENVOLVER ok
+- 2026-11-16 08:26 · E3-S10: suíte inteira verde na main (--rerun-tasks, 6m14s), ArchUnit dos 5 módulos verde, sem alteração de código · próximo: revisão
+- 2026-11-16 08:26 · E3-S10: VERIFICAR ok

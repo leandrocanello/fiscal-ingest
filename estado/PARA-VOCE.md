@@ -349,3 +349,13 @@ ou responda aqui, e troque o status no ROADMAP de `[!]` para `[~]`.
 Último motivo: nenhum commit feito e nenhum passo fechado no plano
 Logs: `estado/logs/` (arquivos *-E3-S08-*.json). Para destravar: ajuste o plano `estado/planos/E3-S08.md`
 ou responda aqui, e troque o status no ROADMAP de `[!]` para `[~]`.
+
+### [HUMANO] E4-S06 — 2026-11-16 — main ainda vermelha depois do passo 0: fixtures de CNPJ com DV inválido em 5 módulos
+- O passo 0 da E4-S06 corrigiu a compilação do `MetadadosDfeTest` (17 componentes), o que destrava o `[BLOQUEIO] E3-S08` acima (a compilação passa).
+- `./gradlew test --continue` ainda falha em 5 módulos. A causa parece ser a mesma em todos: fixtures com CNPJ de DV inválido (`IllegalArgumentException: CNPJ invalido ... DV`), recusadas pelo `Cnpj` com DV (E1-S07) depois dos merges. Exemplo: `ParserDfeNfeTest.java:27` `AUTOR = "22222222000122"` (o DV correto é `...000191`). Classes afetadas:
+  - domain: `CertificadoVigenteTest`, `CertificadoVigentePropriedadesTest`
+  - cert-vault: `RotacionarCertificadoUseCaseTest`, `VerificarVencimentosUseCaseTest`
+  - infra-postgres: `JdbiCadastroEmpresasTest`, `TenantsDoCnpjConsultadoTest`
+  - app-worker: `ProcessadorPropriedadesTest`, `ProcessadorColetadoIntegracaoTest`, `CaosProcessadorTest`
+  - adapter-nfe-nacional: `ParserDfeNfeTest`
+- Fora do escopo da E4-S06 (o plano só autoriza ajustar o construtor), e o plano B da Verificação (fechar com domain/cert-vault/infra-postgres/app-worker verdes) também não é possível. Opções: (a) subetapa curta "fix: fixtures de CNPJ com DV válido" antes de seguir a E4-S06; (b) autorizar a E4-S06 a corrigir as fixtures (só os valores, sem mexer nas asserções). Recomendo (a), feita logo em seguida: os próximos passos da E4-S06 tocam cert-vault/infra-postgres e não conseguem rodar a suíte verde.

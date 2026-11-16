@@ -906,3 +906,5 @@
 - 2026-11-16 08:39 · E3-S10: PR aberto para revisão
 - 2026-11-16 08:52 · E2-S18: ManifestarResultado ganhou eventoAssinado (falha inicial: construtor/símbolo inexistente em ManifestarResultadoTest; suíte verde) · próximo: gravar evento assinado antes do envio
 - 2026-11-16 08:53 · E2-S18: DESENVOLVER ok
+- 2026-11-16 08:54 · E2-S18: evento assinado gravado antes do envio (teste falhou em AssertionError: eventoAssinado vazio; suíte verde) · próximo: falhaAoGravarEventoNaoEnvia
+- 2026-11-16 08:55 · E2-S18: DESENVOLVER ok

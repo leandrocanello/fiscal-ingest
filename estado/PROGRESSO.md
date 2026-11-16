@@ -912,3 +912,5 @@
 - 2026-11-16 08:56 · E2-S18: DESENVOLVER ok
 - 2026-11-16 08:57 · E2-S18: testes timeoutAindaDeixaEventoGuardado e falhaAoGravarRespostaMantemEventoGuardado (já passaram de primeira, sem mudança de código; suíte verde) · próximo: recusasAntesDeAssinarNaoGravamNada
 - 2026-11-16 08:57 · E2-S18: DESENVOLVER ok
+- 2026-11-16 08:58 · E2-S18: teste recusasAntesDeAssinarNaoGravamNada (passou de primeira: gravação já após assinatura, nada a implementar; suíte verde) · próximo: propriedade jqwik eventoGuardadoAntesDeQualquerEnvio
+- 2026-11-16 08:58 · E2-S18: DESENVOLVER ok

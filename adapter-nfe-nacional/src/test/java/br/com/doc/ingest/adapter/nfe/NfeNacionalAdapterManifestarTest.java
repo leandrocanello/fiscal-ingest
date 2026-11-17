@@ -237,6 +237,31 @@ class NfeNacionalAdapterManifestarTest {
         assertThat(XMLSignatureFactory.getInstance("DOM").unmarshalXMLSignature(ctx).validate(ctx)).isTrue();
     }
 
+    @Test
+    @DisplayName("inv. 5: o evento assinado fica no blob, idêntico ao enviado, com assinatura válida")
+    void eventoAssinadoGravadoAntesDoEnvio() throws Exception {
+        responder(200, resposta("135"));
+
+        ManifestarResultado r = manifestar(adapterCom(blobs));
+
+        assertThat(r.eventoAssinado()).isPresent();
+        byte[] guardado = blobs.ler(r.eventoAssinado().orElseThrow()).orElseThrow();
+        String enviado = servidor.getAllServeEvents().get(0).getRequest().getBodyAsString();
+        String trecho = enviado.substring(enviado.indexOf("<evento"), enviado.lastIndexOf("</evento>") + "</evento>".length());
+        assertThat(new String(guardado, StandardCharsets.UTF_8)).isEqualTo(trecho);
+        assertThat(r.eventoAssinado().orElseThrow().chave())
+                .isEqualTo("raw/pull/NFE_AN/HOMOLOGACAO/11111111000191/evento/2026/11/04/" + Sha256.hex(guardado)
+                        + ".assinado.xml");
+
+        Document doc = FabricaDocumentoSeguro.ler(guardado);
+        Element infEvento = (Element) doc.getElementsByTagNameNS(ContratoEvento.NS_NFE, "infEvento").item(0);
+        infEvento.setIdAttributeNS(null, "Id", true);
+        Node assinatura = doc.getElementsByTagNameNS(XMLSignature.XMLNS, "Signature").item(0);
+        DOMValidateContext ctx = new DOMValidateContext(chavePublica, assinatura);
+        ctx.setProperty("org.jcp.xml.dsig.secureValidation", Boolean.FALSE);
+        assertThat(XMLSignatureFactory.getInstance("DOM").unmarshalXMLSignature(ctx).validate(ctx)).isTrue();
+    }
+
     @ParameterizedTest
     @CsvSource({"200,nao e xml", "500,erro interno", "200,''"})
     @DisplayName("inv. 5: resposta malformada, 5xx ou vazia fica guardada, byte a byte, e o desfecho é temporário")
@@ -260,6 +285,34 @@ class NfeNacionalAdapterManifestarTest {
 
         assertThat(r.desfecho()).isEqualTo(TEMPORARIO);
         assertThat(r.envelope()).isEmpty();
+    }
+
+    @Test
+    @DisplayName("inv. 5: sem cópia do evento assinado, nada é enviado e o desfecho é temporário sem texto da exceção")
+    void falhaAoGravarEventoNaoEnvia() {
+        responder(200, resposta("135"));
+        BlobStore soFalhaNoEvento = new BlobStore() {
+            @Override
+            public BlobRef gravar(String chave, byte[] conteudo, String sha256) {
+                if (chave.endsWith(".assinado.xml")) {
+                    throw new IllegalStateException("blob store fora do ar");
+                }
+                return blobs.gravar(chave, conteudo, sha256);
+            }
+
+            @Override
+            public Optional<byte[]> ler(BlobRef ref) {
+                return blobs.ler(ref);
+            }
+        };
+
+        ManifestarResultado r = manifestar(adapterCom(soFalhaNoEvento));
+
+        assertThat(r.desfecho()).isEqualTo(TEMPORARIO);
+        assertThat(r.envelope()).isEmpty();
+        assertThat(r.eventoAssinado()).isEmpty();
+        assertThat(r.desfecho().toString()).doesNotContain("fora do ar");
+        servidor.verify(0, postRequestedFor(urlEqualTo(CAMINHO_EVENTO)));
     }
 
     @Test
@@ -339,6 +392,49 @@ class NfeNacionalAdapterManifestarTest {
 
         assertThat(r.desfecho()).isEqualTo(new Desfecho.IndisponivelDefinitivo("falha ao assinar o evento"));
         assertThat(r.envelope()).isEmpty();
+        servidor.verify(0, anyRequestedFor(anyUrl()));
+    }
+
+    @Test
+    @DisplayName("recusas antes de assinar (sem credencial, chave inválida, tipo não suportado, falha ao assinar) não gravam nada")
+    void recusasAntesDeAssinarNaoGravamNada() {
+        responder(200, resposta("135"));
+        var gravacoes = new java.util.concurrent.atomic.AtomicInteger();
+        BlobStore contador = new BlobStore() {
+            @Override
+            public br.com.doc.ingest.domain.blob.BlobRef gravar(String chave, byte[] conteudo, String sha256) {
+                gravacoes.incrementAndGet();
+                return blobs.gravar(chave, conteudo, sha256);
+            }
+
+            @Override
+            public java.util.Optional<byte[]> ler(br.com.doc.ingest.domain.blob.BlobRef ref) {
+                return blobs.ler(ref);
+            }
+        };
+        var contexto = new ContextoConsulta(FONTE, CNPJ);
+
+        NfeNacionalAdapter semCredencial = new NfeNacionalAdapter(FONTE, TipoAmbiente.HOMOLOGACAO, url(CAMINHO_DIST),
+                contador, Clock.fixed(AGORA, ZoneOffset.UTC), transporteHttp(), url(CAMINHO_EVENTO));
+        ManifestarResultado r1 = manifestar(semCredencial);
+
+        NfeNacionalAdapter autenticado = adapterCom(contador);
+        ManifestarResultado r2 = autenticado.manifestar(contexto, "123", TipoManifestacao.CIENCIA).orElseThrow();
+        ManifestarResultado r3 = autenticado.manifestar(contexto, CHAVE, TipoManifestacao.CONFIRMACAO).orElseThrow();
+
+        char[] senha = SENHA.toCharArray();
+        byte[] pfxEc = GeradorPfxDeTeste.comChaveEc(senha.clone(), AGORA.minus(1, ChronoUnit.DAYS),
+                AGORA.plus(365, ChronoUnit.DAYS));
+        NfeNacionalAdapter comChaveEc = new NfeNacionalAdapter(FONTE, TipoAmbiente.HOMOLOGACAO, url(CAMINHO_DIST),
+                contador, Clock.fixed(AGORA, ZoneOffset.UTC), transporteHttp(), url(CAMINHO_EVENTO));
+        comChaveEc.autenticar(new Credencial(pfxEc, senha));
+        ManifestarResultado r4 = manifestar(comChaveEc);
+
+        assertThat(java.util.List.of(r1, r2, r3, r4)).allSatisfy(r -> {
+            assertThat(r.envelope()).isEmpty();
+            assertThat(r.eventoAssinado()).isEmpty();
+        });
+        assertThat(gravacoes).hasValue(0);
         servidor.verify(0, anyRequestedFor(anyUrl()));
     }
 
@@ -434,6 +530,47 @@ class NfeNacionalAdapterManifestarTest {
 
         assertThat(r.desfecho()).isEqualTo(TEMPORARIO);
         assertThat(r.envelope()).isEmpty();
+    }
+
+    @Test
+    @DisplayName("inv. 5: timeout do transporte deixa o evento assinado guardado e legível")
+    void timeoutAindaDeixaEventoGuardado() {
+        servidor.stubFor(post(urlEqualTo(CAMINHO_EVENTO)).willReturn(aResponse().withStatus(200)
+                .withFixedDelay(2_000).withBody(resposta("135"))));
+
+        ManifestarResultado r = manifestar(adapterCom(blobs, Duration.ofMillis(200)));
+
+        assertThat(r.desfecho()).isEqualTo(TEMPORARIO);
+        assertThat(r.envelope()).isEmpty();
+        assertThat(r.eventoAssinado()).isPresent();
+        assertThat(blobs.ler(r.eventoAssinado().orElseThrow())).isPresent();
+    }
+
+    @Test
+    @DisplayName("inv. 5: falha ao gravar a resposta mantém o evento assinado guardado")
+    void falhaAoGravarRespostaMantemEventoGuardado() {
+        responder(200, resposta("135"));
+        BlobStore soFalhaNaResposta = new BlobStore() {
+            @Override
+            public BlobRef gravar(String chave, byte[] conteudo, String sha256) {
+                if (chave.endsWith(".retorno.xml")) {
+                    throw new IllegalStateException("blob store fora do ar");
+                }
+                return blobs.gravar(chave, conteudo, sha256);
+            }
+
+            @Override
+            public Optional<byte[]> ler(BlobRef ref) {
+                return blobs.ler(ref);
+            }
+        };
+
+        ManifestarResultado r = manifestar(adapterCom(soFalhaNaResposta));
+
+        assertThat(r.desfecho()).isEqualTo(TEMPORARIO);
+        assertThat(r.envelope()).isEmpty();
+        assertThat(r.eventoAssinado()).isPresent();
+        assertThat(blobs.ler(r.eventoAssinado().orElseThrow())).isPresent();
     }
 
     @ParameterizedTest

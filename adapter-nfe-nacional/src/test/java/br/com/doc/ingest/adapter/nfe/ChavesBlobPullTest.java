@@ -73,6 +73,20 @@ class ChavesBlobPullTest {
     }
 
     @Test
+    @DisplayName("a chave do evento assinado inclui o sha256 e difere da chave do retorno")
+    void chaveDoEventoAssinadoIncluiShaEDifereDoRetorno() {
+        var instante = Instant.parse("2026-10-28T02:30:00Z");
+
+        var chave = ChavesBlobPull.eventoAssinado(FONTE, TipoAmbiente.PRODUCAO, CNPJ, instante, SHA);
+
+        assertThat(chave).isEqualTo(
+                "raw/pull/NFE_AN/PRODUCAO/11111111000191/evento/2026/10/28/" + SHA + ".assinado.xml");
+        assertThat(chave).isNotEqualTo(
+                ChavesBlobPull.envioEvento(FONTE, TipoAmbiente.PRODUCAO, CNPJ, instante, SHA));
+        assertThatCode(() -> new BlobRef(chave, SHA)).doesNotThrowAnyException();
+    }
+
+    @Test
     @DisplayName("as chaves geradas são aceitas por BlobRef")
     void chaveAceitaPorBlobRef() {
         var instante = Instant.parse("2026-10-28T12:00:00Z");

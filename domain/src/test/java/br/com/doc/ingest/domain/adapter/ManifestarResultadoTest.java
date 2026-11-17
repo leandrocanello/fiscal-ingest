@@ -45,6 +45,40 @@ class ManifestarResultadoTest {
         assertThat(Arrays.stream(componentes).map(RecordComponent::getGenericType).map(Object::toString))
                 .containsExactly(
                         Desfecho.class.toString(),
+                        "java.util.Optional<" + BlobRef.class.getName() + ">",
                         "java.util.Optional<" + BlobRef.class.getName() + ">");
+    }
+
+    @Test
+    @DisplayName("evento assinado só como Optional<BlobRef>, nunca bytes (inv. 3)")
+    void eventoAssinadoSoComoBlobRef() {
+        var evento = new BlobRef(
+                "raw/pull/NFE_AN/PRODUCAO/11111111000191/evento/2026/11/04/" + "b".repeat(64) + ".assinado.xml",
+                "b".repeat(64));
+
+        var resultado = new ManifestarResultado(new Desfecho.Ok(), Optional.of(ENVELOPE), Optional.of(evento));
+
+        assertThat(resultado.eventoAssinado()).contains(evento);
+        assertThat(Arrays.stream(ManifestarResultado.class.getRecordComponents())
+                        .filter(c -> c.getName().equals("eventoAssinado"))
+                        .map(RecordComponent::getGenericType)
+                        .map(Object::toString))
+                .containsExactly("java.util.Optional<" + BlobRef.class.getName() + ">");
+    }
+
+    @Test
+    @DisplayName("evento assinado nulo é rejeitado (use Optional.empty())")
+    void eventoAssinadoNuloLancaNpe() {
+        assertThatThrownBy(() -> new ManifestarResultado(new Desfecho.Ok(), Optional.empty(), null))
+                .isInstanceOf(NullPointerException.class)
+                .hasMessageContaining("eventoAssinado");
+    }
+
+    @Test
+    @DisplayName("construtor de dois argumentos deixa o evento assinado vazio")
+    void construtorDeDoisArgumentosDeixaEventoVazio() {
+        var resultado = new ManifestarResultado(new Desfecho.Ok(), Optional.of(ENVELOPE));
+
+        assertThat(resultado.eventoAssinado()).isEmpty();
     }
 }

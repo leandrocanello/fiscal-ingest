@@ -73,10 +73,22 @@ public final class EnvioManifestacao {
             // inv. 4: o core só vê Desfecho; inv. 13: o texto da exceção não sai daqui
             return new ManifestarResultado(FALHA_AO_ASSINAR, Optional.empty());
         }
+
+        // inv. 5: o que foi declarado em nome do destinatário é guardado antes de qualquer envio
+        String shaEvento = Sha256.hex(assinado);
+        BlobRef eventoAssinado;
+        try {
+            eventoAssinado = blobs.gravar(
+                    ChavesBlobPull.eventoAssinado(fonte, ambiente, autor, relogio.instant(), shaEvento), assinado, shaEvento);
+        } catch (RuntimeException e) {
+            return new ManifestarResultado(TEMPORARIO, Optional.empty());
+        }
+        Optional<BlobRef> refEvento = Optional.of(eventoAssinado);
+
         ResultadoTransporte resultado = transporte.enviar(endpoint, ContratoRecepcaoEvento.ACTION,
                 EnvelopeEnvEvento.soap12(assinado, relogio.millis()));
         if (!(resultado instanceof ResultadoTransporte.RespostaHttp http)) {
-            return new ManifestarResultado(tradutor.deTransporte(resultado).orElseThrow(), Optional.empty());
+            return new ManifestarResultado(tradutor.deTransporte(resultado).orElseThrow(), Optional.empty(), refEvento);
         }
 
         // inv. 5: todo corpo HTTP é guardado antes de qualquer interpretação
@@ -86,13 +98,13 @@ public final class EnvioManifestacao {
         try {
             envelope = blobs.gravar(ChavesBlobPull.envioEvento(fonte, ambiente, autor, relogio.instant(), sha), corpo, sha);
         } catch (RuntimeException e) {
-            return new ManifestarResultado(TEMPORARIO, Optional.empty());
+            return new ManifestarResultado(TEMPORARIO, Optional.empty(), refEvento);
         }
 
         var enviado = new TradutorRespostaEvento.EventoEnviado(chave, ContratoEvento.tpEvento(tipo), N_SEQ_EVENTO);
         Desfecho desfecho = tradutor.deTransporte(http)
                 .orElseGet(() -> tradutor.deLeitura(LeitorRetEnvEvento.ler(corpo), enviado));
-        return new ManifestarResultado(desfecho, Optional.of(envelope));
+        return new ManifestarResultado(desfecho, Optional.of(envelope), refEvento);
     }
 
     /** O que nem chega à SEFAZ; os motivos são fixos, sem a chave nem o texto da exceção (inv. 13). */

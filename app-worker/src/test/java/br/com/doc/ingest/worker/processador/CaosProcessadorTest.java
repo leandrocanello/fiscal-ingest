@@ -59,9 +59,9 @@ class CaosProcessadorTest extends PostgresTestBase {
     private static final Instant AGORA = Instant.parse("2026-11-13T12:00:00Z");
     private static final FonteId FONTE = new FonteId("NFE_AN");
     /** Empresa destinatária, consultando com o próprio certificado. */
-    private static final Cnpj DESTINATARIA = new Cnpj("55555555000155");
+    private static final Cnpj DESTINATARIA = new Cnpj("55555555000191");
     /** Emitente fora do tenant. */
-    private static final Cnpj TERCEIRO = new Cnpj("66666666000166");
+    private static final Cnpj TERCEIRO = new Cnpj("66666666000191");
     private static final String CHAVE = chave(TERCEIRO, 1);
 
     private Jdbi admin;

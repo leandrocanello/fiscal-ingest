@@ -17,7 +17,7 @@ class CertificadoVigenteTest {
     private static final Instant ENVIO = Instant.parse("2026-10-01T00:00:00Z");
 
     static CertificadoGuardado cert(long id, Instant de, Instant ate, Instant enviadoEm) {
-        return new CertificadoGuardado(id, 1L, 2L, new Cnpj("12345678000199"), String.format("%064x", id),
+        return new CertificadoGuardado(id, 1L, 2L, new Cnpj("12345678000195"), String.format("%064x", id),
                 new BlobRef("cofre/1/pfx-" + id + ".env", "a".repeat(64)),
                 new BlobRef("cofre/1/senha-" + id + ".env", "b".repeat(64)),
                 de, ate, enviadoEm, "operador");

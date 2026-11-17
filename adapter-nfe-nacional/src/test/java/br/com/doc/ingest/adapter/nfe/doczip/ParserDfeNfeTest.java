@@ -22,9 +22,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 class ParserDfeNfeTest {
 
     /** Chave sintética: UF 35, AAMM 2610, CNPJ 11111111000191, mod 55, série 001, nNF 123. */
-    static final String CHAVE = "35261011111111000191550010000001231123456780";
+    static final String CHAVE = "35261011111111000191550010000001231123456783";
     static final String EMITENTE = "11111111000191";
-    static final String AUTOR = "22222222000122";
+    static final String AUTOR = "22222222000191";
     static final String CPF = "98765432100";
 
     private final ParserDfeNfe parser = new ParserDfeNfe();
@@ -48,8 +48,8 @@ class ParserDfeNfeTest {
                 + "<emit><CNPJ>" + EMITENTE + "</CNPJ><xNome>Emitente</xNome></emit>"
                 + "<dest>" + destinatario + "<xNome>Destinatario</xNome></dest>"
                 + "<total><ICMSTot><vNF>1234.56</vNF></ICMSTot></total>"
-                + "<transp><transporta><CNPJ>33333333000133</CNPJ></transporta></transp>"
-                + "<autXML><CNPJ>44444444000144</CNPJ></autXML>"
+                + "<transp><transporta><CNPJ>33333333000191</CNPJ></transporta></transp>"
+                + "<autXML><CNPJ>44444444000191</CNPJ></autXML>"
                 + "</infNFe></NFe><protNFe versao=\"4.00\"><infProt><chNFe>" + CHAVE + "</chNFe>"
                 + "<cStat>" + cStat + "</cStat></infProt></protNFe></nfeProc>";
     }
@@ -104,30 +104,30 @@ class ParserDfeNfeTest {
     @ParameterizedTest
     @ValueSource(strings = {"100", "150"})
     void completoAutorizadoViraAutorizada(String cStat) {
-        DfeAnalisado d = analisado("procNFe_v4.00.xsd", procNFe("<CNPJ>22222222000122</CNPJ>", cStat));
+        DfeAnalisado d = analisado("procNFe_v4.00.xsd", procNFe("<CNPJ>22222222000191</CNPJ>", cStat));
 
         assertThat(d.tipo()).isEqualTo(TipoArquivo.COMPLETO);
         assertThat(d.situacao()).isEqualTo(SituacaoDocumento.AUTORIZADA);
         assertThat(d.metadados().serie()).contains(1);
         assertThat(d.metadados().numero()).contains(123L);
-        assertThat(d.metadados().destinatarioDoc()).contains("22222222000122");
+        assertThat(d.metadados().destinatarioDoc()).contains("22222222000191");
         assertThat(d.metadados().versaoLayout()).contains("4.00");
         assertThat(d.cnpjs().emitente()).contains(new Cnpj(EMITENTE));
-        assertThat(d.cnpjs().destinatario()).contains("22222222000122");
-        assertThat(d.cnpjs().transportador()).contains(new Cnpj("33333333000133"));
-        assertThat(d.cnpjs().autorizados()).containsExactly(new Cnpj("44444444000144"));
+        assertThat(d.cnpjs().destinatario()).contains("22222222000191");
+        assertThat(d.cnpjs().transportador()).contains(new Cnpj("33333333000191"));
+        assertThat(d.cnpjs().autorizados()).containsExactly(new Cnpj("44444444000191"));
     }
 
     @ParameterizedTest
     @ValueSource(strings = {"110", "205", "301", "302", "303"})
     void completoDenegadoViraDenegada(String cStat) {
-        assertThat(analisado("procNFe_v4.00.xsd", procNFe("<CNPJ>22222222000122</CNPJ>", cStat)).situacao())
+        assertThat(analisado("procNFe_v4.00.xsd", procNFe("<CNPJ>22222222000191</CNPJ>", cStat)).situacao())
                 .isEqualTo(SituacaoDocumento.DENEGADA);
     }
 
     @Test
     void cStatDesconhecidoNoProtocoloFicaSoResumo() {
-        assertThat(analisado("procNFe_v4.00.xsd", procNFe("<CNPJ>22222222000122</CNPJ>", "999")).situacao())
+        assertThat(analisado("procNFe_v4.00.xsd", procNFe("<CNPJ>22222222000191</CNPJ>", "999")).situacao())
                 .isEqualTo(SituacaoDocumento.SO_RESUMO);
     }
 
@@ -232,10 +232,10 @@ class ParserDfeNfeTest {
     @Test
     void cnpjForaDoFormatoViraInvalido() {
         motivoInvalido("procNFe_v4.00.xsd",
-                procNFe("<CNPJ>22222222000122</CNPJ>", "100").replace("<CNPJ>" + EMITENTE + "</CNPJ>",
+                procNFe("<CNPJ>22222222000191</CNPJ>", "100").replace("<CNPJ>" + EMITENTE + "</CNPJ>",
                         "<CNPJ>123</CNPJ>"));
         motivoInvalido("procNFe_v4.00.xsd",
-                procNFe("<CNPJ>22222222000122</CNPJ>", "100").replace("44444444000144", "4444X"));
+                procNFe("<CNPJ>22222222000191</CNPJ>", "100").replace("44444444000191", "4444X"));
         motivoInvalido("resNFe_v1.01.xsd", resNFe("1").replace("<CNPJ>" + EMITENTE, "<CNPJ>1111"));
     }
 

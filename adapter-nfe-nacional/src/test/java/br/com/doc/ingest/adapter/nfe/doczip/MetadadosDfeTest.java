@@ -24,7 +24,7 @@ class MetadadosDfeTest {
                 Optional.of(EMITENTE), Optional.of(DESTINATARIO), List.of(AUTORIZADO),
                 Optional.of(TRANSPORTADOR), Optional.of(1), Optional.of(123L), Optional.empty(),
                 Optional.empty(), Optional.of("210210"), Optional.of(1), Optional.empty(),
-                Optional.of("1"), Optional.of(AUTOR_EVENTO));
+                Optional.of("1"), Optional.of(AUTOR_EVENTO), Optional.empty(), Optional.empty());
 
         String texto = m.toString();
 

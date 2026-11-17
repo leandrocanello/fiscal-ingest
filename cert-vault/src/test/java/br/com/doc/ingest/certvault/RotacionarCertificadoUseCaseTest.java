@@ -31,7 +31,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class RotacionarCertificadoUseCaseTest {
 
     private static final Instant AGORA = Instant.parse("2026-11-09T12:00:00Z");
-    private static final Cnpj CNPJ = new Cnpj("12345678000199");
+    private static final Cnpj CNPJ = new Cnpj("12345678000195");
     private static final long TENANT = 1;
     private static final long TITULAR = 10;
     private static final ChaveColeta NFE_PROD = new ChaveColeta(new FonteId("NFE_AN"), CNPJ, Ambiente.PRODUCAO);

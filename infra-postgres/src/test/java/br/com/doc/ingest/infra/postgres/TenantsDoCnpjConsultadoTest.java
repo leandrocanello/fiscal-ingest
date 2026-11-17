@@ -22,7 +22,7 @@ class TenantsDoCnpjConsultadoTest extends PostgresTestBase {
 
     private static final AtomicInteger CONTADOR = new AtomicInteger();
     private static final Cnpj CONSULTADO = new Cnpj("11222333000181");
-    private static final Cnpj OUTRO = new Cnpj("44555666000172");
+    private static final Cnpj OUTRO = new Cnpj("44555666000181");
 
     private Jdbi admin;
     private Jdbi app;
